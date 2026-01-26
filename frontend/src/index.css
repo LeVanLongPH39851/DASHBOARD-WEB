@@ -1,0 +1,25 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background-dark: rgba(18, 18, 18, 1);
+  --color-background-gray: rgba(240, 240, 240, 1);
+  --color-background-light: rgba(255, 255, 255, 1);
+  --color-color-dark: rgba(0, 0, 0, 1);
+  --color-color-gray: rgba(154, 161, 169, 1);
+  --color-background-ave-reach: rgba(33, 184, 184, 0.1);
+  --color-color-ave-reach: rgba(33, 184, 184, 1);
+  --color-background-rating: rgba(235, 87, 87, 0.1);
+  --color-color-rating: rgba(235, 87, 87, 1);
+  --color-background-ave-reach-percent: rgba(242, 153, 74, 0.1);
+  --color-color-ave-reach-percent: rgba(242, 153, 74, 1);
+  --color-background-rating-percent: rgba(115, 103, 240, 0.10);
+  --color-color-rating-percent: rgba(115, 103, 240, 1);
+  --color-color-icon-infor: #ffd04c;
+  --font-family-be-vietnam-pro: "Be Vietnam Pro", sans-serif;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap');
+
+html, #root, body {
+    height: 100%;
+}

@@ -3,6 +3,7 @@ import ReactECharts from 'echarts-for-react';
 import Label from '../layouts/components/NameChart';
 
 
+
 const BarChart = ({
   data,
   height,
@@ -17,7 +18,9 @@ const BarChart = ({
   const { labels = [], series = [] } = data;
   const chartRef = useRef(null);
 
+
   const isHorizontal = orientation === 'horizontal';
+
 
 
   // SORT BY TOTAL
@@ -34,11 +37,13 @@ const BarChart = ({
   }, [labels, series]);
 
 
+
   const sortedLabels = sorted.map(i => i.label);
   const sortedSeries = series.map(s => ({
     ...s,
     data: sorted.map(i => s.data?.[i.index] || 0)
   }));
+
 
 
   // ECHARTS OPTION
@@ -65,17 +70,18 @@ const BarChart = ({
               <div style="margin: 4px 0; display: flex; align-items: center;">
                 ${p.marker} 
                 <span style="font-weight: 600; margin-right: 8px; color: #374151;">${p.seriesName}:</span> 
-                <span style="font-size: 15px; font-weight: 500;">${p.value.toLocaleString()}</span>
+                <span style="font-size: 15px; font-weight: 500;">${p.value.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
               </div>
             `).join('')}
             <hr style="margin: 10px 0; border: none; height: 1px; background: #e5e7eb;">
             <div style="font-weight: 700; color: #059669; font-size: 16px;">
-              <span>Total:</span> <span>${total.toLocaleString()}</span>
+              <span>Total:</span> <span>${total.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
             </div>
           </div>
         `;
       }
     },
+
 
 
     legend: {
@@ -90,13 +96,15 @@ const BarChart = ({
     },
 
 
+
     grid: {
-      left: '3%',
+      left: isHorizontal ? '3%' : '8%',
       right: isHorizontal ? '12%' : '4%',
       bottom: isHorizontal ? '10%' : '15%',
       top: 20,
       containLabel: true
     },
+
 
 
     xAxis: isHorizontal ? {
@@ -113,7 +121,7 @@ const BarChart = ({
         }
       },
       axisLabel: {
-        formatter: v => v.toLocaleString(),
+        formatter: v => v.toLocaleString(undefined, { maximumFractionDigits: 0 }),
         fontSize: fontSize.axisLabel,
         color: '#6b7280',
         fontWeight: fontWeight.axisLabel
@@ -127,11 +135,12 @@ const BarChart = ({
         fontSize: fontSize.axisLabel,
         color: '#374151',
         fontWeight: fontWeight.axisLabel,
-        rotate: 45,
+        rotate: 0,
         interval: 0
       },
       splitLine: { show: false }
     },
+
 
 
     yAxis: isHorizontal ? {
@@ -143,7 +152,8 @@ const BarChart = ({
       axisLabel: { 
         fontSize: fontSize.axisLabel,
         color: '#374151',
-        fontWeight: fontWeight.axisLabel
+        fontWeight: fontWeight.axisLabel,
+        fontFamily: fontFamily
       },
       splitLine: { show: false }
     } : {
@@ -160,12 +170,13 @@ const BarChart = ({
         }
       },
       axisLabel: {
-        formatter: v => v.toLocaleString(),
+        formatter: v => v.toLocaleString(undefined, { maximumFractionDigits: 0 }),
         fontSize: fontSize.axisLabel,
         color: '#6b7280',
         fontWeight: fontWeight.axisLabel
       }
     },
+
 
 
     series: sortedSeries.map((s, idx) => ({
@@ -225,13 +236,13 @@ const BarChart = ({
           
           // Chỉ hiện label nếu đây là series cao nhất đang visible
           if (seriesIndex === highestVisibleIndex && total > 0) {
-            return total.toLocaleString();
+            return total.toLocaleString(undefined, { maximumFractionDigits: 0 });
           }
           return '';
         },
         fontSize: fontSize.dataLabel,
         fontWeight: fontWeight.dataLabel,
-        fontFamily,
+        fontFamily: fontFamily,
         color: '#1e293b',
         // backgroundColor: 'rgba(255,255,255,0.95)',
         backgroundColor: 'transparent',
@@ -245,6 +256,7 @@ const BarChart = ({
       }
     }))
   };
+
 
 
   return (
@@ -262,6 +274,7 @@ const BarChart = ({
     </div>
   );
 };
+
 
 
 export default React.memo(BarChart);

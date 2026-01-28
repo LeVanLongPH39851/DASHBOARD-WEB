@@ -23,7 +23,7 @@ const Dashboard = () => {
     'aveReachNumber': dashboard.aveReachNumberData,
     'ratingPercentNumber': dashboard.ratingPercentNumberData,
     'aveReachPercentNumber': dashboard.aveReachPercentNumberData,
-    'ratingBarChannelEventData': dashboard.ratingBarChannelEventData,
+    'ratingBarChannelEventData': dashboard.ratingBarChannelEventData
   }
 
   return (
@@ -43,7 +43,7 @@ const Dashboard = () => {
             />
           ))}
         </div>
-        <div className='flex'>
+        <div className='flex gap-6'>
           <div className='w-[60%]'>
             <ChildTabs tabs={[
               {id: CUSTOM_TAB.childTabRatingReach.rating.id, label: CUSTOM_TAB.childTabRatingReach.rating.label,
@@ -72,6 +72,38 @@ const Dashboard = () => {
                     nameChart={CUSTOM_CHART.barChart.barChartChannelEvent.aveReachNameChart}
                     description={METRICS.ave_reach.description}
                     orientation={CUSTOM_CHART.barChart.barChartChannelEvent.orientation}
+                  />
+                )}
+              ]} />
+          </div>
+          <div className='w-[40%]'>
+            <ChildTabs tabs={[
+              {id: CUSTOM_TAB.childTabRatingReach.rating.id, label: CUSTOM_TAB.childTabRatingReach.rating.label,
+              content: (
+                <BarChart 
+                  data={transformBarChartData(dashboard.ratingBarDayEventData.data)}
+                  height={CUSTOM_CHART.barChart.height}
+                  fontSize={CUSTOM_CHART.barChart.fontSize}
+                  fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                  colors={CUSTOM_CHART.barChart.barChartDayEvent.colors}
+                  fontWeight={CUSTOM_CHART.barChart.fontWeight}
+                  nameChart={CUSTOM_CHART.barChart.barChartDayEvent.ratingNameChart}
+                  description={METRICS.rating.description}
+                  orientation={CUSTOM_CHART.barChart.barChartDayEvent.orientation}
+                />
+              )},
+              {id: CUSTOM_TAB.childTabRatingReach.ave_reach.id, label: CUSTOM_TAB.childTabRatingReach.ave_reach.label,
+                content: (
+                  <BarChart 
+                    data={transformBarChartData(dashboard.aveReachBarDayEventData.data)}
+                    height={CUSTOM_CHART.barChart.height}
+                    fontSize={CUSTOM_CHART.barChart.fontSize}
+                    fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                    colors={CUSTOM_CHART.barChart.barChartDayEvent.colors}
+                    fontWeight={CUSTOM_CHART.barChart.fontWeight}
+                    nameChart={CUSTOM_CHART.barChart.barChartDayEvent.aveReachNameChart}
+                    description={METRICS.ave_reach.description}
+                    orientation={CUSTOM_CHART.barChart.barChartDayEvent.orientation}
                   />
                 )}
               ]} />

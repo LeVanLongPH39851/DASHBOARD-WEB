@@ -1,6 +1,6 @@
 import { useApi } from '../useApi';
 import { getRatingPercentLineChartTimebandChannel } from '../../api/dashboardApi';
 
-export const useRatingReachPercentLineChartReturnApi = () => {
+export const useRatingPercentLineChartTimebandChannelReturnApi = () => {
   return useApi(getRatingPercentLineChartTimebandChannel);
 };

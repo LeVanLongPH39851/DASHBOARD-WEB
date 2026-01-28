@@ -9,21 +9,21 @@ import { formatNumber } from '../utils/formatNumber';
 import { transformBarChartData } from '../utils/transformApiBartChart';
 import BarChart from '../components/charts/BarChart';
 import { useDashboardData } from '../hooks/useDashboardData';
+import ChildTabs from '../components/layouts/components/ChildTabs';
+import { CUSTOM_TAB } from '../utils/customTab';
 
 const Dashboard = () => {
-  const { ratingNumberData, aveReachNumberData, ratingPercentNumberData, aveReachPercentNumberData,
-          ratingBarChannelEventData, ratingPercentLineTimebandChannelData, ratingReachPercentMixedTimebandData,
-          isLoading, hasError } = useDashboardData();
+  const dashboard = useDashboardData();
 
-  if (isLoading) return <Loading />;
-  if (hasError) return <ErrorState />;
+  if (dashboard.isLoading) return <Loading />;
+  if (dashboard.hasError) return <ErrorState />;
   
   const scopeNumberData = {
-    'ratingNumber': ratingNumberData,
-    'aveReachNumber': aveReachNumberData,
-    'ratingPercentNumber': ratingPercentNumberData,
-    'aveReachPercentNumber': aveReachPercentNumberData,
-    'ratingBarChannelEventData': ratingBarChannelEventData,
+    'ratingNumber': dashboard.ratingNumberData,
+    'aveReachNumber': dashboard.aveReachNumberData,
+    'ratingPercentNumber': dashboard.ratingPercentNumberData,
+    'aveReachPercentNumber': dashboard.aveReachPercentNumberData,
+    'ratingBarChannelEventData': dashboard.ratingBarChannelEventData,
   }
 
   return (
@@ -45,14 +45,37 @@ const Dashboard = () => {
         </div>
         <div className='flex'>
           <div className='w-[60%]'>
-          <BarChart data={transformBarChartData(ratingBarChannelEventData.data)}
+            <ChildTabs tabs={[
+              {id: CUSTOM_TAB.childTabRatingReach.rating.id, label: CUSTOM_TAB.childTabRatingReach.rating.label,
+              content: (
+                <BarChart 
+                  data={transformBarChartData(dashboard.ratingBarChannelEventData.data)}
+                  height={CUSTOM_CHART.barChart.height}
+                  fontSize={CUSTOM_CHART.barChart.fontSize}
+                  fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                  colors={CUSTOM_CHART.barChart.barChartChannelEvent.colors}
+                  fontWeight={CUSTOM_CHART.barChart.fontWeight}
+                  nameChart={CUSTOM_CHART.barChart.barChartChannelEvent.ratingNameChart}
+                  description={METRICS.rating.description}
+                  orientation={CUSTOM_CHART.barChart.barChartChannelEvent.orientation}
+                />
+              )},
+              {id: CUSTOM_TAB.childTabRatingReach.ave_reach.id, label: CUSTOM_TAB.childTabRatingReach.ave_reach.label,
+                content: (
+                  <BarChart 
+                    data={transformBarChartData(dashboard.aveReachBarChannelEventData.data)}
                     height={CUSTOM_CHART.barChart.height}
                     fontSize={CUSTOM_CHART.barChart.fontSize}
-                    fontFamily={`${CUSTOM_CHART.allChart.fontFamily}`}
+                    fontFamily={CUSTOM_CHART.allChart.fontFamily}
                     colors={CUSTOM_CHART.barChart.barChartChannelEvent.colors}
                     fontWeight={CUSTOM_CHART.barChart.fontWeight}
-                    description={'Đây là thông tin của biểu đồ'}/>
-        </div>
+                    nameChart={CUSTOM_CHART.barChart.barChartChannelEvent.aveReachNameChart}
+                    description={METRICS.ave_reach.description}
+                    orientation={CUSTOM_CHART.barChart.barChartChannelEvent.orientation}
+                  />
+                )}
+              ]} />
+          </div>
         </div>
       </div>
     </div>

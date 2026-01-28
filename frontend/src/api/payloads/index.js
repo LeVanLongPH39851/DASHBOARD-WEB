@@ -3,5 +3,8 @@ export { aveReachNumberChartPayload } from './aveReachNumberChartPayload';
 export { ratingPercentNumberChartPayload } from './ratingPercentNumberChartPayload';
 export { aveReachPercentNumberChartPayload } from './aveReachPercentNumberChartPayload';
 export { ratingBarChartChannelEventPayload } from './ratingBarChartChannelEventPayload';
+export { aveReachBarChartChannelEventPayload } from './aveReachBarChartChannelEventPayload';
+export { ratingBarChartDayEventPayload } from './ratingBarChartDayEventPayload';
+export { aveReachBarChartDayEventPayload } from './aveReachBarChartDayEventPayload';
 export { ratingPercentLineChartTimebandChannelPayload } from './ratingPercentLineChartTimebandChannelPayload';
 export { ratingReachPercentMixedChartTimebandPayload } from './ratingReachPercentMixedChartTimebandPayload';

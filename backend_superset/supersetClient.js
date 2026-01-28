@@ -1,4 +1,5 @@
 const cheerio = require('cheerio');
+const PQueue = require('p-queue').default;
 
 class SupersetClient {
   constructor(baseUrl, username, password) {
@@ -10,16 +11,26 @@ class SupersetClient {
       sessionCookie: null,
       expiresAt: null
     };
+    
+    // Promise lock để tránh race condition
+    this.authPromise = null;
+    
+    // Rate limiter: max 40 requests/giây
+    this.requestQueue = new PQueue({
+      concurrency: 50,        // Max 50 requests đồng thời
+      interval: 1000,        // 1 giây
+      intervalCap: 50        // Max 50 requests/giây
+    });
   }
 
-  // Lấy credentials (tự động cache)
+  // Lấy credentials với Promise lock
   async getAuthCredentials() {
     const now = Date.now();
     
-    // Kiểm tra cache
-    if (this.cachedCredentials.csrfToken && 
-        this.cachedCredentials.sessionCookie && 
-        this.cachedCredentials.expiresAt && 
+    // Kiểm tra cache còn hạn
+    if (this.cachedCredentials.csrfToken &&
+        this.cachedCredentials.sessionCookie &&
+        this.cachedCredentials.expiresAt &&
         now < this.cachedCredentials.expiresAt) {
       console.log('✓ Sử dụng credentials từ cache');
       return {
@@ -28,7 +39,30 @@ class SupersetClient {
       };
     }
 
+    // Nếu đang fetch credentials, đợi promise cũ
+    if (this.authPromise) {
+      console.log('⏳ Đang đợi credentials được fetch...');
+      return this.authPromise;
+    }
+
+    // Tạo promise mới và lưu lại
+    this.authPromise = this._fetchCredentials()
+      .then(credentials => {
+        this.authPromise = null; // Clear promise sau khi xong
+        return credentials;
+      })
+      .catch(error => {
+        this.authPromise = null; // Clear promise khi lỗi
+        throw error;
+      });
+
+    return this.authPromise;
+  }
+
+  // Fetch credentials thực tế (private method)
+  async _fetchCredentials() {
     console.log('→ Đang lấy credentials mới...');
+    const now = Date.now();
     
     try {
       // Bước 1: GET trang login
@@ -36,13 +70,11 @@ class SupersetClient {
         method: 'GET',
         redirect: 'follow'
       });
-
       const loginPageHtml = await loginPageResponse.text();
       const cookiesFromGet = loginPageResponse.headers.getSetCookie();
-      
       const $ = cheerio.load(loginPageHtml);
       const csrfToken = $('input#csrf_token').val();
-      
+
       if (!csrfToken) {
         throw new Error('Không tìm thấy CSRF token');
       }
@@ -81,7 +113,6 @@ class SupersetClient {
           'Cookie': sessionCookie
         }
       });
-
       const csrfData = await csrfResponse.json();
       const finalCsrfToken = csrfData.result;
 
@@ -93,90 +124,108 @@ class SupersetClient {
       };
 
       console.log('✓ Đã lấy credentials mới thành công');
-      
       return {
         csrfToken: finalCsrfToken,
         sessionCookie: sessionCookie
       };
-
     } catch (error) {
       console.error('Lỗi khi lấy credentials:', error);
       throw error;
     }
   }
 
-  // Hàm gọi API chính - chỉ cần truyền url và payload
+  // POST với rate limiting
   async post(url, payload) {
-    try {
-      const { csrfToken, sessionCookie } = await this.getAuthCredentials();
-      
-      const res = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'accept': 'application/json',
-          'content-type': 'application/json',
-          'x-csrftoken': csrfToken,
-          'cookie': sessionCookie,
-          'referer': `${this.baseUrl}/superset/dashboard/`
-        },
-        body: JSON.stringify(payload)
-      });
+    return this.requestQueue.add(async () => {
+      try {
+        const { csrfToken, sessionCookie } = await this.getAuthCredentials();
 
-      if (!res.ok) {
-        const text = await res.text();
-        
-        // Nếu lỗi CSRF/401, xóa cache và thử lại 1 lần
-        if (text.includes('CSRF') || text.includes('401') || res.status === 401) {
-          console.log('⚠ Token hết hạn, làm mới và thử lại...');
-          this.cachedCredentials = { csrfToken: null, sessionCookie: null, expiresAt: null };
-          return this.post(url, payload); // Retry
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'accept': 'application/json',
+            'content-type': 'application/json',
+            'x-csrftoken': csrfToken,
+            'cookie': sessionCookie,
+            'referer': `${this.baseUrl}/superset/dashboard/`
+          },
+          body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) {
+          const text = await res.text();
+          
+          // Nếu lỗi 401/CSRF, xóa cache và retry SAU 1 DELAY
+          if (text.includes('CSRF') || text.includes('401') || res.status === 401) {
+            console.log('⚠ Token hết hạn, làm mới...');
+            this.cachedCredentials = { csrfToken: null, sessionCookie: null, expiresAt: null };
+            
+            // Delay 500ms trước khi retry để tránh spam
+            await new Promise(resolve => setTimeout(resolve, 500));
+            return this.post(url, payload);
+          }
+          
+          // Nếu lỗi 429, delay lâu hơn
+          if (res.status === 429) {
+            console.log('⚠ Rate limit, chờ 2s...');
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            return this.post(url, payload);
+          }
+
+          throw new Error(`API Error: ${res.status} - ${text}`);
         }
-        
-        throw new Error(`API Error: ${res.status} - ${text}`);
+
+        return await res.json();
+      } catch (error) {
+        console.error('Lỗi khi gọi API:', error.message);
+        throw error;
       }
-
-      return await res.json();
-
-    } catch (error) {
-      console.error('Lỗi khi gọi API:', error.message);
-      throw error;
-    }
+    });
   }
 
-  // Hàm GET nếu cần
+  // GET với rate limiting
   async get(url) {
-    try {
-      const { csrfToken, sessionCookie } = await this.getAuthCredentials();
-      
-      const res = await fetch(url, {
-        method: 'GET',
-        headers: {
-          'accept': 'application/json',
-          'x-csrftoken': csrfToken,
-          'cookie': sessionCookie
+    return this.requestQueue.add(async () => {
+      try {
+        const { csrfToken, sessionCookie } = await this.getAuthCredentials();
+
+        const res = await fetch(url, {
+          method: 'GET',
+          headers: {
+            'accept': 'application/json',
+            'x-csrftoken': csrfToken,
+            'cookie': sessionCookie
+          }
+        });
+
+        if (!res.ok) {
+          const text = await res.text();
+          
+          if (res.status === 429) {
+            console.log('⚠ Rate limit, chờ 2s...');
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            return this.get(url);
+          }
+          
+          throw new Error(`API Error: ${res.status} - ${text}`);
         }
-      });
 
-      if (!res.ok) {
-        const text = await res.text();
-        throw new Error(`API Error: ${res.status} - ${text}`);
+        return await res.json();
+      } catch (error) {
+        console.error('Lỗi khi gọi API:', error.message);
+        throw error;
       }
-
-      return await res.json();
-
-    } catch (error) {
-      console.error('Lỗi khi gọi API:', error.message);
-      throw error;
-    }
+    });
   }
 
-  // Xóa cache (logout)
+  // Xóa cache
   clearCache() {
     this.cachedCredentials = {
       csrfToken: null,
       sessionCookie: null,
       expiresAt: null
     };
+    this.authPromise = null;
     console.log('✓ Đã xóa cache credentials');
   }
 }

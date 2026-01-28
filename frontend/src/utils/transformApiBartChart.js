@@ -8,14 +8,17 @@ export const transformBarChartData = (apiData) => {
     return null;
   }
 
-  // 1. Extract labels (channel names)
-  const labels = apiData.map(item => item.channel_name_tvd);
-
-  // 2. Get all metric keys (exclude channel_name_tvd)
+  // 1. Get the first key name dynamically (as label key)
   const firstItem = apiData[0];
-  const metricKeys = Object.keys(firstItem).filter(key => key !== 'channel_name_tvd');
+  const labelKey = Object.keys(firstItem)[0];
 
-  // 3. Build series array
+  // 2. Extract labels using the first key
+  const labels = apiData.map(item => item[labelKey]);
+
+  // 3. Get all metric keys (exclude the first key which is label)
+  const metricKeys = Object.keys(firstItem).filter(key => key !== labelKey);
+
+  // 4. Build series array
   const series = metricKeys.map(metricName => ({
     name: metricName,
     data: apiData.map(item => item[metricName] || 0)

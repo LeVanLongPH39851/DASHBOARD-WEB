@@ -19,6 +19,12 @@ export const CUSTOM_CHART = {
         aveReachNameChart: 'Ave.Reach by Market',
         orientation: 'horizontal'
     },
+    barChartDayEvent: {
+        colors: [variableCustoms.colorLive, variableCustoms.colorTimeshift],
+        ratingNameChart: 'Rating Day by Market',
+        aveReachNameChart: 'Ave.Reach Day by Market',
+        orientation: ''
+    },
     fontWeight: {
         legend: 500, tooltip: 500, axisLabel: 600, dataLabel: 700
     }

@@ -1,6 +1,7 @@
-import React, { memo } from 'react';
+import React, { memo, useRef } from 'react';
 import ReactECharts from 'echarts-for-react';
 import InconInfor from '../layouts/components/IconInfor';
+
 
 const BarChart = ({
   data,
@@ -9,9 +10,14 @@ const BarChart = ({
   fontFamily,
   colors,
   fontWeight,
-  description
+  description,
+  orientation = 'horizontal' // 'horizontal' hoặc 'vertical'
 }) => {
   const { labels = [], series = [] } = data;
+  const chartRef = useRef(null);
+
+  const isHorizontal = orientation === 'horizontal';
+
 
   // SORT BY TOTAL
   const sorted = React.useMemo(() => {
@@ -26,29 +32,24 @@ const BarChart = ({
       .sort((a, b) => b.total - a.total);
   }, [labels, series]);
 
+
   const sortedLabels = sorted.map(i => i.label);
   const sortedSeries = series.map(s => ({
     ...s,
     data: sorted.map(i => s.data?.[i.index] || 0)
   }));
 
-  // ECHARTS OPTION - FONT TO HƠN + TOOLTIP TRẮNG
+
+  // ECHARTS OPTION
   const option = {
-    // textStyle: { 
-    //   fontFamily, 
-    //   fontWeight: 400,
-    //   fontSize: 14  // Font chung tăng từ 12 → 14
-    // },
-    
-    // TOOLTIP NỀN TRẮNG
     tooltip: {
       trigger: 'axis',
       axisPointer: { type: 'shadow', shadowStyle: { opacity: 0.1 } },
-      backgroundColor: 'rgba(255,255,255,0.95)',  // ← TRẮNG
+      backgroundColor: 'rgba(255,255,255,0.95)',
       borderColor: '#e5e7eb',
       borderWidth: 1,
       textStyle: { 
-        fontSize: fontSize.tooltip,  // 15px
+        fontSize: fontSize.tooltip,
         color: '#1f2937',
         fontWeight: fontWeight.tooltip
       },
@@ -75,59 +76,96 @@ const BarChart = ({
       }
     },
 
+
     legend: {
       bottom: 10,
       itemWidth: 14,
       itemHeight: 14,
       textStyle: { 
-        fontSize: fontSize.legend,  // 16px
+        fontSize: fontSize.legend,
         color: '#64748b',
         fontWeight: fontWeight.legend
       }
     },
 
+
     grid: {
       left: '3%',
-      right: '12%',
-      bottom: '10%',
+      right: isHorizontal ? '12%' : '4%',
+      bottom: isHorizontal ? '10%' : '15%',
       top: 20,
       containLabel: true
     },
 
-    xAxis: {
+
+    xAxis: isHorizontal ? {
       type: 'value',
       axisLine: { show: true, lineStyle: { color: '#d1d5db' } },
       axisTick: { show: false },
       splitLine: {
         show: true,
         lineStyle: {
-          color: '#e5e7eb',   // xám nhạt đẹp
-          type: 'dashed',     // dashed hoặc solid
+          color: '#e5e7eb',
+          type: 'dashed',
           width: 1,
           opacity: 1
         }
       },
       axisLabel: {
         formatter: v => v.toLocaleString(),
-        fontSize: fontSize.axisLabel,  // 14px
+        fontSize: fontSize.axisLabel,
         color: '#6b7280',
         fontWeight: fontWeight.axisLabel
       }
+    } : {
+      type: 'category',
+      data: sortedLabels,
+      axisLine: { show: true, lineStyle: { color: '#d1d5db' } },
+      axisTick: { show: false },
+      axisLabel: { 
+        fontSize: fontSize.axisLabel,
+        color: '#374151',
+        fontWeight: fontWeight.axisLabel,
+        rotate: 45,
+        interval: 0
+      },
+      splitLine: { show: false }
     },
 
-    yAxis: {
+
+    yAxis: isHorizontal ? {
       type: 'category',
       data: sortedLabels,
       inverse: true,
       axisLine: { show: false },
       axisTick: { show: false },
       axisLabel: { 
-        fontSize: fontSize.axisLabel,  // 14px
+        fontSize: fontSize.axisLabel,
         color: '#374151',
         fontWeight: fontWeight.axisLabel
       },
       splitLine: { show: false }
+    } : {
+      type: 'value',
+      axisLine: { show: false },
+      axisTick: { show: false },
+      splitLine: {
+        show: true,
+        lineStyle: {
+          color: '#e5e7eb',
+          type: 'dashed',
+          width: 1,
+          opacity: 1
+        }
+      },
+      axisLabel: {
+        formatter: v => v.toLocaleString(),
+        fontSize: fontSize.axisLabel,
+        color: '#6b7280',
+        fontWeight: fontWeight.axisLabel
+      }
     },
+
 
     series: sortedSeries.map((s, idx) => ({
       ...s,
@@ -146,34 +184,65 @@ const BarChart = ({
           opacity: 0.9
         }
       },
-      label: idx === sortedSeries.length - 1
-        ? {
-            show: true,
-            position: 'right',
-            offset: [12, 0],
-            formatter: params => {
-              const index = params.dataIndex;
-              const total = sortedSeries.reduce(
-                (sum, ss) => sum + (ss.data[index] || 0),
-                0
-              );
-              return total.toLocaleString();
-            },
-            fontSize: fontSize.dataLabel,  // 14px
-            fontWeight: fontWeight.dataLabel,
-            fontFamily,
-            color: '#1e293b',
-            backgroundColor: 'rgba(255,255,255,0.95)',
-            borderRadius: 6,
-            padding: [4, 10],
-            borderWidth: 1,
-            borderColor: 'rgba(0,0,0,0.1)',
-            shadowBlur: 4,
-            shadowColor: 'rgba(0,0,0,0.1)'
+      label: {
+        show: true,
+        position: isHorizontal ? 'right' : 'top',
+        offset: isHorizontal ? [12, 0] : [0, -10],
+        formatter: (params) => {
+          const dataIndex = params.dataIndex;
+          const seriesIndex = params.seriesIndex;
+          
+          // Lấy chart instance
+          const chartInstance = chartRef.current?.getEchartsInstance();
+          if (!chartInstance) return '';
+          
+          // Tính tổng của các series đang hiển thị
+          let total = 0;
+          let highestVisibleIndex = -1;
+          
+          // Lấy option hiện tại để check series nào đang visible
+          const currentOption = chartInstance.getOption();
+          const legendSelected = currentOption.legend?.[0]?.selected || {};
+          
+          // Duyệt từ cuối lên để tìm series cao nhất đang visible
+          for (let i = sortedSeries.length - 1; i >= 0; i--) {
+            const seriesName = sortedSeries[i].name;
+            // Nếu không có trong legendSelected hoặc = true thì đang visible
+            if (legendSelected[seriesName] !== false) {
+              highestVisibleIndex = i;
+              break;
+            }
           }
-        : { show: false }
+          
+          // Tính tổng các series visible
+          sortedSeries.forEach((ss, i) => {
+            const seriesName = ss.name;
+            if (legendSelected[seriesName] !== false) {
+              total += ss.data[dataIndex] || 0;
+            }
+          });
+          
+          // Chỉ hiện label nếu đây là series cao nhất đang visible
+          if (seriesIndex === highestVisibleIndex && total > 0) {
+            return total.toLocaleString();
+          }
+          return '';
+        },
+        fontSize: fontSize.dataLabel,
+        fontWeight: fontWeight.dataLabel,
+        fontFamily,
+        color: '#1e293b',
+        backgroundColor: 'rgba(255,255,255,0.95)',
+        borderRadius: 6,
+        padding: [4, 10],
+        borderWidth: 1,
+        borderColor: 'rgba(0,0,0,0.1)',
+        shadowBlur: 4,
+        shadowColor: 'rgba(0,0,0,0.1)'
+      }
     }))
   };
+
 
   return (
     <div className="bg-background-light rounded-xl">
@@ -181,6 +250,7 @@ const BarChart = ({
         <span>Rating by Market</span><InconInfor description={description} />
       </div>
       <ReactECharts 
+        ref={chartRef}
         option={option} 
         style={{ height, width: '100%' }}
         opts={{
@@ -191,5 +261,6 @@ const BarChart = ({
     </div>
   );
 };
+
 
 export default React.memo(BarChart);

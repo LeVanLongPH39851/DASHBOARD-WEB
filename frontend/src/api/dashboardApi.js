@@ -4,7 +4,9 @@ import {
   aveReachNumberChartPayload,
   ratingPercentNumberChartPayload,
   aveReachPercentNumberChartPayload,
-  ratingBarChartChannelEventPayload
+  ratingBarChartChannelEventPayload,
+  ratingPercentLineChartTimebandChannelPayload,
+  ratingReachPercentMixedChartTimebandPayload
 } from './payloads';
 
 const apiRoute = '/api/superset'
@@ -23,3 +25,9 @@ export const getAveReachPercentNumberChart = () =>
 
 export const getRatingBarChartChannelEvent = () =>
   axiosClient.post(apiRoute, ratingBarChartChannelEventPayload)
+
+export const getRatingPercentLineChartTimebandChannel = () =>
+  axiosClient.post(apiRoute, ratingPercentLineChartTimebandChannelPayload)
+
+export const getRatingReachPercentMixedChartTimeband = () =>
+  axiosClient.post(apiRoute, ratingReachPercentMixedChartTimebandPayload)

@@ -12,7 +12,7 @@ import { useDashboardData } from '../hooks/useDashboardData';
 
 const Dashboard = () => {
   const { ratingNumberData, aveReachNumberData, ratingPercentNumberData, aveReachPercentNumberData,
-          ratingBarChartChannelEventData,
+          ratingBarChannelEventData,
           isLoading, hasError } = useDashboardData();
 
   if (isLoading) return <Loading />;
@@ -23,7 +23,7 @@ const Dashboard = () => {
     'aveReachNumber': aveReachNumberData,
     'ratingPercentNumber': ratingPercentNumberData,
     'aveReachPercentNumber': aveReachPercentNumberData,
-    'ratingBarChartChannelEventData': ratingBarChartChannelEventData,
+    'ratingBarChannelEventData': ratingBarChannelEventData,
   }
 
   return (
@@ -45,7 +45,7 @@ const Dashboard = () => {
         </div>
         <div className='flex'>
           <div className='w-[60%]'>
-          <BarChart data={transformBarChartData(ratingBarChartChannelEventData.data)}
+          <BarChart data={transformBarChartData(ratingBarChannelEventData.data)}
                     height={CUSTOM_CHART.barChart.height}
                     fontSize={CUSTOM_CHART.barChart.fontSize}
                     fontFamily={`${CUSTOM_CHART.allChart.fontFamily}`}

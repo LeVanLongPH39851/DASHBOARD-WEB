@@ -12,7 +12,7 @@ import { useDashboardData } from '../hooks/useDashboardData';
 
 const Dashboard = () => {
   const { ratingNumberData, aveReachNumberData, ratingPercentNumberData, aveReachPercentNumberData,
-          ratingBarChannelEventData,
+          ratingBarChannelEventData, ratingPercentLineTimebandChannelData, ratingReachPercentMixedTimebandData,
           isLoading, hasError } = useDashboardData();
 
   if (isLoading) return <Loading />;

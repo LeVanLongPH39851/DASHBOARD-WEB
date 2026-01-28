@@ -4,7 +4,7 @@ import { useAveReachNumberChartReturnApi } from './results/useAveReachNumberChar
 import { useRatingPercentNumberChartReturnApi } from './results/useRatingPercentNumberChartReturnApi';
 import { useAveReachPercentNumberChartReturnApi } from './results/useAveReachPercentNumberChartReturnApi';
 import { useRatingBarChartChannelEventReturnApi } from './results/useRatingBarChartChannelEventReturnApi';
-import { useRatingReachPercentLineChartReturnApi } from './results/useRatingReachPercentLineChartReturnApi';
+import { useRatingPercentLineChartTimebandChannelReturnApi } from './results/useRatingPercentLineChartTimebandChannelReturnApi';
 import { useRatingReachPercentMixedChartTimebandReturnApi } from './results/useRatingReachPercentMixedChartTimebandReturnApi';
 
 const HOOKS = [
@@ -13,7 +13,7 @@ const HOOKS = [
   { hook: useRatingPercentNumberChartReturnApi, dataKey: 'ratingPercentNumberData' },
   { hook: useAveReachPercentNumberChartReturnApi, dataKey: 'aveReachPercentNumberData' },
   { hook: useRatingBarChartChannelEventReturnApi, dataKey: 'ratingBarChannelEventData' },
-  { hook: useRatingReachPercentLineChartReturnApi, dataKey: 'ratingReachPercentLineData' },
+  { hook: useRatingPercentLineChartTimebandChannelReturnApi, dataKey: 'ratingPercentLineChartTimebandChannel' },
   { hook: useRatingReachPercentMixedChartTimebandReturnApi, dataKey: 'ratingReachPercentMixedTimebandData' }
 ];
 

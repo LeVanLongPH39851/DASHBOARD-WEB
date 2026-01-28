@@ -14,7 +14,10 @@ export const CUSTOM_CHART = {
         legend: 16, tooltip: 15, axisLabel: 14, dataLabel: 14
     },
     barChartChannelEvent: {
-        colors: [variableCustoms.colorLive, variableCustoms.colorTimeshift]
+        colors: [variableCustoms.colorLive, variableCustoms.colorTimeshift],
+        ratingNameChart: 'Rating by Market',
+        aveReachNameChart: 'Ave.Reach by Market',
+        orientation: 'horizontal'
     },
     fontWeight: {
         legend: 500, tooltip: 500, axisLabel: 600, dataLabel: 700

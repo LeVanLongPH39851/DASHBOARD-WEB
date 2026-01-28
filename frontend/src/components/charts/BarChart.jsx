@@ -1,6 +1,6 @@
 import React, { memo, useRef } from 'react';
 import ReactECharts from 'echarts-for-react';
-import InconInfor from '../layouts/components/IconInfor';
+import Label from '../layouts/components/NameChart';
 
 
 const BarChart = ({
@@ -10,8 +10,9 @@ const BarChart = ({
   fontFamily,
   colors,
   fontWeight,
+  nameChart,
   description,
-  orientation = 'horizontal' // 'horizontal' hoặc 'vertical'
+  orientation
 }) => {
   const { labels = [], series = [] } = data;
   const chartRef = useRef(null);
@@ -232,11 +233,13 @@ const BarChart = ({
         fontWeight: fontWeight.dataLabel,
         fontFamily,
         color: '#1e293b',
-        backgroundColor: 'rgba(255,255,255,0.95)',
+        // backgroundColor: 'rgba(255,255,255,0.95)',
+        backgroundColor: 'transparent',
         borderRadius: 6,
         padding: [4, 10],
         borderWidth: 1,
-        borderColor: 'rgba(0,0,0,0.1)',
+        // borderColor: 'rgba(0,0,0,0.1)',
+        borderColor: 'transparent',
         shadowBlur: 4,
         shadowColor: 'rgba(0,0,0,0.1)'
       }
@@ -246,9 +249,7 @@ const BarChart = ({
 
   return (
     <div className="bg-background-light rounded-xl">
-      <div className='p-6 text-2xl font-bold tracking-[-4%] leading-[100%] text-color-dark flex items-center'>
-        <span>Rating by Market</span><InconInfor description={description} />
-      </div>
+      <Label nameChart={nameChart} description={description}/>
       <ReactECharts 
         ref={chartRef}
         option={option} 

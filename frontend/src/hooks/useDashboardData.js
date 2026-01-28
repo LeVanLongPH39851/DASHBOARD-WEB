@@ -1,20 +1,17 @@
 import { useEffect, useRef } from 'react';
-import { useRatingNumberChartReturnApi } from './results/useRatingNumberChartReturnApi';
-import { useAveReachNumberChartReturnApi } from './results/useAveReachNumberChartReturnApi';
-import { useRatingPercentNumberChartReturnApi } from './results/useRatingPercentNumberChartReturnApi';
-import { useAveReachPercentNumberChartReturnApi } from './results/useAveReachPercentNumberChartReturnApi';
-import { useRatingBarChartChannelEventReturnApi } from './results/useRatingBarChartChannelEventReturnApi';
-import { useRatingPercentLineChartTimebandChannelReturnApi } from './results/useRatingPercentLineChartTimebandChannelReturnApi';
-import { useRatingReachPercentMixedChartTimebandReturnApi } from './results/useRatingReachPercentMixedChartTimebandReturnApi';
+import * as useCallApi from './useCallApi';
 
 const HOOKS = [
-  { hook: useRatingNumberChartReturnApi, dataKey: 'ratingNumberData' },
-  { hook: useAveReachNumberChartReturnApi, dataKey: 'aveReachNumberData' },
-  { hook: useRatingPercentNumberChartReturnApi, dataKey: 'ratingPercentNumberData' },
-  { hook: useAveReachPercentNumberChartReturnApi, dataKey: 'aveReachPercentNumberData' },
-  { hook: useRatingBarChartChannelEventReturnApi, dataKey: 'ratingBarChannelEventData' },
-  { hook: useRatingPercentLineChartTimebandChannelReturnApi, dataKey: 'ratingPercentLineChartTimebandChannel' },
-  { hook: useRatingReachPercentMixedChartTimebandReturnApi, dataKey: 'ratingReachPercentMixedTimebandData' }
+  { hook: useCallApi.useRatingNumberChartReturnApi, dataKey: 'ratingNumberData' },
+  { hook: useCallApi.useAveReachNumberChartReturnApi, dataKey: 'aveReachNumberData' },
+  { hook: useCallApi.useRatingPercentNumberChartReturnApi, dataKey: 'ratingPercentNumberData' },
+  { hook: useCallApi.useAveReachPercentNumberChartReturnApi, dataKey: 'aveReachPercentNumberData' },
+  { hook: useCallApi.useRatingBarChartChannelEventReturnApi, dataKey: 'ratingBarChannelEventData' },
+  { hook: useCallApi.useAveReachBarChartChannelEventReturnApi, dataKey: 'aveReachBarChannelEventData' },
+  { hook: useCallApi.useRatingBarChartDayEventReturnApi, dataKey: 'ratingBarDayEventData' },
+  { hook: useCallApi.useAveReachBarChartDayEventReturnApi, dataKey: 'aveReachBarDayEventData' },
+  { hook: useCallApi.useRatingPercentLineChartTimebandChannelReturnApi, dataKey: 'ratingPercentLineTimebandChannelData' },
+  { hook: useCallApi.useRatingReachPercentMixedChartTimebandReturnApi, dataKey: 'ratingReachPercentMixedTimebandData' }
 ];
 
 export const useDashboardData = () => {

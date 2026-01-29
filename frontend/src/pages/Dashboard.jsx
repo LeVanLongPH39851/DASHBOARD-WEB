@@ -11,7 +11,8 @@ import BarChart from '../components/charts/BarChart';
 import { useDashboardData } from '../hooks/useDashboardData';
 import ChildTabs from '../components/layouts/components/ChildTabs';
 import { CUSTOM_TAB } from '../utils/customTab';
-
+import TableChart from '../components/charts/TableChart';
+import { transformTableChartData } from '../utils/transformApiTableChart';
 const Dashboard = () => {
   const dashboard = useDashboardData();
 
@@ -43,13 +44,13 @@ const Dashboard = () => {
             />
           ))}
         </div>
-        <div className='flex gap-6'>
+        <div className='flex gap-6 pb-6'>
           <div className='w-[60%]'>
             <ChildTabs tabs={[
               {id: CUSTOM_TAB.childTabRatingReach.rating.id, label: CUSTOM_TAB.childTabRatingReach.rating.label,
               content: (
                 <BarChart 
-                  data={transformBarChartData(dashboard.ratingBarChannelEventData.data)}
+                  data={transformBarChartData(dashboard.ratingBarChannelEventData.data, dashboard.ratingBarChannelEventData.colnames)}
                   height={CUSTOM_CHART.barChart.height}
                   fontSize={CUSTOM_CHART.barChart.fontSize}
                   fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -63,7 +64,7 @@ const Dashboard = () => {
               {id: CUSTOM_TAB.childTabRatingReach.ave_reach.id, label: CUSTOM_TAB.childTabRatingReach.ave_reach.label,
                 content: (
                   <BarChart 
-                    data={transformBarChartData(dashboard.aveReachBarChannelEventData.data)}
+                    data={transformBarChartData(dashboard.aveReachBarChannelEventData.data, dashboard.aveReachBarChannelEventData.colnames)}
                     height={CUSTOM_CHART.barChart.height}
                     fontSize={CUSTOM_CHART.barChart.fontSize}
                     fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -81,7 +82,7 @@ const Dashboard = () => {
               {id: CUSTOM_TAB.childTabRatingReach.rating.id, label: CUSTOM_TAB.childTabRatingReach.rating.label,
               content: (
                 <BarChart 
-                  data={transformBarChartData(dashboard.ratingBarDayEventData.data)}
+                  data={transformBarChartData(dashboard.ratingBarDayEventData.data, dashboard.ratingBarDayEventData.colnames)}
                   height={CUSTOM_CHART.barChart.height}
                   fontSize={CUSTOM_CHART.barChart.fontSize}
                   fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -95,7 +96,7 @@ const Dashboard = () => {
               {id: CUSTOM_TAB.childTabRatingReach.ave_reach.id, label: CUSTOM_TAB.childTabRatingReach.ave_reach.label,
                 content: (
                   <BarChart 
-                    data={transformBarChartData(dashboard.aveReachBarDayEventData.data)}
+                    data={transformBarChartData(dashboard.aveReachBarDayEventData.data, dashboard.aveReachBarDayEventData.colnames)}
                     height={CUSTOM_CHART.barChart.height}
                     fontSize={CUSTOM_CHART.barChart.fontSize}
                     fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -108,6 +109,136 @@ const Dashboard = () => {
                 )}
               ]} />
           </div>
+        </div>
+        <div className='w-full flex gap-6 pb-6'>
+          <div className='w-[60%]'>
+          <TableChart data={transformTableChartData(dashboard.allTableChannelData.data, dashboard.allTableChannelData.colnames)}/>
+          </div>
+          {/* <div className='w-[40%]'>
+          <TableChart data={transformTableChartData(dashboard.ratingReachPercentTableRegionalData.data, dashboard.ratingReachPercentTableRegionalData.colnames)}/>
+          </div> */}
+        </div>
+        <div className='w-full grid grid-cols-2 gap-6 pb-6'>
+            <div>
+              <ChildTabs tabs={[
+                {id: CUSTOM_TAB.childTabArea.regional.id, label: CUSTOM_TAB.childTabArea.regional.label,
+                content: (
+                  <BarChart 
+                    data={transformBarChartData(dashboard.ratingBarRegionalData.data, dashboard.ratingBarRegionalData.colnames)}
+                    height={CUSTOM_CHART.barChart.height}
+                    fontSize={CUSTOM_CHART.barChart.fontSize}
+                    fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                    colors={CUSTOM_CHART.barChart.barChartArea.rating.color}
+                    fontWeight={CUSTOM_CHART.barChart.fontWeight}
+                    nameChart={CUSTOM_CHART.barChart.barChartArea.rating.name}
+                    description={METRICS.rating.description}
+                    orientation={CUSTOM_CHART.barChart.barChartArea.orientation}
+                  />
+                )},
+                {id: CUSTOM_TAB.childTabArea.key_city.id, label: CUSTOM_TAB.childTabArea.key_city.label,
+                content: (
+                  <BarChart 
+                    data={transformBarChartData(dashboard.ratingBarKeyCityData.data, dashboard.ratingBarKeyCityData.colnames)}
+                    height={CUSTOM_CHART.barChart.height}
+                    fontSize={CUSTOM_CHART.barChart.fontSize}
+                    fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                    colors={CUSTOM_CHART.barChart.barChartArea.rating.color}
+                    fontWeight={CUSTOM_CHART.barChart.fontWeight}
+                    nameChart={CUSTOM_CHART.barChart.barChartArea.rating.name}
+                    description={METRICS.rating.description}
+                    orientation={CUSTOM_CHART.barChart.barChartArea.orientation}
+                  />
+                )},
+                {id: CUSTOM_TAB.childTabArea.province.id, label: CUSTOM_TAB.childTabArea.province.label,
+                content: (
+                  <BarChart 
+                    data={transformBarChartData(dashboard.ratingBarProvinceData.data, dashboard.ratingBarProvinceData.colnames)}
+                    height={CUSTOM_CHART.barChart.height}
+                    fontSize={CUSTOM_CHART.barChart.fontSize}
+                    fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                    colors={CUSTOM_CHART.barChart.barChartArea.rating.color}
+                    fontWeight={CUSTOM_CHART.barChart.fontWeight}
+                    nameChart={CUSTOM_CHART.barChart.barChartArea.rating.name}
+                    description={METRICS.rating.description}
+                    orientation={CUSTOM_CHART.barChart.barChartArea.orientation}
+                  />
+                )},
+                {id: CUSTOM_TAB.childTabArea.others.id, label: CUSTOM_TAB.childTabArea.others.label,
+                content: (
+                  <BarChart 
+                    data={transformBarChartData(dashboard.ratingBarOthersData.data, dashboard.ratingBarOthersData.colnames)}
+                    height={CUSTOM_CHART.barChart.height}
+                    fontSize={CUSTOM_CHART.barChart.fontSize}
+                    fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                    colors={CUSTOM_CHART.barChart.barChartArea.rating.color}
+                    fontWeight={CUSTOM_CHART.barChart.fontWeight}
+                    nameChart={CUSTOM_CHART.barChart.barChartArea.rating.name}
+                    description={METRICS.rating.description}
+                    orientation={CUSTOM_CHART.barChart.barChartArea.orientation}
+                  />
+                )}
+                ]} />
+            </div>
+            <div>
+              <ChildTabs tabs={[
+                {id: CUSTOM_TAB.childTabArea.regional.id, label: CUSTOM_TAB.childTabArea.regional.label,
+                content: (
+                  <BarChart 
+                    data={transformBarChartData(dashboard.aveReachBarRegionalData.data, dashboard.aveReachBarRegionalData.colnames)}
+                    height={CUSTOM_CHART.barChart.height}
+                    fontSize={CUSTOM_CHART.barChart.fontSize}
+                    fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                    colors={CUSTOM_CHART.barChart.barChartArea.aveReach.color}
+                    fontWeight={CUSTOM_CHART.barChart.fontWeight}
+                    nameChart={CUSTOM_CHART.barChart.barChartArea.aveReach.name}
+                    description={METRICS.ave_reach.description}
+                    orientation={CUSTOM_CHART.barChart.barChartArea.orientation}
+                  />
+                )},
+                {id: CUSTOM_TAB.childTabArea.key_city.id, label: CUSTOM_TAB.childTabArea.key_city.label,
+                content: (
+                  <BarChart 
+                    data={transformBarChartData(dashboard.aveReachBarKeyCityData.data, dashboard.aveReachBarKeyCityData.colnames)}
+                    height={CUSTOM_CHART.barChart.height}
+                    fontSize={CUSTOM_CHART.barChart.fontSize}
+                    fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                    colors={CUSTOM_CHART.barChart.barChartArea.aveReach.color}
+                    fontWeight={CUSTOM_CHART.barChart.fontWeight}
+                    nameChart={CUSTOM_CHART.barChart.barChartArea.aveReach.name}
+                    description={METRICS.ave_reach.description}
+                    orientation={CUSTOM_CHART.barChart.barChartArea.orientation}
+                  />
+                )},
+                {id: CUSTOM_TAB.childTabArea.province.id, label: CUSTOM_TAB.childTabArea.province.label,
+                content: (
+                  <BarChart 
+                    data={transformBarChartData(dashboard.aveReachBarProvinceData.data, dashboard.aveReachBarProvinceData.colnames)}
+                    height={CUSTOM_CHART.barChart.height}
+                    fontSize={CUSTOM_CHART.barChart.fontSize}
+                    fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                    colors={CUSTOM_CHART.barChart.barChartArea.aveReach.color}
+                    fontWeight={CUSTOM_CHART.barChart.fontWeight}
+                    nameChart={CUSTOM_CHART.barChart.barChartArea.aveReach.name}
+                    description={METRICS.ave_reach.description}
+                    orientation={CUSTOM_CHART.barChart.barChartArea.orientation}
+                  />
+                )},
+                {id: CUSTOM_TAB.childTabArea.others.id, label: CUSTOM_TAB.childTabArea.others.label,
+                content: (
+                  <BarChart 
+                    data={transformBarChartData(dashboard.aveReachBarOthersData.data, dashboard.aveReachBarOthersData.colnames)}
+                    height={CUSTOM_CHART.barChart.height}
+                    fontSize={CUSTOM_CHART.barChart.fontSize}
+                    fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                    colors={CUSTOM_CHART.barChart.barChartArea.aveReach.color}
+                    fontWeight={CUSTOM_CHART.barChart.fontWeight}
+                    nameChart={CUSTOM_CHART.barChart.barChartArea.aveReach.name}
+                    description={METRICS.ave_reach.description}
+                    orientation={CUSTOM_CHART.barChart.barChartArea.orientation}
+                  />
+                )}
+                ]} />
+            </div>
         </div>
       </div>
     </div>

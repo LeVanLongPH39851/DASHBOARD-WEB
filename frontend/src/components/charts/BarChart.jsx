@@ -4,6 +4,7 @@ import Label from '../layouts/components/NameChart';
 
 
 
+
 const BarChart = ({
   data,
   height,
@@ -13,13 +14,17 @@ const BarChart = ({
   fontWeight,
   nameChart,
   description,
-  orientation
+  orientation,
+  enableZoom = true, // Option bật/tắt zoom
+  maxVisibleItems = 11 // Số items hiển thị tối đa khi zoom bật
 }) => {
   const { labels = [], series = [] } = data;
   const chartRef = useRef(null);
 
 
+
   const isHorizontal = orientation === 'horizontal';
+
 
 
 
@@ -38,11 +43,20 @@ const BarChart = ({
 
 
 
+
   const sortedLabels = sorted.map(i => i.label);
   const sortedSeries = series.map(s => ({
     ...s,
     data: sorted.map(i => s.data?.[i.index] || 0)
   }));
+
+
+  // Tính toán có cần dataZoom hay không
+  const needsScroll = enableZoom && sortedLabels.length > maxVisibleItems;
+  const zoomEndPercent = needsScroll 
+    ? Math.round((maxVisibleItems / sortedLabels.length) * 100) 
+    : 100;
+
 
 
 
@@ -57,7 +71,8 @@ const BarChart = ({
       textStyle: { 
         fontSize: fontSize.tooltip,
         color: '#1f2937',
-        fontWeight: fontWeight.tooltip
+        fontWeight: fontWeight.tooltip,
+        fontFamily: fontFamily
       },
       formatter: params => {
         const total = params.reduce((sum, p) => sum + p.value, 0);
@@ -83,9 +98,54 @@ const BarChart = ({
     },
 
 
+    // Thêm dataZoom nếu enableZoom = true
+    dataZoom: needsScroll ? [
+      {
+        type: 'slider',
+        show: true,
+        [isHorizontal ? 'yAxisIndex' : 'xAxisIndex']: 0,
+        start: 0,
+        end: zoomEndPercent,
+        [isHorizontal ? 'right' : 'bottom']: isHorizontal ? 0 : 50,
+        [isHorizontal ? 'width' : 'height']: 20,
+        brushSelect: false,
+        handleSize: '80%',
+        handleStyle: {
+          color: '#3b82f6'
+        },
+        textStyle: {
+          fontSize: 12,
+          color: '#64748b'
+        },
+        borderColor: '#e5e7eb',
+        fillerColor: 'rgba(59, 130, 246, 0.1)',
+        dataBackground: {
+          lineStyle: {
+            color: '#3b82f6',
+            opacity: 0.3
+          },
+          areaStyle: {
+            color: '#3b82f6',
+            opacity: 0.1
+          }
+        }
+      },
+      {
+        type: 'inside',
+        [isHorizontal ? 'yAxisIndex' : 'xAxisIndex']: 0,
+        start: 0,
+        end: zoomEndPercent,
+        zoomOnMouseWheel: true,
+        moveOnMouseMove: true,
+        moveOnMouseWheel: false
+      }
+    ] : [],
+
+
+
 
     legend: {
-      bottom: 10,
+      bottom: needsScroll && !isHorizontal ? 80 : 10,
       itemWidth: 14,
       itemHeight: 14,
       textStyle: { 
@@ -97,13 +157,15 @@ const BarChart = ({
 
 
 
+
     grid: {
       left: isHorizontal ? '3%' : '8%',
-      right: isHorizontal ? '12%' : '4%',
-      bottom: isHorizontal ? '10%' : '15%',
+      right: isHorizontal ? (needsScroll ? '10%' : '12%') : '4%',
+      bottom: isHorizontal ? '10%' : (needsScroll ? '120px' : '15%'),
       top: 20,
       containLabel: true
     },
+
 
 
 
@@ -143,6 +205,7 @@ const BarChart = ({
 
 
 
+
     yAxis: isHorizontal ? {
       type: 'category',
       data: sortedLabels,
@@ -176,6 +239,7 @@ const BarChart = ({
         fontWeight: fontWeight.axisLabel
       }
     },
+
 
 
 
@@ -259,6 +323,7 @@ const BarChart = ({
 
 
 
+
   return (
     <div className="bg-background-light rounded-xl">
       <Label nameChart={nameChart} description={description}/>
@@ -274,6 +339,7 @@ const BarChart = ({
     </div>
   );
 };
+
 
 
 

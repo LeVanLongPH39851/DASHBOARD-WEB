@@ -55,7 +55,7 @@ export default function ChildTabs({ tabs, defaultTab, variant = 'default' }) {
       </div>
 
       {/* Tab Content */}
-      <div className='cursor-pointer'>
+      <div>
         {tabs.find((tab) => tab.id === activeTab)?.content}
       </div>
     </div>

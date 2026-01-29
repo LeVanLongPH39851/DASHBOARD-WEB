@@ -33,6 +33,46 @@ export const useAveReachBarChartDayEventReturnApi = () => {
   return useApi(getChart.getAveReachBarChartDayEvent);
 };
 
+export const useAllTableChartChannelReturnApi = () => {
+  return useApi(getChart.getAllTableChartChannel);
+};
+
+export const useRatingBarChartRegionalReturnApi = () => {
+  return useApi(getChart.getRatingBarChartRegional);
+};
+
+export const useRatingBarChartKeyCityReturnApi = () => {
+  return useApi(getChart.getRatingBarChartKeyCity);
+};
+
+export const useRatingBarChartProvinceReturnApi = () => {
+  return useApi(getChart.getRatingBarChartProvince);
+};
+
+export const useRatingBarChartOthersReturnApi = () => {
+  return useApi(getChart.getRatingBarChartOthers);
+};
+
+export const useAveReachBarChartRegionalReturnApi = () => {
+  return useApi(getChart.getAveReachBarChartRegional);
+};
+
+export const useAveReachBarChartKeyCityReturnApi = () => {
+  return useApi(getChart.getAveReachBarChartKeyCity);
+};
+
+export const useAveReachBarChartProvinceReturnApi = () => {
+  return useApi(getChart.getAveReachBarChartProvince);
+};
+
+export const useAveReachBarChartOthersReturnApi = () => {
+  return useApi(getChart.getAveReachBarChartOthers);
+};
+
+export const useRatingReachPercentTableChartRegionalReturnApi = () => {
+  return useApi(getChart.getRatingReachPercentTableChartRegional);
+};
+
 export const useRatingPercentLineChartTimebandChannelReturnApi = () => {
   return useApi(getChart.getRatingPercentLineChartTimebandChannel);
 };

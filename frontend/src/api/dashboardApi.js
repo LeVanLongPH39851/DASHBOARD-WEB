@@ -27,6 +27,36 @@ export const getRatingBarChartDayEvent = () =>
 export const getAveReachBarChartDayEvent = () =>
   axiosClient.post(apiRoute, payloads.aveReachBarChartDayEventPayload)
 
+export const getAllTableChartChannel = () =>
+  axiosClient.post(apiRoute, payloads.allTableChartChannelPayload)
+
+export const getRatingBarChartRegional = () =>
+  axiosClient.post(apiRoute, payloads.ratingBarChartRegionalPayload)
+
+export const getRatingBarChartKeyCity = () =>
+  axiosClient.post(apiRoute, payloads.ratingBarChartKeyCityPayload)
+
+export const getRatingBarChartProvince = () =>
+  axiosClient.post(apiRoute, payloads.ratingBarChartProvincePayload)
+
+export const getRatingBarChartOthers = () =>
+  axiosClient.post(apiRoute, payloads.ratingBarChartOthersPayload)
+
+export const getAveReachBarChartRegional = () =>
+  axiosClient.post(apiRoute, payloads.aveReachBarChartRegionalPayload)
+
+export const getAveReachBarChartKeyCity = () =>
+  axiosClient.post(apiRoute, payloads.aveReachBarChartKeyCityPayload)
+
+export const getAveReachBarChartProvince = () =>
+  axiosClient.post(apiRoute, payloads.aveReachBarChartProvincePayload)
+
+export const getAveReachBarChartOthers = () =>
+  axiosClient.post(apiRoute, payloads.aveReachBarChartOthersPayload)
+
+export const getRatingReachPercentTableChartRegional = () =>
+  axiosClient.post(apiRoute, payloads.ratingReachPercentTableChartRegionalPayload)
+
 export const getRatingPercentLineChartTimebandChannel = () =>
   axiosClient.post(apiRoute, payloads.ratingPercentLineChartTimebandChannelPayload)
 

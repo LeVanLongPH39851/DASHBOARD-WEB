@@ -10,6 +10,16 @@ const HOOKS = [
   { hook: useCallApi.useAveReachBarChartChannelEventReturnApi, dataKey: 'aveReachBarChannelEventData' },
   { hook: useCallApi.useRatingBarChartDayEventReturnApi, dataKey: 'ratingBarDayEventData' },
   { hook: useCallApi.useAveReachBarChartDayEventReturnApi, dataKey: 'aveReachBarDayEventData' },
+  { hook: useCallApi.useAllTableChartChannelReturnApi, dataKey: 'allTableChannelData' },
+  { hook: useCallApi.useRatingBarChartRegionalReturnApi, dataKey: 'ratingBarRegionalData' },
+  { hook: useCallApi.useRatingBarChartKeyCityReturnApi, dataKey: 'ratingBarKeyCityData' },
+  { hook: useCallApi.useRatingBarChartProvinceReturnApi, dataKey: 'ratingBarProvinceData' },
+  { hook: useCallApi.useRatingBarChartOthersReturnApi, dataKey: 'ratingBarOthersData' },
+  { hook: useCallApi.useAveReachBarChartRegionalReturnApi, dataKey: 'aveReachBarRegionalData' },
+  { hook: useCallApi.useAveReachBarChartKeyCityReturnApi, dataKey: 'aveReachBarKeyCityData' },
+  { hook: useCallApi.useAveReachBarChartProvinceReturnApi, dataKey: 'aveReachBarProvinceData' },
+  { hook: useCallApi.useAveReachBarChartOthersReturnApi, dataKey: 'aveReachBarOthersData' },
+  { hook: useCallApi.useRatingReachPercentTableChartRegionalReturnApi, dataKey: 'ratingReachPercentTableRegionalData' },
   { hook: useCallApi.useRatingPercentLineChartTimebandChannelReturnApi, dataKey: 'ratingPercentLineTimebandChannelData' },
   { hook: useCallApi.useRatingReachPercentMixedChartTimebandReturnApi, dataKey: 'ratingReachPercentMixedTimebandData' }
 ];

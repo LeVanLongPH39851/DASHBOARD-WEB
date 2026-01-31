@@ -3,6 +3,9 @@ import * as payloads from './payloads';
 
 const apiRoute = '/api/superset'
 
+export const getRatingPercentTrendNumberChart = () =>
+  axiosClient.post(apiRoute, payloads.ratingPercentTrendNumberChartPayload)
+
 export const getRatingNumberChart = () =>
   axiosClient.post(apiRoute, payloads.ratingNumberChartPayload)
 
@@ -30,6 +33,15 @@ export const getAveReachBarChartDayEvent = () =>
 export const getAllTableChartChannel = () =>
   axiosClient.post(apiRoute, payloads.allTableChartChannelPayload)
 
+export const getAllTableChartChannelEvent = () =>
+  axiosClient.post(apiRoute, payloads.allTableChartChannelEventPayload)
+
+export const getRatingReachPercentTableChartRegional = () =>
+  axiosClient.post(apiRoute, payloads.ratingReachPercentTableChartRegionalPayload)
+
+export const getRatingReachPercentTableChartProvince = () =>
+  axiosClient.post(apiRoute, payloads.ratingReachPercentTableChartProvincePayload)
+
 export const getRatingBarChartRegional = () =>
   axiosClient.post(apiRoute, payloads.ratingBarChartRegionalPayload)
 
@@ -54,8 +66,8 @@ export const getAveReachBarChartProvince = () =>
 export const getAveReachBarChartOthers = () =>
   axiosClient.post(apiRoute, payloads.aveReachBarChartOthersPayload)
 
-export const getRatingReachPercentTableChartRegional = () =>
-  axiosClient.post(apiRoute, payloads.ratingReachPercentTableChartRegionalPayload)
+export const getRatingReachMixedChartDate = () =>
+  axiosClient.post(apiRoute, payloads.ratingReachMixedChartDatePayload)
 
 export const getRatingPercentLineChartTimebandChannel = () =>
   axiosClient.post(apiRoute, payloads.ratingPercentLineChartTimebandChannelPayload)

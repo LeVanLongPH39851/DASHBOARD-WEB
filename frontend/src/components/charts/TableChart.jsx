@@ -17,24 +17,21 @@ import Label from '../layouts/components/NameChart';
 
 
 
+
 const TableChart = ({
   data,
-  height = '600px',
-  fontSize = {
-    label: 16,
-    td: 15
-  },
+  height,
+  fontSize,
   fontFamily,
-  fontWeight = {
-    label: 600,
-    td: 500
-  },
-  nameChart = 'Chỉ số đo lường chi tiết từng chương trình',
-  description = 'Chỉ số đo lường chi tiết từng chương trình',
+  fontWeight,
+  nameChart,
+  description,
   enableHeatmap = true,
-  showSTT = false
+  showSTT,
+  showPagination
 }) => {
   const { labels = [], series = [] } = data;
+
 
 
 
@@ -50,6 +47,7 @@ const TableChart = ({
       return row;
     });
   }, [labels, series, showSTT]);
+
 
 
 
@@ -77,10 +75,12 @@ const TableChart = ({
 
 
 
+
   const getHeatmapColor = (value, columnName) => {
     if (!enableHeatmap || typeof value !== 'number' || !columnStats[columnName]) {
       return 'transparent';
     }
+
 
 
 
@@ -98,6 +98,7 @@ const TableChart = ({
 
 
 
+
     const normalized = (value - min) / (max - min);
     const opacity = 0.1 + (normalized * 0.5);
     
@@ -109,8 +110,10 @@ const TableChart = ({
 
 
 
+
   const columns = useMemo(() => {
     const cols = [];
+
 
     if (showSTT) {
       cols.push({
@@ -123,6 +126,7 @@ const TableChart = ({
         enableSorting: false,
       });
     }
+
 
 
 
@@ -151,8 +155,10 @@ const TableChart = ({
 
 
 
+
     return cols;
   }, [series, showSTT]);
+
 
 
 
@@ -171,8 +177,10 @@ const TableChart = ({
 
 
 
-  // Check if total records > 11 for showing pagination
-  const showPagination = tableData.length > 11;
+
+  // ❌ Xóa dòng này
+  // const showPagination = tableData.length > 11;
+
 
 
 
@@ -207,9 +215,11 @@ const TableChart = ({
 
 
 
+
   return (
     <div className="bg-background-light rounded-xl" style={{ fontFamily }}>
       <Label nameChart={nameChart} description={description} />
+
 
 
 
@@ -237,6 +247,7 @@ const TableChart = ({
               <span style={{ fontSize: fontSize.label, fontWeight: fontWeight.label, color: '#4b5563' }}>entries</span>
             </>
           )}
+
 
 
 
@@ -283,6 +294,7 @@ const TableChart = ({
 
 
 
+
         <div className="flex items-center gap-3">
           <span style={{ fontSize: fontSize.label, fontWeight: fontWeight.label, color: '#4b5563' }}>Search</span>
           <input
@@ -295,6 +307,7 @@ const TableChart = ({
           />
         </div>
       </div>
+
 
 
 
@@ -361,6 +374,7 @@ const TableChart = ({
 
 
 
+
                           <div
                             onMouseDown={header.getResizeHandler()}
                             onTouchStart={header.getResizeHandler()}
@@ -375,6 +389,7 @@ const TableChart = ({
                   </tr>
                 ))}
               </thead>
+
 
 
 
@@ -438,7 +453,8 @@ const TableChart = ({
 
 
 
-      {/* Pagination Controls - Only show if records > 11 */}
+
+      {/* Pagination Controls */}
       {showPagination && (
         <div className="flex items-center justify-center mt-4 pb-4 gap-2">
           <button
@@ -485,6 +501,7 @@ const TableChart = ({
 
 
 
+
           <button
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
@@ -498,6 +515,7 @@ const TableChart = ({
     </div>
   );
 };
+
 
 
 

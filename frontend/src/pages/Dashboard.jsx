@@ -13,6 +13,9 @@ import ChildTabs from '../components/layouts/components/ChildTabs';
 import { CUSTOM_TAB } from '../utils/customTab';
 import TableChart from '../components/charts/TableChart';
 import { transformTableChartData } from '../utils/transformApiTableChart';
+import MixedChart from '../components/charts/MixedChart';
+import { transformMixedChartData } from '../utils/transformApiMixedChart';
+
 const Dashboard = () => {
   const dashboard = useDashboardData();
 
@@ -26,6 +29,9 @@ const Dashboard = () => {
     'aveReachPercentNumber': dashboard.aveReachPercentNumberData,
     'ratingBarChannelEventData': dashboard.ratingBarChannelEventData
   }
+
+  console.log(dashboard.ratingReachMixedDateData);
+  
 
   return (
     <>
@@ -44,7 +50,7 @@ const Dashboard = () => {
             />
           ))}
         </div>
-        <div className='flex gap-6 pb-6'>
+        <div className='w-full flex gap-6 pb-6'>
           <div className='w-[60%]'>
             <ChildTabs tabs={[
               {id: CUSTOM_TAB.childTabRatingReach.rating.id, label: CUSTOM_TAB.childTabRatingReach.rating.label,
@@ -112,11 +118,61 @@ const Dashboard = () => {
         </div>
         <div className='w-full flex gap-6 pb-6'>
           <div className='w-[60%]'>
-          <TableChart data={transformTableChartData(dashboard.allTableChannelData.data, dashboard.allTableChannelData.colnames)}/>
+            <ChildTabs tabs={[
+              {id: CUSTOM_TAB.childTabChannel.channel.id, label: CUSTOM_TAB.childTabChannel.channel.label,
+              content: (
+                <TableChart data={transformTableChartData(dashboard.allTableChannelData.data, dashboard.allTableChannelData.colnames)}
+                      height={CUSTOM_CHART.tableChart.tableChartChannel.height}
+                      fontSize={CUSTOM_CHART.tableChart.fontSize}
+                      fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                      fontWeight={CUSTOM_CHART.tableChart.fontWeight}
+                      nameChart={CUSTOM_CHART.tableChart.tableChartChannel.name}
+                      description={CUSTOM_CHART.tableChart.tableChartChannel.desciption}
+                      showSTT={CUSTOM_CHART.tableChart.tableChartChannel.STT}
+                      showPagination={CUSTOM_CHART.tableChart.tableChartChannel.pagination} />
+              )},
+              {id: CUSTOM_TAB.childTabChannel.event.id, label: CUSTOM_TAB.childTabChannel.event.label,
+                content: (
+                  <TableChart data={transformTableChartData(dashboard.allTableChannelEventData.data, dashboard.allTableChannelEventData.colnames)}
+                      height={CUSTOM_CHART.tableChart.tableChartChannel.height}
+                      fontSize={CUSTOM_CHART.tableChart.fontSize}
+                      fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                      fontWeight={CUSTOM_CHART.tableChart.fontWeight}
+                      nameChart={CUSTOM_CHART.tableChart.tableChartChannel.name}
+                      description={CUSTOM_CHART.tableChart.tableChartChannel.desciption}
+                      showSTT={CUSTOM_CHART.tableChart.tableChartChannel.STT}
+                      showPagination={CUSTOM_CHART.tableChart.tableChartChannel.pagination} />
+                )}
+              ]} />
           </div>
-          {/* <div className='w-[40%]'>
-          <TableChart data={transformTableChartData(dashboard.ratingReachPercentTableRegionalData.data, dashboard.ratingReachPercentTableRegionalData.colnames)}/>
-          </div> */}
+          <div className='w-[40%]'>
+            <ChildTabs tabs={[
+              {id: CUSTOM_TAB.childTabArea.regional.id, label: CUSTOM_TAB.childTabArea.regional.label,
+              content: (
+                <TableChart data={transformTableChartData(dashboard.ratingReachPercentTableRegionalData.data, dashboard.ratingReachPercentTableRegionalData.colnames)}
+                      height={CUSTOM_CHART.tableChart.tableChartArea.height}
+                      fontSize={CUSTOM_CHART.tableChart.fontSize}
+                      fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                      fontWeight={CUSTOM_CHART.tableChart.fontWeight}
+                      nameChart={CUSTOM_CHART.tableChart.tableChartArea.name}
+                      description={CUSTOM_CHART.tableChart.tableChartArea.desciption}
+                      showSTT={CUSTOM_CHART.tableChart.tableChartArea.STT}
+                      showPagination={CUSTOM_CHART.tableChart.tableChartArea.pagination} />
+              )},
+              {id: CUSTOM_TAB.childTabArea.province.id, label: CUSTOM_TAB.childTabArea.province.label,
+                content: (
+                  <TableChart data={transformTableChartData(dashboard.ratingReachPercentTableProvinceData.data, dashboard.ratingReachPercentTableProvinceData.colnames)}
+                      height={CUSTOM_CHART.tableChart.tableChartArea.height}
+                      fontSize={CUSTOM_CHART.tableChart.fontSize}
+                      fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                      fontWeight={CUSTOM_CHART.tableChart.fontWeight}
+                      nameChart={CUSTOM_CHART.tableChart.tableChartArea.name}
+                      description={CUSTOM_CHART.tableChart.tableChartArea.desciption}
+                      showSTT={CUSTOM_CHART.tableChart.tableChartArea.STT}
+                      showPagination={CUSTOM_CHART.tableChart.tableChartArea.pagination} />
+                )}
+            ]}/>
+          </div>
         </div>
         <div className='w-full grid grid-cols-2 gap-6 pb-6'>
             <div>
@@ -239,6 +295,9 @@ const Dashboard = () => {
                 )}
                 ]} />
             </div>
+        </div>
+        <div className='w-full'>
+          <MixedChart data={transformMixedChartData(dashboard.ratingReachMixedDateData.data, 'date', dashboard.ratingReachMixedDateData.colnames)}/>
         </div>
       </div>
     </div>

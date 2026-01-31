@@ -263,7 +263,7 @@ const BarChart = ({
       label: {
         show: true,
         position: isHorizontal ? 'right' : 'top',
-        offset: isHorizontal ? [12, 0] : [0, -10],
+        offset: isHorizontal ? [3, 0] : [0, -3],
         formatter: (params) => {
           const dataIndex = params.dataIndex;
           const seriesIndex = params.seriesIndex;
@@ -311,7 +311,7 @@ const BarChart = ({
         // backgroundColor: 'rgba(255,255,255,0.95)',
         backgroundColor: 'transparent',
         borderRadius: 6,
-        padding: [4, 10],
+        padding: [2, 6],
         borderWidth: 1,
         // borderColor: 'rgba(0,0,0,0.1)',
         borderColor: 'transparent',

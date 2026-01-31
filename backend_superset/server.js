@@ -22,9 +22,15 @@ app.post('/api/superset', async (req, res) => {
     // Trả về data
     res.json({
       success: true,
-      data: result.result[0].data,
-      colnames: result.result[0].colnames,
-      rowcount: result.result[0].rowcount
+      data: result.result[1] 
+        ? [...result.result[0].data, ...result.result[1].data] 
+        : result.result[0].data,
+      colnames: result.result[1]
+        ? [...new Set([...result.result[0].colnames, ...result.result[1].colnames])]
+        : result.result[0].colnames,
+      rowcount: result.result[1]
+        ? result.result[0].rowcount + result.result[1].rowcount
+        : result.result[0].rowcount
     });
     
     console.log('✅ Trả data về React');

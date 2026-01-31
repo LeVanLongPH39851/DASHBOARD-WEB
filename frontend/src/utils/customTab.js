@@ -26,5 +26,15 @@ export const CUSTOM_TAB = {
       id: 'others',
       label: 'Toàn quốc'
     }
+  },
+  childTabChannel: {
+    channel: {
+      id: 'channel',
+      label: 'Tổng khán giả'
+    },
+    event: {
+      id: 'event',
+      label: 'Live/TSV'
+    }
   }
 };

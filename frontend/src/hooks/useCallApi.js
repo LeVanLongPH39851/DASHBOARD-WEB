@@ -1,6 +1,10 @@
 import { useApi } from './useApi';
 import * as getChart from '../api/dashboardApi';
 
+export const useRatingPercentTrendNumberReturnApi = () => {
+  return useApi(getChart.getRatingPercentTrendNumberChart);
+};
+
 export const useRatingNumberChartReturnApi = () => {
   return useApi(getChart.getRatingNumberChart);
 };
@@ -37,6 +41,18 @@ export const useAllTableChartChannelReturnApi = () => {
   return useApi(getChart.getAllTableChartChannel);
 };
 
+export const useAllTableChartChannelEventReturnApi = () => {
+  return useApi(getChart.getAllTableChartChannelEvent);
+};
+
+export const useRatingReachPercentTableChartRegionalReturnApi = () => {
+  return useApi(getChart.getRatingReachPercentTableChartRegional);
+};
+
+export const useRatingReachPercentTableChartProvinceReturnApi = () => {
+  return useApi(getChart.getRatingReachPercentTableChartProvince);
+};
+
 export const useRatingBarChartRegionalReturnApi = () => {
   return useApi(getChart.getRatingBarChartRegional);
 };
@@ -69,8 +85,8 @@ export const useAveReachBarChartOthersReturnApi = () => {
   return useApi(getChart.getAveReachBarChartOthers);
 };
 
-export const useRatingReachPercentTableChartRegionalReturnApi = () => {
-  return useApi(getChart.getRatingReachPercentTableChartRegional);
+export const useRatingReachMixedChartDateReturnApi = () => {
+  return useApi(getChart.getRatingReachMixedChartDate);
 };
 
 export const useRatingPercentLineChartTimebandChannelReturnApi = () => {

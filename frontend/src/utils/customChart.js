@@ -1,3 +1,5 @@
+import { allTableChartChannelPayload } from "../api/payloads";
+
 var variableCustoms = {
     fontFamily: '"Be Vietnam Pro", sans-serif',
     colorLive: '#6ce5e8',
@@ -40,6 +42,30 @@ export const CUSTOM_CHART = {
     },
     fontWeight: {
         legend: 500, tooltip: 500, axisLabel: 600, dataLabel: 700
+    }
+  },
+  tableChart: {
+    fontSize: {
+        label: 16,
+        td: 15
+    },
+    fontWeight: {
+        label: 600,
+        td: 500
+    },
+    tableChartChannel: {
+        height: '600px',
+        name: 'Chỉ số đo lường chi tiết từng chương trình',
+        desciption: 'Chỉ số đo lường chi tiết từng chương trình',
+        STT: false,
+        pagination: false
+    },
+    tableChartArea: {
+        height: '600px',
+        name: 'Rating (%) và Reach (%) theo thị trường',
+        desciption: 'Rating (%) và Reach (%)',
+        STT: false,
+        pagination: false
     }
   }
 };

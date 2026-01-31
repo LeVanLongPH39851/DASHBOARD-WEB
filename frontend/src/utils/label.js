@@ -6,5 +6,7 @@ export const LABEL = {
   'reach%': 'REACH\n(%)',
   'REACH (%)': 'REACH\n(%)',
   'minute/user/day': 'Phút/người/ngày',
-  'regional_name': 'VÙNG'
+  'regional_name': 'VÙNG',
+  'event_category_name': 'Live/TSV',
+  'province': 'TỈNH/TP'
 };

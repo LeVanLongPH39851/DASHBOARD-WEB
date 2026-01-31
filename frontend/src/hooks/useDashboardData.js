@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import * as useCallApi from './useCallApi';
 
 const HOOKS = [
+  { hook: useCallApi.useRatingPercentTrendNumberReturnApi, dataKey: 'ratingPercentTrendNumberData' },
   { hook: useCallApi.useRatingNumberChartReturnApi, dataKey: 'ratingNumberData' },
   { hook: useCallApi.useAveReachNumberChartReturnApi, dataKey: 'aveReachNumberData' },
   { hook: useCallApi.useRatingPercentNumberChartReturnApi, dataKey: 'ratingPercentNumberData' },
@@ -11,6 +12,9 @@ const HOOKS = [
   { hook: useCallApi.useRatingBarChartDayEventReturnApi, dataKey: 'ratingBarDayEventData' },
   { hook: useCallApi.useAveReachBarChartDayEventReturnApi, dataKey: 'aveReachBarDayEventData' },
   { hook: useCallApi.useAllTableChartChannelReturnApi, dataKey: 'allTableChannelData' },
+  { hook: useCallApi.useAllTableChartChannelEventReturnApi, dataKey: 'allTableChannelEventData' },
+  { hook: useCallApi.useRatingReachPercentTableChartRegionalReturnApi, dataKey: 'ratingReachPercentTableRegionalData' },
+  { hook: useCallApi.useRatingReachPercentTableChartProvinceReturnApi, dataKey: 'ratingReachPercentTableProvinceData' },
   { hook: useCallApi.useRatingBarChartRegionalReturnApi, dataKey: 'ratingBarRegionalData' },
   { hook: useCallApi.useRatingBarChartKeyCityReturnApi, dataKey: 'ratingBarKeyCityData' },
   { hook: useCallApi.useRatingBarChartProvinceReturnApi, dataKey: 'ratingBarProvinceData' },
@@ -19,7 +23,7 @@ const HOOKS = [
   { hook: useCallApi.useAveReachBarChartKeyCityReturnApi, dataKey: 'aveReachBarKeyCityData' },
   { hook: useCallApi.useAveReachBarChartProvinceReturnApi, dataKey: 'aveReachBarProvinceData' },
   { hook: useCallApi.useAveReachBarChartOthersReturnApi, dataKey: 'aveReachBarOthersData' },
-  { hook: useCallApi.useRatingReachPercentTableChartRegionalReturnApi, dataKey: 'ratingReachPercentTableRegionalData' },
+  { hook: useCallApi.useRatingReachMixedChartDateReturnApi, dataKey: 'ratingReachMixedDateData' },
   { hook: useCallApi.useRatingPercentLineChartTimebandChannelReturnApi, dataKey: 'ratingPercentLineTimebandChannelData' },
   { hook: useCallApi.useRatingReachPercentMixedChartTimebandReturnApi, dataKey: 'ratingReachPercentMixedTimebandData' }
 ];

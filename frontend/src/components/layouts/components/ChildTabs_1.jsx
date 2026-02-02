@@ -58,7 +58,11 @@ export default function ChildTabs({ tabs, defaultTab, variant = "default" }) {
       </div>
 
       {/* Tab Content */}
+<<<<<<< HEAD:frontend/src/components/layouts/components/ChildTabs_1.jsx
       <div className="cursor-pointer">
+=======
+      <div>
+>>>>>>> c7c7ea9f3aa44e339fb5a67d3eab92a274bc8d9e:frontend/src/components/layouts/components/ChildTabs.jsx
         {tabs.find((tab) => tab.id === activeTab)?.content}
       </div>
     </div>

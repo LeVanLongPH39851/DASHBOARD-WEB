@@ -1,3 +1,4 @@
+export { ratingPercentTrendNumberChartPayload } from './ratingPercentTrendNumberChartPayload'
 export { ratingNumberChartPayload } from './ratingNumberChartPayload';
 export { aveReachNumberChartPayload } from './aveReachNumberChartPayload';
 export { ratingPercentNumberChartPayload } from './ratingPercentNumberChartPayload';
@@ -6,5 +7,18 @@ export { ratingBarChartChannelEventPayload } from './ratingBarChartChannelEventP
 export { aveReachBarChartChannelEventPayload } from './aveReachBarChartChannelEventPayload';
 export { ratingBarChartDayEventPayload } from './ratingBarChartDayEventPayload';
 export { aveReachBarChartDayEventPayload } from './aveReachBarChartDayEventPayload';
+export { allTableChartChannelPayload } from './allTableChartChannelPayload';
+export { allTableChartChannelEventPayload } from './allTableChartChannelEventPayload';
+export { ratingReachPercentTableChartRegionalPayload } from './ratingReachPercentTableChartRegionalPayload';
+export { ratingReachPercentTableChartProvincePayload } from './ratingReachPercentTableChartProvincePayload';
+export { ratingBarChartRegionalPayload } from './ratingBarChartRegionalPayload';
+export { ratingBarChartKeyCityPayload } from './ratingBarChartKeyCityPayload';
+export { ratingBarChartProvincePayload } from './ratingBarChartProvincePayload';
+export { ratingBarChartOthersPayload } from './ratingBarChartOthersPayload';
+export { aveReachBarChartRegionalPayload } from './aveReachBarChartRegionalPayload';
+export { aveReachBarChartKeyCityPayload } from './aveReachBarChartKeyCityPayload';
+export { aveReachBarChartProvincePayload } from './aveReachBarChartProvincePayload';
+export { aveReachBarChartOthersPayload } from './aveReachBarChartOthersPayload';
+export { ratingReachMixedChartDatePayload } from './ratingReachMixedChartDatePayload';
 export { ratingPercentLineChartTimebandChannelPayload } from './ratingPercentLineChartTimebandChannelPayload';
 export { ratingReachPercentMixedChartTimebandPayload } from './ratingReachPercentMixedChartTimebandPayload';

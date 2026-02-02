@@ -21,53 +21,70 @@ export const transformMixedChartData = (apiData = [], digits = 2) => {
       ),
     ) || Object.keys(firstItem)[0];
 
-  const labels = apiData.map((item) => item[labelKey] ?? "Unknown");
+  // Thu thập tất cả keys để tìm reach/rating dù nằm ở query khác
+  const allKeys = new Set();
+  apiData.forEach((item) => {
+    Object.keys(item || {}).forEach((key) => allKeys.add(key));
+  });
 
-  const metricKeys = Object.keys(firstItem).filter((key) => key !== labelKey);
-
-  console.log("DEBUG metricKeys:", metricKeys);
-  console.log("DEBUG firstItem keys:", Object.keys(firstItem));
-
-  // 2️⃣ Reach / Rating
-  const reachKey = metricKeys.find(
+  const reachKey = Array.from(allKeys).find(
     (key) =>
       key.toLowerCase().includes("reach") || key.toLowerCase().includes("live"),
   );
 
-  const ratingKey = metricKeys.find(
+  const ratingKey = Array.from(allKeys).find(
     (key) =>
       key !== reachKey &&
       (key.toLowerCase().includes("rating") ||
         key.toLowerCase().includes("tsv")),
   );
 
+  // 2️⃣ Build maps by label (avoid duplicate timebands)
+  const labelOrder = [];
+  const seenLabels = new Set();
+  const reachByLabel = new Map();
+  const ratingByLabel = new Map();
+
+  apiData.forEach((item) => {
+    const label = item?.[labelKey] ?? "Unknown";
+    if (!seenLabels.has(label)) {
+      seenLabels.add(label);
+      labelOrder.push(label);
+    }
+    if (reachKey && item?.[reachKey] != null) {
+      reachByLabel.set(label, formatNumber(item[reachKey], digits));
+    }
+    if (ratingKey && item?.[ratingKey] != null) {
+      ratingByLabel.set(label, formatNumber(item[ratingKey], digits));
+    }
+  });
+
+  const labels = labelOrder;
   const series = [];
 
-  // 3️⃣ Reach → BAR
   if (reachKey) {
     series.push({
       name: "reach%",
       type: "bar",
-      data: apiData.map((item) => formatNumber(item[reachKey], digits)),
+      data: labels.map((label) => reachByLabel.get(label) ?? 0),
     });
   }
 
-  // 4️⃣ Rating → LINE
-  // Nếu không có ratingKey từ API, tạo dữ liệu rating giả (70% của reach)
-  if (!ratingKey && reachKey) {
+  if (ratingKey && ratingKey !== reachKey) {
     series.push({
       name: "rating%",
       type: "line",
-      data: apiData.map((item) => {
-        const reachVal = formatNumber(item[reachKey], digits);
-        return formatNumber(Math.max(1, reachVal * 0.7), 1); // Rating = 70% reach, làm tròn 1 chữ số
-      }),
+      data: labels.map((label) => ratingByLabel.get(label) ?? 0),
     });
-  } else if (ratingKey && ratingKey !== reachKey) {
+  } else if (!ratingKey && reachKey) {
+    // fallback: tạo rating giả nếu không có rating thực
     series.push({
       name: "rating%",
       type: "line",
-      data: apiData.map((item) => formatNumber(item[ratingKey], digits)),
+      data: labels.map((label) => {
+        const reachVal = reachByLabel.get(label) ?? 0;
+        return formatNumber(Math.max(1, reachVal * 0.7), 1);
+      }),
     });
   }
 

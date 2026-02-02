@@ -15,6 +15,12 @@ const MixedChart = ({
   const { labels = [], series = [] } = data || {};
   const chartRef = useRef(null);
 
+  const maxVisibleItems = 24;
+  const needsScroll = labels.length > maxVisibleItems;
+  const zoomEndPercent = needsScroll
+    ? Math.round((maxVisibleItems / labels.length) * 100)
+    : 100;
+
   if (!labels.length || !series.length) {
     return (
       <div className="h-64 flex items-center justify-center text-gray-500 bg-gray-100 rounded-lg">
@@ -124,7 +130,7 @@ const MixedChart = ({
     grid: {
       left: "8%",
       right: "4%",
-      bottom: "15%",
+      bottom: needsScroll ? "100px" : "15%",
       top: 60,
       containLabel: true,
     },
@@ -163,6 +169,38 @@ const MixedChart = ({
     },
 
     series: chartSeries,
+    dataZoom: needsScroll
+      ? [
+          {
+            type: "slider",
+            show: true,
+            xAxisIndex: 0,
+            start: 0,
+            end: zoomEndPercent,
+            bottom: 20,
+            height: 20,
+            brushSelect: false,
+            handleSize: "80%",
+            handleStyle: { color: "#3b82f6" },
+            textStyle: { fontSize: 12, color: "#64748b" },
+            borderColor: "#e5e7eb",
+            fillerColor: "rgba(59, 130, 246, 0.1)",
+            dataBackground: {
+              lineStyle: { color: "#3b82f6", opacity: 0.3 },
+              areaStyle: { color: "#3b82f6", opacity: 0.1 },
+            },
+          },
+          {
+            type: "inside",
+            xAxisIndex: 0,
+            start: 0,
+            end: zoomEndPercent,
+            zoomOnMouseWheel: true,
+            moveOnMouseMove: true,
+            moveOnMouseWheel: false,
+          },
+        ]
+      : [],
   };
 
   return (

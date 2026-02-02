@@ -13,14 +13,16 @@
   --color-color-rating: rgba(235, 87, 87, 1);
   --color-background-ave-reach-percent: rgba(242, 153, 74, 0.1);
   --color-color-ave-reach-percent: rgba(242, 153, 74, 1);
-  --color-background-rating-percent: rgba(115, 103, 240, 0.10);
+  --color-background-rating-percent: rgba(115, 103, 240, 0.1);
   --color-color-rating-percent: rgba(115, 103, 240, 1);
   --color-color-icon-infor: #ffd04c;
   --font-family-be-vietnam-pro: "Be Vietnam Pro", sans-serif;
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap");
 
-html, #root, body {
-    height: 100%;
+html,
+#root,
+body {
+  height: 100%;
 }

@@ -5,7 +5,11 @@ var variableCustoms = {
     colorLive: '#6ce5e8',
     colorTimeshift: '#fe9273',
     colorRating: '#ff5757',
-    colorAveReach: '#ffd04c'
+    colorAveReach: '#ffd04c',
+    metricRating: 'rating',
+    metricAveReach: 'ave_reach',
+    metricRatingTimebandPercent: 'rating_timeband%',
+    metricAveReachPercent: 'reach%_1'
 }
 
 export const CUSTOM_CHART = {
@@ -66,6 +70,41 @@ export const CUSTOM_CHART = {
         desciption: 'Rating (%) và Reach (%)',
         STT: false,
         pagination: false
-    }
+    },
+  },
+  mixedChart: {
+    height: '500px',
+    fontSize: {
+      legend: 16, tooltip: 15, axisLabel: 14, dataLabel: 14
+    },
+    fontWeight: {
+      legend: 500, tooltip: 500, axisLabel: 600, dataLabel: 700
+    },
+    mixedChartDate: {
+      name: 'Biến động khán giả theo ngày',
+      desciption: 'Biến động',
+      metrics: {
+        rating: [variableCustoms.metricRating],
+        aveReach: [variableCustoms.metricAveReach]
+      },
+      colors: {
+        'rating': variableCustoms.colorRating,
+        'ave_reach': variableCustoms.colorAveReach
+      }
+    },
+    mixedChartPercentTimeband: {
+      name: 'Biến động RATING (%) và REACH (%) theo khung giờ',
+      desciption: 'Biến động',
+      metrics: {
+        ratingPercent: [variableCustoms.metricRatingTimebandPercent],
+        aveReachPercent: [variableCustoms.metricAveReachPercent]
+      },
+      colors: {
+        'rating_timeband%': variableCustoms.colorRating,
+        'reach%_1': variableCustoms.colorAveReach
+      }
+    },
+    barMaxWidth: 100,
+    barWidthPercent: '60%'
   }
 };

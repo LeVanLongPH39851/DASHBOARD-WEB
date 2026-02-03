@@ -1,34 +1,88 @@
-import React, { memo, useRef } from 'react';
+// LineChart.jsx
+import React, { memo, useRef, useMemo, useState, useEffect } from 'react';
 import ReactECharts from 'echarts-for-react';
 import Label from '../layouts/components/NameChart';
 
-const MixedChart = ({
+const LineChart = ({
   data,
-  height,
-  fontSize,
-  fontFamily,
-  fontWeight,
-  nameChart,
-  description,
+  height = '500px',
+  fontSize = {
+    tooltip: 14,
+    legend: 13,
+    axisLabel: 12,
+    dataLabel: 13
+  },
+  fontFamily = 'Arial, sans-serif',
+  fontWeight = {
+    tooltip: 500,
+    legend: 500,
+    axisLabel: 400,
+    dataLabel: 600
+  },
+  nameChart = 'Line Chart',
+  description = '',
   enableZoom = true,
   maxVisibleItems = 10,
-  barSeriesKeys,
-  lineSeriesKeys,
-  colors,
-  barMaxWidth,
-  barWidthPercent
+  colors = {},
+  showLabel = true,
+  smooth = true,
+  symbolSize = 6,
+  lineWidth = 3,
+  areaStyle = false,
+  stack = false,
+  labelOffset = -12,
+  showTopNSeries = 3
 }) => {
   const { labels = [], series = [] } = data;
   const chartRef = useRef(null);
+  const [selectedSeries, setSelectedSeries] = useState(
+    series.reduce((acc, s) => ({ ...acc, [s.name]: true }), {})
+  );
 
-  // Tính toán có cần dataZoom hay không
   const needsScroll = enableZoom && labels.length > maxVisibleItems;
   const zoomEndPercent = needsScroll 
     ? Math.round((maxVisibleItems / labels.length) * 100) 
     : 100;
 
-  // ECHARTS OPTION
+  const defaultColors = [
+    '#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6',
+    '#ec4899', '#06b6d4', '#84cc16', '#f97316', '#6366f1'
+  ];
+
+  // ✅ Calculate top N from SELECTED series only
+  const topSeriesNames = useMemo(() => {
+    if (!showTopNSeries) return null;
+    
+    const visibleSeries = series.filter(s => selectedSeries[s.name]);
+    
+    const seriesWithTotal = visibleSeries.map(s => ({
+      name: s.name,
+      total: s.data.reduce((sum, val) => sum + (val || 0), 0)
+    }));
+    
+    const sorted = seriesWithTotal.sort((a, b) => b.total - a.total);
+    return new Set(sorted.slice(0, showTopNSeries).map(s => s.name));
+  }, [series, showTopNSeries, selectedSeries]);
+
+  // ✅ Listen to legend select event
+  useEffect(() => {
+    const chart = chartRef.current?.getEchartsInstance();
+    if (!chart) return;
+
+    const handleLegendSelectChanged = (params) => {
+      setSelectedSeries(params.selected);
+    };
+
+    chart.on('legendselectchanged', handleLegendSelectChanged);
+
+    return () => {
+      chart.off('legendselectchanged', handleLegendSelectChanged);
+    };
+  }, []);
+
   const option = {
+    color: series.map((s, i) => colors[s.name] || defaultColors[i % defaultColors.length]),
+
     tooltip: {
       trigger: 'axis',
       axisPointer: { 
@@ -64,7 +118,6 @@ const MixedChart = ({
       }
     },
 
-    // DataZoom
     dataZoom: needsScroll ? [
       {
         type: 'slider',
@@ -112,23 +165,21 @@ const MixedChart = ({
       left: 'center',
       itemWidth: 14,
       itemHeight: 14,
-      icon: 'roundRect',
+      icon: 'circle',
       textStyle: { 
         fontSize: fontSize.legend,
         color: '#64748b',
         fontWeight: fontWeight.legend
       },
-      data: series.map(s => ({
-        name: s.name,
-        icon: barSeriesKeys.includes(s.name) ? 'rect' : 'circle'
-      }))
+      data: series.map(s => s.name),
+      selected: selectedSeries
     },
 
     grid: {
       left: '3%',
       right: '4%',
       bottom: needsScroll ? '120px' : '80px',
-      top: 50, // ✅ Tăng để có space cho label
+      top: 60,
       containLabel: true
     },
 
@@ -145,13 +196,13 @@ const MixedChart = ({
         color: '#374151',
         fontWeight: fontWeight.axisLabel,
         rotate: 0,
-        interval: 0,
+        interval: 'auto',
         formatter: (value) => value
       },
-      splitLine: { show: false }
+      splitLine: { show: false },
+      boundaryGap: false
     },
 
-    // ✅ CHỈ 1 Y-AXIS
     yAxis: {
       type: 'value',
       axisLine: { show: false },
@@ -173,81 +224,102 @@ const MixedChart = ({
       }
     },
 
-    series: series.map((s) => {
-      const isBar = barSeriesKeys.includes(s.name);
-      const color = colors[s.name] || '#999';
+    series: series.map((s, index) => {
+      const color = colors[s.name] || defaultColors[index % defaultColors.length];
+      const isTopSeries = !topSeriesNames || topSeriesNames.has(s.name);
       
-      if (isBar) {
-        // Bar series
-        return {
-          name: s.name,
-          type: 'bar',
-          data: s.data,
-          barWidth: barWidthPercent,
-          barMaxWidth: barMaxWidth,
-          itemStyle: {
-            color: color,
-            borderRadius: [4, 4, 0, 0]
-          },
-          emphasis: {
-            itemStyle: { 
-              shadowBlur: 10, 
-              shadowColor: 'rgba(0,0,0,0.2)',
-              opacity: 0.9
+      return {
+        name: s.name,
+        type: 'line',
+        data: s.data,
+        smooth: smooth,
+        // ✅ KEY FIX: Luôn có symbol, chỉ control showSymbol
+        symbol: 'circle',
+        symbolSize: symbolSize,
+        showSymbol: isTopSeries, // ✅ false = ẩn, true = hiện
+        lineStyle: {
+          color: color,
+          width: lineWidth,
+          opacity: isTopSeries ? 1 : 0.5
+        },
+        itemStyle: {
+          color: color,
+          borderWidth: 2,
+          borderColor: '#fff'
+        },
+        ...(areaStyle && {
+          areaStyle: {
+            color: {
+              type: 'linear',
+              x: 0,
+              y: 0,
+              x2: 0,
+              y2: 1,
+              colorStops: [
+                { offset: 0, color: color + '40' },
+                { offset: 1, color: color + '10' }
+              ]
             }
-          },
-          label: {
-            show: true,
-            position: 'top',
-            offset: [0, -8], // ✅ Khoảng cách label với bar
-            formatter: (params) => {
-              return params.value ? params.value.toLocaleString(undefined, { maximumFractionDigits: 2 }) : '';
-            },
-            fontSize: fontSize.dataLabel,
-            fontWeight: fontWeight.dataLabel,
-            fontFamily: fontFamily,
-            color: '#1e293b'
           }
-        };
-      } else {
-        // Line series
-        return {
-          name: s.name,
-          type: 'line',
-          data: s.data,
-          smooth: true,
-          symbol: 'circle',
-          symbolSize: 6,
-          lineStyle: {
-            color: color,
-            width: 3
-          },
+        }),
+        ...(stack && { stack: 'total' }),
+        // ✅ EMPHASIS: Hiện symbol + label khi hover (TẤT CẢ series)
+        emphasis: {
+          focus: 'series',
+          scale: true,
+          // ✅ Force show symbol khi hover
           itemStyle: {
-            color: color,
-            borderWidth: 2,
+            shadowBlur: 10,
+            shadowColor: 'rgba(0,0,0,0.3)',
+            borderWidth: 3,
             borderColor: '#fff'
           },
-          emphasis: {
-            itemStyle: {
-              shadowBlur: 10,
-              shadowColor: 'rgba(0,0,0,0.3)',
-              borderWidth: 3
-            }
+          lineStyle: {
+            width: lineWidth + 1,
+            opacity: 1
           },
+          // ✅ Show label khi hover (cho TẤT CẢ series)
           label: {
             show: true,
             position: 'top',
-            offset: [0, -8], // ✅ Khoảng cách label với line (xa hơn bar nhiều)
+            offset: [0, labelOffset],
             formatter: (params) => {
               return params.value ? params.value.toLocaleString(undefined, { maximumFractionDigits: 2 }) : '';
             },
             fontSize: fontSize.dataLabel,
             fontWeight: fontWeight.dataLabel,
             fontFamily: fontFamily,
-            color: color
+            color: color,
+            backgroundColor: 'rgba(255,255,255,0.9)',
+            padding: [4, 8],
+            borderRadius: 4,
+            borderColor: color,
+            borderWidth: 1
           }
-        };
-      }
+        },
+        // ✅ BLUR: Khi hover series khác
+        blur: {
+          lineStyle: {
+            opacity: 0.2
+          },
+          itemStyle: {
+            opacity: 0.2
+          }
+        },
+        // ✅ Label mặc định (chỉ top series)
+        label: {
+          show: showLabel && isTopSeries,
+          position: 'top',
+          offset: [0, labelOffset],
+          formatter: (params) => {
+            return params.value ? params.value.toLocaleString(undefined, { maximumFractionDigits: 2 }) : '';
+          },
+          fontSize: fontSize.dataLabel,
+          fontWeight: fontWeight.dataLabel,
+          fontFamily: fontFamily,
+          color: color
+        }
+      };
     })
   };
 
@@ -267,4 +339,4 @@ const MixedChart = ({
   );
 };
 
-export default React.memo(MixedChart);
+export default React.memo(LineChart);

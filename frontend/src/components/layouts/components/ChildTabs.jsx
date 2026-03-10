@@ -1,57 +1,96 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 
 /**
- * Component Tab tái sử dụng
- * @param {Array} tabs - Mảng các tab [{ id, label, content }]
- * @param {string} defaultTab - Tab mặc định (optional)
- * @param {string} variant - Style variant: 'default' | 'pills' | 'bg' (optional)
+ * ChildTabs với hiệu ứng smooth background slide
  */
 export default function ChildTabs({ tabs, defaultTab, variant = 'default' }) {
   const [activeTab, setActiveTab] = useState(defaultTab || tabs[0]?.id);
+  const [bgStyle, setBgStyle] = useState({ left: 0, width: 0, top: 0, height: 0 });
+  const tabsRef = useRef([]);
 
-  // Style variants
+  // Update background position
+  const updateBgPosition = useCallback(() => {
+    requestAnimationFrame(() => {
+      const activeIndex = tabs.findIndex(tab => tab.id === activeTab);
+      const currentTab = tabsRef.current[activeIndex];
+      if (currentTab) {
+        setBgStyle({
+          left: currentTab.offsetLeft,
+          width: currentTab.clientWidth,
+          top: currentTab.offsetTop,
+          height: currentTab.offsetHeight
+        });
+      }
+    });
+  }, [activeTab, tabs]);
+
+  // Update khi tab thay đổi
+  useEffect(() => {
+    const timeoutId = setTimeout(updateBgPosition, 0);
+    return () => clearTimeout(timeoutId);
+  }, [updateBgPosition]);
+
+  // Resize handler
+  useEffect(() => {
+    window.addEventListener('resize', updateBgPosition);
+    return () => window.removeEventListener('resize', updateBgPosition);
+  }, [updateBgPosition]);
+
+  // Style variants với background overlay
   const variants = {
     default: {
-      container: 'flex mb-2',
-      button: (isActive) => `px-6 py-1 font-medium text-md transition-colors cursor-pointer ${
+      container: 'relative flex gap-1 mb-6 overflow-hidden rounded-2xl p-1 bg-background-black-4 w-fit',
+      button: (isActive) => `relative px-6 py-2 font-medium text-sm transition-all duration-300 cursor-pointer z-10 ${
         isActive
-          ? 'border-b-2 border-color-light text-color-light bg-background-dark rounded-4xl'
-          : 'text-gray-500 hover:text-gray-700 rounded-4xl'
+          ? 'text-color-light font-medium'
+          : 'text-color-gray-600 hover:text-gray-700'
       }`,
+      background: 'absolute inset-0 bg-background-black-child-tab rounded-2xl transition-all duration-500 ease-out'
     },
     pills: {
       container: 'flex gap-2 mb-2',
-      button: (isActive) => `px-6 py-1 rounded-full font-medium text-md transition-all ${
+      button: (isActive) => `px-6 py-1 rounded-full font-medium text-md transition-all duration-300 z-10 ${
         isActive
           ? 'bg-background-dark text-color-light shadow-md'
           : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
       }`,
+      background: ''
     },
     bg: {
-      container: 'flex gap-1 mb-4 bg-gray-100 p-1 rounded-lg',
-      button: (isActive) => `flex-1 px-6 py-2 rounded-md font-medium text-sm transition-all ${
+      container: 'flex gap-1 mb-4 bg-gray-100 p-1 rounded-lg relative',
+      button: (isActive) => `relative flex-1 px-6 py-2 rounded-md font-medium text-sm transition-all duration-300 z-10 ${
         isActive
-          ? 'bg-white text-blue-600 shadow-sm'
+          ? 'bg-white text-blue-600 shadow-sm font-semibold'
           : 'text-gray-600 hover:text-gray-900'
       }`,
-    },
+      background: 'absolute inset-0 bg-white rounded-md transition-all duration-500 ease-out shadow-inner'
+    }
   };
 
   const currentVariant = variants[variant] || variants.default;
+  const showBgOverlay = ['default', 'bg'].includes(variant);
 
   return (
     <div>
       {/* Tab Headers */}
-      <div className={currentVariant.container}>
-        {tabs.map((tab) => (
+      <div className={currentVariant.container} style={{ position: 'relative' }}>
+        {tabs.map((tab, index) => (
           <button
             key={tab.id}
+            ref={el => { tabsRef.current[index] = el; }}
             onClick={() => setActiveTab(tab.id)}
             className={currentVariant.button(activeTab === tab.id)}
           >
             {tab.label}
           </button>
         ))}
+        
+        {showBgOverlay && (
+          <div 
+            className={currentVariant.background}
+            style={bgStyle}
+          />
+        )}
       </div>
 
       {/* Tab Content */}

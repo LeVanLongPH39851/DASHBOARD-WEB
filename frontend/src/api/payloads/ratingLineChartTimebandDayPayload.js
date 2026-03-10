@@ -34,7 +34,7 @@ export const ratingLineChartTimebandDayPayload = {
             "timeGrain": "P1D",
             "columnType": "BASE_AXIS",
             "expressionType": "SQL",
-            "label": "timeband",
+            "label": "time_band",
             "sqlExpression": "CASE \r\n  WHEN time_band = '0h - 1h' THEN '00-01'\r\n  WHEN time_band = '1h - 2h' THEN '01-02'\r\n  WHEN time_band = '2h - 3h' THEN '02-03'\r\n  WHEN time_band = '3h - 4h' THEN '03-04'\r\n  WHEN time_band = '4h - 5h' THEN '04-05'\r\n  WHEN time_band = '5h - 6h' THEN '05-06'\r\n  WHEN time_band = '6h - 7h' THEN '06-07'\r\n  WHEN time_band = '7h - 8h' THEN '07-08'\r\n  WHEN time_band = '8h - 9h' THEN '08-09'\r\n  WHEN time_band = '9h - 10h' THEN '09-10'\r\n  WHEN time_band = '10h - 11h' THEN '10-11'\r\n  WHEN time_band = '11h - 12h' THEN '11-12'\r\n  WHEN time_band = '12h - 13h' THEN '12-13'\r\n  WHEN time_band = '13h - 14h' THEN '13-14'\r\n  WHEN time_band = '14h - 15h' THEN '14-15'\r\n  WHEN time_band = '15h - 16h' THEN '15-16'\r\n  WHEN time_band = '16h - 17h' THEN '16-17'\r\n  WHEN time_band = '17h - 18h' THEN '17-18'\r\n  WHEN time_band = '18h - 19h' THEN '18-19'\r\n  WHEN time_band = '19h - 20h' THEN '19-20'\r\n  WHEN time_band = '20h - 21h' THEN '20-21'\r\n  WHEN time_band = '21h - 22h' THEN '21-22'\r\n  WHEN time_band = '22h - 23h' THEN '22-23'\r\n  WHEN time_band = '23h - 24h' THEN '23-24'\r\nEND"
           },
           {
@@ -72,7 +72,7 @@ export const ratingLineChartTimebandDayPayload = {
             "operation": "pivot",
             "options": {
               "index": [
-                "timeband"
+                "time_band"
               ],
               "columns": [
                 "day"
@@ -108,7 +108,7 @@ export const ratingLineChartTimebandDayPayload = {
       "url_params": {},
       "x_axis": {
         "expressionType": "SQL",
-        "label": "timeband",
+        "label": "time_band",
         "sqlExpression": "CASE \r\n  WHEN time_band = '0h - 1h' THEN '00-01'\r\n  WHEN time_band = '1h - 2h' THEN '01-02'\r\n  WHEN time_band = '2h - 3h' THEN '02-03'\r\n  WHEN time_band = '3h - 4h' THEN '03-04'\r\n  WHEN time_band = '4h - 5h' THEN '04-05'\r\n  WHEN time_band = '5h - 6h' THEN '05-06'\r\n  WHEN time_band = '6h - 7h' THEN '06-07'\r\n  WHEN time_band = '7h - 8h' THEN '07-08'\r\n  WHEN time_band = '8h - 9h' THEN '08-09'\r\n  WHEN time_band = '9h - 10h' THEN '09-10'\r\n  WHEN time_band = '10h - 11h' THEN '10-11'\r\n  WHEN time_band = '11h - 12h' THEN '11-12'\r\n  WHEN time_band = '12h - 13h' THEN '12-13'\r\n  WHEN time_band = '13h - 14h' THEN '13-14'\r\n  WHEN time_band = '14h - 15h' THEN '14-15'\r\n  WHEN time_band = '15h - 16h' THEN '15-16'\r\n  WHEN time_band = '16h - 17h' THEN '16-17'\r\n  WHEN time_band = '17h - 18h' THEN '17-18'\r\n  WHEN time_band = '18h - 19h' THEN '18-19'\r\n  WHEN time_band = '19h - 20h' THEN '19-20'\r\n  WHEN time_band = '20h - 21h' THEN '20-21'\r\n  WHEN time_band = '21h - 22h' THEN '21-22'\r\n  WHEN time_band = '22h - 23h' THEN '22-23'\r\n  WHEN time_band = '23h - 24h' THEN '23-24'\r\nEND"
       },
       "time_grain_sqla": "P1D",

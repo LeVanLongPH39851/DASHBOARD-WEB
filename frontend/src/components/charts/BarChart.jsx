@@ -1,6 +1,6 @@
 import React, { memo, useRef } from 'react';
 import ReactECharts from 'echarts-for-react';
-import Label from '../layouts/components/NameChart';
+import NameChart from '../layouts/components/NameChart';
 
 
 
@@ -15,6 +15,7 @@ const BarChart = ({
   nameChart,
   description,
   orientation,
+  displayName=true,
   enableZoom = true, // Option bật/tắt zoom
   maxVisibleItems = 11 // Số items hiển thị tối đa khi zoom bật
 }) => {
@@ -49,6 +50,8 @@ const BarChart = ({
     ...s,
     data: sorted.map(i => s.data?.[i.index] || 0)
   }));
+
+  const topSeriesIndex = sortedSeries.length - 1;
 
 
   // Tính toán có cần dataZoom hay không
@@ -145,24 +148,30 @@ const BarChart = ({
 
 
     legend: {
-      bottom: needsScroll && !isHorizontal ? 80 : 10,
+      show: topSeriesIndex !== 0 ? true : false,
+      top: needsScroll && !isHorizontal ? 0 : 0,
+      left: 0,
       itemWidth: 14,
       itemHeight: 14,
+      itemGap: 10,
       textStyle: { 
         fontSize: fontSize.legend,
-        color: '#64748b',
-        fontWeight: fontWeight.legend
-      }
+        color: 'rgba(30, 27, 57, 1)',
+        fontWeight: fontWeight.legend,
+        letterSpacing: '0.1px',
+        fontFamily: fontFamily
+      },
+      icon: 'circle',
     },
 
 
 
 
     grid: {
-      left: isHorizontal ? '3%' : '8%',
-      right: isHorizontal ? (needsScroll ? '10%' : '12%') : '4%',
-      bottom: isHorizontal ? '10%' : (needsScroll ? '120px' : '15%'),
-      top: 20,
+      left: '1%',
+      right: isHorizontal ? (needsScroll ? '12%' : '10%') : '4%',
+      bottom: isHorizontal ? '1%' : (needsScroll ? '120px' : '1%'),
+      top: topSeriesIndex !== 0 ? 38 : 0,
       containLabel: true
     },
 
@@ -171,34 +180,36 @@ const BarChart = ({
 
     xAxis: isHorizontal ? {
       type: 'value',
-      axisLine: { show: true, lineStyle: { color: '#d1d5db' } },
+      axisLine: { show: false },
       axisTick: { show: false },
       splitLine: {
         show: true,
         lineStyle: {
-          color: '#e5e7eb',
+          color: 'rgba(229, 229, 239, 1)',
           type: 'dashed',
-          width: 1,
+          width: 1.5,
           opacity: 1
         }
       },
       axisLabel: {
         formatter: v => v.toLocaleString(undefined, { maximumFractionDigits: 0 }),
         fontSize: fontSize.axisLabel,
-        color: '#6b7280',
-        fontWeight: fontWeight.axisLabel
+        color: 'rgba(0, 0, 0, 0.7)',
+        fontWeight: fontWeight.axisLabel,
+        fontFamily: fontFamily
       }
     } : {
       type: 'category',
       data: sortedLabels,
-      axisLine: { show: true, lineStyle: { color: '#d1d5db' } },
+      axisLine: { show: true, lineStyle: { color: 'rgba(0, 0, 0, 0.2)' } },
       axisTick: { show: false },
       axisLabel: { 
         fontSize: fontSize.axisLabel,
-        color: '#374151',
+        color: 'rgba(0, 0, 0, 0.7)',
         fontWeight: fontWeight.axisLabel,
         rotate: 0,
-        interval: 0
+        interval: 0,
+        fontFamily: fontFamily
       },
       splitLine: { show: false }
     },
@@ -214,21 +225,21 @@ const BarChart = ({
       axisTick: { show: false },
       axisLabel: { 
         fontSize: fontSize.axisLabel,
-        color: '#374151',
+        color: 'rgba(0, 0, 0, 0.7)',
         fontWeight: fontWeight.axisLabel,
         fontFamily: fontFamily
       },
       splitLine: { show: false }
     } : {
       type: 'value',
-      axisLine: { show: false },
+      axisLine: { show: true, lineStyle: { color: 'rgba(0, 0, 0, 0.2)' } },
       axisTick: { show: false },
       splitLine: {
         show: true,
         lineStyle: {
-          color: '#e5e7eb',
+          color: 'rgba(229, 229, 239, 1)',
           type: 'dashed',
-          width: 1,
+          width: 1.5,
           opacity: 1
         }
       },
@@ -236,7 +247,8 @@ const BarChart = ({
         formatter: v => v.toLocaleString(undefined, { maximumFractionDigits: 0 }),
         fontSize: fontSize.axisLabel,
         color: '#6b7280',
-        fontWeight: fontWeight.axisLabel
+        fontWeight: fontWeight.axisLabel,
+        fontFamily: fontFamily
       }
     },
 
@@ -251,7 +263,9 @@ const BarChart = ({
       barGap: 0,
       barCategoryGap: '25%',
       itemStyle: {
-        color: colors[idx]
+        color: colors[idx],
+        barBorderRadius: isHorizontal ? idx === 0 ? (topSeriesIndex===0 ? [8, 8, 8, 8] : [8, 0, 0, 8]) : (idx === topSeriesIndex ? [0, 8, 8, 0] : 0)
+                                      : idx === 0 ? (topSeriesIndex===0 ? [8, 8, 0, 0] : 0) : (idx === topSeriesIndex ? [8, 8, 0, 0] : 0)
       },
       emphasis: {
         itemStyle: { 
@@ -307,7 +321,7 @@ const BarChart = ({
         fontSize: fontSize.dataLabel,
         fontWeight: fontWeight.dataLabel,
         fontFamily: fontFamily,
-        color: '#1e293b',
+        color: 'rgba(0, 0, 0, 0.7)',
         // backgroundColor: 'rgba(255,255,255,0.95)',
         backgroundColor: 'transparent',
         borderRadius: 6,
@@ -325,8 +339,8 @@ const BarChart = ({
 
 
   return (
-    <div className="bg-background-light rounded-xl">
-      <Label nameChart={nameChart} description={description}/>
+    <div className={`${displayName ? 'p-6 bg-background-light border border-border-black-10 rounded-2xl shadow-component' : ''}`}>
+      <NameChart nameChart={nameChart} description={description} display={displayName} />
       <ReactECharts 
         ref={chartRef}
         option={option} 

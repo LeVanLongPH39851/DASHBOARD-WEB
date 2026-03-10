@@ -1,76 +1,145 @@
 import axiosClient from './axiosClient';
 import * as payloads from './payloads';
+import { buildPayloadWithFilters } from './payloads/buildPayloadWithFilters';
 
 const apiRoute = '/api/superset'
 
-export const getRatingPercentTrendNumberChart = () =>
-  axiosClient.post(apiRoute, payloads.ratingPercentTrendNumberChartPayload)
+const postChart = (basePayload, appliedFilters, disibledFilters = []) => {
+  const finalPayload = appliedFilters ? buildPayloadWithFilters(basePayload, appliedFilters, disibledFilters) : basePayload;
+  return axiosClient.post(apiRoute, finalPayload);
+};
 
-export const getRatingNumberChart = () =>
-  axiosClient.post(apiRoute, payloads.ratingNumberChartPayload)
+export const getRatingPercentTrendNumberChart = (appendFilters) =>
+  postChart(payloads.ratingPercentTrendNumberChartPayload, appendFilters)
 
-export const getAveReachNumberChart = () =>
-  axiosClient.post(apiRoute, payloads.aveReachNumberChartPayload)
+export const getRatingNumberChart = (appliedFilters) =>
+  postChart(payloads.ratingNumberChartPayload, appliedFilters)
 
-export const getRatingPercentNumberChart = () =>
-  axiosClient.post(apiRoute, payloads.ratingPercentNumberChartPayload)
+export const getAveReachNumberChart = (appliedFilters) =>
+  postChart(payloads.aveReachNumberChartPayload, appliedFilters)
 
-export const getAveReachPercentNumberChart = () =>
-  axiosClient.post(apiRoute, payloads.aveReachPercentNumberChartPayload)
+export const getRatingPercentNumberChart = (appendFilters) =>
+  postChart(payloads.ratingPercentNumberChartPayload, appendFilters)
 
-export const getRatingBarChartChannelEvent = () =>
-  axiosClient.post(apiRoute, payloads.ratingBarChartChannelEventPayload)
+export const getAveReachPercentNumberChart = (appendFilters) =>
+  postChart(payloads.aveReachPercentNumberChartPayload, appendFilters)
 
-export const getAveReachBarChartChannelEvent = () =>
-  axiosClient.post(apiRoute, payloads.aveReachBarChartChannelEventPayload)
+export const getRatingBarChartChannelEvent = (appendFilters) =>
+  postChart(payloads.ratingBarChartChannelEventPayload, appendFilters)
 
-export const getRatingBarChartDayEvent = () =>
-  axiosClient.post(apiRoute, payloads.ratingBarChartDayEventPayload)
+export const getAveReachBarChartChannelEvent = (appendFilters) =>
+  postChart(payloads.aveReachBarChartChannelEventPayload, appendFilters)
 
-export const getAveReachBarChartDayEvent = () =>
-  axiosClient.post(apiRoute, payloads.aveReachBarChartDayEventPayload)
+export const getRatingBarChartDayEvent = (appendFilters) =>
+  postChart(payloads.ratingBarChartDayEventPayload, appendFilters)
 
-export const getAllTableChartChannel = () =>
-  axiosClient.post(apiRoute, payloads.allTableChartChannelPayload)
+export const getAveReachBarChartDayEvent = (appendFilters) =>
+  postChart(payloads.aveReachBarChartDayEventPayload, appendFilters)
 
-export const getAllTableChartChannelEvent = () =>
-  axiosClient.post(apiRoute, payloads.allTableChartChannelEventPayload)
+export const getAllTableChartChannel = (appendFilters) =>
+  postChart(payloads.allTableChartChannelPayload, appendFilters)
 
-export const getRatingReachPercentTableChartRegional = () =>
-  axiosClient.post(apiRoute, payloads.ratingReachPercentTableChartRegionalPayload)
+export const getAllTableChartChannelEvent = (appendFilters) =>
+  postChart(payloads.allTableChartChannelEventPayload, appendFilters)
 
-export const getRatingReachPercentTableChartProvince = () =>
-  axiosClient.post(apiRoute, payloads.ratingReachPercentTableChartProvincePayload)
+export const getRatingReachPercentTableChartRegional = (appendFilters) =>
+  postChart(payloads.ratingReachPercentTableChartRegionalPayload, appendFilters)
 
-export const getRatingBarChartRegional = () =>
-  axiosClient.post(apiRoute, payloads.ratingBarChartRegionalPayload)
+export const getRatingReachPercentTableChartProvince = (appendFilters) =>
+  postChart(payloads.ratingReachPercentTableChartProvincePayload, appendFilters)
 
-export const getRatingBarChartKeyCity = () =>
-  axiosClient.post(apiRoute, payloads.ratingBarChartKeyCityPayload)
+export const getRatingBarChartRegional = (appendFilters) =>
+  postChart(payloads.ratingBarChartRegionalPayload, appendFilters)
 
-export const getRatingBarChartProvince = () =>
-  axiosClient.post(apiRoute, payloads.ratingBarChartProvincePayload)
+export const getRatingBarChartKeyCity = (appendFilters) =>
+  postChart(payloads.ratingBarChartKeyCityPayload, appendFilters)
 
-export const getRatingBarChartOthers = () =>
-  axiosClient.post(apiRoute, payloads.ratingBarChartOthersPayload)
+export const getRatingBarChartProvince = (appendFilters) =>
+  postChart(payloads.ratingBarChartProvincePayload, appendFilters)
 
-export const getAveReachBarChartRegional = () =>
-  axiosClient.post(apiRoute, payloads.aveReachBarChartRegionalPayload)
+export const getRatingBarChartOthers = (appendFilters) =>
+  postChart(payloads.ratingBarChartOthersPayload, appendFilters)
 
-export const getAveReachBarChartKeyCity = () =>
-  axiosClient.post(apiRoute, payloads.aveReachBarChartKeyCityPayload)
+export const getAveReachBarChartRegional = (appendFilters) =>
+  postChart(payloads.aveReachBarChartRegionalPayload, appendFilters)
 
-export const getAveReachBarChartProvince = () =>
-  axiosClient.post(apiRoute, payloads.aveReachBarChartProvincePayload)
+export const getAveReachBarChartKeyCity = (appendFilters) =>
+  postChart(payloads.aveReachBarChartKeyCityPayload, appendFilters)
 
-export const getAveReachBarChartOthers = () =>
-  axiosClient.post(apiRoute, payloads.aveReachBarChartOthersPayload)
+export const getAveReachBarChartProvince = (appendFilters) =>
+  postChart(payloads.aveReachBarChartProvincePayload, appendFilters)
 
-export const getRatingReachMixedChartDate = () =>
-  axiosClient.post(apiRoute, payloads.ratingReachMixedChartDatePayload)
+export const getAveReachBarChartOthers = (appendFilters) =>
+  postChart(payloads.aveReachBarChartOthersPayload, appendFilters)
 
-export const getRatingPercentLineChartTimebandChannel = () =>
-  axiosClient.post(apiRoute, payloads.ratingPercentLineChartTimebandChannelPayload)
+export const getRatingReachMixedChartDate = (appendFilters) =>
+  postChart(payloads.ratingReachMixedChartDatePayload, appendFilters)
 
-export const getRatingReachPercentMixedChartTimeband = () =>
-  axiosClient.post(apiRoute, payloads.ratingReachPercentMixedChartTimebandPayload)
+export const getRatingReachPercentMixedChartTimeband = (appendFilters) =>
+  postChart(payloads.ratingReachPercentMixedChartTimebandPayload, appendFilters)
+
+export const getRatingPercentLineChartTimebandChannel = (appendFilters) =>
+  postChart(payloads.ratingPercentLineChartTimebandChannelPayload, appendFilters)
+
+export const getAveReachPercentLineChartDateChannel = (appendFilters) =>
+  postChart(payloads.aveReachPercentLineChartDateChannelPayload, appendFilters)
+
+export const getRatingPercentLineChartDateChannel = (appendFilters) =>
+  postChart(payloads.ratingPercentLineChartDateChannelPayload, appendFilters)
+
+export const getAveReachPercentTreemapChartChannel = (appendFilters) =>
+  postChart(payloads.aveReachPercentTreemapChartChannelPayload, appendFilters)
+
+export const getRatingReachMixedChartTimeband = (appendFilters) =>
+  postChart(payloads.ratingReachMixedChartTimebandPayload, appendFilters)
+
+export const getRatingLineChartTimebandChannel = (appendFilters) =>
+  postChart(payloads.ratingLineChartTimebandChannelPayload, appendFilters)
+
+export const getAveReachLineChartTimebandChannel = (appendFilters) =>
+  postChart(payloads.aveReachLineChartTimebandChannelPayload, appendFilters)
+
+export const getRatingLineChartDateChannel = (appendFilters) =>
+  postChart(payloads.ratingLineChartDateChannelPayload, appendFilters)
+
+export const getAveReachLineChartDateChannel = (appendFilters) =>
+  postChart(payloads.aveReachLineChartDateChannelPayload, appendFilters)
+
+export const getRatingLineChartTimebandDay = (appendFilters) =>
+  postChart(payloads.ratingLineChartTimebandDayPayload, appendFilters)
+
+export const getAveReachLineChartTimebandDay = (appendFilters) =>
+  postChart(payloads.aveReachLineChartTimebandDayPayload, appendFilters)
+
+export const getAveReachLineChartTimebandRegional = (appendFilters) =>
+  postChart(payloads.aveReachLineChartTimebandRegionalPayload, appendFilters)
+
+export const getRatingTreemapChartChannel = (appendFilters) =>
+  postChart(payloads.ratingTreemapChartChannelPayload, appendFilters)
+
+export const getTotalEventDurationPieChartFirstLevel = (appendFilters) =>
+  postChart(payloads.totalEventDurationPieChartFirstLevelPayload, appendFilters)
+
+export const getTotalViewDurationPieChartFirstLevel = (appendFilters) =>
+  postChart(payloads.totalViewDurationPieChartFirstLevelPayload, appendFilters)
+
+export const getAllTableChartRank = (appendFilters) =>
+  postChart(payloads.allTableChartRankPayload, appendFilters)
+
+export const getAllTableChartDetail = (appendFilters) =>
+  postChart(payloads.allTableChartDetailPayload, appendFilters)
+
+export const getAllTableChartEvent = (appendFilters) =>
+  postChart(payloads.allTableChartEventPayload, appendFilters)
+
+export const getRatingLineChartMinuteChannel = (appendFilters) =>
+  postChart(payloads.ratingLineChartMinuteChannelPayload, appendFilters, ['eventFilters'])
+
+export const getRatingLineChartMinuteChannelOneDate = (appendFilters) =>
+  postChart(payloads.ratingLineChartMinuteChannelOneDatePayload, appendFilters, ['eventFilters'])
+
+export const getRatingLineChartMinuteChannelDates = (appendFilters) =>
+  postChart(payloads.ratingLineChartMinuteChannelDatesPayload, appendFilters, ['eventFilters'])
+
+export const getFilterProvince = () =>
+  axiosClient.post(apiRoute, payloads.filterProvincePayload)

@@ -1,4 +1,4 @@
-export const aveReachPercentLineChartTimebandChannelPayload = {
+export const aveReachPercentLineChartDateChannelPayload = {
   url: 'https://ratings.vtv.vn/api/v1/chart/data?form_data=%7B%22slice_id%22%3A397%7D&dashboard_id=45',
   payload: {
     "datasource": {

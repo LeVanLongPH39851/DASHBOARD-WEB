@@ -24,8 +24,29 @@ const HOOKS = [
   { hook: useCallApi.useAveReachBarChartProvinceReturnApi, dataKey: 'aveReachBarProvinceData' },
   { hook: useCallApi.useAveReachBarChartOthersReturnApi, dataKey: 'aveReachBarOthersData' },
   { hook: useCallApi.useRatingReachMixedChartDateReturnApi, dataKey: 'ratingReachMixedDateData' },
+  { hook: useCallApi.useRatingReachPercentMixedChartTimebandReturnApi, dataKey: 'ratingReachPercentMixedTimebandData' },
   { hook: useCallApi.useRatingPercentLineChartTimebandChannelReturnApi, dataKey: 'ratingPercentLineTimebandChannelData' },
-  { hook: useCallApi.useRatingReachPercentMixedChartTimebandReturnApi, dataKey: 'ratingReachPercentMixedTimebandData' }
+  { hook: useCallApi.useAveReachPercentLineChartDateChannelReturnApi, dataKey: 'aveReachPercentLineDateChannelData' },
+  { hook: useCallApi.useRatingPercentLineChartDateChannelReturnApi, dataKey: 'ratingPercentLineDateChannelData' },
+  { hook: useCallApi.useAveReachPercentTreemapChartChannelReturnApi, dataKey: 'aveReachPercentTreemapChannelData' },
+  { hook: useCallApi.useRatingReachMixedChartTimebandReturnApi, dataKey: 'ratingReachMixedTimebandData' },
+  { hook: useCallApi.useRatingLineChartTimebandChannelReturnApi, dataKey: 'ratingLineTimebandChannelData' },
+  { hook: useCallApi.useAveReachLineChartTimebandChannelReturnApi, dataKey: 'aveReachLineTimebandChannelData' },
+  { hook: useCallApi.useRatingLineChartDateChannelReturnApi, dataKey: 'ratingLineDateChannelData' },
+  { hook: useCallApi.useAveReachLineChartDateChannelReturnApi, dataKey: 'aveReachLineDateChannelData' },
+  { hook: useCallApi.useRatingLineChartTimebandDayReturnApi, dataKey: 'ratingLineTimebandDayData' },
+  { hook: useCallApi.useAveReachLineChartTimebandDayReturnApi, dataKey: 'aveReachLineTimebandDayData' },
+  { hook: useCallApi.useAveReachLineChartTimebandRegionalReturnApi, dataKey: 'aveReachLineTimebandRegionalData' },
+  { hook: useCallApi.useRatingTreemapChartChannelReturnApi, dataKey: 'ratingTreemapChannelData' },
+  { hook: useCallApi.useTotalEventDurationPieChartFirstLevelReturnApi, dataKey: 'totalEventDurationPieFirstLevelData' },
+  { hook: useCallApi.useTotalViewDurationPieChartFirstLevelReturnApi, dataKey: 'totalViewDurationPieFirstLevelData' },
+  { hook: useCallApi.useAllTableChartRankReturnApi, dataKey: 'allTableRankData' },
+  { hook: useCallApi.useAllTableChartDetailReturnApi, dataKey: 'allTableDetailData' },
+  { hook: useCallApi.useAllTableChartEventReturnApi, dataKey: 'allTableEventData' },
+  { hook: useCallApi.useRatingLineChartMinuteChannelReturnApi, dataKey: 'ratingLineMinuteChannelData' },
+  { hook: useCallApi.useRatingLineChartMinuteChannelOneDateReturnApi, dataKey: 'ratingLineMinuteChannelOneDateData' },
+  { hook: useCallApi.useRatingLineChartMinuteChannelDatesReturnApi, dataKey: 'ratingLineMinuteChannelDatesData' },
+  { hook: useCallApi.useFilterProvinceReturnApi, dataKey: 'filterProvinceData' }
 ];
 
 export const useDashboardData = () => {

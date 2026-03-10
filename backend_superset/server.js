@@ -29,7 +29,7 @@ app.post('/api/superset', async (req, res) => {
         ? [...new Set([...result.result[0].colnames, ...result.result[1].colnames])]
         : result.result[0].colnames,
       rowcount: result.result[1]
-        ? result.result[0].rowcount + result.result[1].rowcountno
+        ? result.result[0].rowcount + result.result[1].rowcount
         : result.result[0].rowcount
     });
     

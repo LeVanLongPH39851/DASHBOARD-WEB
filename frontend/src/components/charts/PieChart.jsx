@@ -1,6 +1,7 @@
 import React, { memo, useRef } from 'react';
 import ReactECharts from 'echarts-for-react';
-import Label from '../layouts/components/NameChart';
+import NameChart from '../layouts/components/NameChart';
+import Loading from '../commons/Loading';
 
 const PieChart = ({
   data,
@@ -16,6 +17,16 @@ const PieChart = ({
   innerRadius, // % cho donut
   labelDisplay = 'percent', // NEW: 'percent', 'label', 'label-percent', 'percent-label'
 }) => {
+
+  if(data==='isLoading') {
+    return (
+      <div className='p-6 bg-background-light border border-border-black-10 rounded-2xl shadow-component'>
+        <NameChart nameChart={nameChart} description={description} />
+        <Loading height={height} />
+      </div>
+    );
+  }
+
   const chartRef = useRef(null);
   const { labels = [], values = [], series = [] } = data;
 
@@ -56,30 +67,23 @@ const PieChart = ({
   const option = {
     tooltip: {
       trigger: 'item',
-      backgroundColor: 'rgba(255,255,255,0.95)',
-      borderColor: '#e5e7eb',
-      borderWidth: 1,
-      textStyle: {
-        fontSize: fontSize?.tooltip || 13,
-        color: '#1f2937',
-        fontWeight: fontWeight?.tooltip || 500,
-        fontFamily: fontFamily,
+      backgroundColor: 'rgba(255,255,255,1)',
+      borderWidth: 0,
+      textStyle: { 
+        fontSize: fontSize.tooltip,
+        color: 'rgba(0, 0, 0, 0.7)',
+        fontWeight: fontWeight.tooltip,
+        fontFamily: fontFamily
       },
       formatter: (params) => {
         const percent = params.percent;
-        const total = pieSeriesData.reduce((sum, d) => sum + (d.value || 0), 0);
         return `
-          <div style="padding: 12px 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); min-width: 140px;">
-            <div style="font-weight: 700; font-size: 16px; margin-bottom: 8px; color: #1f2937;">
-              ${params.name}
+          <div style="padding: 12px 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+            <div style="font-weight: 600; font-size: 13px; color: rgba(0, 0, 0, 0.7);">
+              ${params.marker} ${params.name}
             </div>
-            <div style="margin: 4px 0; display: flex; align-items: center;">
-              ${params.marker}
-              <span style="font-weight: 600; margin-right: 8px; color: #374151;">${params.seriesName}:</span>
-              <span style="font-size: 15px; font-weight: 500;">${params.value.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
-            </div>
-            <div style="font-size: 14px; color: #059669; font-weight: 700;">
-              ${(percent || 0).toFixed(1)}% (${(params.value * 100 / total).toFixed(1)}%)
+            <div style="font-weight: 700; color: #059669; font-size: 12px;">
+              ${params.value.toLocaleString(undefined, { maximumFractionDigits: (nameChart.includes('%') ? 2 : 0) })} <span style="font-size: 11px">(${(percent || 0).toFixed(2)}%)</span>
             </div>
           </div>
         `;
@@ -87,16 +91,20 @@ const PieChart = ({
     },
 
     legend: enableLegend ? {
+      type: 'scroll',
       orient: 'vertical',
-      right: 20,
-      top: 40,
-      bottom: 20,
-      itemWidth: 12,
-      itemHeight: 12,
+      left: 0,
+      top: 0,
+      itemWidth: 14,
+      itemHeight: 14,
+      icon: 'circle',
+      itemGap: 8,
       textStyle: {
-        fontSize: fontSize?.legend || 12,
-        color: '#64748b',
-        fontWeight: fontWeight?.legend || 400,
+        fontSize: fontSize?.legend,
+        color: 'rgba(30, 27, 57, 1)',
+        fontWeight: fontWeight?.legend,
+        fontFamily: fontFamily,
+        letterSpacing: '0.1px'
       },
     } : {
       show: false,
@@ -107,67 +115,73 @@ const PieChart = ({
       type: 'pie',
       radius: donut ? [innerRadius + '%', '75%'] : ['0%', '75%'],
       avoidLabelOverlap: false,
-      center: ['40%', '50%'],
+      center: ['60%', '50%'],
       emphasis: {
         itemStyle: {
           shadowBlur: 15,
           shadowColor: 'rgba(0,0,0,0.2)',
         },
+        labelLine: {
+          lineStyle: {
+            width: 4
+          }
+        }
       },
       label: {
         show: true,
         position: 'outer',
         formatter: getLabelFormatter(),
-        fontSize: fontSize?.dataLabel || 12,
-        fontWeight: fontWeight?.dataLabel || 500,
+        fontSize: fontSize?.dataLabel,
+        fontWeight: fontWeight?.dataLabel,
         fontFamily: fontFamily,
-        color: '#1e293b',
         rich: {
           b: {
-            fontSize: fontSize?.dataLabel || 12,
-            fontWeight: fontWeight?.dataLabel || 500,
+            fontSize: fontSize?.dataLabel,
+            fontWeight: fontWeight?.dataLabel,
             height: 24,
-            lineHeight: 24,
-            color: '#1e293b', // ✅ Màu tên label (xám)
+            lineHeight: 24
           },
           c: {
-            fontSize: fontSize?.dataLabel || 14,
-            fontWeight: 'bold',
-            // ✅ MÀU % GIỐNG colors - HIỂN THỊ MẶC ĐỊNH (không cần hover)
-            color: (params) => getColorForItem(params.name, params.dataIndex),
+            fontSize: fontSize?.dataLabel,
+            fontWeight: fontWeight.dataLabel,
             height: 20,
-            lineHeight: 20,
-          },
-        },
+            lineHeight: 20
+          }
+        }
       },
       labelLine: {
         show: true,
         length: 15,
-        length2: 8,
+        length2: 70,
         lineStyle: {
-          // ✅ Label line cũng lấy màu từ colors
-          color: (params) => getColorForItem(params.name, params.dataIndex),
           width: 2,
-          type: 'solid',
-        },
+          type: 'solid'
+        }
       },
       itemStyle: {
         borderRadius: 6,
-        borderColor: '#fff',
-        borderWidth: 2,
+        borderColor: 'rgba(255, 255, 255, 1)',
+        borderWidth: 2
       },
       data: pieSeriesData.map((item, idx) => ({
         ...item,
         itemStyle: {
           color: getColorForItem(item.name, idx), // ✅ Slice màu từ colors
         },
+        label: {
+          rich: {
+            c: {
+              color: getColorForItem(item.name, idx)
+            }
+          }
+        }
       })),
     }],
   };
 
   return (
-    <div className="bg-background-light rounded-xl">
-      <Label nameChart={nameChart} description={description} />
+    <div className='p-6 bg-background-light border border-border-black-10 rounded-2xl shadow-component'>
+      <NameChart nameChart={nameChart} description={description} />
       <ReactECharts
         ref={chartRef}
         option={option}

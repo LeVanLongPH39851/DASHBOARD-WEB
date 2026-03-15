@@ -6,7 +6,7 @@ import imageUser from '../../../assets/image_user.png';
 
 const Header = () => {
   return (
-    <header className="h-15 bg-background-light px-6 py-px flex justify-between items-center border-b border-border-black-10 sticky top-0" style={{zIndex: 100}}>
+    <header className="h-15 bg-background-light px-6 py-px flex justify-between items-center border-b border-border-black-10">
         <figure>
             <img src={logoVTVRatings} className='h-14.5' alt="Logo VTVRatings" />
         </figure>

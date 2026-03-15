@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react';
 import NumberCard from '../components/charts/NumberCard';
-import Loading from '../components/commons/Loading';
-import ErrorState from '../components/commons/ErrorState';
 import Filter from '../components/layouts/filters/Filter';
 import { METRICS } from '../utils/metricInfor';
 import { CUSTOM_CHART } from '../utils/customChart';
@@ -40,20 +38,16 @@ const DashboardContent = () => {
   const [channels, setChannels] = useState([]);
   const [events, setEvents] = useState([]);
   const [provinces, setProvinces] = useState([]);
-
-  if (dashboard.isLoading) return <Loading />;
-  if (dashboard.hasError) return <ErrorState />;
   
   const scopeNumberData = {
-    'ratingNumber': dashboard.ratingNumberData,
-    'aveReachNumber': dashboard.aveReachNumberData,
-    'ratingPercentNumber': dashboard.ratingPercentNumberData,
-    'aveReachPercentNumber': dashboard.aveReachPercentNumberData,
-    'ratingBarChannelEventData': dashboard.ratingBarChannelEventData
+    'ratingNumber': !dashboard.isLoading.ratingNumberData ? dashboard.ratingNumberData.data[0] : false,
+    'aveReachNumber': !dashboard.isLoading.aveReachNumberData ? dashboard.aveReachNumberData.data[0] : false,
+    'ratingPercentNumber': !dashboard.isLoading.ratingPercentNumberData ? dashboard.ratingPercentNumberData.data[0] : false,
+    'aveReachPercentNumber': !dashboard.isLoading.aveReachPercentNumberData ? dashboard.aveReachPercentNumberData.data[0] : false
   }
 
   const scopeFilterData = {
-    filterProvince: dashboard.filterProvinceData.data
+    filterProvince: dashboard.isLoading.filterProvinceData ? [{'Loading': 'Loading'}] : dashboard.filterProvinceData?.data
   }
   
   return (
@@ -64,7 +58,7 @@ const DashboardContent = () => {
                 filters={scopeFilterData} appliedFilters={appliedFilters} setAppliedFilters={setAppliedFilters}
                 channels={channels} setChannels={setChannels} events={events} setEvents={setEvents}
                 provinces={provinces} setProvinces={setProvinces} />
-        <div className={`mb-4 ${filterOpen.isOpen && !filterOpen.horizontal ? 'w-[85%]' : 'w-full'} transition-all duration-300`}>
+        <div className={`mb-6 ${filterOpen.isOpen && !filterOpen.horizontal ? 'w-[84%]' : 'w-full'} transition-all duration-300`}>
           <BreadCrumb/>
           <div className='bg-background-dashboard'>
             <ParentTabs uniqueId='dashboard'
@@ -95,13 +89,13 @@ const DashboardContent = () => {
                                         key={card.name}
                                         title={card.title}
                                         description={card.description}
-                                        value={formatNumber(scopeNumberData?.[card.name]?.data[0]?.[card.metric], { isPercent: card.isPercent })}
+                                        value={scopeNumberData?.[card.name] ? formatNumber(scopeNumberData?.[card.name]?.[card.metric], { isPercent: card.isPercent }) : 'isLoading'}
                                         icon={card.icon}
                                         background={card.background}
                                         widthIcon={card.widthIcon}
                                       />
                                     ))}
-                                  </div>
+                                    </div>
                                   </div>
                                   <div className='w-full flex gap-6 pb-6'>
                                     <div className='w-[60%]'>
@@ -111,7 +105,7 @@ const DashboardContent = () => {
                                           {id: CUSTOM_TAB.childTabRatingReach.rating.id, label: CUSTOM_TAB.childTabRatingReach.rating.label,
                                           content: (
                                             <BarChart 
-                                              data={transformBarChartData(dashboard.ratingBarChannelEventData.data, dashboard.ratingBarChannelEventData.colnames)}
+                                              data={!dashboard.isLoading.ratingBarChannelEventData ? transformBarChartData(dashboard.ratingBarChannelEventData?.data, dashboard.ratingBarChannelEventData?.colnames) : 'isLoading'}
                                               height={CUSTOM_CHART.barChart.height}
                                               fontSize={CUSTOM_CHART.barChart.fontSize}
                                               fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -126,7 +120,7 @@ const DashboardContent = () => {
                                           {id: CUSTOM_TAB.childTabRatingReach.ave_reach.id, label: CUSTOM_TAB.childTabRatingReach.ave_reach.label,
                                             content: (
                                               <BarChart 
-                                                data={transformBarChartData(dashboard.aveReachBarChannelEventData.data, dashboard.aveReachBarChannelEventData.colnames)}
+                                                data={!dashboard.isLoading.aveReachBarChannelEventData ? transformBarChartData(dashboard.aveReachBarChannelEventData?.data, dashboard.aveReachBarChannelEventData?.colnames) : 'isLoading'}
                                                 height={CUSTOM_CHART.barChart.height}
                                                 fontSize={CUSTOM_CHART.barChart.fontSize}
                                                 fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -148,7 +142,7 @@ const DashboardContent = () => {
                                           {id: CUSTOM_TAB.childTabRatingReach.rating.id, label: CUSTOM_TAB.childTabRatingReach.rating.label,
                                           content: (
                                             <BarChart 
-                                              data={transformBarChartData(dashboard.ratingBarDayEventData.data, dashboard.ratingBarDayEventData.colnames)}
+                                              data={!dashboard.isLoading.ratingBarDayEventData ? transformBarChartData(dashboard.ratingBarDayEventData?.data, dashboard.ratingBarDayEventData?.colnames) : 'isLoading'}
                                               height={CUSTOM_CHART.barChart.height}
                                               fontSize={CUSTOM_CHART.barChart.fontSize}
                                               fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -163,7 +157,7 @@ const DashboardContent = () => {
                                           {id: CUSTOM_TAB.childTabRatingReach.ave_reach.id, label: CUSTOM_TAB.childTabRatingReach.ave_reach.label,
                                             content: (
                                               <BarChart 
-                                                data={transformBarChartData(dashboard.aveReachBarDayEventData.data, dashboard.aveReachBarDayEventData.colnames)}
+                                                data={!dashboard.isLoading.aveReachBarDayEventData ? transformBarChartData(dashboard.aveReachBarDayEventData?.data, dashboard.aveReachBarDayEventData?.colnames) : 'isLoading'}
                                                 height={CUSTOM_CHART.barChart.height}
                                                 fontSize={CUSTOM_CHART.barChart.fontSize}
                                                 fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -181,60 +175,70 @@ const DashboardContent = () => {
                                   </div>
                                   <div className='w-full flex gap-6 pb-6'>
                                     <div className='w-[60%]'>
-                                      <ChildTabs tabs={[
-                                        {id: CUSTOM_TAB.childTabChannel.channel.id, label: CUSTOM_TAB.childTabChannel.channel.label,
-                                        content: (
-                                          <TableChart data={transformTableChartData(dashboard.allTableChannelData.data, dashboard.allTableChannelData.colnames)}
-                                                height={CUSTOM_CHART.tableChart.tableChartChannel.height}
-                                                fontSize={CUSTOM_CHART.tableChart.fontSize}
-                                                fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                fontWeight={CUSTOM_CHART.tableChart.fontWeight}
-                                                nameChart={CUSTOM_CHART.tableChart.tableChartChannel.name}
-                                                description={CUSTOM_CHART.tableChart.tableChartChannel.desciption}
-                                                showSTT={CUSTOM_CHART.tableChart.tableChartChannel.STT}
-                                                showPagination={CUSTOM_CHART.tableChart.tableChartChannel.pagination} />
-                                        )},
-                                        {id: CUSTOM_TAB.childTabChannel.event.id, label: CUSTOM_TAB.childTabChannel.event.label,
+                                      <div className={`p-6 bg-background-light border border-border-black-10 rounded-2xl shadow-component`}>
+                                        <NameChart nameChart={CUSTOM_CHART.tableChart.tableChartChannel.name} description={CUSTOM_CHART.tableChart.tableChartChannel.desciption} />
+                                        <ChildTabs tabs={[
+                                          {id: CUSTOM_TAB.childTabChannel.channel.id, label: CUSTOM_TAB.childTabChannel.channel.label,
                                           content: (
-                                            <TableChart data={transformTableChartData(dashboard.allTableChannelEventData.data, dashboard.allTableChannelEventData.colnames)}
-                                                height={CUSTOM_CHART.tableChart.tableChartChannel.height}
-                                                fontSize={CUSTOM_CHART.tableChart.fontSize}
-                                                fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                fontWeight={CUSTOM_CHART.tableChart.fontWeight}
-                                                nameChart={CUSTOM_CHART.tableChart.tableChartChannel.name}
-                                                description={CUSTOM_CHART.tableChart.tableChartChannel.desciption}
-                                                showSTT={CUSTOM_CHART.tableChart.tableChartChannel.STT}
-                                                showPagination={CUSTOM_CHART.tableChart.tableChartChannel.pagination} />
-                                          )}
-                                        ]} />
+                                            <TableChart data={!dashboard.isLoading.allTableChannelData ? transformTableChartData(dashboard.allTableChannelData?.data, dashboard.allTableChannelData?.colnames) : 'isLoading'}
+                                                  height={CUSTOM_CHART.tableChart.tableChartChannel.height}
+                                                  fontSize={CUSTOM_CHART.tableChart.fontSize}
+                                                  fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                                  fontWeight={CUSTOM_CHART.tableChart.fontWeight}
+                                                  nameChart={CUSTOM_CHART.tableChart.tableChartChannel.name}
+                                                  description={CUSTOM_CHART.tableChart.tableChartChannel.desciption}
+                                                  showSTT={CUSTOM_CHART.tableChart.tableChartChannel.STT}
+                                                  showPagination={CUSTOM_CHART.tableChart.tableChartChannel.pagination}
+                                                  displayName={false} />
+                                          )},
+                                          {id: CUSTOM_TAB.childTabChannel.event.id, label: CUSTOM_TAB.childTabChannel.event.label,
+                                            content: (
+                                              <TableChart data={!dashboard.isLoading.allTableChannelEventData ? transformTableChartData(dashboard.allTableChannelEventData?.data, dashboard.allTableChannelEventData?.colnames) : 'isLoading'}
+                                                  height={CUSTOM_CHART.tableChart.tableChartChannel.height}
+                                                  fontSize={CUSTOM_CHART.tableChart.fontSize}
+                                                  fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                                  fontWeight={CUSTOM_CHART.tableChart.fontWeight}
+                                                  nameChart={CUSTOM_CHART.tableChart.tableChartChannel.name}
+                                                  description={CUSTOM_CHART.tableChart.tableChartChannel.desciption}
+                                                  showSTT={CUSTOM_CHART.tableChart.tableChartChannel.STT}
+                                                  showPagination={CUSTOM_CHART.tableChart.tableChartChannel.pagination}
+                                                  displayName={false} />
+                                            )}
+                                          ]} />
+                                      </div>
                                     </div>
                                     <div className='w-[40%]'>
-                                      <ChildTabs tabs={[
-                                        {id: CUSTOM_TAB.childTabArea.regional.id, label: CUSTOM_TAB.childTabArea.regional.label,
-                                        content: (
-                                          <TableChart data={transformTableChartData(dashboard.ratingReachPercentTableRegionalData.data, dashboard.ratingReachPercentTableRegionalData.colnames)}
-                                                height={CUSTOM_CHART.tableChart.tableChartArea.height}
-                                                fontSize={CUSTOM_CHART.tableChart.fontSize}
-                                                fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                fontWeight={CUSTOM_CHART.tableChart.fontWeight}
-                                                nameChart={CUSTOM_CHART.tableChart.tableChartArea.name}
-                                                description={CUSTOM_CHART.tableChart.tableChartArea.desciption}
-                                                showSTT={CUSTOM_CHART.tableChart.tableChartArea.STT}
-                                                showPagination={CUSTOM_CHART.tableChart.tableChartArea.pagination} />
-                                        )},
-                                        {id: CUSTOM_TAB.childTabArea.province.id, label: CUSTOM_TAB.childTabArea.province.label,
+                                      <div className={`p-6 bg-background-light border border-border-black-10 rounded-2xl shadow-component`}>
+                                        <NameChart nameChart={CUSTOM_CHART.tableChart.tableChartArea.name} description={CUSTOM_CHART.tableChart.tableChartArea.desciption} />
+                                        <ChildTabs tabs={[
+                                          {id: CUSTOM_TAB.childTabArea.regional.id, label: CUSTOM_TAB.childTabArea.regional.label,
                                           content: (
-                                            <TableChart data={transformTableChartData(dashboard.ratingReachPercentTableProvinceData.data, dashboard.ratingReachPercentTableProvinceData.colnames)}
-                                                height={CUSTOM_CHART.tableChart.tableChartArea.height}
-                                                fontSize={CUSTOM_CHART.tableChart.fontSize}
-                                                fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                fontWeight={CUSTOM_CHART.tableChart.fontWeight}
-                                                nameChart={CUSTOM_CHART.tableChart.tableChartArea.name}
-                                                description={CUSTOM_CHART.tableChart.tableChartArea.desciption}
-                                                showSTT={CUSTOM_CHART.tableChart.tableChartArea.STT}
-                                                showPagination={CUSTOM_CHART.tableChart.tableChartArea.pagination} />
-                                          )}
-                                      ]}/>
+                                            <TableChart data={!dashboard.isLoading.ratingReachPercentTableRegionalData ? transformTableChartData(dashboard.ratingReachPercentTableRegionalData?.data, dashboard.ratingReachPercentTableRegionalData?.colnames) : 'isLoading'}
+                                                  height={CUSTOM_CHART.tableChart.tableChartArea.height}
+                                                  fontSize={CUSTOM_CHART.tableChart.fontSize}
+                                                  fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                                  fontWeight={CUSTOM_CHART.tableChart.fontWeight}
+                                                  nameChart={CUSTOM_CHART.tableChart.tableChartArea.name}
+                                                  description={CUSTOM_CHART.tableChart.tableChartArea.desciption}
+                                                  showSTT={CUSTOM_CHART.tableChart.tableChartArea.STT}
+                                                  showPagination={CUSTOM_CHART.tableChart.tableChartArea.pagination}
+                                                  displayName={false} />
+                                          )},
+                                          {id: CUSTOM_TAB.childTabArea.province.id, label: CUSTOM_TAB.childTabArea.province.label,
+                                            content: (
+                                              <TableChart data={!dashboard.isLoading.ratingReachPercentTableProvinceData ? transformTableChartData(dashboard.ratingReachPercentTableProvinceData?.data, dashboard.ratingReachPercentTableProvinceData?.colnames) : 'isLoading'}
+                                                  height={CUSTOM_CHART.tableChart.tableChartArea.height}
+                                                  fontSize={CUSTOM_CHART.tableChart.fontSize}
+                                                  fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                                  fontWeight={CUSTOM_CHART.tableChart.fontWeight}
+                                                  nameChart={CUSTOM_CHART.tableChart.tableChartArea.name}
+                                                  description={CUSTOM_CHART.tableChart.tableChartArea.desciption}
+                                                  showSTT={CUSTOM_CHART.tableChart.tableChartArea.STT}
+                                                  showPagination={CUSTOM_CHART.tableChart.tableChartArea.pagination}
+                                                  displayName={false} />
+                                            )}
+                                        ]}/>
+                                      </div>
                                     </div>
                                   </div>
                                   <div className='w-full grid grid-cols-2 gap-6 pb-6'>
@@ -244,7 +248,7 @@ const DashboardContent = () => {
                                           {id: CUSTOM_TAB.childTabArea.regional.id, label: CUSTOM_TAB.childTabArea.regional.label,
                                           content: (
                                             <BarChart 
-                                              data={transformBarChartData(dashboard.ratingBarRegionalData.data, dashboard.ratingBarRegionalData.colnames)}
+                                              data={!dashboard.isLoading.ratingBarRegionalData ? transformBarChartData(dashboard.ratingBarRegionalData?.data, dashboard.ratingBarRegionalData?.colnames) : 'isLoading'}
                                               height={CUSTOM_CHART.barChart.height}
                                               fontSize={CUSTOM_CHART.barChart.fontSize}
                                               fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -259,7 +263,7 @@ const DashboardContent = () => {
                                           {id: CUSTOM_TAB.childTabArea.key_city.id, label: CUSTOM_TAB.childTabArea.key_city.label,
                                           content: (
                                             <BarChart 
-                                              data={transformBarChartData(dashboard.ratingBarKeyCityData.data, dashboard.ratingBarKeyCityData.colnames)}
+                                              data={!dashboard.isLoading.ratingBarKeyCityData ? transformBarChartData(dashboard.ratingBarKeyCityData?.data, dashboard.ratingBarKeyCityData?.colnames) : 'isLoading'}
                                               height={CUSTOM_CHART.barChart.height}
                                               fontSize={CUSTOM_CHART.barChart.fontSize}
                                               fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -274,7 +278,7 @@ const DashboardContent = () => {
                                           {id: CUSTOM_TAB.childTabArea.province.id, label: CUSTOM_TAB.childTabArea.province.label,
                                           content: (
                                             <BarChart 
-                                              data={transformBarChartData(dashboard.ratingBarProvinceData.data, dashboard.ratingBarProvinceData.colnames)}
+                                              data={!dashboard.isLoading.ratingBarProvinceData ? transformBarChartData(dashboard.ratingBarProvinceData?.data, dashboard.ratingBarProvinceData?.colnames) : 'isLoading'}
                                               height={CUSTOM_CHART.barChart.height}
                                               fontSize={CUSTOM_CHART.barChart.fontSize}
                                               fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -289,7 +293,7 @@ const DashboardContent = () => {
                                           {id: CUSTOM_TAB.childTabArea.others.id, label: CUSTOM_TAB.childTabArea.others.label,
                                           content: (
                                             <BarChart 
-                                              data={transformBarChartData(dashboard.ratingBarOthersData.data, dashboard.ratingBarOthersData.colnames)}
+                                              data={!dashboard.isLoading.ratingBarOthersData ? transformBarChartData(dashboard.ratingBarOthersData?.data, dashboard.ratingBarOthersData?.colnames) : 'isLoading'}
                                               height={CUSTOM_CHART.barChart.height}
                                               fontSize={CUSTOM_CHART.barChart.fontSize}
                                               fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -309,7 +313,7 @@ const DashboardContent = () => {
                                           {id: CUSTOM_TAB.childTabArea.regional.id, label: CUSTOM_TAB.childTabArea.regional.label,
                                           content: (
                                             <BarChart 
-                                              data={transformBarChartData(dashboard.aveReachBarRegionalData.data, dashboard.aveReachBarRegionalData.colnames)}
+                                              data={!dashboard.isLoading.aveReachBarRegionalData ? transformBarChartData(dashboard.aveReachBarRegionalData?.data, dashboard.aveReachBarRegionalData?.colnames) : 'isLoading'}
                                               height={CUSTOM_CHART.barChart.height}
                                               fontSize={CUSTOM_CHART.barChart.fontSize}
                                               fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -324,7 +328,7 @@ const DashboardContent = () => {
                                           {id: CUSTOM_TAB.childTabArea.key_city.id, label: CUSTOM_TAB.childTabArea.key_city.label,
                                           content: (
                                             <BarChart 
-                                              data={transformBarChartData(dashboard.aveReachBarKeyCityData.data, dashboard.aveReachBarKeyCityData.colnames)}
+                                              data={!dashboard.isLoading.aveReachBarKeyCityData ? transformBarChartData(dashboard.aveReachBarKeyCityData?.data, dashboard.aveReachBarKeyCityData?.colnames) : 'isLoading'}
                                               height={CUSTOM_CHART.barChart.height}
                                               fontSize={CUSTOM_CHART.barChart.fontSize}
                                               fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -339,7 +343,7 @@ const DashboardContent = () => {
                                           {id: CUSTOM_TAB.childTabArea.province.id, label: CUSTOM_TAB.childTabArea.province.label,
                                           content: (
                                             <BarChart 
-                                              data={transformBarChartData(dashboard.aveReachBarProvinceData.data, dashboard.aveReachBarProvinceData.colnames)}
+                                              data={!dashboard.isLoading.aveReachBarProvinceData ? transformBarChartData(dashboard.aveReachBarProvinceData?.data, dashboard.aveReachBarProvinceData?.colnames) : 'isLoading'}
                                               height={CUSTOM_CHART.barChart.height}
                                               fontSize={CUSTOM_CHART.barChart.fontSize}
                                               fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -354,7 +358,7 @@ const DashboardContent = () => {
                                           {id: CUSTOM_TAB.childTabArea.others.id, label: CUSTOM_TAB.childTabArea.others.label,
                                           content: (
                                             <BarChart 
-                                              data={transformBarChartData(dashboard.aveReachBarOthersData.data, dashboard.aveReachBarOthersData.colnames)}
+                                              data={!dashboard.isLoading.aveReachBarOthersData ? transformBarChartData(dashboard.aveReachBarOthersData?.data, dashboard.aveReachBarOthersData?.colnames) : 'isLoading'}
                                               height={CUSTOM_CHART.barChart.height}
                                               fontSize={CUSTOM_CHART.barChart.fontSize}
                                               fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -370,7 +374,7 @@ const DashboardContent = () => {
                                       </div>
                                   </div>
                                   <div className='w-full pb-6'>
-                                    <MixedChart data={transformMixedChartData(dashboard.ratingReachMixedDateData.data, 'date', dashboard.ratingReachMixedDateData.colnames)}
+                                    <MixedChart data={!dashboard.isLoading.ratingReachMixedDateData ? transformMixedChartData(dashboard.ratingReachMixedDateData?.data, 'date', dashboard.ratingReachMixedDateData?.colnames) : 'isLoading'}
                                                 height={CUSTOM_CHART.mixedChart.height}
                                                 fontSize={CUSTOM_CHART.mixedChart.fontSize}
                                                 fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -381,7 +385,8 @@ const DashboardContent = () => {
                                                 lineSeriesKeys={CUSTOM_CHART.mixedChart.mixedChartDate.metrics.rating}
                                                 colors={CUSTOM_CHART.mixedChart.mixedChartDate.colors}
                                                 barMaxWidth={CUSTOM_CHART.mixedChart.barMaxWidth}
-                                                barWidthPercent={CUSTOM_CHART.mixedChart.barWidthPercent} />
+                                                barWidthPercent={CUSTOM_CHART.mixedChart.barWidthPercent} 
+                                                lastDataIndexActive={CUSTOM_CHART.mixedChart.mixedChartDate.lastDataIndexActive} />
                                   </div>
                                 </div>
                               </section>
@@ -403,260 +408,265 @@ const DashboardContent = () => {
                                              currentTab={currentTab}
                                              isOpen={filterOpen}
                                              setIsOpen={setFilterOpen} />
-                                <div className='px-10 pt-6'>
-                                  <NormalTabs tabs={[
-                                    {id: '%', label: '(%)',
-                                      content: (
-                                        <>
-                                          <div className='w-full pb-6'>
-                                            <MixedChart data={transformMixedChartData(dashboard.ratingReachPercentMixedTimebandData.data, 'time_band', dashboard.ratingReachPercentMixedTimebandData.colnames)}
-                                                        height={CUSTOM_CHART.mixedChart.height}
-                                                        fontSize={CUSTOM_CHART.mixedChart.fontSize}
-                                                        fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                        fontWeight={CUSTOM_CHART.mixedChart.fontWeight}
-                                                        nameChart={CUSTOM_CHART.mixedChart.mixedChartPercentTimeband.name}
-                                                        description={CUSTOM_CHART.mixedChart.mixedChartPercentTimeband.desciption}
-                                                        barSeriesKeys={CUSTOM_CHART.mixedChart.mixedChartPercentTimeband.metrics.aveReachPercent}
-                                                        lineSeriesKeys={CUSTOM_CHART.mixedChart.mixedChartPercentTimeband.metrics.ratingPercent}
-                                                        colors={CUSTOM_CHART.mixedChart.mixedChartPercentTimeband.colors}
-                                                        barMaxWidth={CUSTOM_CHART.mixedChart.barMaxWidth}
-                                                        barWidthPercent={CUSTOM_CHART.mixedChart.barWidthPercent}
-                                            />
-                                          </div>
-                                          <div className='w-full pb-6'>
-                                            <LineChart data={transformMixedChartData(dashboard.ratingPercentLineTimebandChannelData.data, 'time_band', dashboard.ratingPercentLineTimebandChannelData.colnames)}
-                                                      height={CUSTOM_CHART.lineChart.height}
-                                                      fontSize={CUSTOM_CHART.lineChart.fontSize}
-                                                      fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                      fontWeight={CUSTOM_CHART.lineChart.fontWeight}
-                                                      nameChart={CUSTOM_CHART.lineChart.lineChartPercentTimebandChannel.name}
-                                                      description={CUSTOM_CHART.lineChart.lineChartPercentTimebandChannel.desciption}
-                                                      colors={CUSTOM_CHART.lineChart.colorChannel}
-                                                      smooth={CUSTOM_CHART.lineChart.smooth}
-                                                      symbolSize={CUSTOM_CHART.lineChart.symbolSize}
-                                                      lineWidth={CUSTOM_CHART.lineChart.lineWidth}
-                                                      areaStyle={CUSTOM_CHART.lineChart.areaStyle}
-                                                      stack={CUSTOM_CHART.lineChart.stack}
-                                                      showTopNSeries={CUSTOM_CHART.lineChart.lineChartPercentTimebandChannel.showTopNSeries}
-                                            />
-                                          </div>
-                                          <div className='w-full pb-6'>
-                                            <LineChart data={transformMixedChartData(dashboard.aveReachPercentLineDateChannelData.data, 'date', dashboard.aveReachPercentLineDateChannelData.colnames)}
-                                                      height={CUSTOM_CHART.lineChart.height}
-                                                      fontSize={CUSTOM_CHART.lineChart.fontSize}
-                                                      fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                      fontWeight={CUSTOM_CHART.lineChart.fontWeight}
-                                                      nameChart={CUSTOM_CHART.lineChart.lineChartPercentDateChannel.aveReach.name}
-                                                      description={CUSTOM_CHART.lineChart.lineChartPercentDateChannel.aveReach.desciption}
-                                                      colors={CUSTOM_CHART.lineChart.colorChannel}
-                                                      smooth={CUSTOM_CHART.lineChart.smooth}
-                                                      symbolSize={CUSTOM_CHART.lineChart.symbolSize}
-                                                      lineWidth={CUSTOM_CHART.lineChart.lineWidth}
-                                                      areaStyle={CUSTOM_CHART.lineChart.areaStyle}
-                                                      stack={CUSTOM_CHART.lineChart.stack}
-                                                      showTopNSeries={CUSTOM_CHART.lineChart.showTopNSeries}
-                                            />
-                                          </div>
-                                          <div className='w-full pb-6'>
-                                            <LineChart data={transformMixedChartData(dashboard.ratingPercentLineDateChannelData.data, 'date', dashboard.ratingPercentLineDateChannelData.colnames)}
-                                                      height={CUSTOM_CHART.lineChart.height}
-                                                      fontSize={CUSTOM_CHART.lineChart.fontSize}
-                                                      fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                      fontWeight={CUSTOM_CHART.lineChart.fontWeight}
-                                                      nameChart={CUSTOM_CHART.lineChart.lineChartPercentDateChannel.rating.name}
-                                                      description={CUSTOM_CHART.lineChart.lineChartPercentDateChannel.rating.desciption}
-                                                      colors={CUSTOM_CHART.lineChart.colorChannel}
-                                                      smooth={CUSTOM_CHART.lineChart.smooth}
-                                                      symbolSize={CUSTOM_CHART.lineChart.symbolSize}
-                                                      lineWidth={CUSTOM_CHART.lineChart.lineWidth}
-                                                      areaStyle={CUSTOM_CHART.lineChart.areaStyle}
-                                                      stack={CUSTOM_CHART.lineChart.stack}
-                                                      showTopNSeries={CUSTOM_CHART.lineChart.showTopNSeries}
-                                            />
-                                          </div>
-                                          <div className='w-full pb-6'>
-                                            <TreeMapChart data={transformTreeMapData(dashboard.aveReachPercentTreemapChannelData.data, dashboard.aveReachPercentTreemapChannelData.colnames)}
-                                                          height={CUSTOM_CHART.treeMapChart.height}
-                                                          fontSize={CUSTOM_CHART.treeMapChart.fontSize}
+                                <div className='px-6 py-6'>
+                                  <div className='px-6 pt-4 bg-background-black-4 rounded-2xl'>
+                                    <NormalTabs tabs={[
+                                      {id: '%', label: '(%)',
+                                        content: (
+                                          <>
+                                            <div className='w-full pb-6'>
+                                              <MixedChart data={!dashboard.isLoading.ratingReachPercentMixedTimebandData ? transformMixedChartData(dashboard.ratingReachPercentMixedTimebandData?.data, 'time_band', dashboard.ratingReachPercentMixedTimebandData?.colnames) : 'isLoading'}
+                                                          height={CUSTOM_CHART.mixedChart.height}
+                                                          fontSize={CUSTOM_CHART.mixedChart.fontSize}
                                                           fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                          fontWeight={CUSTOM_CHART.treeMapChart.fontWeight}
-                                                          nameChart={CUSTOM_CHART.treeMapChart.treeMapChartPercentChannel.name}
-                                                          description={CUSTOM_CHART.treeMapChart.treeMapChartPercentChannel.desciption}
-                                                          colors={CUSTOM_CHART.treeMapChart.colorChannel}
-                                            />
-                                          </div>
-                                        </>
-                                      )
-                                    },
-                                    {id: '000', label: '(000)',
-                                      content: (
-                                        <>
-                                          <div className='w-full pb-6'>
-                                            <MixedChart data={transformMixedChartData(dashboard.ratingReachMixedTimebandData.data, 'time_band', dashboard.ratingReachMixedTimebandData.colnames)}
-                                                        height={CUSTOM_CHART.mixedChart.height}
-                                                        fontSize={CUSTOM_CHART.mixedChart.fontSize}
+                                                          fontWeight={CUSTOM_CHART.mixedChart.fontWeight}
+                                                          nameChart={CUSTOM_CHART.mixedChart.mixedChartPercentTimeband.name}
+                                                          description={CUSTOM_CHART.mixedChart.mixedChartPercentTimeband.desciption}
+                                                          barSeriesKeys={CUSTOM_CHART.mixedChart.mixedChartPercentTimeband.metrics.aveReachPercent}
+                                                          lineSeriesKeys={CUSTOM_CHART.mixedChart.mixedChartPercentTimeband.metrics.ratingPercent}
+                                                          colors={CUSTOM_CHART.mixedChart.mixedChartPercentTimeband.colors}
+                                                          barMaxWidth={CUSTOM_CHART.mixedChart.barMaxWidth}
+                                                          barWidthPercent={CUSTOM_CHART.mixedChart.barWidthPercent}
+                                              />
+                                            </div>
+                                            <div className='w-full pb-6'>
+                                              <LineChart data={!dashboard.isLoading.ratingPercentLineTimebandChannelData ? transformMixedChartData(dashboard.ratingPercentLineTimebandChannelData?.data, 'time_band', dashboard.ratingPercentLineTimebandChannelData?.colnames) : 'isLoading'}
+                                                        height={CUSTOM_CHART.lineChart.height}
+                                                        fontSize={CUSTOM_CHART.lineChart.fontSize}
                                                         fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                        fontWeight={CUSTOM_CHART.mixedChart.fontWeight}
-                                                        nameChart={CUSTOM_CHART.mixedChart.mixedChartTimeband.name}
-                                                        description={CUSTOM_CHART.mixedChart.mixedChartTimeband.desciption}
-                                                        barSeriesKeys={CUSTOM_CHART.mixedChart.mixedChartTimeband.metrics.aveReach}
-                                                        lineSeriesKeys={CUSTOM_CHART.mixedChart.mixedChartTimeband.metrics.rating}
-                                                        colors={CUSTOM_CHART.mixedChart.mixedChartTimeband.colors}
-                                                        barMaxWidth={CUSTOM_CHART.mixedChart.barMaxWidth}
-                                                        barWidthPercent={CUSTOM_CHART.mixedChart.barWidthPercent}
-                                            />
-                                          </div>
-                                          <div className='w-full pb-6'>
-                                            <LineChart data={transformMixedChartData(dashboard.ratingLineTimebandChannelData.data, 'time_band', dashboard.ratingLineTimebandChannelData.colnames)}
-                                                      height={CUSTOM_CHART.lineChart.height}
-                                                      fontSize={CUSTOM_CHART.lineChart.fontSize}
-                                                      fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                      fontWeight={CUSTOM_CHART.lineChart.fontWeight}
-                                                      nameChart={CUSTOM_CHART.lineChart.lineChartTimebandChannel.rating.name}
-                                                      description={CUSTOM_CHART.lineChart.lineChartTimebandChannel.rating.desciption}
-                                                      colors={CUSTOM_CHART.lineChart.colorChannel}
-                                                      smooth={CUSTOM_CHART.lineChart.smooth}
-                                                      symbolSize={CUSTOM_CHART.lineChart.symbolSize}
-                                                      lineWidth={CUSTOM_CHART.lineChart.lineWidth}
-                                                      areaStyle={CUSTOM_CHART.lineChart.areaStyle}
-                                                      stack={CUSTOM_CHART.lineChart.stack}
-                                                      showTopNSeries={CUSTOM_CHART.lineChart.lineChartTimebandChannel.showTopNSeries}
-                                            />
-                                          </div>
-                                          <div className='w-full pb-6'>
-                                            <LineChart data={transformMixedChartData(dashboard.aveReachLineTimebandChannelData.data, 'time_band', dashboard.aveReachLineTimebandChannelData.colnames)}
-                                                      height={CUSTOM_CHART.lineChart.height}
-                                                      fontSize={CUSTOM_CHART.lineChart.fontSize}
-                                                      fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                      fontWeight={CUSTOM_CHART.lineChart.fontWeight}
-                                                      nameChart={CUSTOM_CHART.lineChart.lineChartTimebandChannel.aveReach.name}
-                                                      description={CUSTOM_CHART.lineChart.lineChartTimebandChannel.aveReach.desciption}
-                                                      colors={CUSTOM_CHART.lineChart.colorChannel}
-                                                      smooth={CUSTOM_CHART.lineChart.smooth}
-                                                      symbolSize={CUSTOM_CHART.lineChart.symbolSize}
-                                                      lineWidth={CUSTOM_CHART.lineChart.lineWidth}
-                                                      areaStyle={CUSTOM_CHART.lineChart.areaStyle}
-                                                      stack={CUSTOM_CHART.lineChart.stack}
-                                                      showTopNSeries={CUSTOM_CHART.lineChart.lineChartTimebandChannel.showTopNSeries}
-                                            />
-                                          </div>
-                                          <div className='w-full pb-6'>
-                                            <LineChart data={transformMixedChartData(dashboard.ratingLineDateChannelData.data, 'date', dashboard.ratingLineDateChannelData.colnames)}
-                                                      height={CUSTOM_CHART.lineChart.height}
-                                                      fontSize={CUSTOM_CHART.lineChart.fontSize}
-                                                      fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                      fontWeight={CUSTOM_CHART.lineChart.fontWeight}
-                                                      nameChart={CUSTOM_CHART.lineChart.lineChartDateChannel.aveReach.name}
-                                                      description={CUSTOM_CHART.lineChart.lineChartDateChannel.aveReach.desciption}
-                                                      colors={CUSTOM_CHART.lineChart.colorChannel}
-                                                      smooth={CUSTOM_CHART.lineChart.smooth}
-                                                      symbolSize={CUSTOM_CHART.lineChart.symbolSize}
-                                                      lineWidth={CUSTOM_CHART.lineChart.lineWidth}
-                                                      areaStyle={CUSTOM_CHART.lineChart.areaStyle}
-                                                      stack={CUSTOM_CHART.lineChart.stack}
-                                                      showTopNSeries={CUSTOM_CHART.lineChart.showTopNSeries}
-                                            />
-                                          </div>
-                                          <div className='w-full pb-6'>
-                                            <LineChart data={transformMixedChartData(dashboard.ratingLineDateChannelData.data, 'date', dashboard.ratingLineDateChannelData.colnames)}
-                                                      height={CUSTOM_CHART.lineChart.height}
-                                                      fontSize={CUSTOM_CHART.lineChart.fontSize}
-                                                      fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                      fontWeight={CUSTOM_CHART.lineChart.fontWeight}
-                                                      nameChart={CUSTOM_CHART.lineChart.lineChartDateChannel.rating.name}
-                                                      description={CUSTOM_CHART.lineChart.lineChartDateChannel.rating.desciption}
-                                                      colors={CUSTOM_CHART.lineChart.colorChannel}
-                                                      smooth={CUSTOM_CHART.lineChart.smooth}
-                                                      symbolSize={CUSTOM_CHART.lineChart.symbolSize}
-                                                      lineWidth={CUSTOM_CHART.lineChart.lineWidth}
-                                                      areaStyle={CUSTOM_CHART.lineChart.areaStyle}
-                                                      stack={CUSTOM_CHART.lineChart.stack}
-                                                      showTopNSeries={CUSTOM_CHART.lineChart.showTopNSeries}
-                                            />
-                                          </div>
-                                          <div className='w-full pb-6'>
-                                            <LineChart data={transformMixedChartData(dashboard.aveReachLineDateChannelData.data, 'date', dashboard.aveReachLineDateChannelData.colnames)}
-                                                      height={CUSTOM_CHART.lineChart.height}
-                                                      fontSize={CUSTOM_CHART.lineChart.fontSize}
-                                                      fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                      fontWeight={CUSTOM_CHART.lineChart.fontWeight}
-                                                      nameChart={CUSTOM_CHART.lineChart.lineChartDateChannel.aveReach.name}
-                                                      description={CUSTOM_CHART.lineChart.lineChartDateChannel.aveReach.desciption}
-                                                      colors={CUSTOM_CHART.lineChart.colorChannel}
-                                                      smooth={CUSTOM_CHART.lineChart.smooth}
-                                                      symbolSize={CUSTOM_CHART.lineChart.symbolSize}
-                                                      lineWidth={CUSTOM_CHART.lineChart.lineWidth}
-                                                      areaStyle={CUSTOM_CHART.lineChart.areaStyle}
-                                                      stack={CUSTOM_CHART.lineChart.stack}
-                                                      showTopNSeries={CUSTOM_CHART.lineChart.showTopNSeries}
-                                            />
-                                          </div>
-                                          <div className='w-full pb-6'>
-                                            <LineChart data={transformMixedChartData(dashboard.ratingLineTimebandDayData.data, 'time_band', dashboard.ratingLineTimebandDayData.colnames)}
-                                                      height={CUSTOM_CHART.lineChart.height}
-                                                      fontSize={CUSTOM_CHART.lineChart.fontSize}
-                                                      fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                      fontWeight={CUSTOM_CHART.lineChart.fontWeight}
-                                                      nameChart={CUSTOM_CHART.lineChart.lineChartTimebandDay.rating.name}
-                                                      description={CUSTOM_CHART.lineChart.lineChartTimebandDay.rating.desciption}
-                                                      colors={CUSTOM_CHART.lineChart.colorChannel}
-                                                      smooth={CUSTOM_CHART.lineChart.smooth}
-                                                      symbolSize={CUSTOM_CHART.lineChart.symbolSize}
-                                                      lineWidth={CUSTOM_CHART.lineChart.lineWidth}
-                                                      areaStyle={CUSTOM_CHART.lineChart.areaStyle}
-                                                      stack={CUSTOM_CHART.lineChart.stack}
-                                                      showTopNSeries={CUSTOM_CHART.lineChart.showTopNSeries}
-                                            />
-                                          </div>
-                                          <div className='w-full pb-6'>
-                                            <LineChart data={transformMixedChartData(dashboard.aveReachLineTimebandDayData.data, 'time_band', dashboard.aveReachLineTimebandDayData.colnames)}
-                                                      height={CUSTOM_CHART.lineChart.height}
-                                                      fontSize={CUSTOM_CHART.lineChart.fontSize}
-                                                      fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                      fontWeight={CUSTOM_CHART.lineChart.fontWeight}
-                                                      nameChart={CUSTOM_CHART.lineChart.lineChartTimebandDay.aveReach.name}
-                                                      description={CUSTOM_CHART.lineChart.lineChartTimebandDay.aveReach.desciption}
-                                                      colors={CUSTOM_CHART.lineChart.colorChannel}
-                                                      smooth={CUSTOM_CHART.lineChart.smooth}
-                                                      symbolSize={CUSTOM_CHART.lineChart.symbolSize}
-                                                      lineWidth={CUSTOM_CHART.lineChart.lineWidth}
-                                                      areaStyle={CUSTOM_CHART.lineChart.areaStyle}
-                                                      stack={CUSTOM_CHART.lineChart.stack}
-                                                      showTopNSeries={CUSTOM_CHART.lineChart.showTopNSeries}
-                                            />
-                                          </div>
-                                          <div className='w-full pb-6'>
-                                            <LineChart data={transformMixedChartData(dashboard.aveReachLineTimebandRegionalData.data, 'time_band', dashboard.aveReachLineTimebandRegionalData.colnames)}
-                                                      height={CUSTOM_CHART.lineChart.height}
-                                                      fontSize={CUSTOM_CHART.lineChart.fontSize}
-                                                      fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                      fontWeight={CUSTOM_CHART.lineChart.fontWeight}
-                                                      nameChart={CUSTOM_CHART.lineChart.lineChartTimebandRegional.name}
-                                                      description={CUSTOM_CHART.lineChart.lineChartTimebandRegional.desciption}
-                                                      colors={CUSTOM_CHART.lineChart.colorChannel}
-                                                      smooth={CUSTOM_CHART.lineChart.smooth}
-                                                      symbolSize={CUSTOM_CHART.lineChart.symbolSize}
-                                                      lineWidth={CUSTOM_CHART.lineChart.lineWidth}
-                                                      areaStyle={CUSTOM_CHART.lineChart.areaStyle}
-                                                      stack={CUSTOM_CHART.lineChart.stack}
-                                                      showTopNSeries={CUSTOM_CHART.lineChart.lineChartTimebandRegional.showTopNSeries}
-                                            />
-                                          </div>
-                                          <div className='w-full pb-6'>
-                                            <TreeMapChart data={transformTreeMapData(dashboard.ratingTreemapChannelData.data, dashboard.ratingTreemapChannelData.colnames)}
-                                                          height={CUSTOM_CHART.treeMapChart.height}
-                                                          fontSize={CUSTOM_CHART.treeMapChart.fontSize}
+                                                        fontWeight={CUSTOM_CHART.lineChart.fontWeight}
+                                                        nameChart={CUSTOM_CHART.lineChart.lineChartPercentTimebandChannel.name}
+                                                        description={CUSTOM_CHART.lineChart.lineChartPercentTimebandChannel.desciption}
+                                                        colors={CUSTOM_CHART.lineChart.colorChannel}
+                                                        smooth={CUSTOM_CHART.lineChart.smooth}
+                                                        symbolSize={CUSTOM_CHART.lineChart.symbolSize}
+                                                        lineWidth={CUSTOM_CHART.lineChart.lineWidth}
+                                                        areaStyle={CUSTOM_CHART.lineChart.areaStyle}
+                                                        stack={CUSTOM_CHART.lineChart.stack}
+                                                        showTopNSeries={CUSTOM_CHART.lineChart.lineChartPercentTimebandChannel.showTopNSeries}
+                                              />
+                                            </div>
+                                            <div className='w-full pb-6'>
+                                              <LineChart data={!dashboard.isLoading.aveReachPercentLineDateChannelData ? transformMixedChartData(dashboard.aveReachPercentLineDateChannelData?.data, 'date', dashboard.aveReachPercentLineDateChannelData?.colnames) : 'isLoading'}
+                                                        height={CUSTOM_CHART.lineChart.height}
+                                                        fontSize={CUSTOM_CHART.lineChart.fontSize}
+                                                        fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                                        fontWeight={CUSTOM_CHART.lineChart.fontWeight}
+                                                        nameChart={CUSTOM_CHART.lineChart.lineChartPercentDateChannel.aveReach.name}
+                                                        description={CUSTOM_CHART.lineChart.lineChartPercentDateChannel.aveReach.desciption}
+                                                        colors={CUSTOM_CHART.lineChart.colorChannel}
+                                                        smooth={CUSTOM_CHART.lineChart.smooth}
+                                                        symbolSize={CUSTOM_CHART.lineChart.symbolSize}
+                                                        lineWidth={CUSTOM_CHART.lineChart.lineWidth}
+                                                        areaStyle={CUSTOM_CHART.lineChart.areaStyle}
+                                                        stack={CUSTOM_CHART.lineChart.stack}
+                                                        showTopNSeries={CUSTOM_CHART.lineChart.showTopNSeries}
+                                              />
+                                            </div>
+                                            <div className='w-full pb-6'>
+                                              <LineChart data={!dashboard.isLoading.ratingPercentLineDateChannelData ? transformMixedChartData(dashboard.ratingPercentLineDateChannelData?.data, 'date', dashboard.ratingPercentLineDateChannelData?.colnames) : 'isLoading'}
+                                                        height={CUSTOM_CHART.lineChart.height}
+                                                        fontSize={CUSTOM_CHART.lineChart.fontSize}
+                                                        fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                                        fontWeight={CUSTOM_CHART.lineChart.fontWeight}
+                                                        nameChart={CUSTOM_CHART.lineChart.lineChartPercentDateChannel.rating.name}
+                                                        description={CUSTOM_CHART.lineChart.lineChartPercentDateChannel.rating.desciption}
+                                                        colors={CUSTOM_CHART.lineChart.colorChannel}
+                                                        smooth={CUSTOM_CHART.lineChart.smooth}
+                                                        symbolSize={CUSTOM_CHART.lineChart.symbolSize}
+                                                        lineWidth={CUSTOM_CHART.lineChart.lineWidth}
+                                                        areaStyle={CUSTOM_CHART.lineChart.areaStyle}
+                                                        stack={CUSTOM_CHART.lineChart.stack}
+                                                        showTopNSeries={CUSTOM_CHART.lineChart.showTopNSeries}
+                                              />
+                                            </div>
+                                            <div className='w-full pb-6'>
+                                              <TreeMapChart data={!dashboard.isLoading.aveReachPercentTreemapChannelData ? transformTreeMapData(dashboard.aveReachPercentTreemapChannelData?.data, dashboard.aveReachPercentTreemapChannelData?.colnames) : 'isLoading'}
+                                                            height={CUSTOM_CHART.treeMapChart.height}
+                                                            fontSize={CUSTOM_CHART.treeMapChart.fontSize}
+                                                            fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                                            fontWeight={CUSTOM_CHART.treeMapChart.fontWeight}
+                                                            nameChart={CUSTOM_CHART.treeMapChart.treeMapChartPercentChannel.name}
+                                                            description={CUSTOM_CHART.treeMapChart.treeMapChartPercentChannel.desciption}
+                                                            colors={CUSTOM_CHART.treeMapChart.colorChannel}
+                                              />
+                                            </div>
+                                          </>
+                                        )
+                                      },
+                                      {id: '000', label: '(000)',
+                                        content: (
+                                          <>
+                                            <div className='w-full pb-6'>
+                                              <MixedChart data={!dashboard.isLoading.ratingReachMixedTimebandData ? transformMixedChartData(dashboard.ratingReachMixedTimebandData?.data, 'time_band', dashboard.ratingReachMixedTimebandData?.colnames) : 'isLoading'}
+                                                          height={CUSTOM_CHART.mixedChart.height}
+                                                          fontSize={CUSTOM_CHART.mixedChart.fontSize}
                                                           fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                          fontWeight={CUSTOM_CHART.treeMapChart.fontWeight}
-                                                          nameChart={CUSTOM_CHART.treeMapChart.treeMapChartChannel.name}
-                                                          description={CUSTOM_CHART.treeMapChart.treeMapChartChannel.desciption}
-                                                          colors={CUSTOM_CHART.treeMapChart.colorChannel}
-                                            />
-                                          </div>
-                                        </>
-                                      )
-                                    }
-                                  ]}/>
+                                                          fontWeight={CUSTOM_CHART.mixedChart.fontWeight}
+                                                          nameChart={CUSTOM_CHART.mixedChart.mixedChartTimeband.name}
+                                                          description={CUSTOM_CHART.mixedChart.mixedChartTimeband.desciption}
+                                                          barSeriesKeys={CUSTOM_CHART.mixedChart.mixedChartTimeband.metrics.aveReach}
+                                                          lineSeriesKeys={CUSTOM_CHART.mixedChart.mixedChartTimeband.metrics.rating}
+                                                          colors={CUSTOM_CHART.mixedChart.mixedChartTimeband.colors}
+                                                          barMaxWidth={CUSTOM_CHART.mixedChart.barMaxWidth}
+                                                          barWidthPercent={CUSTOM_CHART.mixedChart.barWidthPercent}
+                                              />
+                                            </div>
+                                            <div className='w-full pb-6'>
+                                              <LineChart data={!dashboard.isLoading.ratingLineTimebandChannelData ? transformMixedChartData(dashboard.ratingLineTimebandChannelData?.data, 'time_band', dashboard.ratingLineTimebandChannelData?.colnames) : 'isLoading'}
+                                                        height={CUSTOM_CHART.lineChart.height}
+                                                        fontSize={CUSTOM_CHART.lineChart.fontSize}
+                                                        fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                                        fontWeight={CUSTOM_CHART.lineChart.fontWeight}
+                                                        nameChart={CUSTOM_CHART.lineChart.lineChartTimebandChannel.rating.name}
+                                                        description={CUSTOM_CHART.lineChart.lineChartTimebandChannel.rating.desciption}
+                                                        colors={CUSTOM_CHART.lineChart.colorChannel}
+                                                        smooth={CUSTOM_CHART.lineChart.smooth}
+                                                        symbolSize={CUSTOM_CHART.lineChart.symbolSize}
+                                                        lineWidth={CUSTOM_CHART.lineChart.lineWidth}
+                                                        areaStyle={CUSTOM_CHART.lineChart.areaStyle}
+                                                        stack={CUSTOM_CHART.lineChart.stack}
+                                                        showTopNSeries={CUSTOM_CHART.lineChart.lineChartTimebandChannel.showTopNSeries}
+                                              />
+                                            </div>
+                                            <div className='w-full pb-6'>
+                                              <LineChart data={!dashboard.isLoading.aveReachLineTimebandChannelData ? transformMixedChartData(dashboard.aveReachLineTimebandChannelData?.data, 'time_band', dashboard.aveReachLineTimebandChannelData?.colnames) : 'isLoading'}
+                                                        height={CUSTOM_CHART.lineChart.height}
+                                                        fontSize={CUSTOM_CHART.lineChart.fontSize}
+                                                        fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                                        fontWeight={CUSTOM_CHART.lineChart.fontWeight}
+                                                        nameChart={CUSTOM_CHART.lineChart.lineChartTimebandChannel.aveReach.name}
+                                                        description={CUSTOM_CHART.lineChart.lineChartTimebandChannel.aveReach.desciption}
+                                                        colors={CUSTOM_CHART.lineChart.colorChannel}
+                                                        smooth={CUSTOM_CHART.lineChart.smooth}
+                                                        symbolSize={CUSTOM_CHART.lineChart.symbolSize}
+                                                        lineWidth={CUSTOM_CHART.lineChart.lineWidth}
+                                                        areaStyle={CUSTOM_CHART.lineChart.areaStyle}
+                                                        stack={CUSTOM_CHART.lineChart.stack}
+                                                        showTopNSeries={CUSTOM_CHART.lineChart.lineChartTimebandChannel.showTopNSeries}
+                                              />
+                                            </div>
+                                            <div className='w-full pb-6'>
+                                              <LineChart data={!dashboard.isLoading.ratingLineDateChannelData ? transformMixedChartData(dashboard.ratingLineDateChannelData?.data, 'date', dashboard.ratingLineDateChannelData?.colnames) : 'isLoading'}
+                                                        height={CUSTOM_CHART.lineChart.height}
+                                                        fontSize={CUSTOM_CHART.lineChart.fontSize}
+                                                        fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                                        fontWeight={CUSTOM_CHART.lineChart.fontWeight}
+                                                        nameChart={CUSTOM_CHART.lineChart.lineChartDateChannel.aveReach.name}
+                                                        description={CUSTOM_CHART.lineChart.lineChartDateChannel.aveReach.desciption}
+                                                        colors={CUSTOM_CHART.lineChart.colorChannel}
+                                                        smooth={CUSTOM_CHART.lineChart.smooth}
+                                                        symbolSize={CUSTOM_CHART.lineChart.symbolSize}
+                                                        lineWidth={CUSTOM_CHART.lineChart.lineWidth}
+                                                        areaStyle={CUSTOM_CHART.lineChart.areaStyle}
+                                                        stack={CUSTOM_CHART.lineChart.stack}
+                                                        showTopNSeries={CUSTOM_CHART.lineChart.showTopNSeries}
+                                              />
+                                            </div>
+                                            <div className='w-full pb-6'>
+                                              <LineChart data={!dashboard.isLoading.ratingLineDateChannelData ? transformMixedChartData(dashboard.ratingLineDateChannelData?.data, 'date', dashboard.ratingLineDateChannelData?.colnames) : 'isLoading'}
+                                                        height={CUSTOM_CHART.lineChart.height}
+                                                        fontSize={CUSTOM_CHART.lineChart.fontSize}
+                                                        fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                                        fontWeight={CUSTOM_CHART.lineChart.fontWeight}
+                                                        nameChart={CUSTOM_CHART.lineChart.lineChartDateChannel.rating.name}
+                                                        description={CUSTOM_CHART.lineChart.lineChartDateChannel.rating.desciption}
+                                                        colors={CUSTOM_CHART.lineChart.colorChannel}
+                                                        smooth={CUSTOM_CHART.lineChart.smooth}
+                                                        symbolSize={CUSTOM_CHART.lineChart.symbolSize}
+                                                        lineWidth={CUSTOM_CHART.lineChart.lineWidth}
+                                                        areaStyle={CUSTOM_CHART.lineChart.areaStyle}
+                                                        stack={CUSTOM_CHART.lineChart.stack}
+                                                        showTopNSeries={CUSTOM_CHART.lineChart.showTopNSeries}
+                                              />
+                                            </div>
+                                            <div className='w-full pb-6'>
+                                              <LineChart data={!dashboard.isLoading.aveReachLineDateChannelData ? transformMixedChartData(dashboard.aveReachLineDateChannelData?.data, 'date', dashboard.aveReachLineDateChannelData?.colnames) : 'isLoading'}
+                                                        height={CUSTOM_CHART.lineChart.height}
+                                                        fontSize={CUSTOM_CHART.lineChart.fontSize}
+                                                        fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                                        fontWeight={CUSTOM_CHART.lineChart.fontWeight}
+                                                        nameChart={CUSTOM_CHART.lineChart.lineChartDateChannel.aveReach.name}
+                                                        description={CUSTOM_CHART.lineChart.lineChartDateChannel.aveReach.desciption}
+                                                        colors={CUSTOM_CHART.lineChart.colorChannel}
+                                                        smooth={CUSTOM_CHART.lineChart.smooth}
+                                                        symbolSize={CUSTOM_CHART.lineChart.symbolSize}
+                                                        lineWidth={CUSTOM_CHART.lineChart.lineWidth}
+                                                        areaStyle={CUSTOM_CHART.lineChart.areaStyle}
+                                                        stack={CUSTOM_CHART.lineChart.stack}
+                                                        showTopNSeries={CUSTOM_CHART.lineChart.showTopNSeries}
+                                              />
+                                            </div>
+                                            <div className='w-full pb-6'>
+                                              <LineChart data={!dashboard.isLoading.ratingLineTimebandDayData ? transformMixedChartData(dashboard.ratingLineTimebandDayData?.data, 'time_band', dashboard.ratingLineTimebandDayData?.colnames) : 'isLoading'}
+                                                        height={CUSTOM_CHART.lineChart.height}
+                                                        fontSize={CUSTOM_CHART.lineChart.fontSize}
+                                                        fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                                        fontWeight={CUSTOM_CHART.lineChart.fontWeight}
+                                                        nameChart={CUSTOM_CHART.lineChart.lineChartTimebandDay.rating.name}
+                                                        description={CUSTOM_CHART.lineChart.lineChartTimebandDay.rating.desciption}
+                                                        colors={CUSTOM_CHART.lineChart.colorChannel}
+                                                        smooth={CUSTOM_CHART.lineChart.smooth}
+                                                        symbolSize={CUSTOM_CHART.lineChart.symbolSize}
+                                                        lineWidth={CUSTOM_CHART.lineChart.lineWidth}
+                                                        areaStyle={CUSTOM_CHART.lineChart.areaStyle}
+                                                        stack={CUSTOM_CHART.lineChart.stack}
+                                                        showTopNSeries={CUSTOM_CHART.lineChart.showTopNSeries}
+                                                        left={CUSTOM_CHART.lineChart.lineChartTimebandDay.left}
+                                              />
+                                            </div>
+                                            <div className='w-full pb-6'>
+                                              <LineChart data={!dashboard.isLoading.aveReachLineTimebandDayData ? transformMixedChartData(dashboard.aveReachLineTimebandDayData?.data, 'time_band', dashboard.aveReachLineTimebandDayData?.colnames) : 'isLoading'}
+                                                        height={CUSTOM_CHART.lineChart.height}
+                                                        fontSize={CUSTOM_CHART.lineChart.fontSize}
+                                                        fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                                        fontWeight={CUSTOM_CHART.lineChart.fontWeight}
+                                                        nameChart={CUSTOM_CHART.lineChart.lineChartTimebandDay.aveReach.name}
+                                                        description={CUSTOM_CHART.lineChart.lineChartTimebandDay.aveReach.desciption}
+                                                        colors={CUSTOM_CHART.lineChart.colorChannel}
+                                                        smooth={CUSTOM_CHART.lineChart.smooth}
+                                                        symbolSize={CUSTOM_CHART.lineChart.symbolSize}
+                                                        lineWidth={CUSTOM_CHART.lineChart.lineWidth}
+                                                        areaStyle={CUSTOM_CHART.lineChart.areaStyle}
+                                                        stack={CUSTOM_CHART.lineChart.stack}
+                                                        showTopNSeries={CUSTOM_CHART.lineChart.showTopNSeries}
+                                                        left={CUSTOM_CHART.lineChart.lineChartTimebandDay.left}
+                                              />
+                                            </div>
+                                            <div className='w-full pb-6'>
+                                              <LineChart data={!dashboard.isLoading.aveReachLineTimebandRegionalData ? transformMixedChartData(dashboard.aveReachLineTimebandRegionalData?.data, 'time_band', dashboard.aveReachLineTimebandRegionalData?.colnames) : 'isLoading'}
+                                                        height={CUSTOM_CHART.lineChart.height}
+                                                        fontSize={CUSTOM_CHART.lineChart.fontSize}
+                                                        fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                                        fontWeight={CUSTOM_CHART.lineChart.fontWeight}
+                                                        nameChart={CUSTOM_CHART.lineChart.lineChartTimebandRegional.name}
+                                                        description={CUSTOM_CHART.lineChart.lineChartTimebandRegional.desciption}
+                                                        colors={CUSTOM_CHART.lineChart.colorChannel}
+                                                        smooth={CUSTOM_CHART.lineChart.smooth}
+                                                        symbolSize={CUSTOM_CHART.lineChart.symbolSize}
+                                                        lineWidth={CUSTOM_CHART.lineChart.lineWidth}
+                                                        areaStyle={CUSTOM_CHART.lineChart.areaStyle}
+                                                        stack={CUSTOM_CHART.lineChart.stack}
+                                                        showTopNSeries={CUSTOM_CHART.lineChart.lineChartTimebandRegional.showTopNSeries}
+                                                        left={CUSTOM_CHART.lineChart.lineChartTimebandRegional.left}
+                                              />
+                                            </div>
+                                            <div className='w-full pb-6'>
+                                              <TreeMapChart data={!dashboard.isLoading.ratingTreemapChannelData ? transformTreeMapData(dashboard.ratingTreemapChannelData?.data, dashboard.ratingTreemapChannelData?.colnames) : 'isLoading'}
+                                                            height={CUSTOM_CHART.treeMapChart.height}
+                                                            fontSize={CUSTOM_CHART.treeMapChart.fontSize}
+                                                            fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                                            fontWeight={CUSTOM_CHART.treeMapChart.fontWeight}
+                                                            nameChart={CUSTOM_CHART.treeMapChart.treeMapChartChannel.name}
+                                                            description={CUSTOM_CHART.treeMapChart.treeMapChartChannel.desciption}
+                                                            colors={CUSTOM_CHART.treeMapChart.colorChannel}
+                                              />
+                                            </div>
+                                          </>
+                                        )
+                                      }
+                                    ]}/>
+                                  </div>
                                 </div>
                               </section>
                             )
@@ -677,9 +687,9 @@ const DashboardContent = () => {
                                              currentTab={currentTab}
                                              isOpen={filterOpen}
                                              setIsOpen={setFilterOpen} />
-                                <div className='px-10'>
+                                <div className='px-6'>
                                   <div className='w-full grid grid-cols-2 gap-6 py-6'>
-                                    <PieChart data={transformPieChartData(dashboard.totalEventDurationPieFirstLevelData.data, dashboard.totalEventDurationPieFirstLevelData.colnames)}
+                                    <PieChart data={!dashboard.isLoading.totalEventDurationPieFirstLevelData ? transformPieChartData(dashboard.totalEventDurationPieFirstLevelData?.data, dashboard.totalEventDurationPieFirstLevelData?.colnames) : 'isLoading'}
                                               height={CUSTOM_CHART.pieChart.height}
                                               fontSize={CUSTOM_CHART.pieChart.fontSize}
                                               fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -690,7 +700,7 @@ const DashboardContent = () => {
                                               donut={CUSTOM_CHART.pieChart.donut}
                                               innerRadius={CUSTOM_CHART.pieChart.innerRadius}
                                     />
-                                    <PieChart data={transformPieChartData(dashboard.totalViewDurationPieFirstLevelData.data, dashboard.totalViewDurationPieFirstLevelData.colnames)}
+                                    <PieChart data={!dashboard.isLoading.totalViewDurationPieFirstLevelData ? transformPieChartData(dashboard.totalViewDurationPieFirstLevelData?.data, dashboard.totalViewDurationPieFirstLevelData?.colnames) : 'isLoading'}
                                               height={CUSTOM_CHART.pieChart.height}
                                               fontSize={CUSTOM_CHART.pieChart.fontSize}
                                               fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -703,7 +713,7 @@ const DashboardContent = () => {
                                     />
                                   </div>
                                   <div className='w-full pb-6'>
-                                    <TableChart data={transformTableChartData(dashboard.allTableRankData.data, dashboard.allTableRankData.colnames)}
+                                    <TableChart data={!dashboard.isLoading.allTableRankData ? transformTableChartData(dashboard.allTableRankData?.data, dashboard.allTableRankData?.colnames) : 'isLoading'}
                                                 height={CUSTOM_CHART.tableChart.tableProgramChannel.height}
                                                 fontSize={CUSTOM_CHART.tableChart.fontSize}
                                                 fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -714,7 +724,7 @@ const DashboardContent = () => {
                                                 showPagination={CUSTOM_CHART.tableChart.tableProgramChannel.pagination} />
                                   </div>
                                   <div className='w-full pb-6'>
-                                    <TableChart data={transformTableChartData(dashboard.allTableDetailData.data, dashboard.allTableDetailData.colnames)}
+                                    <TableChart data={!dashboard.isLoading.allTableDetailData ? transformTableChartData(dashboard.allTableDetailData?.data, dashboard.allTableDetailData?.colnames) : 'isLoading'}
                                                 height={CUSTOM_CHART.tableChart.tableProgramChannel.height}
                                                 fontSize={CUSTOM_CHART.tableChart.fontSize}
                                                 fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -725,7 +735,7 @@ const DashboardContent = () => {
                                                 showPagination={CUSTOM_CHART.tableChart.tableProgramChannel.pagination} />
                                   </div>
                                   <div className='w-full pb-6'>
-                                    <TableChart data={transformTableChartData(dashboard.allTableEventData.data, dashboard.allTableEventData.colnames)}
+                                    <TableChart data={!dashboard.isLoading.allTableEventData ? transformTableChartData(dashboard.allTableEventData?.data, dashboard.allTableEventData?.colnames) : 'isLoading'}
                                                 height={CUSTOM_CHART.tableChart.tableProgramChannel.height}
                                                 fontSize={CUSTOM_CHART.tableChart.fontSize}
                                                 fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -755,15 +765,15 @@ const DashboardContent = () => {
                                              currentTab={currentTab}
                                              isOpen={filterOpen}
                                              setIsOpen={setFilterOpen} />
-                                <div className='px-10'>
+                                <div className='px-6'>
                                   <div className='w-full py-6'>
-                                    <LineChart data={transformMixedChartData(dashboard.ratingLineMinuteChannelData.data, 'event_start_time_split_m', dashboard.ratingLineMinuteChannelData.colnames)}
+                                    <LineChart data={!dashboard.isLoading.ratingLineMinuteChannelData ? transformMixedChartData(dashboard.ratingLineMinuteChannelData?.data, 'event_start_time_split_m', dashboard.ratingLineMinuteChannelData?.colnames) : 'isLoading'}
                                               height={CUSTOM_CHART.lineChart.height}
                                               fontSize={CUSTOM_CHART.lineChart.fontSize}
                                               fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                               fontWeight={CUSTOM_CHART.lineChart.fontWeight}
-                                              nameChart={CUSTOM_CHART.lineChart.lineChartPercentTimebandChannel.name}
-                                              description={CUSTOM_CHART.lineChart.lineChartPercentTimebandChannel.desciption}
+                                              nameChart={CUSTOM_CHART.lineChart.lineChartMinuteChannel.name}
+                                              description={CUSTOM_CHART.lineChart.lineChartMinuteChannel.desciption}
                                               colors={CUSTOM_CHART.lineChart.colorChannel}
                                               smooth={CUSTOM_CHART.lineChart.smooth}
                                               symbolSize={CUSTOM_CHART.lineChart.symbolSize}
@@ -771,16 +781,17 @@ const DashboardContent = () => {
                                               areaStyle={CUSTOM_CHART.lineChart.areaStyle}
                                               stack={CUSTOM_CHART.lineChart.stack}
                                               showTopNSeries={0}
+                                              legendTop={CUSTOM_CHART.lineChart.lineChartMinuteChannel.legendTop}
                                     />
                                   </div>
                                   <div className='w-full pb-6'>
-                                    <LineChart data={transformMixedChartData(dashboard.ratingLineMinuteChannelOneDateData.data, 'event_start_time_split_m', dashboard.ratingLineMinuteChannelOneDateData.colnames)}
+                                    <LineChart data={!dashboard.isLoading.ratingLineMinuteChannelOneDateData ? transformMixedChartData(dashboard.ratingLineMinuteChannelOneDateData?.data, 'event_start_time_split_m', dashboard.ratingLineMinuteChannelOneDateData?.colnames) : 'isLoading'}
                                               height={CUSTOM_CHART.lineChart.height}
                                               fontSize={CUSTOM_CHART.lineChart.fontSize}
                                               fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                               fontWeight={CUSTOM_CHART.lineChart.fontWeight}
-                                              nameChart={CUSTOM_CHART.lineChart.lineChartPercentTimebandChannel.name}
-                                              description={CUSTOM_CHART.lineChart.lineChartPercentTimebandChannel.desciption}
+                                              nameChart={CUSTOM_CHART.lineChart.lineChartMinuteDay.name}
+                                              description={CUSTOM_CHART.lineChart.lineChartMinuteDay.desciption}
                                               colors={CUSTOM_CHART.lineChart.colorChannel}
                                               smooth={CUSTOM_CHART.lineChart.smooth}
                                               symbolSize={CUSTOM_CHART.lineChart.symbolSize}
@@ -788,16 +799,17 @@ const DashboardContent = () => {
                                               areaStyle={CUSTOM_CHART.lineChart.areaStyle}
                                               stack={CUSTOM_CHART.lineChart.stack}
                                               showTopNSeries={0}
+                                              legendTop={CUSTOM_CHART.lineChart.lineChartMinuteChannel.legendTop}
                                     />
                                   </div>
                                   <div className='w-full pb-6'>
-                                    <LineChart data={transformMixedChartData(dashboard.ratingLineMinuteChannelDatesData.data, 'event_start_time_split_m', dashboard.ratingLineMinuteChannelDatesData.colnames)}
+                                    <LineChart data={!dashboard.isLoading.ratingLineMinuteChannelDatesData ? transformMixedChartData(dashboard.ratingLineMinuteChannelDatesData?.data, 'event_start_time_split_m', dashboard.ratingLineMinuteChannelDatesData?.colnames) : 'isLoading'}
                                               height={CUSTOM_CHART.lineChart.height}
                                               fontSize={CUSTOM_CHART.lineChart.fontSize}
                                               fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                               fontWeight={CUSTOM_CHART.lineChart.fontWeight}
-                                              nameChart={CUSTOM_CHART.lineChart.lineChartPercentTimebandChannel.name}
-                                              description={CUSTOM_CHART.lineChart.lineChartPercentTimebandChannel.desciption}
+                                              nameChart={CUSTOM_CHART.lineChart.lineChartMinuteDays.name}
+                                              description={CUSTOM_CHART.lineChart.lineChartMinuteDays.desciption}
                                               colors={CUSTOM_CHART.lineChart.colorChannel}
                                               smooth={CUSTOM_CHART.lineChart.smooth}
                                               symbolSize={CUSTOM_CHART.lineChart.symbolSize}
@@ -805,6 +817,7 @@ const DashboardContent = () => {
                                               areaStyle={CUSTOM_CHART.lineChart.areaStyle}
                                               stack={CUSTOM_CHART.lineChart.stack}
                                               showTopNSeries={0}
+                                              legendTop={CUSTOM_CHART.lineChart.lineChartMinuteChannel.legendTop}
                                     />
                                   </div>
                                 </div>
@@ -815,7 +828,7 @@ const DashboardContent = () => {
                         onTabChange={setCurrentTab}
             />
           </div>
-          <div className='px-10'>
+          <div className='px-6'>
             <Footer />
           </div>
         </div>

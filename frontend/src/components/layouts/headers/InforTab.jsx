@@ -3,7 +3,7 @@ import iconArrowDown from '../../../assets/icon_arrow_down.png';
 
 const InforTab = ({ inforTab, isOpen , setIsOpen}) => {
   return (
-    <section className={`px-6 py-3 flex gap-2.5 h-12 items-center sticky top-49 bg-background-dashboard ${!isOpen.isInfor ? 'border-b border-border-black-10' : ''}`} style={{zIndex: 200}}>
+    <section className={`px-6 py-3 flex gap-2.5 h-12 items-center sticky top-34 bg-background-dashboard ${!isOpen.isInfor ? 'border-b border-border-black-10' : ''}`} style={{zIndex: 200}}>
         <span className='text-color-black-100 font-semibold text-sm'>{inforTab}</span>
         <div className='w-px h-5 rounded-full bg-background-line-gray'></div>
         <div className='flex items-center gap-1'>

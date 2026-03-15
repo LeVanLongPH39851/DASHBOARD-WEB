@@ -1,7 +1,8 @@
 // LineChart.jsx - showTopNSeries = 0: ẩn value, null: hiện hết
 import React, { memo, useRef, useMemo, useState, useEffect } from 'react';
 import ReactECharts from 'echarts-for-react';
-import Label from '../layouts/components/NameChart';
+import NumberChart from '../layouts/components/NameChart';
+import Loading from '../commons/Loading';
 
 const LineChart = ({
   data,
@@ -20,9 +21,21 @@ const LineChart = ({
   lineWidth,
   areaStyle,
   stack,
-  labelOffset = -12,
-  showTopNSeries  // ✅ 0 = ẩn hết value, null = hiện hết, số = top N
+  labelOffset = 0,
+  showTopNSeries,
+  left=145,
+  legendTop=false
 }) => {
+
+  if(data==='isLoading') {
+    return (
+      <div className='p-6 bg-background-light border border-border-black-10 rounded-2xl shadow-component'>
+        <NumberChart nameChart={nameChart} description={description}/>
+        <Loading height={height} />
+      </div>
+    );
+  }
+
   const { labels = [], series = [] } = data;
   const chartRef = useRef(null);
   const [selectedSeries, setSelectedSeries] = useState(
@@ -72,6 +85,14 @@ const LineChart = ({
 
   const topSeriesNames = sortedLegendData.topSeriesNames;
   const legendData = sortedLegendData.legendOrder;
+  const labelLength = labels.length - 1;
+
+  const colorMap = useMemo(() => {
+    return series.reduce((acc, s, index) => {
+      acc[s.name] = colors[s.name] || defaultColors[index % defaultColors.length];
+      return acc;
+    }, {});
+  }, [series, colors]);
 
   useEffect(() => {
     const chart = chartRef.current?.getEchartsInstance();
@@ -98,35 +119,52 @@ const LineChart = ({
       trigger: 'axis',
       axisPointer: { 
         type: 'cross',
-        crossStyle: { color: '#999' }
+        crossStyle: { color: 'rgba(0, 0, 0, 0.2)' }
       },
-      backgroundColor: 'rgba(255,255,255,0.95)',
-      borderColor: '#e5e7eb',
-      borderWidth: 1,
+      backgroundColor: 'rgba(255, 255, 255, 1)',
+      borderWidth: 0,
       textStyle: { 
         fontSize: fontSize.tooltip,
-        color: '#1f2937',
+        color: 'rgba(0, 0, 0, 0.7)',
         fontWeight: fontWeight.tooltip,
         fontFamily: fontFamily
       },
       formatter: params => {
         // ✅ Chỉ hiện series CÓ value tại xAxis này
-        const visibleParams = params.filter(p => p.value && p.value !== 0 && p.value !== null && p.value !== undefined);
+        const visibleParams = params.filter(p => p.value && p.value !== 0 && p.value !== null && p.value !== undefined).sort((a, b) => b.value - a.value);
+        const total = visibleParams.reduce((sum, p) => sum + p.value, 0);
         
         if (visibleParams.length === 0) return '';
         
         return `
           <div style="padding: 12px 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-            <div style="font-weight: 700; font-size: 16px; margin-bottom: 8px; color: #1f2937;">
+            <div style="font-weight: 600; font-size: 13px; color: rgba(0, 0, 0, 0.7);">
               ${visibleParams[0].name}
             </div>
-            ${visibleParams.map(p => `
-              <div style="margin: 4px 0; display: flex; align-items: center;">
-                ${p.marker} 
-                <span style="font-weight: 600; margin-right: 8px; color: #374151;">${p.seriesName}:</span> 
-                <span style="font-size: 15px; font-weight: 500;">${p.value.toLocaleString(undefined, { maximumFractionDigits: 2 })}</span>
-              </div>
-            `).join('')}
+            ${visibleParams.map(p => {
+              const percent = total > 0 ? (p.value / total * 100).toFixed(2) : 0;
+              
+              return `
+                <div style="margin: 2px 0; display: flex; align-items: center;">
+                  <span style="
+                    display: inline-block;
+                    width: 10px; height: 10px;
+                    border-radius: 50%;
+                    background-color: ${colorMap[p.seriesName]};
+                    margin-right: 6px;
+                    flex-shrink: 0;
+                  "></span>
+                  <span style="font-weight: 600; font-size: 12px; margin-right: 4px; color: rgba(0, 0, 0, 0.7);">${p.seriesName}:</span> 
+                  <span style="font-size: 12px; font-weight: 500; color: rgba(0, 0, 0, 0.7);">
+                    ${p.value.toLocaleString(undefined, { maximumFractionDigits: (nameChart.includes('%') ? 2 : 0) })} <span style="font-size: 11px;">(${percent}%)</span>
+                  </span>
+                </div>
+              `;
+            }).join('')}
+            <hr style="margin: 5px 0; border: none; height: 1px; background: rgba(0, 0, 0, 0.1);">
+            <div style="font-weight: 700; color: #059669; font-size: 12px;">
+              <span>Tổng:</span> <span>${total.toLocaleString(undefined, { maximumFractionDigits: (nameChart.includes('%') ? 2 : 0) })}</span>
+            </div>
           </div>
         `;
       }
@@ -139,17 +177,38 @@ const LineChart = ({
         xAxisIndex: 0,
         start: 0,
         end: zoomEndPercent,
-        bottom: 50,
+        bottom: 0,
         height: 20,
+        borderRadius: 8,
+        backgroundColor: 'rgb(223, 249, 245)',
+        borderColor: 'rgb(205, 240, 246)',
         brushSelect: false,
-        handleSize: '80%',
-        handleStyle: { color: '#3b82f6' },
-        textStyle: { fontSize: 12, color: '#64748b' },
-        borderColor: '#e5e7eb',
-        fillerColor: 'rgba(59, 130, 246, 0.1)',
+        handleSize: '100%',
+        handleStyle: {
+          color: 'rgb(42, 198, 193)',
+          borderColor: 'rgba(255, 255, 255, 1)'
+        },
+        textStyle: {
+          fontSize: fontSize.axisLabel,
+          color: 'rgba(0, 0, 0, 0.7)',
+          fontWeight: 600
+        },
+        emphasis: {
+          handleStyle: {
+            color: 'rgba(255, 255, 255, 1)',
+            borderColor: 'rgb(42, 198, 193)'
+          }
+        },
+        fillerColor: 'rgb(205, 240, 246)',
         dataBackground: {
-         lineStyle: { color: '#3b82f6', opacity: 0.3 },
-         areaStyle: { color: '#3b82f6', opacity: 0.1 }
+          lineStyle: {
+            opacity: 0.2,
+            color: 'rgb(42, 198, 193)'
+          },
+          areaStyle: {
+            opacity: 0.2,
+            color: 'rgb(42, 198, 193)'
+          }
         }
       },
       {
@@ -165,47 +224,55 @@ const LineChart = ({
 
     legend: {
       type: 'scroll', // ✅ Cho phép cuộn ngang
-      orient: 'horizontal', // ✅ Xếp nằm ngang trên 1 hàng
-      top: 10,                     // ✅ Đưa lên trên cùng
-      left: '3%',                  // ✅ Canh trái (theo padding X của grid)
-      right: '4%',                 // Giữ khoảng cách bên phải giống grid
+      orient: !legendTop ? 'vertical' : 'horizontal', // ✅ Xếp nằm ngang trên 1 hàng
+      top: 0,                     // ✅ Đưa lên trên cùng
+      left: 0,                  // ✅ Canh trái (theo padding X của grid)
+      right: 0,                 // Giữ khoảng cách bên phải giống grid
       align: 'left',
       itemWidth: 14,
-      itemHeight: 14,
+      itemHeight: 10,
       icon: 'circle',
-      itemGap: 10,
+      itemGap: !legendTop ? 8 : 10,
       textStyle: { 
         fontSize: fontSize.legend,
-        color: '#64748b',
-        fontWeight: fontWeight.legend
+        color: 'rgba(30, 27, 57, 1)',
+        fontWeight: fontWeight.legend,
+        letterSpacing: '0.1px',
+        fontFamily: fontFamily
       },
-      data: legendData,
+      data: legendData.map(name => ({
+        name,
+        itemStyle: {
+          color: colorMap[name]
+        }
+      })),
       selected: selectedSeries
     },
 
     grid: {
-      left: '3%',
-      right: '4%',
-      bottom: needsScroll ? '120px' : '80px',
-      top: 60,
+      left: !legendTop ? left : '1%',
+      right: '1%',
+      bottom: needsScroll ? '30px' : '1%',
+      top: !legendTop ? '5%' : 40,
       containLabel: true
     },
 
     xAxis: {
       type: 'category',
       data: labels,
-      axisLine: { show: true, lineStyle: { color: '#d1d5db' } },
+      axisLine: { show: true, lineStyle: { color: 'rgba(229, 229, 239, 1)' } },
       axisTick: { show: false },
       axisLabel: { 
         fontSize: fontSize.axisLabel,
-        color: '#374151',
+        color: 'rgba(97, 94, 131, 1)',
         fontWeight: fontWeight.axisLabel,
         rotate: 0,
         interval: 'auto',
+        fontFamily: fontFamily,
         formatter: (value) => value
       },
       splitLine: { show: false },
-      boundaryGap: false
+      boundaryGap: true
     },
 
     yAxis: {
@@ -215,8 +282,8 @@ const LineChart = ({
       splitLine: {
         show: true,
         lineStyle: {
-          color: '#e5e7eb',
-          type: 'dashed',
+          color: 'rgba(229, 229, 239, 1)',
+          type: 'solid',
           width: 1,
           opacity: 1
         }
@@ -224,8 +291,9 @@ const LineChart = ({
       axisLabel: {
         formatter: v => v.toLocaleString(undefined, { maximumFractionDigits: 0 }),
         fontSize: fontSize.axisLabel,
-        color: '#6b7280',
-        fontWeight: fontWeight.axisLabel
+        color: 'rgba(97, 94, 131, 1)',
+        fontWeight: fontWeight.axisLabel,
+        fontFamily: fontFamily
       }
     },
 
@@ -242,16 +310,16 @@ const LineChart = ({
         smooth: smooth,
         symbol: 'circle',
         symbolSize: symbolSize,
-        showSymbol: isTopSeries,
+        // showSymbol: isTopSeries,
         lineStyle: {
           color: color,
           width: lineWidth,
           opacity: 1  // ✅ Luôn đậm ban đầu
         },
         itemStyle: {
-          color: color,
-          borderWidth: 2,
-          borderColor: '#fff'
+          color: labelLength===0 ? color : 'transparent',
+          borderColor: labelLength===0 ? 'rgba(255, 255, 255, 1)' : 'transparent',
+          borderWidth: labelLength===0 ? 2 : 0
         },
         ...(areaStyle && {
           areaStyle: {
@@ -270,10 +338,11 @@ const LineChart = ({
           focus: 'series',  // ✅ Tự động mờ các series khác khi hover
           scale: true,
           itemStyle: {
-            shadowBlur: 10,
-            shadowColor: 'rgba(0,0,0,0.3)',
-            borderWidth: 3,
-            borderColor: '#fff'
+            color: color,
+            borderWidth: labelLength===0 ? 3 : 2,
+            borderColor: 'rgba(255, 255, 255, 1)',
+            shadowBlur: labelLength===0 ? 10 : 0,
+            shadowColor: labelLength===0 ? 'rgba(0,0,0,0.3)' : '',
           },
           lineStyle: {
             width: lineWidth + 1,  // ✅ Đậm hơn khi hover
@@ -283,12 +352,12 @@ const LineChart = ({
             show: true,
             position: 'top',
             offset: [0, labelOffset],
-            formatter: (params) => params.value ? params.value.toLocaleString(undefined, { maximumFractionDigits: 2 }) : '',
+            formatter: (params) => params.value ? params.value.toLocaleString(undefined, { maximumFractionDigits: (nameChart.includes('%') ? 2 : 0) }) : '',
             fontSize: fontSize.dataLabel,
             fontWeight: fontWeight.dataLabel,
             fontFamily: fontFamily,
             color: color,
-            backgroundColor: 'rgba(255,255,255,0.9)',
+            backgroundColor: 'rgba(255,255,255,1)',
             padding: [4, 8],
             borderRadius: 4,
             borderColor: color,
@@ -299,7 +368,7 @@ const LineChart = ({
           show: showLabel && isTopSeries,  // ✅ Logic hoàn chỉnh
           position: 'top',
           offset: [0, labelOffset],
-          formatter: (params) => params.value ? params.value.toLocaleString(undefined, { maximumFractionDigits: 2 }) : '',
+          formatter: (params) => params.value ? params.value.toLocaleString(undefined, { maximumFractionDigits: (nameChart.includes('%') ? 2 : 0) }) : '',
           fontSize: fontSize.dataLabel,
           fontWeight: fontWeight.dataLabel,
           fontFamily: fontFamily,
@@ -310,8 +379,8 @@ const LineChart = ({
   };
 
   return (
-    <div className="bg-background-light rounded-xl">
-      <Label nameChart={nameChart} description={description}/>
+    <div className='p-6 bg-background-light border border-border-black-10 rounded-2xl shadow-component'>
+      <NumberChart nameChart={nameChart} description={description}/>
       <ReactECharts 
         ref={chartRef}
         option={option} 

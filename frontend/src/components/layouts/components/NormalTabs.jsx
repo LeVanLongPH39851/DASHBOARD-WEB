@@ -10,7 +10,7 @@ export default function NormalTabs({
   variant = 'default' 
 }) {
   const [activeTab, setActiveTab] = useState(defaultTab || tabs[0]?.id);
-  const [bgStyle, setBgStyle] = useState({ left: 0, width: 0 });
+  const [bgStyle, setBgStyle] = useState({ left: 0, width: 0, top: 0, height: 0 });
   const tabsRef = useRef([]);
 
   const updateBgPosition = useCallback(() => {
@@ -20,7 +20,9 @@ export default function NormalTabs({
       if (currentTab) {
         setBgStyle({
           left: currentTab.offsetLeft,
-          width: currentTab.clientWidth
+          width: currentTab.clientWidth,
+          top: currentTab.offsetTop,
+          height: currentTab.offsetHeight
         });
       }
     });
@@ -39,13 +41,13 @@ export default function NormalTabs({
   // ✅ MÀU SẮC + STYLE GIỐNG HẾT CHILD TABS
   const variants = {
     default: {
-      container: 'relative flex mb-2 overflow-hidden rounded-4xl p-1', // ✅ Không bg-gray-100
-      button: (isActive) => `relative px-6 py-1 font-medium text-md transition-all duration-300 cursor-pointer z-10 ${
+      container: 'relative flex gap-1 mb-6 overflow-hidden rounded-2xl p-1 bg-background-black-4 w-fit', // ✅ Không bg-gray-100
+      button: (isActive) => `relative px-6 w-36 py-2 font-medium text-sm transition-all duration-300 cursor-pointer z-10 ${
         isActive
           ? 'text-color-light font-semibold'  // ✅ color-light (không hardcode)
           : 'text-gray-500 hover:text-gray-700'
       }`,
-      background: 'absolute inset-0 bg-background-dark rounded-4xl transition-all duration-500 ease-out shadow-lg'  // ✅ background-dark
+      background: 'absolute inset-0 bg-background-black-child-tab rounded-2xl transition-all duration-500 ease-out'  // ✅ background-dark
     },
     pills: {
       container: 'flex gap-2 mb-2',

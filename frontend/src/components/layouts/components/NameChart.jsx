@@ -5,7 +5,7 @@ import iConDownloadDark from '../../../assets/icon_download_dark.png'
 const NameChart = ({ nameChart, description, icon=false, width='', height='', backgound='', display=true }) => {
   return (display &&
     (
-      <div className='pb-6 text-[16px] font-semibold text-color-black-70 flex justify-between'>
+      <div className='pb-6 text-[16px] font-semibold text-color-black-100 flex justify-between'>
         <div className='flex items-center gap-2'>
           {icon && <div className={`w-8 h-8 flex justify-center items-center rounded-lg ${backgound}`}><figure><img src={icon} className={`${width+' '+height+' '+backgound}`} /></figure></div>}
           <span>{nameChart}</span>

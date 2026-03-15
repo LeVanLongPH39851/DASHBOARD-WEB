@@ -1,7 +1,7 @@
 import './Loading.css'
-const Loading = () => (
-  <div className='w-full h-full fixed top-0 left-0 flex justify-center items-center'>
-    <div class="loading-wave">
+const Loading = ({height='auto'}) => (
+  <div className='w-full flex justify-center items-center' style={{height: typeof height === 'number' ? `${height}px` : height}}>
+    <div class="loading-wave" style={{height: height=='auto' ? '78px' : ''}}>
       <div class="loading-bar"></div>
       <div class="loading-bar"></div>
       <div class="loading-bar"></div>

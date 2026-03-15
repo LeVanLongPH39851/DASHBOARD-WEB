@@ -1,6 +1,8 @@
 import React, { memo, useRef } from 'react';
 import ReactECharts from 'echarts-for-react';
-import Label from '../layouts/components/NameChart';
+import NumberChart from '../layouts/components/NameChart';
+import { formatNumber } from '../../utils/formatNumber';
+import Loading from '../commons/Loading';
 
 const MixedChart = ({
   data,
@@ -16,8 +18,18 @@ const MixedChart = ({
   lineSeriesKeys,
   colors,
   barMaxWidth,
-  barWidthPercent
+  barWidthPercent,
+  lastDataIndexActive=false
 }) => {
+
+  if(data==='isLoading') {
+    return (
+      <div className='p-6 bg-background-light border border-border-black-10 rounded-2xl shadow-component'>
+        <NumberChart nameChart={nameChart} description={description}/>
+        <Loading height={height} />
+      </div>
+    );
+  }
   const { labels = [], series = [] } = data;
   const chartRef = useRef(null);
 
@@ -27,6 +39,9 @@ const MixedChart = ({
     ? Math.round((maxVisibleItems / labels.length) * 100) 
     : 100;
 
+  const lastDataIndex = labels.length - 1;
+  
+
   // ECHARTS OPTION
   const option = {
     tooltip: {
@@ -34,29 +49,29 @@ const MixedChart = ({
       axisPointer: { 
         type: 'cross',
         crossStyle: {
-          color: '#999'
+          color: 'rgba(0, 0, 0, 0.2)'
         }
       },
-      backgroundColor: 'rgba(255,255,255,0.95)',
-      borderColor: '#e5e7eb',
-      borderWidth: 1,
+      backgroundColor: 'rgba(255, 255, 255, 1)',
+      borderWidth: 0,
       textStyle: { 
         fontSize: fontSize.tooltip,
-        color: '#1f2937',
+        color: 'rgba(0, 0, 0, 0.7)',
         fontWeight: fontWeight.tooltip,
         fontFamily: fontFamily
       },
       formatter: params => {
         return `
           <div style="padding: 12px 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-            <div style="font-weight: 700; font-size: 16px; margin-bottom: 8px; color: #1f2937;">
+            <div style="font-weight: 600; font-size: 13px; color: rgba(0, 0, 0, 0.7);">
               ${params[0].name}
             </div>
             ${params.map(p => `
-              <div style="margin: 4px 0; display: flex; align-items: center;">
+              <div style="margin: 2px 0; display: flex; align-items: center;">
                 ${p.marker} 
-                <span style="font-weight: 600; margin-right: 8px; color: #374151;">${p.seriesName}:</span> 
-                <span style="font-size: 15px; font-weight: 500;">${p.value?.toLocaleString(undefined, { maximumFractionDigits: 2 }) || '-'}</span>
+                <span style="font-weight: 600; font-size: 12px; margin-right: 4px; color: rgba(0, 0, 0, 0.7);">${p.seriesName}:</span> 
+                <span style="font-size: 12px; font-weight: 500; color: rgba(0, 0, 0, 0.7);">${typeof p.value === 'number' ? formatNumber(p.value, { isPercent: p.seriesName.includes('%') }) : (p.value || '-')}
+                </span>
               </div>
             `).join('')}
           </div>
@@ -72,27 +87,37 @@ const MixedChart = ({
         xAxisIndex: 0,
         start: 0,
         end: zoomEndPercent,
-        bottom: 50,
+        bottom: 0,
         height: 20,
+        borderRadius: 8,
+        backgroundColor: 'rgba(255, 247, 217, 1)',
+        borderColor: 'rgb(252, 233, 167)',
         brushSelect: false,
-        handleSize: '80%',
+        handleSize: '100%',
         handleStyle: {
-          color: '#3b82f6'
+          color: 'rgba(255, 204, 0, 1)',
+          borderColor: 'rgba(255, 255, 255, 1)'
         },
         textStyle: {
-          fontSize: 12,
-          color: '#64748b'
+          fontSize: fontSize.axisLabel,
+          color: 'rgba(0, 0, 0, 0.7)',
+          fontWeight: 600
         },
-        borderColor: '#e5e7eb',
-        fillerColor: 'rgba(59, 130, 246, 0.1)',
+        emphasis: {
+          handleStyle: {
+            color: 'rgba(255, 255, 255, 1)',
+            borderColor: 'rgba(255, 204, 0, 1)'
+          }
+        },
+        fillerColor: 'rgb(252, 233, 167)',
         dataBackground: {
           lineStyle: {
-            color: '#3b82f6',
-            opacity: 0.3
+            opacity: 0.2,
+            color: 'rgba(255, 204, 0, 1)'
           },
           areaStyle: {
-            color: '#3b82f6',
-            opacity: 0.1
+            opacity: 0.2,
+            color: 'rgba(255, 204, 0, 1)'
           }
         }
       },
@@ -108,27 +133,30 @@ const MixedChart = ({
     ] : [],
 
     legend: {
-      bottom: needsScroll ? 80 : 10,
-      left: 'center',
+      top: needsScroll ? 0 : 0,
+      left: 0,
       itemWidth: 14,
       itemHeight: 14,
       icon: 'roundRect',
+      itemGap: 10,
       textStyle: { 
         fontSize: fontSize.legend,
-        color: '#64748b',
-        fontWeight: fontWeight.legend
+        color: 'rgba(30, 27, 57, 1)',
+        fontWeight: fontWeight.legend,
+        letterSpacing: '0.1px',
+        fontFamily: fontFamily
       },
       data: series.map(s => ({
         name: s.name,
-        icon: barSeriesKeys.includes(s.name) ? 'rect' : 'circle'
+        icon: barSeriesKeys.includes(s.name) ? 'roundRect' : 'circle'
       }))
     },
 
     grid: {
-      left: '3%',
-      right: '4%',
-      bottom: needsScroll ? '120px' : '80px',
-      top: 50, // ✅ Tăng để có space cho label
+      left: '1%',
+      right: '1%',
+      bottom: needsScroll ? '30px' : '1%',
+      top: 45.5,
       containLabel: true
     },
 
@@ -137,39 +165,40 @@ const MixedChart = ({
       data: labels,
       axisLine: { 
         show: true, 
-        lineStyle: { color: '#d1d5db' } 
+        lineStyle: { color: 'rgba(0, 0, 0, 0.2)' }
       },
       axisTick: { show: false },
       axisLabel: { 
         fontSize: fontSize.axisLabel,
-        color: '#374151',
+        color: 'rgba(0, 0, 0, 0.7)',
         fontWeight: fontWeight.axisLabel,
+        fontFamily: fontFamily,
         rotate: 0,
-        interval: 0,
+        interval: 'auto',
         formatter: (value) => value
       },
       splitLine: { show: false }
     },
 
-    // ✅ CHỈ 1 Y-AXIS
     yAxis: {
       type: 'value',
-      axisLine: { show: false },
+      axisLine: { show: true, lineStyle: { color: 'rgba(0, 0, 0, 0.2)' } },
       axisTick: { show: false },
       splitLine: {
         show: true,
         lineStyle: {
-          color: '#e5e7eb',
+          color: 'rgba(229, 229, 239, 1)',
           type: 'dashed',
-          width: 1,
+          width: 1.5,
           opacity: 1
         }
       },
       axisLabel: {
         formatter: v => v.toLocaleString(undefined, { maximumFractionDigits: 0 }),
         fontSize: fontSize.axisLabel,
-        color: '#6b7280',
-        fontWeight: fontWeight.axisLabel
+        color: 'rgba(0, 0, 0, 0.7)',
+        fontWeight: fontWeight.axisLabel,
+        fontFamily: fontFamily
       }
     },
 
@@ -182,12 +211,21 @@ const MixedChart = ({
         return {
           name: s.name,
           type: 'bar',
-          data: s.data,
+          data: s.data.map((val, dataIdx) => ({
+            value: val,
+            itemStyle: {
+              color: dataIdx === lastDataIndex || !lastDataIndexActive ? color : 'rgba(206, 206, 206, 1)',
+              borderRadius: [10, 10, 0, 0]
+            },
+            label: {
+              color: dataIdx === lastDataIndex || !lastDataIndexActive ? 'rgba(0,0,0,0.7)' : 'rgba(206, 206, 206, 1)'
+            }
+          })),
           barWidth: barWidthPercent,
           barMaxWidth: barMaxWidth,
           itemStyle: {
             color: color,
-            borderRadius: [4, 4, 0, 0]
+            borderRadius: [10, 10, 0, 0]
           },
           emphasis: {
             itemStyle: { 
@@ -199,14 +237,14 @@ const MixedChart = ({
           label: {
             show: true,
             position: 'top',
-            offset: [0, -8], // ✅ Khoảng cách label với bar
+            offset: [0, -8],
             formatter: (params) => {
-              return params.value ? params.value.toLocaleString(undefined, { maximumFractionDigits: 2 }) : '';
+              return typeof params.value === 'number' ? formatNumber(params.value, { isPercent: params.seriesName.includes('%') }) : (params.value || '-')
             },
             fontSize: fontSize.dataLabel,
             fontWeight: fontWeight.dataLabel,
             fontFamily: fontFamily,
-            color: '#1e293b'
+            color: 'rgba(0, 0, 0, 0.7)'
           }
         };
       } else {
@@ -214,18 +252,21 @@ const MixedChart = ({
         return {
           name: s.name,
           type: 'line',
-          data: s.data,
+          data: s.data.map((val, dataIdx) => ({
+            value: val,
+            label: {
+              color: dataIdx === lastDataIndex || !lastDataIndexActive ? color : 'rgba(171, 171, 171, 1)'
+            }
+          })),
           smooth: true,
           symbol: 'circle',
-          symbolSize: 6,
+          symbolSize: 5,
           lineStyle: {
             color: color,
             width: 3
           },
           itemStyle: {
-            color: color,
-            borderWidth: 2,
-            borderColor: '#fff'
+            color: color
           },
           emphasis: {
             itemStyle: {
@@ -237,9 +278,9 @@ const MixedChart = ({
           label: {
             show: true,
             position: 'top',
-            offset: [0, -8], // ✅ Khoảng cách label với line (xa hơn bar nhiều)
+            offset: [0, -8],
             formatter: (params) => {
-              return params.value ? params.value.toLocaleString(undefined, { maximumFractionDigits: 2 }) : '';
+              return typeof params.value === 'number' ? formatNumber(params.value, { isPercent: params.seriesName.includes('%') }) : (params.value || '-')
             },
             fontSize: fontSize.dataLabel,
             fontWeight: fontWeight.dataLabel,
@@ -252,8 +293,8 @@ const MixedChart = ({
   };
 
   return (
-    <div className="bg-background-light rounded-xl">
-      <Label nameChart={nameChart} description={description}/>
+    <div className='p-6 bg-background-light border border-border-black-10 rounded-2xl shadow-component'>
+      <NumberChart nameChart={nameChart} description={description}/>
       <ReactECharts 
         ref={chartRef}
         option={option} 

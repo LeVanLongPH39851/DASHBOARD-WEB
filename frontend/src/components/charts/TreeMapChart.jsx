@@ -1,7 +1,8 @@
 // TreeMapChart.jsx
 import React, { memo, useRef } from 'react';
 import ReactECharts from 'echarts-for-react';
-import Label from '../layouts/components/NameChart';
+import NameChart from '../layouts/components/NameChart';
+import Loading from '../commons/Loading';
 
 const TreeMapChart = ({
   data,
@@ -14,9 +15,18 @@ const TreeMapChart = ({
   colors,
   colorSaturation = [0.3, 0.6],
   visibleMin = 300,
-  childrenVisibleMin = 100,
-  showBreadcrumb = false
+  childrenVisibleMin = 100
 }) => {
+
+  if(data==='isLoading') {
+    return (
+      <div className='p-6 bg-background-light border border-border-black-10 rounded-2xl shadow-component'>
+        <NameChart nameChart={nameChart} description={description} />
+        <Loading height={height} />
+      </div>
+    );
+  }
+
   const chartRef = useRef(null);
 
   // Default colors nếu không truyền
@@ -53,15 +63,21 @@ const TreeMapChart = ({
 
   const treeData = transformData(data);
 
+  const totalValue = treeData.reduce((sum, item) => {
+    if (item.children) {
+      return sum + item.children.reduce((s, c) => s + (c.value || 0), 0);
+    }
+    return sum + (item.value || 0);
+  }, 0);
+
   const option = {
     tooltip: {
       trigger: 'item',
-      backgroundColor: 'rgba(255,255,255,0.95)',
-      borderColor: '#e5e7eb',
-      borderWidth: 1,
+      backgroundColor: 'rgba(255, 255, 255, 1)',
+      borderWidth: 0,
       textStyle: {
         fontSize: fontSize.tooltip,
-        color: '#1f2937',
+        color: 'rgba(0, 0, 0, 0.7)',
         fontWeight: fontWeight.tooltip,
         fontFamily: fontFamily
       },
@@ -71,15 +87,31 @@ const TreeMapChart = ({
           ?.slice(1)
           .map(p => p.name)
           .join(' > ') || name;
+
+          // ✅ Tính % theo root node hoặc parent tùy depth
+        const depth = treePathInfo?.length ?? 1;
+        let percent = 0;
+
+        if (depth <= 2) {
+          // ✅ Node cấp 1: % so với tổng toàn bộ
+          percent = totalValue > 0 ? (value / totalValue) * 100 : 0;
+        } else {
+          // ✅ Node cấp 2 (nested): % so với parent
+          const parentValue = treePathInfo?.[treePathInfo.length - 2]?.value;
+          percent = parentValue > 0 ? (value / parentValue) * 100 : 0;
+        }
+
+        const formattedValue = value?.toLocaleString(undefined, {
+          maximumFractionDigits: nameChart.includes('%') ? 2 : 0
+        }) || 0;
         
         return `
           <div style="padding: 12px 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-            <div style="font-weight: 700; font-size: 16px; margin-bottom: 8px; color: #1f2937;">
+            <div style="font-weight: 600; font-size: 13px; color: rgba(0, 0, 0, 0.7);">
               ${path}
             </div>
-            <div style="font-weight: 600; color: #059669; font-size: 15px;">
-              <span>Value:</span> 
-              <span style="margin-left: 8px;">${value?.toLocaleString(undefined, { maximumFractionDigits: 2 }) || 0}</span>
+            <div style="font-weight: 700; color: #059669; font-size: 12px;">
+              <span>${value?.toLocaleString(undefined, { maximumFractionDigits: (nameChart.includes('%') ? 2 : 0) }) || 0} <span style="font-size: 11px">(${percent.toFixed(2)}%)</span></span>
             </div>
           </div>
         `;
@@ -93,77 +125,53 @@ const TreeMapChart = ({
         data: treeData,
         visibleMin: visibleMin,
         childrenVisibleMin: childrenVisibleMin,
-        roam: false,
+        roam: true,
         nodeClick: 'zoomToNode',
         breadcrumb: {
-          show: showBreadcrumb,
-          bottom: 10,
-          left: 'center',
-          itemStyle: {
-            color: '#64748b',
-            borderColor: '#e5e7eb',
-            borderWidth: 1,
-            shadowBlur: 4,
-            shadowColor: 'rgba(0,0,0,0.1)'
-          },
-          emphasis: {
-            itemStyle: {
-              color: '#3b82f6',
-              borderColor: '#3b82f6'
-            }
-          }
+          show: false
         },
         label: {
           show: true,
           fontSize: fontSize.label,
           fontWeight: fontWeight.label,
           fontFamily: fontFamily,
-          color: '#fff',
+          color: 'rgba(255, 255, 255, 1)',
           formatter: (params) => {
             const { name, value } = params;
-            return `{name|${name}}\n{value|${value?.toLocaleString(undefined, { maximumFractionDigits: 0 }) || 0}}`;
+            return `{name|${name}}:\n{value|${value?.toLocaleString(undefined, { maximumFractionDigits: (nameChart.includes('%') ? 2 : 0) }) || 0}}`;
           },
           rich: {
             name: {
-              fontSize: fontSize.label + 2,
-              fontWeight: 700,
-              color: '#fff',
-              padding: [0, 0, 4, 0]
+              fontSize: fontSize.label,
+              fontWeight: fontWeight.label,
+              color: 'rgba(255, 255, 255, 1)',
             },
             value: {
               fontSize: fontSize.label,
-              fontWeight: 500,
-              color: 'rgba(255,255,255,0.9)'
+              fontWeight: fontWeight.label,
+              color: 'rgba(255, 255, 255, 1)'
             }
           }
         },
-        upperLabel: {
-          show: true,
-          height: 30,
-          color: '#fff',
-          fontSize: fontSize.label + 1,
-          fontWeight: 700
-        },
         itemStyle: {
-          borderColor: '#fff',
-          borderWidth: 2,
-          gapWidth: 2
+          borderRadius: 16
         },
         emphasis: {
           label: {
             show: true,
             fontSize: fontSize.label + 2,
-            fontWeight: 700
+            rich: {
+              name: {
+                fontSize: fontSize.label + 2
+              },
+              value: {
+                fontSize: fontSize.label + 2
+              }
+            }
           },
           itemStyle: {
-            shadowBlur: 15,
-            shadowColor: 'rgba(0,0,0,0.3)',
-            borderColor: '#fff',
-            borderWidth: 3
-          },
-          upperLabel: {
-            show: true,
-            fontSize: fontSize.label + 2
+            shadowBlur: 10,
+            shadowColor: 'rgba(0,0,0,0.3)'
           }
         },
         levels: [
@@ -186,8 +194,8 @@ const TreeMapChart = ({
   };
 
   return (
-    <div className="bg-background-light rounded-xl">
-      <Label nameChart={nameChart} description={description} />
+    <div className='p-6 bg-background-light border border-border-black-10 rounded-2xl shadow-component'>
+      <NameChart nameChart={nameChart} description={description} />
       <ReactECharts
         ref={chartRef}
         option={option}

@@ -1,5 +1,5 @@
 const Footer = () => {
-  return <div className="bg-background-dark h-13 rounded-xl text-white text-md flex justify-center items-center">Copyright 2026 @ AMI Group</div>;
+  return <a href="https://neotam.vn" target="_blank" className="text-color-black-100 text-sm font-semibold">Copyright 2026 @ AMI Group</a>;
 };
 
 export default Footer;

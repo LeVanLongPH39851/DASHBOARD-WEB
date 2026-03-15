@@ -8,7 +8,7 @@ import Button from './Button';
 
 const BreadCrumb = () => {
   return (
-    <nav className='px-6 bg-background-light pt-2 pb-1 sticky top-15' style={{zIndex: 100}}>
+    <nav className='px-6 bg-background-light pt-2 pb-1 sticky top-0' style={{zIndex: 100}}>
         <div className='flex items-center gap-2'>
             <figure><img src={iconHome} className='w-3 h-3' alt="Icon Home" /></figure>
             <span className='text-sm font-medium text-color-black-50'>Bảng điều khiển</span>

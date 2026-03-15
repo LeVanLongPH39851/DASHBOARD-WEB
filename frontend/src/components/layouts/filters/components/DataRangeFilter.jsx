@@ -1,6 +1,7 @@
 // src/components/filters/DateRangeFilter.jsx
 import { useState, useEffect } from 'react';
 import { getYesterday } from '../../../../helpers/helper';
+import iconArrowUpGray from '../../../../assets/icon_arrow_up_gray.png';
 
 const DateRangeFilter = ({ startDate, endDate, onChange, horizontal=false }) => {
   const yesterday = getYesterday();
@@ -46,19 +47,24 @@ const DateRangeFilter = ({ startDate, endDate, onChange, horizontal=false }) => 
   };
 
   return (
-    <div className={`${horizontal ? '' : 'p-4 bg-[#1a1a1a] border border-[#404040] rounded-md mb-4'}`}>
-      {!horizontal && (<label className='text-sm text-white mb-2 block font-bold'>NGÀY</label>)}
-      <div className={`grid grid-cols-2 gap-1.5 ${horizontal ? 'p-1.75 border border-border-black-10 rounded-sm' : ''}`}>
+    <div className={`${horizontal ? '' : 'mb-4'}`}>
+      {!horizontal && (<div className='flex justify-between items-center h-10.5 mb-1'>
+                        <label className='text-[16px] text-background-black-child-tab font-medium'>Ngày</label>
+                        <figure className='cursor-pointer'><img src={iconArrowUpGray} className='w-2.75' alt="Icon Arrow Up Gray" /></figure>
+                      </div>)}
+      <div className={`flex ${horizontal ? 'gap-1' : 'flex-col'}`}>
+        {!horizontal && <label className='text-sm font-medium text-color-black-50 mb-1.5'>Từ ngày</label>}
         <input
-          className={`bg-white px-2 py-0.5 rounded-xs text-[11px] outline-none ${horizontal ? 'border border-border-black-10' : ''}`}
+          className={`px-4 rounded-xl border border-background-line-gray text-sm font-medium text-color-black-50 outline-none ${horizontal ? 'py-2' : 'mb-2 py-2.25'}`}
           type="date"
           value={localStart}
           min={getMinStartDate(localEnd)}
           max={localEnd}
           onChange={handleStartChange}
         />
+        {!horizontal && <label className='text-sm font-medium text-color-black-50 mb-1.5'>Đến ngày</label>}
         <input
-          className={`bg-white px-2 py-0.5 rounded-xs text-[11px] outline-none ${horizontal ? 'border border-border-black-10' : ''}`}
+          className={`px-4 rounded-xl border border-background-line-gray text-sm font-medium text-color-black-50 outline-none ${horizontal ? 'py-2' : 'py-2.25'}`}
           type="date"
           value={localEnd}
           min={localStart}

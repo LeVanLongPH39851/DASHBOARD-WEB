@@ -54,23 +54,26 @@ export const useDashboardData = () => {
   const hasLoggedRef = useRef(false);
   
   const data = {};
-  const isLoading = hookResults.some(result => result.loading);
-  const hasError = hookResults.find(result => result.error)?.error;
+  const isLoading = {};
+  const hasError = {};
 
   HOOKS.forEach(({ dataKey }, index) => {
     data[dataKey] = hookResults[index].data;
+    isLoading[dataKey] = hookResults[index].loading;
+    hasError[dataKey] = hookResults[index].error;
   });
 
+  const anyLoading = Object.values(isLoading).some(Boolean);
   const allDataLoaded = Object.values(data).every(value => value != null);
 
   useEffect(() => {
-    if (!hasLoggedRef.current && allDataLoaded && !isLoading) {
+    if (!hasLoggedRef.current && allDataLoaded && !anyLoading) {
       Object.entries(data).forEach(([key, value]) => {
         console.log(`${key}:`, value);
       });
       hasLoggedRef.current = true;
     }
-  }, [allDataLoaded, isLoading]);
+  }, [allDataLoaded, anyLoading]);
 
   return {
     ...data,

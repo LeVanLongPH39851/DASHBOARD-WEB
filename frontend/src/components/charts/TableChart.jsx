@@ -7,8 +7,14 @@ import {
   getPaginationRowModel,
   flexRender,
 } from '@tanstack/react-table';
-import Label from '../layouts/components/NameChart';
-
+import NameChart from '../layouts/components/NameChart';
+import iconSearch from '../../assets/icon_search.png'
+import iconShowList from '../../assets/icon_show_list.png'
+import iconArrowDown from '../../assets/icon_arrow_down.png'
+import iconArrowLeftGray from '../../assets/icon_arrow_left_gray.png'
+import iconArrowRightGray from '../../assets/icon_arrow_right_gray.png'
+import { formatNumber } from '../../utils/formatNumber';
+import Loading from '../commons/Loading';
 
 
 
@@ -28,11 +34,20 @@ const TableChart = ({
   description,
   enableHeatmap = true,
   showSTT,
-  showPagination
+  showPagination,
+  displayName=true
 }) => {
   const { labels = [], series = [] } = data;
 
-
+  if(data==='isLoading') {
+    return (
+      <div className={`${displayName ? 'p-6 bg-background-light border border-border-black-10 rounded-2xl shadow-component' : '' }`} style={{ fontFamily }}>
+        <NameChart nameChart={nameChart} description={description} display={displayName} />
+        <div className='h-16'></div>
+        <Loading height={height} />
+      </div>
+    );
+  }
 
 
 
@@ -139,8 +154,10 @@ const TableChart = ({
         header: s.name,
         cell: (info) => {
           const value = info.getValue();
-          if (typeof value === 'number') {
-            return value.toLocaleString(undefined, { maximumFractionDigits: 2 });
+          const columnId = info.column.id;
+          if (typeof value === 'number' && !isNaN(value)) {
+            const isPercent = columnId.includes('%');
+            return formatNumber(value, { isPercent });
           }
           return value || '';
         },
@@ -182,7 +199,23 @@ const TableChart = ({
   // const showPagination = tableData.length > 11;
 
 
+// Tách theo dấu phẩy → OR matching trên tất cả columns
+const multiValueGlobalFilter = (row, columnId, filterValue) => {
+  const terms = filterValue
+    .split(',')
+    .map((t) => t.trim().toLowerCase())
+    .filter(Boolean); // bỏ string rỗng
 
+  if (terms.length === 0) return true;
+
+  const cellValue = String(row.getValue(columnId) ?? '').toLowerCase();
+
+  // Row passed nếu cell này khớp BẤT KỲ term nào
+  return terms.some((term) => cellValue.includes(term));
+};
+
+// Bắt buộc có để TanStack tự remove filter khi input rỗng
+multiValueGlobalFilter.autoRemove = (val) => !val;
 
 
 
@@ -197,6 +230,7 @@ const TableChart = ({
       globalFilter,
       pagination,
     },
+    globalFilterFn: multiValueGlobalFilter,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
@@ -217,94 +251,67 @@ const TableChart = ({
 
 
   return (
-    <div className="bg-background-light rounded-xl" style={{ fontFamily }}>
-      <Label nameChart={nameChart} description={description} />
-
-
-
-
-
-
-
-      {/* Search & Controls - Always show Search and Columns, conditionally show pagination controls */}
-      <div className="flex justify-between items-center mb-4 px-6 gap-4">
-        <div className="flex items-center gap-3">
-          {showPagination && (
-            <>
-              <span style={{ fontSize: fontSize.label, fontWeight: fontWeight.label, color: '#4b5563' }}>Show</span>
-              <select
-                value={table.getState().pagination.pageSize}
-                onChange={(e) => table.setPageSize(Number(e.target.value))}
-                className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white shadow-sm"
-                style={{ fontSize: fontSize.label }}
-              >
-                {[10, 20, 50, 100, 200].map((pageSize) => (
-                  <option key={pageSize} value={pageSize}>
-                    {pageSize}
-                  </option>
-                ))}
-              </select>
-              <span style={{ fontSize: fontSize.label, fontWeight: fontWeight.label, color: '#4b5563' }}>entries</span>
-            </>
-          )}
-
-
-
-
-
-
-
-          <div className={`relative ${showPagination ? 'ml-2' : ''}`}>
+    <div className={`${displayName ? 'p-6 bg-background-light border border-border-black-10 rounded-2xl shadow-component' : '' }`} style={{ fontFamily }}>
+      <NameChart nameChart={nameChart} description={description} display={displayName} />
+      <div className="flex justify-between items-center mb-6 gap-4">
+        <div className='flex items-center gap-2'>
+          <div className={`relative`}>
             <button
               onClick={() => setShowColumnMenu(!showColumnMenu)}
-              className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 flex items-center gap-2 shadow-sm transition-all"
-              style={{ fontSize: fontSize.label }}
+              className="px-4 py-1 border border-border-black-10 rounded-xl flex items-center gap-1 transition-all h-10 cursor-pointer"
             >
-              <span>☰</span>
-              <span>Columns</span>
+              <figure><img src={iconShowList} alt="Icon Show List" className='w-3' /></figure>
+              <span className='text-sm font-medium text-background-black-90'>Columns</span>
             </button>
-            
             {showColumnMenu && (
-              <div className="absolute left-0 top-full mt-2 bg-white border border-gray-200 rounded-lg shadow-xl z-50 min-w-[220px]">
-                <div className="p-3 max-h-[320px] overflow-y-auto">
-                  <div className="text-xs font-semibold text-gray-500 uppercase mb-2 px-2">Toggle Columns</div>
+              <div className="absolute left-0 top-full mt-2 bg-background-light border border-border-black-10 rounded-lg z-50 min-w-55">
+                <div className="p-3 max-h-80 overflow-y-auto">
+                  <div className="text-xs font-semibold text-color-black-50 uppercase mb-2 px-2">Toggle Columns</div>
                   {table.getAllLeafColumns().map((column) => (
                     <label
                       key={column.id}
-                      className="flex items-center gap-3 px-3 py-2 hover:bg-gray-50 cursor-pointer rounded-md transition-colors"
-                      style={{ fontSize: fontSize.label }}
+                      className="flex items-center gap-2 px-3 py-2 cursor-pointer rounded-md text-xs font-medium"
                     >
                       <input
                         type="checkbox"
                         checked={column.getIsVisible()}
                         onChange={column.getToggleVisibilityHandler()}
-                        className="cursor-pointer w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
+                        className="cursor-pointer w-3 h-3 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
                       />
-                      <span className="text-gray-700">{column.id}</span>
+                      <span className="text-color-black-70">{column.id}</span>
                     </label>
                   ))}
                 </div>
               </div>
             )}
           </div>
+          {showPagination && (
+            <div className='relative cursor-pointer'>
+              <select
+                value={table.getState().pagination.pageSize}
+                onChange={(e) => table.setPageSize(Number(e.target.value))}
+                className="pl-7 pr-6 py-1 border border-border-black-10 cursor-pointer rounded-xl text-sm appearance-none transition-all flex items-center h-10 outline-none"
+              >
+                {[10, 20, 50, 100, 200].map((pageSize) => (
+                  <option className='text-sm font-medium text-background-black-90' key={pageSize} value={pageSize}>
+                    {pageSize}
+                  </option>
+                ))}
+              </select>
+              <figure className='absolute top-1/2 -translate-y-1/2 left-3'><img src={iconShowList} alt="Icon Show List" className='w-3' /></figure>
+              <figure className='absolute top-1/2 -translate-y-1/2 right-3'><img src={iconArrowDown} alt="Icon Arrow Down" className='w-2' /></figure>
+            </div>
+          )}
         </div>
-
-
-
-
-
-
-
-        <div className="flex items-center gap-3">
-          <span style={{ fontSize: fontSize.label, fontWeight: fontWeight.label, color: '#4b5563' }}>Search</span>
+        <div className="flex items-center gap-3 relative">
           <input
             type="text"
             value={globalFilter ?? ''}
             onChange={(e) => setGlobalFilter(e.target.value)}
-            placeholder="Type to search..."
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm"
-            style={{ fontSize: fontSize.label, width: '220px' }}
+            placeholder="Tìm kiếm"
+            className="pl-4 pr-11 py-2.25 border border-border-black-10 rounded-2xl outline-none bg-background-search text-sm font-medium text-color-black-50 placeholder-color-black-50 w-70"
           />
+          <figure className='absolute top-1/2 -translate-y-1/2 right-4 cursor-pointer'><img src={iconSearch} alt="Icon Search" className='w-3.75' /></figure>
         </div>
       </div>
 
@@ -315,15 +322,15 @@ const TableChart = ({
 
 
       {/* Table Container */}
-      <div className="px-6 pb-2">
-        <div className="shadow-md rounded-lg overflow-hidden border border-gray-200">
+      <div>
+        <div className="overflow-hidden">
           <div 
             className="overflow-auto"
             style={{ height: height }}
             onClick={() => setShowColumnMenu(false)}
           >
             <table 
-              className="w-full" 
+              className="w-full"
               style={{ 
                 tableLayout: 'auto',
                 borderCollapse: 'separate',
@@ -331,55 +338,43 @@ const TableChart = ({
               }}
             >
               <thead 
-                className="sticky top-0 z-10 shadow-sm"
-                style={{ position: 'sticky', top: 0 }}
+                className="sticky top-0 z-10"
               >
                 {table.getHeaderGroups().map((headerGroup) => (
                   <tr key={headerGroup.id}>
                     {headerGroup.headers.map((header, idx) => {
-                      const isFirst = idx === 0;
-                      const isLast = idx === headerGroup.headers.length - 1;
                       
                       return (
                         <th
                           key={header.id}
-                          className="px-4 py-3 text-center relative bg-gradient-to-b from-teal-50 to-teal-100 border-b-2 border-teal-200"
+                          className="px-2 py-3 text-center relative text-color-black-50 bg-background-light border-b border-border-black-10"
                           style={{
+                            minWidth: `${header.column.getSize() - 40}px`,
+                            maxWidth: `${header.column.getSize() + 100}px`,
                             fontSize: fontSize.label,
-                            fontWeight: 700,
-                            minWidth: `${header.getSize()}px`,
-                            color: '#0f766e',
-                            borderTopLeftRadius: isFirst ? '8px' : '0',
-                            borderTopRightRadius: isLast ? '8px' : '0',
+                            fontWeight: fontWeight.label,
                             whiteSpace: 'pre-line',
                             wordWrap: 'break-word'
                           }}
                         >
                           <div
                             className={`flex items-center gap-2 ${
-                              header.column.getCanSort() ? 'cursor-pointer select-none hover:text-teal-700' : ''
+                              header.column.getCanSort() ? 'cursor-pointer select-none' : ''
                             }`}
                             onClick={header.column.getToggleSortingHandler()}
                           >
                             {flexRender(header.column.columnDef.header, header.getContext())}
                             {header.column.getIsSorted() && (
-                              <span className="text-teal-600" style={{ fontSize: '11px' }}>
+                              <span className="text-color-black-50" style={{ fontSize: '11px' }}>
                                 {header.column.getIsSorted() === 'asc' ? '▲' : '▼'}
                               </span>
                             )}
                           </div>
-
-
-
-
-
-
-
                           <div
                             onMouseDown={header.getResizeHandler()}
                             onTouchStart={header.getResizeHandler()}
-                            className={`absolute right-0 top-0 h-full w-1 cursor-col-resize hover:bg-teal-400 transition-colors ${
-                              header.column.getIsResizing() ? 'bg-teal-500' : 'bg-transparent'
+                            className={`absolute right-0 top-0 h-full w-0.5 rounded-2xl cursor-col-resize hover:bg-color-black-50 transition-colors ${
+                              header.column.getIsResizing() ? 'bg-color-black-70' : 'bg-transparent'
                             }`}
                             style={{ userSelect: 'none', touchAction: 'none' }}
                           />
@@ -389,49 +384,35 @@ const TableChart = ({
                   </tr>
                 ))}
               </thead>
-
-
-
-
-
-
-
-              <tbody className="bg-white">
+              
+              <tbody>
                 {table.getRowModel().rows.map((row, idx) => {
-                  const isLastRow = idx === table.getRowModel().rows.length - 1;
                   
                   return (
                     <tr
                       key={row.id}
-                      className="hover:bg-blue-50 transition-colors duration-150"
+                      className="odd:bg-background-black-4"
                     >
                       {row.getVisibleCells().map((cell, cellIdx) => {
                         const columnName = cell.column.id;
                         const rawValue = cell.row.original[columnName];
                         const bgColor = columnName === 'STT' ? 'transparent' : getHeatmapColor(rawValue, columnName);
-                        const isFirst = cellIdx === 0;
-                        const isLast = cellIdx === row.getVisibleCells().length - 1;
                         const isNumericColumn = typeof rawValue === 'number';
                         
                         return (
                           <td
                             key={cell.id}
-                            className={`px-4 py-3 ${
+                            className={`border-b border-border-black-10 px-2 py-3 text-color-black-100 ${
                               isNumericColumn 
                                 ? 'overflow-hidden text-ellipsis whitespace-nowrap' 
                                 : 'whitespace-normal'
-                            } ${
-                              columnName === 'STT' ? 'font-bold text-gray-700' : 'text-gray-800'
                             }`}
                             style={{
                               fontSize: fontSize.td,
                               fontWeight: columnName === 'STT' ? 700 : fontWeight.td,
-                              fontFamily: isNumericColumn ? 'Calibri, Arial, sans-serif' : fontFamily,
-                              minWidth: `${cell.column.getSize()}px`,
-                              backgroundColor: bgColor,
-                              borderBottom: isLastRow ? 'none' : '1px solid #f3f4f6',
-                              borderBottomLeftRadius: isLastRow && isFirst ? '8px' : '0',
-                              borderBottomRightRadius: isLastRow && isLast ? '8px' : '0',
+                              minWidth: `${cell.column.getSize() - 40}px`,
+                              maxWidth: `${cell.column.getSize() + 100}px`,
+                              // backgroundColor: bgColor,
                               wordWrap: isNumericColumn ? 'normal' : 'break-word'
                             }}
                           >
@@ -456,14 +437,13 @@ const TableChart = ({
 
       {/* Pagination Controls */}
       {showPagination && (
-        <div className="flex items-center justify-center mt-4 pb-4 gap-2">
+        <div className="flex items-center justify-end mt-4 gap-1">
           <button
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
-            className="px-4 py-2 border border-gray-300 rounded-lg disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50 hover:border-gray-400 transition-all shadow-sm font-medium"
-            style={{ fontSize: fontSize.label }}
+            className="w-7.5 h-7.5 flex justify-center items-center disabled:cursor-not-allowed cursor-pointer"
           >
-            ← Previous
+          <figure><img src={iconArrowLeftGray} alt="Icon Arrow Left Gray" className='w-1.25' /></figure>
           </button>
           
           {Array.from({ length: Math.min(table.getPageCount(), 5) }, (_, i) => {
@@ -484,12 +464,11 @@ const TableChart = ({
               <button
                 key={pageNum}
                 onClick={() => table.setPageIndex(pageNum)}
-                className={`px-4 py-2 border rounded-lg font-medium transition-all shadow-sm ${
+                className={`w-7.5 h-7.5 flex justify-center items-center rounded-lg font-medium transition-all cursor-pointer text-sm ${
                   pageIndex === pageNum
-                    ? 'bg-blue-600 text-white border-blue-600 shadow-md'
-                    : 'border-gray-300 hover:bg-gray-50 hover:border-gray-400'
+                    ? 'bg-background-black-90 text-background-light shadow-md'
+                    : 'text-color-black-50'
                 }`}
-                style={{ fontSize: fontSize.label }}
               >
                 {pageNum + 1}
               </button>
@@ -505,10 +484,9 @@ const TableChart = ({
           <button
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
-            className="px-4 py-2 border border-gray-300 rounded-lg disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50 hover:border-gray-400 transition-all shadow-sm font-medium"
-            style={{ fontSize: fontSize.label }}
+            className="w-7.5 h-7.5 flex justify-center items-center disabled:cursor-not-allowed cursor-pointer"
           >
-            Next →
+          <figure><img src={iconArrowRightGray} alt="Icon Arrow Left Gray" className='w-1.25' /></figure>
           </button>
         </div>
       )}

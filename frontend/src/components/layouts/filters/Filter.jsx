@@ -3,10 +3,9 @@ import { useState, useEffect } from 'react';
 import DateRangeFilter from './components/DataRangeFilter';
 import ButtonFilter from './components/ButtonFilter';
 import SelectMultiFilter from './components/SelectMultiFilter';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleArrowLeft } from '@fortawesome/free-solid-svg-icons';
-import { faCircleArrowRight } from '@fortawesome/free-solid-svg-icons';
 import { getYesterday } from '../../../helpers/helper';
+import iconXBlack from '../../../assets/icon_x_black.png';
+import iconReset from '../../../assets/icon_reset.png';
 
 const ALL_CHANNELS = [
   { value: "VTV1", label: "VTV1" },
@@ -45,6 +44,27 @@ const Filter = ({ isOpen, setIsOpen, currentTab, filters, appliedFilters, setApp
 
   const [startDate, setStartDate] = useState(getYesterday());
   const [endDate, setEndDate] = useState(getYesterday());
+
+  useEffect(() => {
+    const filterId = document.getElementById('filter');
+    if (!filterId) return;
+
+    let wasSticky = false;
+
+    const handleScroll = () => {
+      const isSticky = window.scrollY > 60;
+
+      if (isSticky === wasSticky) return;
+      wasSticky = isSticky;
+
+      filterId.classList.remove('top-0', 'top-15');
+      filterId.classList.add(isSticky ? 'top-0' : 'top-15');
+      filterId.style.height = !isSticky ? 'calc(100vh - 60px)' : '100%'
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Sync context → form
   useEffect(() => {
@@ -114,11 +134,12 @@ const Filter = ({ isOpen, setIsOpen, currentTab, filters, appliedFilters, setApp
 
   return (
     <>
-    <div onClick={() => setIsOpen(prev => ({...prev, isOpen: !prev.isOpen}))} className={`text-[#20A7C9] cursor-pointer text-right fixed left-0.5 top-1/2 -translate-y-1/2 transition-all duration-300 ${isOpen.isOpen || isOpen.horizontal ? 'invisible opacity-0' : 'visible opacity-100'}`}><FontAwesomeIcon icon={faCircleArrowRight} /></div>
-    <aside className={`${horizontal ? 'w-full' : `${!isOpen.isOpen || isOpen.horizontal ? 'w-0' : 'w-[15%]'} h-full`} `}>
-      <div className={`${horizontal ? 'w-full' : `bg-background-dark h-full w-[15%] fixed left-0 ${!isOpen.isOpen || isOpen.horizontal ? '-translate-x-full' : ''} top-15 px-3 py-5 transition-all duration-300`}`}>
-        {!horizontal && <div onClick={() => setIsOpen(prev => ({...prev, isOpen: !prev.isOpen}))} className='text-white cursor-pointer text-right mb-1'><FontAwesomeIcon icon={faCircleArrowLeft} /></div>}
-        <form className={`${horizontal ? 'grid grid-cols-7 gap-2 items-center' : ''}`} onSubmit={onSubmit} onReset={onReset}>
+    <aside className={`${horizontal ? 'w-full' : `${!isOpen.isOpen || isOpen.horizontal ? 'w-0' : 'w-[16%]'} h-full`}`}>
+      <div id='filter' className={`${horizontal ? 'w-full' : `bg-background-light border-r border-background-line-gray w-[16%] overflow-hidden fixed left-0 ${!isOpen.isOpen || isOpen.horizontal ? '-translate-x-full' : ''} top-15 px-6 pt-4 pb-5 transition-all duration-300`}`} style={{height: !horizontal ? 'calc(100vh - 60px)' : ''}}>
+        {!horizontal && (<div className='flex justify-between items-center h-10.5 mb-2'>
+          <span className='text-background-black-child-tab text-[16px] font-semibold'>Bộ lọc</span><figure className='cursor-pointer transition-all duration-300 hover:rotate-180' onClick={() => setIsOpen(prev => ({...prev, isOpen: !prev.isOpen}))}><img src={iconXBlack} className='w-3.25' alt="Icon X Black" /></figure>
+        </div>)}
+        <form className={`${horizontal ? 'flex gap-2 items-center' : ''}`} onSubmit={onSubmit} onReset={onReset}>
           <DateRangeFilter
             startDate={startDate}
             endDate={endDate}
@@ -127,7 +148,7 @@ const Filter = ({ isOpen, setIsOpen, currentTab, filters, appliedFilters, setApp
           />
 
           <SelectMultiFilter
-            label="KÊNH"
+            label="Kênh"
             placeholder="Chọn kênh..."
             options={ALL_CHANNELS}
             value={channels}
@@ -165,7 +186,7 @@ const Filter = ({ isOpen, setIsOpen, currentTab, filters, appliedFilters, setApp
           /> */}
 
           <SelectMultiFilter
-            label="TỈNH/TP"
+            label="Tỉnh/TP"
             placeholder="Chọn Tỉnh/TP"
             options={ALL_PROVINCES}
             value={provinces}
@@ -174,9 +195,9 @@ const Filter = ({ isOpen, setIsOpen, currentTab, filters, appliedFilters, setApp
             horizontal={horizontal}
           />
 
-          <div className='flex justify-center gap-1'>
-            <ButtonFilter text={'Apply filters'} background={'bg-[#20A7C9]'} color={'text-white'} type={'submit'} />
-            <ButtonFilter text={'Clear all'} background={'bg-[#E0E0E0]'} color={'text-[#666666]'} type={'reset'} />
+          <div className={`flex justify-center items-center bg-background-light ${!horizontal ? 'absolute bottom-0 left-0 w-full shadow-2xl shadow-color-black-50 py-3 gap-4' : 'gap-1'}`}>
+            <ButtonFilter text={'Áp dụng bộ lọc'} background={'bg-background-black-90'} color={'text-color-white-90'} type={'submit'} />
+            <ButtonFilter text={'Đặt lại'} background={'bg-background-light'} color={'text-background-black-90'} type={'reset'} src={iconReset} alt={'Icon Reset'} width={'w-3'} />
           </div>
         </form>
       </div>

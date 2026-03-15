@@ -6,7 +6,7 @@ export default function ParentTabs({
   variant = 'default',
   uniqueId = 'parent-tab',
   sticky = true,
-  stickyTop = 148,
+  stickyTop = 88,
   zIndex = 'z-100',
   onTabChange
 }) {

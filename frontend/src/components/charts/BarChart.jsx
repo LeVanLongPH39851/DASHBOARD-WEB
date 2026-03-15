@@ -1,6 +1,7 @@
 import React, { memo, useRef } from 'react';
 import ReactECharts from 'echarts-for-react';
 import NameChart from '../layouts/components/NameChart';
+import Loading from '../commons/Loading';
 
 
 
@@ -17,8 +18,18 @@ const BarChart = ({
   orientation,
   displayName=true,
   enableZoom = true, // Option bật/tắt zoom
-  maxVisibleItems = 11 // Số items hiển thị tối đa khi zoom bật
+  maxVisibleItems = 12
 }) => {
+  
+  if(data==='isLoading') {
+    return (
+      <div className={`${displayName ? 'p-6 bg-background-light border border-border-black-10 rounded-2xl shadow-component' : ''}`}>
+        <NameChart nameChart={nameChart} description={description} display={displayName} />
+        <Loading height={height} />
+      </div>
+    );
+  }
+
   const { labels = [], series = [] } = data;
   const chartRef = useRef(null);
 
@@ -68,33 +79,46 @@ const BarChart = ({
     tooltip: {
       trigger: 'axis',
       axisPointer: { type: 'shadow', shadowStyle: { opacity: 0.1 } },
-      backgroundColor: 'rgba(255,255,255,0.95)',
-      borderColor: '#e5e7eb',
-      borderWidth: 1,
+      backgroundColor: 'rgba(255, 255, 255, 1)',
+      borderWidth: 0,
       textStyle: { 
         fontSize: fontSize.tooltip,
-        color: '#1f2937',
+        color: 'rgba(0, 0, 0, 0.7)',
         fontWeight: fontWeight.tooltip,
         fontFamily: fontFamily
       },
       formatter: params => {
-        const total = params.reduce((sum, p) => sum + p.value, 0);
+        const visibleParams = params
+          .filter(p => p.value && p.value !== 0 && p.value !== null && p.value !== undefined)
+          .sort((a, b) => b.value - a.value);
+        
+        const total = visibleParams.reduce((sum, p) => sum + p.value, 0);
+        
+        if (visibleParams.length === 0) return '';
+
         return `
           <div style="padding: 12px 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-            <div style="font-weight: 700; font-size: 16px; margin-bottom: 8px; color: #1f2937;">
-              ${params[0].name}
+            <div style="font-weight: 600; font-size: 13px; color: rgba(0, 0, 0, 0.7);">
+              ${visibleParams[0].name}
             </div>
-            ${params.map(p => `
-              <div style="margin: 4px 0; display: flex; align-items: center;">
-                ${p.marker} 
-                <span style="font-weight: 600; margin-right: 8px; color: #374151;">${p.seriesName}:</span> 
-                <span style="font-size: 15px; font-weight: 500;">${p.value.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
+            ${visibleParams.map(p => {
+              const percent = total > 0 ? (p.value / total * 100).toFixed(2) : 0;
+              return `
+                <div style="margin: 2px 0; display: flex; align-items: center;">
+                  ${p.marker}
+                  <span style="font-weight: 600; font-size: 12px; margin-right: 4px; color: rgba(0, 0, 0, 0.7);">${p.seriesName}:</span> 
+                  <span style="font-size: 12px; font-weight: 500; color: rgba(0, 0, 0, 0.7);">
+                    ${p.value.toLocaleString(undefined, { maximumFractionDigits: 0 })}${topSeriesIndex != 0 ? ` <span style="font-size: 11px;">(${percent}%)</span>` : ''}
+                  </span>
+                </div>
+              `;
+            }).join('')}
+            ${topSeriesIndex != 0 ? `
+              <hr style="margin: 5px 0; border: none; height: 1px; background: rgba(0, 0, 0, 0.1);">
+              <div style="font-weight: 700; color: #059669; font-size: 12px;">
+                <span>Tổng:</span> <span>${total.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
               </div>
-            `).join('')}
-            <hr style="margin: 10px 0; border: none; height: 1px; background: #e5e7eb;">
-            <div style="font-weight: 700; color: #059669; font-size: 16px;">
-              <span>Total:</span> <span>${total.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
-            </div>
+            ` : ''}
           </div>
         `;
       }
@@ -109,27 +133,38 @@ const BarChart = ({
         [isHorizontal ? 'yAxisIndex' : 'xAxisIndex']: 0,
         start: 0,
         end: zoomEndPercent,
-        [isHorizontal ? 'right' : 'bottom']: isHorizontal ? 0 : 50,
+        [isHorizontal ? 'right' : 'bottom']: isHorizontal ? 0 : 0,
         [isHorizontal ? 'width' : 'height']: 20,
         brushSelect: false,
-        handleSize: '80%',
+        handleSize: '100%',
+        backgroundColor: 'rgba(255, 247, 217, 1)',
+        borderColor: 'rgb(252, 233, 167)',
+        borderRadius: 8,
         handleStyle: {
-          color: '#3b82f6'
+          color: 'rgba(255, 204, 0, 1)',
+          borderColor: 'rgba(255, 255, 255, 1)'
         },
         textStyle: {
-          fontSize: 12,
-          color: '#64748b'
+          fontSize: fontSize.axisLabel,
+          color: 'rgba(0, 0, 0, 0.7)',
+          fontWeight: isHorizontal ? 500 : 600,
+          fontFamily: fontFamily
         },
-        borderColor: '#e5e7eb',
-        fillerColor: 'rgba(59, 130, 246, 0.1)',
+        emphasis: {
+          handleStyle: {
+            color: 'rgba(255, 255, 255, 1)',
+            borderColor: 'rgba(255, 204, 0, 1)'
+          }
+        },
+        fillerColor: 'rgb(252, 233, 167)',
         dataBackground: {
           lineStyle: {
-            color: '#3b82f6',
-            opacity: 0.3
+            color: 'rgb(252, 233, 167)',
+            opacity: 0.4
           },
           areaStyle: {
-            color: '#3b82f6',
-            opacity: 0.1
+            color: 'rgb(252, 233, 167)',
+            opacity: 0.4
           }
         }
       },
@@ -169,9 +204,9 @@ const BarChart = ({
 
     grid: {
       left: '1%',
-      right: isHorizontal ? (needsScroll ? '12%' : '10%') : '4%',
-      bottom: isHorizontal ? '1%' : (needsScroll ? '120px' : '1%'),
-      top: topSeriesIndex !== 0 ? 38 : 0,
+      right: isHorizontal ? (needsScroll ? '12%' : '10%') : '1%',
+      bottom: isHorizontal ? '1%' : (needsScroll ? '30px' : '1%'),
+      top: topSeriesIndex !== 0 ? 39 : (!isHorizontal ? '4%' : '1%'),
       containLabel: true
     },
 
@@ -246,7 +281,7 @@ const BarChart = ({
       axisLabel: {
         formatter: v => v.toLocaleString(undefined, { maximumFractionDigits: 0 }),
         fontSize: fontSize.axisLabel,
-        color: '#6b7280',
+        color: 'rgba(0, 0, 0, 0.7)',
         fontWeight: fontWeight.axisLabel,
         fontFamily: fontFamily
       }

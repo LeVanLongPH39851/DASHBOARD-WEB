@@ -33,6 +33,12 @@
   --color-background-succes-type-2: rgba(225, 248, 248, 1);
   --color-background-purple: rgba(232, 233, 253, 1);
   --color-background-search: rgba(249, 249, 249, 1);
+  --color-color-error: rgba(255, 56, 60, 1);
+  --color-background-error: rgba(255, 56, 60, 0.1);
+  --color-border-error: rgba(255, 56, 60, 0.2);
+  --color-background-check-box: rgba(16, 17, 17, 0.9);
+  --color-color-check-box: rgba(28, 28, 28, 1);
+  --color-border-black-20: rgba(0, 0, 0, 0.2);
   --color-color-icon-infor: #ffd04c;
   --font-family-be-vietnam-pro: "Be Vietnam Pro", sans-serif;
 }
@@ -46,8 +52,8 @@ html, #root, body {
 
 /* Scrollbar hiện đại với mũi tên */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 4px;
+  height: 4px;
 }
 
 ::-webkit-scrollbar-track {
@@ -57,7 +63,7 @@ html, #root, body {
 
 ::-webkit-scrollbar-thumb {
   background: #9ca3af;
-  border: 2px solid #e5e7eb;
+  /* border: 1px solid #e5e7eb; */
   border-radius: 50px;
 }
 
@@ -71,7 +77,7 @@ html, #root, body {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%234b5563' d='M6 3l-4 4h8z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: center;
-  height: 8px;
+  height: 5px;
 }
 
 ::-webkit-scrollbar-button:vertical:increment {
@@ -79,7 +85,7 @@ html, #root, body {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%234b5563' d='M6 9l-4-4h8z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: center;
-  height: 8px;
+  height: 5px;
 }
 
 ::-webkit-scrollbar-button:horizontal:decrement {
@@ -87,7 +93,7 @@ html, #root, body {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%234b5563' d='M3 6l4-4v8z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: center;
-  width: 8px;
+  width: 4px;
 }
 
 ::-webkit-scrollbar-button:horizontal:increment {
@@ -95,7 +101,7 @@ html, #root, body {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%234b5563' d='M9 6l-4-4v8z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: center;
-  width: 8px;
+  width: 4px;
 }
 
 ::-webkit-scrollbar-button:hover {

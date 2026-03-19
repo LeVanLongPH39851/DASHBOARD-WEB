@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { useDashboardStateGlobals } from '../../../context/DashboardFilterContext';
 
 export default function ParentTabs({
   tabs,
@@ -7,16 +8,17 @@ export default function ParentTabs({
   uniqueId = 'parent-tab',
   sticky = true,
   stickyTop = 88,
-  zIndex = 'z-100',
-  onTabChange
+  zIndex = 'z-100'
 }) {
+
+  const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
   const [activeTab, setActiveTab] = useState(defaultTab || tabs[0]?.id);
   const [underlineStyle, setUnderlineStyle] = useState({ left: 0, width: 0 });
   const tabsRef = useRef([]);
 
   const handleTabChange = (tabId) => {
     setActiveTab(tabId);
-    onTabChange?.(tabId);  // ← Callback ra ngoài
+    setStateGlobals(prev => ({...prev, currentTab: tabId}));
   };
 
   // Update underline sau khi DOM render

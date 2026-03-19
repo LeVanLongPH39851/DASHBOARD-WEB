@@ -61,11 +61,13 @@ export const CUSTOM_CHART = {
     barChartArea: {
         aveReach: {
             color: [variableCustoms.colorAveReach],
-            name: 'Ave.REACH (000) theo thị trường'
+            name: 'Ave.REACH (000) theo thị trường',
+            colorZoom: 'yellow'
         },
         rating: {
             color: [variableCustoms.colorRating],
-            name: 'RATING (000) theo thị trường'
+            name: 'RATING (000) theo thị trường',
+            colorZoom: 'red'
         },
         orientation: 'horizontal'
     },

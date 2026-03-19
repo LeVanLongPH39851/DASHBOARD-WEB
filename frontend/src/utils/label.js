@@ -26,5 +26,8 @@ export const LABEL = {
 export const FILTER_LABEL = {
   'channels': 'Kênh',
   'events': 'Live/TimeShift',
-  'provinces': 'Tỉnh/TP'
+  'provinces': 'Tỉnh/TP',
+  'regionals': 'Vùng',
+  'keyCities': 'Thành phố lớn',
+  'timebands': 'Khung giờ'
 }

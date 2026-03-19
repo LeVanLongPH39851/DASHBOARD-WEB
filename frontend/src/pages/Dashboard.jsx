@@ -26,18 +26,14 @@ import Header from '../components/layouts/headers/Header';
 import BreadCrumb from '../components/layouts/headers/BreadCrumb';
 import InforTab from '../components/layouts/headers/InforTab';
 import InforFilter from '../components/layouts/headers/InforFilter';
-import { useDashboardFilters } from '../context/DashboardFilterContext';
-import BigNumberWithTrend from '../components/charts/BigNumberWithTrend';
+import { useDashboardStateGlobals } from '../context/DashboardFilterContext';
+import NumberWithTrendChart from '../components/charts/NumberWithTrendChart';
 import NameChart from '../components/layouts/components/NameChart';
+import { transformNumberWithTrendData } from '../utils/transfromApiNumberWithTrendChart';
 
 const DashboardContent = () => {
   const dashboard = useDashboardData();
-  const { appliedFilters, setAppliedFilters } = useDashboardFilters();
-  const [filterOpen, setFilterOpen] = useState({isOpen: true, horizontal: false, isInfor: true});
-  const [currentTab, setCurrentTab] = useState('overview');
-  const [channels, setChannels] = useState([]);
-  const [events, setEvents] = useState([]);
-  const [provinces, setProvinces] = useState([]);
+  const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
   
   const scopeNumberData = {
     'ratingNumber': !dashboard.isLoading.ratingNumberData ? dashboard.ratingNumberData.data[0] : false,
@@ -51,14 +47,11 @@ const DashboardContent = () => {
   }
   
   return (
-    <main className='font-family-be-vietnam-pro w-full h-full tracking-[0.1px]'>
+    <main className='font-family-be-vietnam-pro w-full h-full tracking-[0.1px] overflow-x-clip'>
       <Header />
       <div className='flex w-full h-full'>
-        <Filter isOpen={filterOpen} setIsOpen={setFilterOpen} currentTab={currentTab}
-                filters={scopeFilterData} appliedFilters={appliedFilters} setAppliedFilters={setAppliedFilters}
-                channels={channels} setChannels={setChannels} events={events} setEvents={setEvents}
-                provinces={provinces} setProvinces={setProvinces} />
-        <div className={`mb-6 ${filterOpen.isOpen && !filterOpen.horizontal ? 'w-[84%]' : 'w-full'} transition-all duration-300`}>
+        <Filter filters={scopeFilterData} />
+        <div className={`mb-6 ${stateGlobals.isOpen && !stateGlobals.horizontal ? 'w-[84%]' : 'w-full'} transition-all duration-300`}>
           <BreadCrumb/>
           <div className='bg-background-dashboard'>
             <ParentTabs uniqueId='dashboard'
@@ -66,23 +59,12 @@ const DashboardContent = () => {
                         tabs={[
                           {id: 'overview', label: 'Tổng quan',
                             content: (
-                              <section>
-                                <InforTab inforTab={"Tổng quan - P4+ toàn quốc"} isOpen={filterOpen} setIsOpen={setFilterOpen} />
-                                <InforFilter inforFilter={appliedFilters}
-                                             setInforFilter={setAppliedFilters}
-                                             filters={scopeFilterData}
-                                             channels={channels}
-                                             events={events}
-                                             provinces={provinces}
-                                             setChannels={setChannels}
-                                             setEvents={setEvents}
-                                             setProvinces={setProvinces}
-                                             currentTab={currentTab}
-                                             isOpen={filterOpen}
-                                             setIsOpen={setFilterOpen} />
+                              <section id="target_capture_overview">
+                                <InforTab inforTab={"Tổng quan - P4+ toàn quốc"} />
+                                <InforFilter filters={scopeFilterData} />
                                 <div className='px-6 pt-6'>
                                   <div className='w-full grid grid-cols-2 gap-6 pb-6'>
-                                    <BigNumberWithTrend height='h-98.75' icon={METRICS.rating.icon}/>
+                                    <NumberWithTrendChart nameChart={METRICS['rating%'].title} description={METRICS['rating%'].description} data={!dashboard.isLoading.ratingPercentTrendNumberData ? transformNumberWithTrendData(dashboard.ratingPercentTrendNumberData?.data, dashboard.ratingPercentTrendNumberData?.colnames) : 'isLoading'} height={395} icon={METRICS.rating.icon}/>
                                     <div className="grid grid-cols-2 gap-6">
                                     {Object.values(METRICS).map(card => (
                                       <NumberCard
@@ -258,6 +240,7 @@ const DashboardContent = () => {
                                               description={METRICS.rating.description}
                                               orientation={CUSTOM_CHART.barChart.barChartArea.orientation}
                                               displayName={false}
+                                              colorZoom={CUSTOM_CHART.barChart.barChartArea.rating.colorZoom}
                                             />
                                           )},
                                           {id: CUSTOM_TAB.childTabArea.key_city.id, label: CUSTOM_TAB.childTabArea.key_city.label,
@@ -273,6 +256,7 @@ const DashboardContent = () => {
                                               description={METRICS.rating.description}
                                               orientation={CUSTOM_CHART.barChart.barChartArea.orientation}
                                               displayName={false}
+                                              colorZoom={CUSTOM_CHART.barChart.barChartArea.rating.colorZoom}
                                             />
                                           )},
                                           {id: CUSTOM_TAB.childTabArea.province.id, label: CUSTOM_TAB.childTabArea.province.label,
@@ -288,6 +272,7 @@ const DashboardContent = () => {
                                               description={METRICS.rating.description}
                                               orientation={CUSTOM_CHART.barChart.barChartArea.orientation}
                                               displayName={false}
+                                              colorZoom={CUSTOM_CHART.barChart.barChartArea.rating.colorZoom}
                                             />
                                           )},
                                           {id: CUSTOM_TAB.childTabArea.others.id, label: CUSTOM_TAB.childTabArea.others.label,
@@ -303,6 +288,7 @@ const DashboardContent = () => {
                                               description={METRICS.rating.description}
                                               orientation={CUSTOM_CHART.barChart.barChartArea.orientation}
                                               displayName={false}
+                                              colorZoom={CUSTOM_CHART.barChart.barChartArea.rating.colorZoom}
                                             />
                                           )}
                                           ]} />
@@ -323,6 +309,7 @@ const DashboardContent = () => {
                                               description={METRICS.ave_reach.description}
                                               orientation={CUSTOM_CHART.barChart.barChartArea.orientation}
                                               displayName={false}
+                                              colorZoom={CUSTOM_CHART.barChart.barChartArea.aveReach.colorZoom}
                                             />
                                           )},
                                           {id: CUSTOM_TAB.childTabArea.key_city.id, label: CUSTOM_TAB.childTabArea.key_city.label,
@@ -338,6 +325,7 @@ const DashboardContent = () => {
                                               description={METRICS.ave_reach.description}
                                               orientation={CUSTOM_CHART.barChart.barChartArea.orientation}
                                               displayName={false}
+                                              colorZoom={CUSTOM_CHART.barChart.barChartArea.aveReach.colorZoom}
                                             />
                                           )},
                                           {id: CUSTOM_TAB.childTabArea.province.id, label: CUSTOM_TAB.childTabArea.province.label,
@@ -353,6 +341,7 @@ const DashboardContent = () => {
                                               description={METRICS.ave_reach.description}
                                               orientation={CUSTOM_CHART.barChart.barChartArea.orientation}
                                               displayName={false}
+                                              colorZoom={CUSTOM_CHART.barChart.barChartArea.aveReach.colorZoom}
                                             />
                                           )},
                                           {id: CUSTOM_TAB.childTabArea.others.id, label: CUSTOM_TAB.childTabArea.others.label,
@@ -368,6 +357,7 @@ const DashboardContent = () => {
                                               description={METRICS.ave_reach.description}
                                               orientation={CUSTOM_CHART.barChart.barChartArea.orientation}
                                               displayName={false}
+                                              colorZoom={CUSTOM_CHART.barChart.barChartArea.aveReach.colorZoom}
                                             />
                                           )}
                                           ]} />
@@ -394,20 +384,9 @@ const DashboardContent = () => {
                           },
                           {id: 'channel', label: 'Kênh',
                             content: (
-                              <section>
-                                <InforTab inforTab={"Kênh - P4+ toàn quốc"} isOpen={filterOpen} setIsOpen={setFilterOpen} />
-                                <InforFilter inforFilter={appliedFilters}
-                                             setInforFilter={setAppliedFilters}
-                                             filters={scopeFilterData}
-                                             channels={channels}
-                                             events={events}
-                                             provinces={provinces}
-                                             setChannels={setChannels}
-                                             setEvents={setEvents}
-                                             setProvinces={setProvinces}
-                                             currentTab={currentTab}
-                                             isOpen={filterOpen}
-                                             setIsOpen={setFilterOpen} />
+                              <section id="target_capture_channel">
+                                <InforTab inforTab={"Kênh - P4+ toàn quốc"} />
+                                <InforFilter filters={scopeFilterData} />
                                 <div className='px-6 py-6'>
                                   <div className='px-6 pt-4 bg-background-black-4 rounded-2xl'>
                                     <NormalTabs tabs={[
@@ -673,20 +652,9 @@ const DashboardContent = () => {
                           },
                           {id: 'program', label: 'Chương trình',
                             content: (
-                              <section>
-                                <InforTab inforTab={"Chương trình - P4+ toàn quốc"} isOpen={filterOpen} setIsOpen={setFilterOpen} />
-                                <InforFilter inforFilter={appliedFilters}
-                                             setInforFilter={setAppliedFilters}
-                                             filters={scopeFilterData}
-                                             channels={channels}
-                                             events={events}
-                                             provinces={provinces}
-                                             setChannels={setChannels}
-                                             setEvents={setEvents}
-                                             setProvinces={setProvinces}
-                                             currentTab={currentTab}
-                                             isOpen={filterOpen}
-                                             setIsOpen={setFilterOpen} />
+                              <section id="target_capture_program">
+                                <InforTab inforTab={"Chương trình - P4+ toàn quốc"} />
+                                <InforFilter filters={scopeFilterData} />
                                 <div className='px-6'>
                                   <div className='w-full grid grid-cols-2 gap-6 py-6'>
                                     <PieChart data={!dashboard.isLoading.totalEventDurationPieFirstLevelData ? transformPieChartData(dashboard.totalEventDurationPieFirstLevelData?.data, dashboard.totalEventDurationPieFirstLevelData?.colnames) : 'isLoading'}
@@ -751,20 +719,9 @@ const DashboardContent = () => {
                           },
                           {id: 'rating_by_minute', label: 'Rating theo phút',
                             content: (
-                              <section>
-                                <InforTab inforTab={"Rating theo phút - P4+ toàn quốc"} isOpen={filterOpen} setIsOpen={setFilterOpen} />
-                                <InforFilter inforFilter={appliedFilters}
-                                             setInforFilter={setAppliedFilters}
-                                             filters={scopeFilterData}
-                                             channels={channels}
-                                             events={events}
-                                             provinces={provinces}
-                                             setChannels={setChannels}
-                                             setEvents={setEvents}
-                                             setProvinces={setProvinces}
-                                             currentTab={currentTab}
-                                             isOpen={filterOpen}
-                                             setIsOpen={setFilterOpen} />
+                              <section id="target_capture_rating_by_minute">
+                                <InforTab inforTab={"Rating theo phút - P4+ toàn quốc"} />
+                                <InforFilter filters={scopeFilterData} />
                                 <div className='px-6'>
                                   <div className='w-full py-6'>
                                     <LineChart data={!dashboard.isLoading.ratingLineMinuteChannelData ? transformMixedChartData(dashboard.ratingLineMinuteChannelData?.data, 'event_start_time_split_m', dashboard.ratingLineMinuteChannelData?.colnames) : 'isLoading'}
@@ -825,7 +782,6 @@ const DashboardContent = () => {
                             )
                           }
                         ]}
-                        onTabChange={setCurrentTab}
             />
           </div>
           <div className='px-6'>

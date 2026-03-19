@@ -18,7 +18,8 @@ const BarChart = ({
   orientation,
   displayName=true,
   enableZoom = true, // Option bật/tắt zoom
-  maxVisibleItems = 12
+  maxVisibleItems = 12,
+  colorZoom = 'yellow'
 }) => {
   
   if(data==='isLoading') {
@@ -137,11 +138,11 @@ const BarChart = ({
         [isHorizontal ? 'width' : 'height']: 20,
         brushSelect: false,
         handleSize: '100%',
-        backgroundColor: 'rgba(255, 247, 217, 1)',
-        borderColor: 'rgb(252, 233, 167)',
+        backgroundColor: colorZoom=='yellow' ? 'rgba(255, 247, 217, 1)' : 'rgba(255, 225, 226, 1)',
+        borderColor: colorZoom=='yellow' ? 'rgb(252, 233, 167)' : 'rgba(255, 185, 187, 1)',
         borderRadius: 8,
         handleStyle: {
-          color: 'rgba(255, 204, 0, 1)',
+          color: colorZoom=='yellow' ? 'rgba(255, 204, 0, 1)' : 'rgba(255, 56, 60, 1)',
           borderColor: 'rgba(255, 255, 255, 1)'
         },
         textStyle: {
@@ -153,17 +154,17 @@ const BarChart = ({
         emphasis: {
           handleStyle: {
             color: 'rgba(255, 255, 255, 1)',
-            borderColor: 'rgba(255, 204, 0, 1)'
+            borderColor:  colorZoom=='yellow' ? 'rgba(255, 204, 0, 1)' : 'rgba(255, 56, 60, 1)'
           }
         },
-        fillerColor: 'rgb(252, 233, 167)',
+        fillerColor: colorZoom=='yellow' ? 'rgb(252, 233, 167)' : 'rgba(255, 185, 187, 1)',
         dataBackground: {
           lineStyle: {
-            color: 'rgb(252, 233, 167)',
+            color: colorZoom=='yellow' ? 'rgb(252, 233, 167)' : 'rgba(255, 185, 187, 1)',
             opacity: 0.4
           },
           areaStyle: {
-            color: 'rgb(252, 233, 167)',
+            color: colorZoom=='yellow' ? 'rgb(252, 233, 167)' : 'rgba(255, 185, 187, 1)',
             opacity: 0.4
           }
         }

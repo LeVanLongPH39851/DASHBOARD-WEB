@@ -3,9 +3,11 @@ import { useState, useEffect } from 'react';
 import DateRangeFilter from './components/DataRangeFilter';
 import ButtonFilter from './components/ButtonFilter';
 import SelectMultiFilter from './components/SelectMultiFilter';
+import CheckboxMultiFilter from './components/CheckboxMultiFilter';
 import { getYesterday } from '../../../helpers/helper';
 import iconXBlack from '../../../assets/icon_x_black.png';
 import iconReset from '../../../assets/icon_reset.png';
+import { useDashboardFilters, useDashboardFilterValues, useDashboardStateGlobals } from '../../../context/DashboardFilterContext'
 
 const ALL_CHANNELS = [
   { value: "VTV1", label: "VTV1" },
@@ -26,6 +28,63 @@ const ALL_EVENTS = [
   { value: "TSV", label: "TSV" }
 ];
 
+const ALL_REGIONALS = [
+  { value: "Bắc Trung Bộ và Duyên hải miền Trung", label: "Bắc Trung Bộ và Duyên hải miền Trung" },
+  { value: "Đồng bằng sông Cửu Long", label: "Đồng bằng sông Cửu Long" },
+  { value: "Đồng bằng sông Hồng", label: "Đồng bằng sông Hồng" },
+  { value: "Đông Nam Bộ", label: "Đông Nam Bộ" },
+  { value: "Tây Nguyên", label: "Tây Nguyên" },
+  { value: "Trung du và miền núi phía Bắc", label: "Trung du và miền núi phía Bắc" }
+];
+
+const ALL_KEY_CITIES = [
+  { value: "4 TP lớn", label: "4 TP lớn" }
+];
+
+const ALL_TIMEBANDS = [
+  { value: "0h - 1h", label: "0h - 1h" },
+  { value: "1h - 2h", label: "1h - 2h" },
+  { value: "2h - 3h", label: "2h - 3h" },
+  { value: "3h - 4h", label: "3h - 4h" },
+  { value: "4h - 5h", label: "4h - 5h" },
+  { value: "5h - 6h", label: "5h - 6h" },
+  { value: "6h - 7h", label: "6h - 7h" },
+  { value: "7h - 8h", label: "7h - 8h" },
+  { value: "8h - 9h", label: "8h - 9h" },
+  { value: "9h - 10h", label: "9h - 10h" },
+  { value: "10h - 11h", label: "10h - 11h" },
+  { value: "11h - 12h", label: "11h - 12h" },
+  { value: "12h - 13h", label: "12h - 13h" },
+  { value: "13h - 14h", label: "13h - 14h" },
+  { value: "14h - 15h", label: "14h - 15h" },
+  { value: "15h - 16h", label: "15h - 16h" },
+  { value: "16h - 17h", label: "16h - 17h" },
+  { value: "17h - 18h", label: "17h - 18h" },
+  { value: "18h - 19h", label: "18h - 19h" },
+  { value: "19h - 20h", label: "19h - 20h" },
+  { value: "20h - 21h", label: "20h - 21h" },
+  { value: "21h - 22h", label: "21h - 22h" },
+  { value: "22h - 23h", label: "22h - 23h" },
+  { value: "23h - 24h", label: "23h - 24h" }
+];
+
+const ALL_FIRST_LEVELS = [
+  { value: "Dành cho trẻ em", label: "Dành cho trẻ em" },
+  { value: "Giáo dục - Đào tạo", label: "Giáo dục - Đào tạo" },
+  { value: "Giải trí", label: "Giải trí" },
+  { value: "Phim dài tập", label: "Phim dài tập" },
+  { value: "Phim truyện", label: "Phim truyện" },
+  { value: "Phim điện ảnh", label: "Phim điện ảnh" },
+  { value: "Quảng bá", label: "Quảng bá" },
+  { value: "Quảng cáo", label: "Quảng cáo" },
+  { value: "Sự kiện", label: "Sự kiện" },
+  { value: "Sự kiện - Đặc biệt", label: "Sự kiện - Đặc biệt" },
+  { value: "Thể thao", label: "Thể thao" },
+  { value: "Thời sự - Chính luận", label: "Thời sự - Chính luận" },
+  { value: "Tài liệu - Phóng sự", label: "Tài liệu - Phóng sự" },
+  { value: "Đời sống", label: "Đời sống" },
+];
+
 const DISABLE_TABS = {
   overview: 'overview',
   channel: 'channel',
@@ -33,8 +92,7 @@ const DISABLE_TABS = {
   rating_by_minute: 'rating_by_minute'
 }
 
-const Filter = ({ isOpen, setIsOpen, currentTab, filters, appliedFilters, setAppliedFilters,
-                  channels, setChannels, events, setEvents, provinces, setProvinces, horizontal=false
+const Filter = ({ filters, horizontalFixed=false
                }) => {
   
   const ALL_PROVINCES = filters.filterProvince.map(item => ({
@@ -42,8 +100,9 @@ const Filter = ({ isOpen, setIsOpen, currentTab, filters, appliedFilters, setApp
     label: item.province
   }));
 
-  const [startDate, setStartDate] = useState(getYesterday());
-  const [endDate, setEndDate] = useState(getYesterday());
+  const { appliedFilters, setAppliedFilters} = useDashboardFilters();
+  const { filterValues, setFilterValues } = useDashboardFilterValues();
+  const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
 
   useEffect(() => {
     const filterId = document.getElementById('filter');
@@ -59,143 +118,265 @@ const Filter = ({ isOpen, setIsOpen, currentTab, filters, appliedFilters, setApp
 
       filterId.classList.remove('top-0', 'top-15');
       filterId.classList.add(isSticky ? 'top-0' : 'top-15');
-      filterId.style.height = !isSticky ? 'calc(100vh - 60px)' : '100%'
     };
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    const relatives = document.querySelectorAll('.filter-relative');
+
+    const observers = Array.from(relatives)
+      .map(relative => {
+        const absolute = relative.querySelector('.filter-absolute');
+        if (!absolute) return null;
+
+        const initialHeight = relative.dataset.initialHeight || 'zero'; // lấy từ data attribute
+
+        const updateHeight = () => {
+          const isVisible = absolute.classList.contains('visible')
+                        && absolute.classList.contains('opacity-100')
+                        && absolute.classList.contains('top-0');
+
+          relative.style.height = isVisible ? `${absolute.offsetHeight}px` : '0px';
+        };
+
+        // Set height ban đầu
+        relative.style.height = initialHeight === 'match'
+          ? `${absolute.offsetHeight}px`
+          : '0px';
+
+        const resizeObserver = new ResizeObserver(updateHeight);
+        resizeObserver.observe(absolute);
+
+        const mutationObserver = new MutationObserver(updateHeight);
+        mutationObserver.observe(absolute, { attributeFilter: ['class'] });
+
+        return { resizeObserver, mutationObserver };
+      })
+      .filter(Boolean);
+
+    return () => observers.forEach(({ resizeObserver, mutationObserver }) => {
+      resizeObserver.disconnect();
+      mutationObserver.disconnect();
+    });
+  }, [stateGlobals.horizontal, stateGlobals.currentTab]);
+
   // Sync context → form
   useEffect(() => {
     if (appliedFilters) {
-      setStartDate(appliedFilters.startDate || getYesterday());
-      setEndDate(appliedFilters.endDate || getYesterday());
-      setChannels(
-        (appliedFilters.channels || [])
+      setFilterValues(prev => ({
+        ...prev,
+        startDate: appliedFilters.startDate || getYesterday(),
+        endDate:   appliedFilters.endDate   || getYesterday(),
+        channels: (appliedFilters.channels || [])
           .map(val => ALL_CHANNELS.find(ch => ch.value === val))
-          .filter(Boolean)
-      );
-      setEvents(
-        (appliedFilters.events || [])
+          .filter(Boolean),
+        events: (appliedFilters.events || [])
           .map(val => ALL_EVENTS.find(ev => ev.value === val))
-          .filter(Boolean)
-      );
-      setProvinces(
-        (appliedFilters.provinces || [])
+          .filter(Boolean),
+        provinces: (appliedFilters.provinces || [])
           .map(val => ALL_PROVINCES.find(pr => pr.value === val))
-          .filter(Boolean)
-      );
+          .filter(Boolean),
+        regionals: (appliedFilters.regionals || [])
+          .map(val => ALL_REGIONALS.find(re => re.value === val))
+          .filter(Boolean),
+        keyCities: (appliedFilters.keyCities || [])
+          .map(val => ALL_KEY_CITIES.find(ke => ke.value === val))
+          .filter(Boolean),
+        timebands: (appliedFilters.timebands || [])
+        .map(val => ALL_TIMEBANDS.find(tb => tb.value === val))
+        .filter(Boolean),
+        firstLevels: (appliedFilters.firstLevels || [])
+        .map(val => ALL_FIRST_LEVELS.find(fl => fl.value === val))
+        .filter(Boolean)
+      }));
     }
   }, [appliedFilters]);
 
   const handleDateRangeChange = ({ startDate: s, endDate: e }) => {
-    setStartDate(s);
-    setEndDate(e);
+    setFilterValues(prev => ({...prev, startDate: s, endDate: e}));
   };
 
   const handleChannelsChange = (selectedChannels) => {
-    setChannels(selectedChannels);
+    setFilterValues(prev => ({...prev, channels: selectedChannels}));
   };
 
   const handleEventsChange = (selectedEvents) => {
-    setEvents(selectedEvents);
+    setFilterValues(prev => ({...prev, events: selectedEvents}));
   };
 
   const handleProvincesChange = (selectedProvinces) => {
-    setProvinces(selectedProvinces);
+    setFilterValues(prev => ({...prev, provinces: selectedProvinces}));
+  };
+
+  const handleRegionalsChange = (selectedRegionals) => {
+    setFilterValues(prev => ({...prev, regionals: selectedRegionals}));
+  };
+
+  const handleKeyCitiesChange = (selectedKeyCities) => {
+    setFilterValues(prev => ({...prev, keyCities: selectedKeyCities}));
+  };
+
+  const handleTimebandsChange = (selectedTimebands) => {
+    setFilterValues(prev => ({...prev, timebands: selectedTimebands}));
+  };
+
+  const handleFirstLevelsChange = (selectedFirstLevels) => {
+    setFilterValues(prev => ({...prev, firstLevels: selectedFirstLevels}));
   };
 
   const onSubmit = (e) => {
     e.preventDefault();
-    const hasDate = Boolean(startDate && endDate);
-    const channelValues = channels.map(ch => ch.value);
-    const hasChannels = channelValues.length > 0;
-    const eventValues = events.map(ev => ev.value);
-    const hasEvents = eventValues.length > 0;
-    const provinceValues = provinces.map(pr => pr.value);
-    const hasProvinces = provinceValues.length > 0;
-    const hasAny = hasDate || hasChannels || hasEvents || hasProvinces;
-    
-    setAppliedFilters(
-      hasAny ? { startDate, endDate, channels: channelValues, events: eventValues, provinces:  provinceValues} : null
-    );
+
+    setAppliedFilters(filterValues ? {
+      ...filterValues,
+      channels:  (filterValues?.channels  || []).map(ch => ch.value),
+      events:    (filterValues?.events    || []).map(ev => ev.value),
+      provinces: (filterValues?.provinces || []).map(pr => pr.value),
+      regionals: (filterValues?.regionals || []).map(re => re.value),
+      keyCities: (filterValues?.keyCities || []).map(ke => ke.value),
+      timebands: (filterValues?.timebands || []).map(tb => tb.value),
+      firstLevels: (filterValues?.firstLevels || []).map(fl => fl.value)
+    } : null);
   };
 
   const onReset = () => {
-    const y = getYesterday();
-    setStartDate(y);
-    setEndDate(y);
-    setChannels([]);
-    setEvents([]);
-    setProvinces([]);
     setAppliedFilters(null);
+    setFilterValues(null);
   };
 
   return (
     <>
-    <aside className={`${horizontal ? 'w-full' : `${!isOpen.isOpen || isOpen.horizontal ? 'w-0' : 'w-[16%]'} h-full`}`}>
-      <div id='filter' className={`${horizontal ? 'w-full' : `bg-background-light border-r border-background-line-gray w-[16%] overflow-hidden fixed left-0 ${!isOpen.isOpen || isOpen.horizontal ? '-translate-x-full' : ''} top-15 px-6 pt-4 pb-5 transition-all duration-300`}`} style={{height: !horizontal ? 'calc(100vh - 60px)' : ''}}>
-        {!horizontal && (<div className='flex justify-between items-center h-10.5 mb-2'>
-          <span className='text-background-black-child-tab text-[16px] font-semibold'>Bộ lọc</span><figure className='cursor-pointer transition-all duration-300 hover:rotate-180' onClick={() => setIsOpen(prev => ({...prev, isOpen: !prev.isOpen}))}><img src={iconXBlack} className='w-3.25' alt="Icon X Black" /></figure>
+    <aside className={`${horizontalFixed ? 'w-full' : `${!stateGlobals.isOpen || stateGlobals.horizontal ? 'w-0' : 'w-[16%]'} h-full`} transition-all duration-300`}>
+      <div id='filter' className={`${horizontalFixed ? 'w-full' : `bg-background-light border-r border-background-line-gray w-[16%] overflow-y-auto fixed left-0 ${!stateGlobals.isOpen || stateGlobals.horizontal ? '-translate-x-full' : ''} top-15 px-6 pt-4 pb-15.5 transition-all duration-300 h-full`}`}>
+        {!horizontalFixed && (<div className='flex justify-between items-center h-10.5 mb-2'>
+          <span className='text-background-black-child-tab text-[16px] font-semibold'>Bộ lọc</span><figure className='cursor-pointer transition-all duration-300 hover:rotate-180' onClick={() => setStateGlobals(prev => ({...prev, isOpen: !prev.isOpen}))}><img src={iconXBlack} className='w-3.25' alt="Icon X Black" /></figure>
         </div>)}
-        <form className={`${horizontal ? 'flex gap-2 items-center' : ''}`} onSubmit={onSubmit} onReset={onReset}>
+        <form className={`${horizontalFixed ? 'flex flex-wrap gap-2 items-center' : ''}`} onSubmit={onSubmit} onReset={onReset}>
           <DateRangeFilter
-            startDate={startDate}
-            endDate={endDate}
+            startDate={filterValues?.startDate || getYesterday()}
+            endDate={filterValues?.endDate || getYesterday()}
             onChange={handleDateRangeChange}
-            horizontal={horizontal}
+            horizontalFixed={horizontalFixed}
           />
 
-          <SelectMultiFilter
+          {!stateGlobals.horizontal ?
+          (<CheckboxMultiFilter
             label="Kênh"
             placeholder="Chọn kênh..."
             options={ALL_CHANNELS}
-            value={channels}
+            value={filterValues?.channels || []}
             onChange={handleChannelsChange}
             marginBottom="mb-4"
-            horizontal={horizontal}
-          />
+          />) :
+          (<SelectMultiFilter
+            label="Kênh"
+            placeholder="Chọn kênh..."
+            options={ALL_CHANNELS}
+            value={filterValues?.channels || []}
+            onChange={handleChannelsChange}
+            marginBottom="mb-4"
+            horizontalFixed={horizontalFixed}
+          />)}
 
-          {(currentTab != DISABLE_TABS.rating_by_minute && <SelectMultiFilter
+          {stateGlobals.currentTab==DISABLE_TABS.channel && (<SelectMultiFilter
+            label="Khung giờ"
+            placeholder="Chọn khung giờ..."
+            options={ALL_TIMEBANDS}
+            value={filterValues?.timebands || []}
+            onChange={handleTimebandsChange}
+            marginBottom="mb-4"
+            horizontalFixed={horizontalFixed}
+          />)}
+
+          {stateGlobals.currentTab != DISABLE_TABS.rating_by_minute && (!stateGlobals.horizontal ? (<CheckboxMultiFilter
             label="Live/TSV"
             placeholder="Chọn event..."
             options={ALL_EVENTS}
-            value={events}
+            value={filterValues?.events || []}
             onChange={handleEventsChange}
             marginBottom="mb-4"
-            horizontal={horizontal}
-          />)}
+          />) : (<SelectMultiFilter
+            label="Live/TSV"
+            placeholder="Chọn event..."
+            options={ALL_EVENTS}
+            value={filterValues?.events || []}
+            onChange={handleEventsChange}
+            marginBottom="mb-4"
+            horizontalFixed={horizontalFixed}
+          />))}
 
-          {/* <SelectMultiFilter
-            label="VÙNG"
-            placeholder="Chọn vùng..."
+          {!stateGlobals.horizontal ?
+          (<CheckboxMultiFilter
+            label="Vùng"
+            placeholder="Chọn vùng"
             options={ALL_REGIONALS}
-            value={regionals}
+            value={filterValues?.regionals || []}
             onChange={handleRegionalsChange}
             marginBottom="mb-4"
-          />
-
-          <SelectMultiFilter
-            label="THÀNH PHỐ LỚN"
-            placeholder="Chọn TP lớn..."
-            options={ALL_KEY_CITES}
-            value={regionals}
-            onChange={handleKeyCitesChange}
+          />) :
+          (<SelectMultiFilter
+            label="Vùng"
+            placeholder="Chọn vùng"
+            options={ALL_REGIONALS}
+            value={filterValues?.regionals || []}
+            onChange={handleRegionalsChange}
             marginBottom="mb-4"
-          /> */}
+            horizontalFixed={horizontalFixed}
+          />)}
+
+          {!stateGlobals.horizontal ?
+          (<CheckboxMultiFilter
+            label="Thành phố lớn"
+            placeholder="Chọn TP lớn"
+            options={ALL_KEY_CITIES}
+            value={filterValues?.keyCities || []}
+            onChange={handleKeyCitiesChange}
+            marginBottom="mb-4"
+          />) :
+          (<SelectMultiFilter
+            label="Thành phố lớn"
+            placeholder="Chọn TP lớn"
+            options={ALL_KEY_CITIES}
+            value={filterValues?.keyCities || []}
+            onChange={handleKeyCitiesChange}
+            marginBottom="mb-4"
+            horizontalFixed={horizontalFixed}
+          />
+          )
+          }
 
           <SelectMultiFilter
             label="Tỉnh/TP"
             placeholder="Chọn Tỉnh/TP"
             options={ALL_PROVINCES}
-            value={provinces}
+            value={filterValues?.provinces || []}
             onChange={handleProvincesChange}
             marginBottom="mb-4"
-            horizontal={horizontal}
+            horizontalFixed={horizontalFixed}
           />
 
-          <div className={`flex justify-center items-center bg-background-light ${!horizontal ? 'absolute bottom-0 left-0 w-full shadow-2xl shadow-color-black-50 py-3 gap-4' : 'gap-1'}`}>
+          {stateGlobals.currentTab == DISABLE_TABS.program && (!stateGlobals.horizontal ? (<CheckboxMultiFilter
+            label="Thể loại"
+            placeholder="Chọn thể loại"
+            options={ALL_FIRST_LEVELS}
+            value={filterValues?.firstLevels || []}
+            onChange={handleFirstLevelsChange}
+            marginBottom="mb-4"
+          />) :
+          (<SelectMultiFilter
+            label="Thể loại"
+            placeholder="Chọn thể loại"
+            options={ALL_FIRST_LEVELS}
+            value={filterValues?.firstLevels || []}
+            onChange={handleFirstLevelsChange}
+            marginBottom="mb-4"
+            horizontalFixed={horizontalFixed}
+          />))}
+
+          <div className={`flex justify-center items-center transition-all duration-700 bg-background-light ${!horizontalFixed ? `fixed bottom-0 left-0 w-[16%] border-r border-background-line-gray ${!stateGlobals.isOpen || stateGlobals.horizontal ? '-translate-x-full' : ''} shadow-2xl shadow-color-black-50 py-3 gap-4` : 'gap-1'}`}>
             <ButtonFilter text={'Áp dụng bộ lọc'} background={'bg-background-black-90'} color={'text-color-white-90'} type={'submit'} />
             <ButtonFilter text={'Đặt lại'} background={'bg-background-light'} color={'text-background-black-90'} type={'reset'} src={iconReset} alt={'Icon Reset'} width={'w-3'} />
           </div>

@@ -37,6 +37,26 @@ const appendAllFilters = (queries, filterState, disabledFilters) => {
     column: 'province', 
     values: filterState.provinces 
   });
+
+  const regionalFilters = buildQueriesFilters({ 
+    column: 'regional_name', 
+    values: filterState.regionals 
+  });
+
+  const keyCitieFilters = buildQueriesFilters({ 
+    column: 'key_city', 
+    values: filterState.keyCities 
+  });
+
+  const timebandFilters = buildQueriesFilters({ 
+    column: 'time_band', 
+    values: filterState.timebands 
+  });
+
+  const firstLevelFilters = buildQueriesFilters({ 
+    column: 'firstlevel_vn', 
+    values: filterState.firstLevels 
+  });
   
   return queries.map((q) => {
     const currentFilters = q.filters || [];
@@ -46,6 +66,10 @@ const appendAllFilters = (queries, filterState, disabledFilters) => {
     if (channelFilters && !disabledFilters.includes('channelFilters')) newFilters = appendFilters(newFilters, channelFilters);
     if (eventFilters && !disabledFilters.includes('eventFilters')) newFilters = appendFilters(newFilters, eventFilters);
     if (provinceFilters && !disabledFilters.includes('provinceFilters')) newFilters = appendFilters(newFilters, provinceFilters);
+    if (regionalFilters && !disabledFilters.includes('regionalFilters')) newFilters = appendFilters(newFilters, regionalFilters);
+    if (keyCitieFilters && !disabledFilters.includes('keyCitieFilters')) newFilters = appendFilters(newFilters, keyCitieFilters);
+    if (timebandFilters && !disabledFilters.includes('timebandFilters')) newFilters = appendFilters(newFilters, timebandFilters);
+    if (firstLevelFilters && !disabledFilters.includes('firstLevelFilters')) newFilters = appendFilters(newFilters, firstLevelFilters);
     
     return {
       ...q,

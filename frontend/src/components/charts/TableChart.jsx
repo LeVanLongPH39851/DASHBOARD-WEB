@@ -324,8 +324,8 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
       {/* Table Container */}
       <div>
         <div className="overflow-hidden">
-          <div 
-            className="overflow-auto"
+          <div
+            className="overflow-auto divTable"
             style={{ height: height }}
             onClick={() => setShowColumnMenu(false)}
           >

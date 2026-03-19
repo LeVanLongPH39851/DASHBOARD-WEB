@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import {
   useReactTable,
   getCoreRowModel,
@@ -247,12 +247,17 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
 
 
 
-
+  const getEChartsData = useCallback(() => {
+    return {
+      labels: labels,  // ✅ Raw labels từ data gốc
+      series: series   // ✅ Raw series từ data gốc (bao gồm filter, sort, pagination states)
+    };
+  }, [labels, series]);
 
 
   return (
     <div className={`${displayName ? 'p-6 bg-background-light border border-border-black-10 rounded-2xl shadow-component' : '' }`} style={{ fontFamily }}>
-      <NameChart nameChart={nameChart} description={description} display={displayName} />
+      <NameChart nameChart={nameChart} description={description} display={displayName} getChartData={getEChartsData} table={true} />
       <div className="flex justify-between items-center mb-6 gap-4">
         <div className='flex items-center gap-2'>
           <div className={`relative`}>

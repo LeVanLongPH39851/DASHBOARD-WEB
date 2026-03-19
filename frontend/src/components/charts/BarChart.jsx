@@ -1,4 +1,4 @@
-import React, { memo, useRef } from 'react';
+import React, { memo, useRef, useCallback } from 'react';
 import ReactECharts from 'echarts-for-react';
 import NameChart from '../layouts/components/NameChart';
 import Loading from '../commons/Loading';
@@ -65,12 +65,53 @@ const BarChart = ({
 
   const topSeriesIndex = sortedSeries.length - 1;
 
-
   // Tính toán có cần dataZoom hay không
   const needsScroll = enableZoom && sortedLabels.length > maxVisibleItems;
   const zoomEndPercent = needsScroll 
     ? Math.round((maxVisibleItems / sortedLabels.length) * 100) 
     : 100;
+
+  const getEChartsData = useCallback(() => {
+    if (chartRef.current) {
+      try {
+        const instance = chartRef.current.getEchartsInstance();
+        const option = instance.getOption();
+        
+        // ✅ Lấy legend selected state
+        const legendSelected = option.legend?.[0]?.selected || {};
+        
+        // ✅ Lấy dataZoom range để filter labels
+        const dataZoom = option.dataZoom?.[0] || {};
+        const start = dataZoom.start || 0;
+        const end = dataZoom.end || 100;
+        
+        let visibleLabels = sortedLabels;
+        let startIndex = 0;
+        let endIndex = sortedLabels.length;
+        
+        // Tính index theo orientation (horizontal = yAxis, vertical = xAxis)
+        if (needsScroll && option.dataZoom?.length > 0) {
+          startIndex = Math.floor((start / 100) * sortedLabels.length);
+          endIndex = Math.floor((end / 100) * sortedLabels.length);
+          visibleLabels = sortedLabels.slice(startIndex, endIndex);
+        }
+        
+        return {
+          labels: visibleLabels,  // ✅ Chỉ labels đang zoom
+          series: (option.series || sortedSeries)
+            .filter(s => legendSelected[s.name] !== false)  // ✅ Chỉ series đang visible
+            .map(s => ({
+              name: s.name,
+              data: visibleLabels.map((_, i) => s.data[startIndex + i] || 0)  // ✅ Data theo zoom range
+            }))
+        };
+      } catch (error) {
+        console.error('Lỗi lấy BarChart data:', error);
+        return { labels: sortedLabels, series: sortedSeries };
+      }
+    }
+    return { labels: sortedLabels, series: sortedSeries };
+  }, [sortedLabels, sortedSeries, needsScroll]);
 
 
 
@@ -376,7 +417,7 @@ const BarChart = ({
 
   return (
     <div className={`${displayName ? 'p-6 bg-background-light border border-border-black-10 rounded-2xl shadow-component' : ''}`}>
-      <NameChart nameChart={nameChart} description={description} display={displayName} />
+      <NameChart nameChart={nameChart} description={description} display={displayName} getChartData={getEChartsData} />
       <ReactECharts 
         ref={chartRef}
         option={option} 

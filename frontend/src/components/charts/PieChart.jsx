@@ -1,4 +1,4 @@
-import React, { memo, useRef } from 'react';
+import React, { memo, useRef, useCallback } from 'react';
 import ReactECharts from 'echarts-for-react';
 import NameChart from '../layouts/components/NameChart';
 import Loading from '../commons/Loading';
@@ -28,6 +28,7 @@ const PieChart = ({
   }
 
   const chartRef = useRef(null);
+
   const { labels = [], values = [], series = [] } = data;
 
   // Dùng series nếu có, fallback về labels + values
@@ -37,6 +38,36 @@ const PieChart = ({
         name,
         value: values[i] || 0,
       }));
+
+  const getEChartsData = useCallback(() => {
+    if (chartRef.current) {
+      try {
+        const instance = chartRef.current.getEchartsInstance();
+        const option = instance.getOption();
+        
+        const legendSelected = option.legend?.[0]?.selected || {};
+        const pieData = option.series?.[0]?.data || pieSeriesData;
+        const visibleData = pieData.filter(item => legendSelected[item.name] !== false);
+        
+        return {
+          labels: visibleData.map(item => item.name),
+          series: [{
+            data: visibleData.map(item => item.value || 0)  // ✅ Không cần name
+          }]
+        };
+      } catch (error) {
+        console.error('Lỗi PieChart data:', error);
+        return {
+          labels: pieSeriesData.map(item => item.name),
+          series: [{ data: pieSeriesData.map(item => item.value || 0) }]
+        };
+      }
+    }
+    return {
+      labels: pieSeriesData.map(item => item.name),
+      series: [{ data: pieSeriesData.map(item => item.value || 0) }]
+    };
+  }, [pieSeriesData]);  // ✅ Chỉ deps cần thiết
 
   // Helper function để lấy màu theo tên label (ưu tiên colorFirstLevel object)
   const getColorForItem = (name, index) => {
@@ -181,7 +212,7 @@ const PieChart = ({
 
   return (
     <div className='p-6 bg-background-light border border-border-black-10 rounded-2xl shadow-component'>
-      <NameChart nameChart={nameChart} description={description} />
+      <NameChart nameChart={nameChart} description={description} getChartData={getEChartsData} />
       <ReactECharts
         ref={chartRef}
         option={option}

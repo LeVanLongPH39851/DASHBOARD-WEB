@@ -1,4 +1,4 @@
-import React, { memo, useRef } from 'react';
+import React, { memo, useRef, useCallback } from 'react';
 import ReactECharts from 'echarts-for-react';
 import NumberChart from '../layouts/components/NameChart';
 import { formatNumber } from '../../utils/formatNumber';
@@ -32,6 +32,40 @@ const MixedChart = ({
   }
   const { labels = [], series = [] } = data;
   const chartRef = useRef(null);
+
+  const getEChartsData = useCallback(() => {
+    if (chartRef.current) {
+      try {
+        const instance = chartRef.current.getEchartsInstance();
+        const option = instance.getOption();
+        
+        const legendSelected = option.legend?.[0]?.selected || {};
+        const dataZoom = option.dataZoom?.[0] || {};
+        const start = dataZoom.start || 0;
+        const end = dataZoom.end || 100;
+        const startIndex = Math.floor((start / 100) * labels.length);
+        const endIndex = Math.floor((end / 100) * labels.length);
+        const visibleLabels = labels.slice(startIndex, endIndex);
+        
+        return {
+          labels: visibleLabels,
+          series: (option.series || series)
+            .filter(s => legendSelected[s.name] !== false)
+            .map(s => ({
+              name: s.name,
+              data: visibleLabels.map((_, i) => {
+                const fullData = s.data[startIndex + i] || {};
+                return fullData.value || fullData || 0;  // ✅ Unwrap value
+              })
+            }))
+        };
+      } catch (error) {
+        console.error('Lỗi lấy MixedChart data:', error);
+        return { labels, series };
+      }
+    }
+    return { labels, series };
+  }, [labels, series]);
 
   // Tính toán có cần dataZoom hay không
   const needsScroll = enableZoom && labels.length > maxVisibleItems;
@@ -294,7 +328,7 @@ const MixedChart = ({
 
   return (
     <div className='p-6 bg-background-light border border-border-black-10 rounded-2xl shadow-component'>
-      <NumberChart nameChart={nameChart} description={description}/>
+      <NumberChart nameChart={nameChart} description={description} getChartData={getEChartsData} />
       <ReactECharts 
         ref={chartRef}
         option={option} 

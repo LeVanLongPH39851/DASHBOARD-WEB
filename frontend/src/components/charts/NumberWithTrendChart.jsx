@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from 'react';
+import React, { memo, useMemo, useRef, useCallback } from 'react';
 import NameChart from '../layouts/components/NameChart';
 import iconArrowDown from '../../assets/icon_arrow_down.png';
 import iconArrowUp45 from '../../assets/icon_arrow_up_45.png';
@@ -28,6 +28,24 @@ const NumberWithTrendChart = ({
     );
   }
 
+  const chartRef = useRef(null);
+
+  const getEChartsData = useCallback(() => {
+    
+    if (!data || data.length === 0) {
+      return { labels: [], series: [] };
+    }
+
+    // Transform data thành {labels, series} format chuẩn Excel
+    const labels = data.map(item => item.date || `Ngày ${data.indexOf(item) + 1}`);
+    const series = [{
+      name: 'Value',  // ✅ Fixed name, bỏ nameChart
+      data: data.map(item => item.value || 0)
+    }];
+
+    return { labels, series };
+  }, [data]);  // ✅ Chỉ deps data
+
   const { currentValue, trendPercent, currentDate } = useMemo(() => {
     if (!data || data.length < 2) {
       return { currentValue: 0, trendPercent: 0, currentDate: '' };
@@ -44,7 +62,7 @@ const NumberWithTrendChart = ({
 
   return (
     <div className={`p-6 bg-background-light border border-border-black-10 rounded-2xl shadow-component`} style={{ height: `${height}px` }}>
-      <NameChart nameChart={nameChart} description={description} icon={icon} width='w-5.5' backgound='bg-background-succes-type-2' />
+      <NameChart nameChart={nameChart} description={description} icon={icon} width='w-5.5' backgound='bg-background-succes-type-2' getChartData={getEChartsData} />
       <div className='flex gap-1 items-center mb-2'><span className='text-color-black-100 font-medium text-sm'>Ngày {currentDate}</span><figure><img src={iconArrowDown} alt="Icon Arrow Down" className='w-2.25' /></figure></div>
       <div className="mb-6 flex items-center gap-3">
         <h4 className='text-5xl text-color-black-100 font-semibold'>{currentValue.toLocaleString(undefined, { maximumFractionDigits: (nameChart.includes('%') ? 2 : 0) })}</h4>

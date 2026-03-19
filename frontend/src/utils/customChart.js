@@ -87,14 +87,14 @@ export const CUSTOM_CHART = {
     tableChartChannel: {
         height: '400px',
         name: 'Chỉ số đo lường chi tiết từng chương trình',
-        desciption: 'Chỉ số đo lường chi tiết từng chương trình',
+        description: 'Chỉ số đo lường chi tiết từng chương trình',
         STT: false,
         pagination: false
     },
     tableChartArea: {
         height: '400px',
         name: 'Rating (%) và Reach (%) theo thị trường',
-        desciption: 'Rating (%)',
+        description: 'Rating (%)',
         STT: false,
         pagination: false
     },
@@ -102,15 +102,15 @@ export const CUSTOM_CHART = {
         height: '422px',
         programRank: {
           name: 'XẾP HẠNG chương trình theo các chỉ số',
-          desciption: 'XẾP HẠNG chương trình theo các chỉ số',
+          description: 'XẾP HẠNG chương trình theo các chỉ số',
         },
         programDetail: {
           name: 'Chỉ số đo lường chi tiết từng chương trình',
-          desciption: 'Chỉ số đo lường chi tiết từng chương trình',
+          description: 'Chỉ số đo lường chi tiết từng chương trình',
         },
         programEvent: {
           name: 'Chỉ số đo lường chương trình theo Live/TimeShift',
-          desciption: 'Chỉ số đo lường chương trình theo Live/TimeShift',
+          description: 'Chỉ số đo lường chương trình theo Live/TimeShift',
         },
         STT: true,
         pagination: true
@@ -126,7 +126,7 @@ export const CUSTOM_CHART = {
     },
     mixedChartDate: {
       name: 'Biến động khán giả theo ngày',
-      desciption: 'Biến động',
+      description: 'Biến động',
       metrics: {
         rating: [variableCustoms.metricRating[0]],
         aveReach: [variableCustoms.metricAveReach[0]]
@@ -139,7 +139,7 @@ export const CUSTOM_CHART = {
     },
     mixedChartPercentTimeband: {
       name: 'Biến động RATING (%) và REACH (%) theo khung giờ',
-      desciption: 'Biến động',
+      description: 'Biến động',
       metrics: {
         ratingPercent: [variableCustoms.metricRatingPercent],
         aveReachPercent: [variableCustoms.metricAveReachPercent]
@@ -151,7 +151,7 @@ export const CUSTOM_CHART = {
     },
     mixedChartTimeband: {
       name: 'Biến động RATING và REACH theo khung giờ',
-      desciption: 'Biến động',
+      description: 'Biến động',
       metrics: {
         rating: [variableCustoms.metricRating[1]],
         aveReach: [variableCustoms.metricAveReach[1]]
@@ -174,70 +174,70 @@ export const CUSTOM_CHART = {
     },
     lineChartPercentTimebandChannel: {
       name: 'Biến động RATING (%) kênh theo khung giờ',
-      desciption: 'Biến động',
+      description: 'Biến động',
       showTopNSeries: 3
     },
     lineChartPercentDateChannel: {
       aveReach: {
         name: 'Biến động Reach (%) kênh theo ngày',
-        desciption: 'Biến động'
+        description: 'Biến động'
       },
       rating: {
         name: 'Biến động RATING (%) kênh theo ngày',
-        desciption: 'Biến động'
+        description: 'Biến động'
       }
     },
     lineChartTimebandChannel: {
       aveReach: {
         name: 'Biến động Reach kênh theo khung giờ',
-        desciption: 'Biến động'
+        description: 'Biến động'
       },
       rating: {
         name: 'Biến động RATING kênh theo khung giờ',
-        desciption: 'Biến động'
+        description: 'Biến động'
       },
       showTopNSeries: 3
     },
     lineChartDateChannel: {
       aveReach: {
         name: 'Biến động Reach kênh theo ngày',
-        desciption: 'Biến động'
+        description: 'Biến động'
       },
       rating: {
         name: 'Biến động RATING kênh theo ngày',
-        desciption: 'Biến động'
+        description: 'Biến động'
       }
     },
     lineChartTimebandDay: {
       aveReach: {
         name: 'Biến động Ave.REACH (000) ngày trong tuần theo khung giờ',
-        desciption: 'Biến động'
+        description: 'Biến động'
       },
       rating: {
         name: 'Biến động RATING (000) ngày trong tuần theo khung giờ',
-        desciption: 'Biến động'
+        description: 'Biến động'
       },
       left: 100
     },
     lineChartTimebandRegional: {
         name: 'Biến động Ave.REACH (000) vùng theo khung giờ',
-        desciption: 'Biến động',
+        description: 'Biến động',
         showTopNSeries: 3,
         left: 260
     },
     lineChartMinuteChannel: {
         name: 'Xu hướng Rating CÁC KÊNH',
-        desciption: 'Biến động',
+        description: 'Biến động',
         legendTop: true
     },
     lineChartMinuteDay: {
         name: 'RATING KÊNH TRONG NGÀY',
-        desciption: 'Biến động',
+        description: 'Biến động',
         legendTop: true
     },
     lineChartMinuteDays: {
         name: 'RATING CHƯƠNG TRÌNH theo phút (nhiều ngày)',
-        desciption: 'Biến động',
+        description: 'Biến động',
         legendTop: true
     },
     colorChannel: variableCustoms.colorChannel,
@@ -254,11 +254,11 @@ export const CUSTOM_CHART = {
     fontWeight: { tooltip: 500, label: 600 },
     treeMapChartPercentChannel: {
       name: 'Thị phần kênh theo Reach (%)',
-      desciption: 'Thị phần'
+      description: 'Thị phần'
     },
     treeMapChartChannel: {
       name: 'Thị phần kênh theo RATING',
-      desciption: 'Thị phần'
+      description: 'Thị phần'
     },
     colorChannel: variableCustoms.colorChannel
   },
@@ -269,11 +269,11 @@ export const CUSTOM_CHART = {
     pieChartFirstLevel: {
       totalEvent: {
         name: 'Tỉ lệ THỜI LƯỢNG PHÁT các thể loại',
-        desciption: 'Tỉ lệ'
+        description: 'Tỉ lệ'
       },
       totalView: {
         name: 'Tỉ lệ THỜI LƯỢNG XEM các thể loại',
-        desciption: 'Tỉ lệ'
+        description: 'Tỉ lệ'
       }
     },
     colorFirstLevel: variableCustoms.colorFirstLevel,

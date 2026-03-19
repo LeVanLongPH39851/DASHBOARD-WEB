@@ -3,10 +3,12 @@ import iConEyeHidden from '../../../assets/icon_eye_hidden.png'
 import iConDownloadDark from '../../../assets/icon_download_dark.png'
 import Button from '../headers/Button';
 import { useState, useEffect, useRef } from 'react';
-import iconInstruct from '../../../assets/icon_instruct.png';
 import { toPng } from 'html-to-image';
+import iconExcel from '../../../assets/icon_excel.png';
+import iconIMG from '../../../assets/icon_img.png';
 
-const NameChart = ({ nameChart, description, icon=false, width='', height='', backgound='', display=true }) => {
+
+const NameChart = ({ nameChart, description, icon=false, width='', height='', backgound='', display=true, opacity=false, getChartData=null, table=false }) => {
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -67,8 +69,8 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
     });
 
     const link = document.createElement('a');
-    const dateStr = `${String(now.getDate()).padStart(2, '0')}_${String(now.getMonth() + 1).padStart(2, '0')}_${now.getFullYear()}_${String(now.getHours()).padStart(2, '0')}h_${String(now.getMinutes()).padStart(2, '0')}m_${String(now.getSeconds()).padStart(2, '0')}s`;
-    link.download = `${nameChart + '_' + dateStr}.png`;
+    const dateStr = `${String(now.getDate()).padStart(2, '0')}-${String(now.getMonth() + 1).padStart(2, '0')}-${now.getFullYear()} ${String(now.getHours()).padStart(2, '0')}h${String(now.getMinutes()).padStart(2, '0')}m${String(now.getSeconds()).padStart(2, '0')}s`;
+    link.download = `${nameChart + ' ' + dateStr}.png`;
     link.href = dataUrl;
     link.click();
     iconNone.classList.remove('hidden')
@@ -77,9 +79,263 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
     errorSpan.textContent = '';
   };
 
-  return (display &&
-    (
-      <div className='pb-6 text-[16px] font-semibold text-color-black-100 flex justify-between'>
+  const handleChartExcel = async (event) => {
+    setIsDropdownOpen(false);
+    if (!event.currentTarget) return;
+
+    const chartData = getChartData();
+    console.log('Excel data:', chartData);
+
+    try {
+      // ✅ Lấy data từ ECharts
+      if (typeof getChartData !== 'function') return;
+      const chartData = getChartData();
+
+      const labels = chartData.labels || [];
+      const series = chartData.series || [];
+
+      const ExcelJS = (await import('exceljs')).default;
+      const workbook = new ExcelJS.Workbook();
+      const worksheet = workbook.addWorksheet(nameChart);
+
+      const now = new Date();
+      const timeStr = `Thời gian export: ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')} ${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
+      const totalCols = 1 + 1 + series.length + (series.length > 1 ? 1 : 0);
+      const timeRow = worksheet.addRow([timeStr]);
+      worksheet.mergeCells(1, 1, 1, totalCols);
+      timeRow.getCell(1).font = { italic: true, color: { argb: 'AFF383C' } };
+      timeRow.getCell(1).alignment = { horizontal: 'left', vertical: 'middle' };
+
+      // ✅ HEADER ROW: Label | Series1 | Series2 | ... | Tổng
+      const headerRow = worksheet.addRow([
+        'STT',
+        'Label',
+        ...series.map(s => s.name || 'Value'),
+        ...(series.length > 1 ? ['Tổng'] : [])  // Chỉ thêm Tổng nếu có nhiều series
+      ]);
+
+      // Style header: bold + background
+      headerRow.eachCell(cell => {
+        cell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1E3A5F' } };
+        cell.alignment = { horizontal: 'center', vertical: 'middle' };
+        cell.border = {
+          top: { style: 'thin' }, left: { style: 'thin' },
+          bottom: { style: 'thin' }, right: { style: 'thin' }
+        };
+      });
+
+      // ✅ DATA ROWS
+      labels.forEach((label, i) => {
+        const rowValues = [i + 1, label];
+        let rowTotal = 0;
+
+        series.forEach(s => {
+          const val = s.data?.[i] || 0;
+          rowValues.push(val);
+          rowTotal += val;
+        });
+
+        if (series.length > 1) rowValues.push(rowTotal);  // Cột Tổng
+
+        const dataRow = worksheet.addRow(rowValues);
+
+        // Style data row
+        dataRow.eachCell((cell, colNumber) => {
+          cell.alignment = { horizontal: colNumber <= 2 ? 'left' : 'right', vertical: 'middle' };
+          cell.border = {
+            top: { style: 'thin', color: { argb: 'FFE0E0E0' } },
+            left: { style: 'thin', color: { argb: 'FFE0E0E0' } },
+            bottom: { style: 'thin', color: { argb: 'FFE0E0E0' } },
+            right: { style: 'thin', color: { argb: 'FFE0E0E0' } }
+          };
+          // Format số
+
+          if (colNumber === 1) {
+            cell.font = { bold: true };
+          }
+
+          if (colNumber > 2) cell.numFmt = '#,##0.###';
+        });
+      });
+
+      // ✅ TỔNG CỘNG ROW cuối
+      const totalValues = ['', 'TỔNG'];
+      let grandTotal = 0;
+      series.forEach(s => {
+        const total = (s.data || []).reduce((sum, v) => sum + (v || 0), 0);
+        totalValues.push(total);
+        grandTotal += total;
+      });
+      if (series.length > 1) totalValues.push(grandTotal);
+
+      const totalRow = worksheet.addRow(totalValues);
+      totalRow.eachCell((cell, colNumber) => {
+        cell.font = { bold: true };
+        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF0F4FF' } };
+        cell.alignment = { horizontal: colNumber <= 2 ? 'left' : 'right', vertical: 'middle' };
+        cell.border = {
+          top: { style: 'medium' }, left: { style: 'thin', color: { argb: 'FFE0E0E0' } },
+          bottom: { style: 'medium' }, right: { style: 'thin', color: { argb: 'FFE0E0E0' } }
+        };
+        if (colNumber > 2) cell.numFmt = '#,##0.###';
+      });
+
+      // ✅ Auto width cột
+      const colWidths = [];
+
+      worksheet.eachRow((row, rowNumber) => {
+        if (rowNumber === 1) return;  // ✅ Bỏ qua dòng timeStr
+
+        row.eachCell({ includeEmpty: true }, (cell, colNumber) => {
+          const len = cell.value ? cell.value.toString().length : 0;
+          colWidths[colNumber] = Math.max(colWidths[colNumber] || 8, len);
+        });
+      });
+
+      colWidths.forEach((width, colNumber) => {
+        if (colNumber > 0) {
+          worksheet.getColumn(colNumber).width = Math.min(width + 2, 40);  // +4 padding, max 40
+        }
+      });
+
+      if (series.length > 1) {
+        const lastColNum = 2 + series.length + 1;  // STT + Label + series + Tổng
+        
+        worksheet.eachRow((row, rowNumber) => {
+          if (rowNumber === 2) return;  // ✅ Bỏ qua HEADER row (màu trắng)
+          if (rowNumber === 1) return;  // Bỏ qua timeStr
+          
+          const lastCell = row.getCell(lastColNum);
+          if (lastCell.value !== null && lastCell.value !== undefined) {
+            lastCell.font = { bold: true };
+          }
+        });
+      }
+
+      // ✅ Export file
+      const buffer = await workbook.xlsx.writeBuffer();
+      const blob = new Blob([buffer], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      });
+      const dateStr = `${String(now.getDate()).padStart(2, '0')}-${String(now.getMonth() + 1).padStart(2, '0')}-${now.getFullYear()} ${String(now.getHours()).padStart(2, '0')}h${String(now.getMinutes()).padStart(2, '0')}m${String(now.getSeconds()).padStart(2, '0')}s`;
+      const link = document.createElement('a');
+      link.download = `${nameChart} ${dateStr}.xlsx`;
+      link.href = URL.createObjectURL(blob);
+      link.click();
+      URL.revokeObjectURL(link.href);  // ✅ Giải phóng bộ nhớ
+
+    } catch (error) {
+      console.error('Excel export error:', error);
+      errorSpan.textContent = 'Export lỗi!';
+    }
+  };
+
+  const handleChartExcelTable = async (event) => {
+    setIsDropdownOpen(false);
+    if (!event.currentTarget) return;
+
+    try {
+        // ✅ Lấy data từ ECharts
+        if (typeof getChartData !== 'function') return;
+        const chartData = getChartData();
+
+        const labels = chartData.labels || [];
+        const series = chartData.series || [];
+
+        const ExcelJS = (await import('exceljs')).default;
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet(nameChart);
+
+        const now = new Date();
+        const timeStr = `Thời gian export: ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')} ${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
+        const totalCols = 1 + series.length; // ✅ +1 cho cột STT
+        const timeRow = worksheet.addRow([timeStr]);
+        worksheet.mergeCells(1, 1, 1, totalCols);
+        timeRow.getCell(1).font = { italic: true, color: { argb: 'AFF383C' } };
+        timeRow.getCell(1).alignment = { horizontal: 'left', vertical: 'middle' };
+
+        // ✅ HEADER ROW: STT + các series name
+        const headerRow = worksheet.addRow(['STT', ...series.map(s => s.name || 'Value')]);
+
+        // Style header: bold + background
+        headerRow.eachCell(cell => {
+            cell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+            cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1E3A5F' } };
+            cell.alignment = { horizontal: 'center', vertical: 'middle' };
+            cell.border = {
+                top: { style: 'thin' }, left: { style: 'thin' },
+                bottom: { style: 'thin' }, right: { style: 'thin' }
+            };
+        });
+
+        // ✅ DATA ROWS: STT + label + data
+        labels.forEach((label, i) => {
+            const rowValues = [label + 1]; // ✅ Cột STT (label)
+
+            series.forEach(s => {
+                const val = s.data?.[i] || 0;
+                rowValues.push(val);
+            });
+
+            const dataRow = worksheet.addRow(rowValues);
+
+            // Style data row
+            dataRow.eachCell((cell, colNumber) => {
+                cell.alignment = { horizontal: colNumber === 1 ? 'left' : 'right', vertical: 'middle' };
+                cell.border = {
+                    top: { style: 'thin', color: { argb: 'FFE0E0E0' } },
+                    left: { style: 'thin', color: { argb: 'FFE0E0E0' } },
+                    bottom: { style: 'thin', color: { argb: 'FFE0E0E0' } },
+                    right: { style: 'thin', color: { argb: 'FFE0E0E0' } }
+                };
+                
+                if (colNumber > 1) cell.numFmt = '#,##0.###';
+
+                if (colNumber === 1) {
+                    cell.font = { bold: true };
+                }
+            });
+        });
+
+        // ✅ Auto width cột
+        const colWidths = [];
+        worksheet.eachRow((row, rowNumber) => {
+            if (rowNumber === 1) return;  // Bỏ qua dòng timeStr
+
+            row.eachCell({ includeEmpty: true }, (cell, colNumber) => {
+                const len = cell.value ? cell.value.toString().length : 0;
+                colWidths[colNumber] = Math.max(colWidths[colNumber] || 8, len);
+            });
+        });
+
+        colWidths.forEach((width, colNumber) => {
+            if (colNumber > 0) {
+                worksheet.getColumn(colNumber).width = Math.min(width + 2, 40);
+            }
+        });
+
+        // ✅ Export file
+        const buffer = await workbook.xlsx.writeBuffer();
+        const blob = new Blob([buffer], {
+            type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        });
+        const dateStr = `${String(now.getDate()).padStart(2, '0')}-${String(now.getMonth() + 1).padStart(2, '0')}-${now.getFullYear()} ${String(now.getHours()).padStart(2, '0')}h${String(now.getMinutes()).padStart(2, '0')}m${String(now.getSeconds()).padStart(2, '0')}s`;
+        const link = document.createElement('a');
+        link.download = `${nameChart} ${dateStr}.xlsx`;
+        link.href = URL.createObjectURL(blob);
+        link.click();
+        URL.revokeObjectURL(link.href);
+
+    } catch (error) {
+        console.error('Excel export error:', error);
+        errorSpan.textContent = 'Export lỗi!';
+    }
+};
+
+
+  return (
+      <div className={`${opacity ? 'opacity-0 invisible' : ''} pb-6 text-[16px] font-semibold text-color-black-100 flex justify-between ${!display ? 'absolute top-0 left-0 p-6 w-full' : ''}`}>
         <div className='flex items-center gap-2'>
           {icon && <div className={`w-8 h-8 flex justify-center items-center rounded-lg ${backgound}`}><figure><img src={icon} className={`${width+' '+height+' '+backgound}`} /></figure></div>}
           <span>{nameChart}</span>
@@ -88,16 +344,14 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
         <div className='flex gap-1 div-hideen'>
           <figure ref={buttonRef} className='p-2 cursor-pointer relative'>
             <img src={iConDownloadDark} alt="Icon Download" className='w-3.25' onClick={handleToggle} />
-            <div ref={dropdownRef} className={`${isDropdownOpen ? 'scale-100 opacity-100 origin-top' : 'scale-0 opacity-0 origin-top'} left-1/2 -translate-x-1/2 transition-all duration-300 absolute top-full bg-background-light flex flex-col border border-border-black-10 rounded-xl w-28`}>
+              <div ref={dropdownRef} className={`${isDropdownOpen ? 'scale-100 opacity-100 origin-top' : 'scale-0 opacity-0 origin-top'} left-1/2 -translate-x-1/2 transition-all duration-300 absolute z-20 top-full bg-background-light flex flex-col border border-border-black-10 rounded-xl w-28 overflow-hidden`}>
                   <div className='hover:bg-background-black-4 transition-all duration-300'>
-                      <Button background={'bg-transparent'} color={'text-color-black-100'} src={iconInstruct}
-                              widthImage='w-4' heightImage='h-4' alt='Icon Instruct' text={'Tải Ảnh'} click={handleChartCapture}
-                              widthImage2='w-3.5' alt2='Icon Succes' />
+                      <Button background={'bg-transparent'} color={'text-color-black-100'} src={iconIMG}
+                              widthImage='w-4' alt='Icon Instruct' text={'Tải Ảnh'} click={handleChartCapture} />
                   </div>
                   <div className='hover:bg-background-black-4 transition-all duration-300'>
-                      <Button background={'bg-transparent'} color={'text-color-black-100'} src={iconInstruct}
-                      widthImage='w-4' heightImage='h-4' alt='Icon Instruct' text={'Tải Excel'} click={handleChartCapture}
-                      widthImage2='w-3.5' alt2='Icon Succes' />
+                      <Button background={'bg-transparent'} color={'text-color-black-100'} src={iconExcel}
+                      widthImage='w-4' alt='Icon Instruct' text={'Tải Excel'} click={table ? handleChartExcelTable : handleChartExcel} />
                   </div>
               </div>
             </figure>
@@ -106,7 +360,6 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
         </div>
         <span className='text-color-error font-semibold text-xs hidden'></span>
       </div>
-    )
   );
 };
 

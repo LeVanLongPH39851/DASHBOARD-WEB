@@ -81,8 +81,8 @@ const DashboardContent = () => {
                                   </div>
                                   <div className='w-full flex gap-6 pb-6'>
                                     <div className='w-[60%]'>
-                                      <div className={`p-6 bg-background-light border border-border-black-10 rounded-2xl shadow-component`}>
-                                        <NameChart nameChart={CUSTOM_CHART.barChart.barChartChannelEvent.ratingNameChart} description={METRICS.rating.description} />
+                                      <div className={`p-6 bg-background-light border border-border-black-10 rounded-2xl shadow-component relative`}>
+                                        <NameChart nameChart={CUSTOM_CHART.barChart.barChartChannelEvent.ratingNameChart} description={METRICS.rating.description} opacity={true} />
                                         <ChildTabs tabs={[
                                           {id: CUSTOM_TAB.childTabRatingReach.rating.id, label: CUSTOM_TAB.childTabRatingReach.rating.label,
                                           content: (
@@ -118,8 +118,8 @@ const DashboardContent = () => {
                                       </div>
                                     </div>
                                     <div className='w-[40%]'>
-                                      <div className={`p-6 bg-background-light border border-border-black-10 rounded-2xl shadow-component`}>
-                                        <NameChart nameChart={CUSTOM_CHART.barChart.barChartChannelEvent.ratingNameChart} description={METRICS.rating.description} />
+                                      <div className={`p-6 bg-background-light border border-border-black-10 rounded-2xl shadow-component relative`}>
+                                        <NameChart nameChart={CUSTOM_CHART.barChart.barChartChannelEvent.ratingNameChart} description={METRICS.rating.description} opacity={true} />
                                         <ChildTabs tabs={[
                                           {id: CUSTOM_TAB.childTabRatingReach.rating.id, label: CUSTOM_TAB.childTabRatingReach.rating.label,
                                           content: (
@@ -157,8 +157,8 @@ const DashboardContent = () => {
                                   </div>
                                   <div className='w-full flex gap-6 pb-6'>
                                     <div className='w-[60%]'>
-                                      <div className={`p-6 bg-background-light border border-border-black-10 rounded-2xl shadow-component`}>
-                                        <NameChart nameChart={CUSTOM_CHART.tableChart.tableChartChannel.name} description={CUSTOM_CHART.tableChart.tableChartChannel.desciption} />
+                                      <div className={`p-6 bg-background-light border border-border-black-10 rounded-2xl shadow-component relative`}>
+                                        <NameChart nameChart={CUSTOM_CHART.tableChart.tableChartChannel.name} description={CUSTOM_CHART.tableChart.tableChartChannel.description} opacity={true} />
                                         <ChildTabs tabs={[
                                           {id: CUSTOM_TAB.childTabChannel.channel.id, label: CUSTOM_TAB.childTabChannel.channel.label,
                                           content: (
@@ -168,7 +168,7 @@ const DashboardContent = () => {
                                                   fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                   fontWeight={CUSTOM_CHART.tableChart.fontWeight}
                                                   nameChart={CUSTOM_CHART.tableChart.tableChartChannel.name}
-                                                  description={CUSTOM_CHART.tableChart.tableChartChannel.desciption}
+                                                  description={CUSTOM_CHART.tableChart.tableChartChannel.description}
                                                   showSTT={CUSTOM_CHART.tableChart.tableChartChannel.STT}
                                                   showPagination={CUSTOM_CHART.tableChart.tableChartChannel.pagination}
                                                   displayName={false} />
@@ -181,7 +181,7 @@ const DashboardContent = () => {
                                                   fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                   fontWeight={CUSTOM_CHART.tableChart.fontWeight}
                                                   nameChart={CUSTOM_CHART.tableChart.tableChartChannel.name}
-                                                  description={CUSTOM_CHART.tableChart.tableChartChannel.desciption}
+                                                  description={CUSTOM_CHART.tableChart.tableChartChannel.description}
                                                   showSTT={CUSTOM_CHART.tableChart.tableChartChannel.STT}
                                                   showPagination={CUSTOM_CHART.tableChart.tableChartChannel.pagination}
                                                   displayName={false} />
@@ -190,8 +190,8 @@ const DashboardContent = () => {
                                       </div>
                                     </div>
                                     <div className='w-[40%]'>
-                                      <div className={`p-6 bg-background-light border border-border-black-10 rounded-2xl shadow-component`}>
-                                        <NameChart nameChart={CUSTOM_CHART.tableChart.tableChartArea.name} description={CUSTOM_CHART.tableChart.tableChartArea.desciption} />
+                                      <div className={`p-6 bg-background-light border border-border-black-10 rounded-2xl shadow-component relative`}>
+                                        <NameChart nameChart={CUSTOM_CHART.tableChart.tableChartArea.name} description={CUSTOM_CHART.tableChart.tableChartArea.description} opacity={true} />
                                         <ChildTabs tabs={[
                                           {id: CUSTOM_TAB.childTabArea.regional.id, label: CUSTOM_TAB.childTabArea.regional.label,
                                           content: (
@@ -201,7 +201,7 @@ const DashboardContent = () => {
                                                   fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                   fontWeight={CUSTOM_CHART.tableChart.fontWeight}
                                                   nameChart={CUSTOM_CHART.tableChart.tableChartArea.name}
-                                                  description={CUSTOM_CHART.tableChart.tableChartArea.desciption}
+                                                  description={CUSTOM_CHART.tableChart.tableChartArea.description}
                                                   showSTT={CUSTOM_CHART.tableChart.tableChartArea.STT}
                                                   showPagination={CUSTOM_CHART.tableChart.tableChartArea.pagination}
                                                   displayName={false} />
@@ -214,7 +214,7 @@ const DashboardContent = () => {
                                                   fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                   fontWeight={CUSTOM_CHART.tableChart.fontWeight}
                                                   nameChart={CUSTOM_CHART.tableChart.tableChartArea.name}
-                                                  description={CUSTOM_CHART.tableChart.tableChartArea.desciption}
+                                                  description={CUSTOM_CHART.tableChart.tableChartArea.description}
                                                   showSTT={CUSTOM_CHART.tableChart.tableChartArea.STT}
                                                   showPagination={CUSTOM_CHART.tableChart.tableChartArea.pagination}
                                                   displayName={false} />
@@ -224,8 +224,8 @@ const DashboardContent = () => {
                                     </div>
                                   </div>
                                   <div className='w-full grid grid-cols-2 gap-6 pb-6'>
-                                      <div className={`p-6 bg-background-light border border-border-black-10 rounded-2xl shadow-component`}>
-                                        <NameChart nameChart={CUSTOM_CHART.barChart.barChartArea.rating.name} description={METRICS.rating.description} />
+                                      <div className={`p-6 bg-background-light border border-border-black-10 rounded-2xl shadow-component relative`}>
+                                        <NameChart nameChart={CUSTOM_CHART.barChart.barChartArea.rating.name} description={METRICS.rating.description} opacity={true} />
                                         <ChildTabs tabs={[
                                           {id: CUSTOM_TAB.childTabArea.regional.id, label: CUSTOM_TAB.childTabArea.regional.label,
                                           content: (
@@ -293,8 +293,8 @@ const DashboardContent = () => {
                                           )}
                                           ]} />
                                       </div>
-                                      <div className={`p-6 bg-background-light border border-border-black-10 rounded-2xl shadow-component`}>
-                                        <NameChart nameChart={CUSTOM_CHART.barChart.barChartArea.aveReach.name} description={METRICS.ave_reach.description} />
+                                      <div className={`p-6 bg-background-light border border-border-black-10 rounded-2xl shadow-component relative`}>
+                                        <NameChart nameChart={CUSTOM_CHART.barChart.barChartArea.aveReach.name} description={METRICS.ave_reach.description} opacity={true} />
                                         <ChildTabs tabs={[
                                           {id: CUSTOM_TAB.childTabArea.regional.id, label: CUSTOM_TAB.childTabArea.regional.label,
                                           content: (
@@ -370,7 +370,7 @@ const DashboardContent = () => {
                                                 fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                 fontWeight={CUSTOM_CHART.mixedChart.fontWeight}
                                                 nameChart={CUSTOM_CHART.mixedChart.mixedChartDate.name}
-                                                description={CUSTOM_CHART.mixedChart.mixedChartDate.desciption}
+                                                description={CUSTOM_CHART.mixedChart.mixedChartDate.description}
                                                 barSeriesKeys={CUSTOM_CHART.mixedChart.mixedChartDate.metrics.aveReach}
                                                 lineSeriesKeys={CUSTOM_CHART.mixedChart.mixedChartDate.metrics.rating}
                                                 colors={CUSTOM_CHART.mixedChart.mixedChartDate.colors}
@@ -400,7 +400,7 @@ const DashboardContent = () => {
                                                           fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                           fontWeight={CUSTOM_CHART.mixedChart.fontWeight}
                                                           nameChart={CUSTOM_CHART.mixedChart.mixedChartPercentTimeband.name}
-                                                          description={CUSTOM_CHART.mixedChart.mixedChartPercentTimeband.desciption}
+                                                          description={CUSTOM_CHART.mixedChart.mixedChartPercentTimeband.description}
                                                           barSeriesKeys={CUSTOM_CHART.mixedChart.mixedChartPercentTimeband.metrics.aveReachPercent}
                                                           lineSeriesKeys={CUSTOM_CHART.mixedChart.mixedChartPercentTimeband.metrics.ratingPercent}
                                                           colors={CUSTOM_CHART.mixedChart.mixedChartPercentTimeband.colors}
@@ -415,7 +415,7 @@ const DashboardContent = () => {
                                                         fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                         fontWeight={CUSTOM_CHART.lineChart.fontWeight}
                                                         nameChart={CUSTOM_CHART.lineChart.lineChartPercentTimebandChannel.name}
-                                                        description={CUSTOM_CHART.lineChart.lineChartPercentTimebandChannel.desciption}
+                                                        description={CUSTOM_CHART.lineChart.lineChartPercentTimebandChannel.description}
                                                         colors={CUSTOM_CHART.lineChart.colorChannel}
                                                         smooth={CUSTOM_CHART.lineChart.smooth}
                                                         symbolSize={CUSTOM_CHART.lineChart.symbolSize}
@@ -432,7 +432,7 @@ const DashboardContent = () => {
                                                         fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                         fontWeight={CUSTOM_CHART.lineChart.fontWeight}
                                                         nameChart={CUSTOM_CHART.lineChart.lineChartPercentDateChannel.aveReach.name}
-                                                        description={CUSTOM_CHART.lineChart.lineChartPercentDateChannel.aveReach.desciption}
+                                                        description={CUSTOM_CHART.lineChart.lineChartPercentDateChannel.aveReach.description}
                                                         colors={CUSTOM_CHART.lineChart.colorChannel}
                                                         smooth={CUSTOM_CHART.lineChart.smooth}
                                                         symbolSize={CUSTOM_CHART.lineChart.symbolSize}
@@ -449,7 +449,7 @@ const DashboardContent = () => {
                                                         fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                         fontWeight={CUSTOM_CHART.lineChart.fontWeight}
                                                         nameChart={CUSTOM_CHART.lineChart.lineChartPercentDateChannel.rating.name}
-                                                        description={CUSTOM_CHART.lineChart.lineChartPercentDateChannel.rating.desciption}
+                                                        description={CUSTOM_CHART.lineChart.lineChartPercentDateChannel.rating.description}
                                                         colors={CUSTOM_CHART.lineChart.colorChannel}
                                                         smooth={CUSTOM_CHART.lineChart.smooth}
                                                         symbolSize={CUSTOM_CHART.lineChart.symbolSize}
@@ -466,7 +466,7 @@ const DashboardContent = () => {
                                                             fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                             fontWeight={CUSTOM_CHART.treeMapChart.fontWeight}
                                                             nameChart={CUSTOM_CHART.treeMapChart.treeMapChartPercentChannel.name}
-                                                            description={CUSTOM_CHART.treeMapChart.treeMapChartPercentChannel.desciption}
+                                                            description={CUSTOM_CHART.treeMapChart.treeMapChartPercentChannel.description}
                                                             colors={CUSTOM_CHART.treeMapChart.colorChannel}
                                               />
                                             </div>
@@ -483,7 +483,7 @@ const DashboardContent = () => {
                                                           fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                           fontWeight={CUSTOM_CHART.mixedChart.fontWeight}
                                                           nameChart={CUSTOM_CHART.mixedChart.mixedChartTimeband.name}
-                                                          description={CUSTOM_CHART.mixedChart.mixedChartTimeband.desciption}
+                                                          description={CUSTOM_CHART.mixedChart.mixedChartTimeband.description}
                                                           barSeriesKeys={CUSTOM_CHART.mixedChart.mixedChartTimeband.metrics.aveReach}
                                                           lineSeriesKeys={CUSTOM_CHART.mixedChart.mixedChartTimeband.metrics.rating}
                                                           colors={CUSTOM_CHART.mixedChart.mixedChartTimeband.colors}
@@ -498,7 +498,7 @@ const DashboardContent = () => {
                                                         fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                         fontWeight={CUSTOM_CHART.lineChart.fontWeight}
                                                         nameChart={CUSTOM_CHART.lineChart.lineChartTimebandChannel.rating.name}
-                                                        description={CUSTOM_CHART.lineChart.lineChartTimebandChannel.rating.desciption}
+                                                        description={CUSTOM_CHART.lineChart.lineChartTimebandChannel.rating.description}
                                                         colors={CUSTOM_CHART.lineChart.colorChannel}
                                                         smooth={CUSTOM_CHART.lineChart.smooth}
                                                         symbolSize={CUSTOM_CHART.lineChart.symbolSize}
@@ -515,7 +515,7 @@ const DashboardContent = () => {
                                                         fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                         fontWeight={CUSTOM_CHART.lineChart.fontWeight}
                                                         nameChart={CUSTOM_CHART.lineChart.lineChartTimebandChannel.aveReach.name}
-                                                        description={CUSTOM_CHART.lineChart.lineChartTimebandChannel.aveReach.desciption}
+                                                        description={CUSTOM_CHART.lineChart.lineChartTimebandChannel.aveReach.description}
                                                         colors={CUSTOM_CHART.lineChart.colorChannel}
                                                         smooth={CUSTOM_CHART.lineChart.smooth}
                                                         symbolSize={CUSTOM_CHART.lineChart.symbolSize}
@@ -532,7 +532,7 @@ const DashboardContent = () => {
                                                         fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                         fontWeight={CUSTOM_CHART.lineChart.fontWeight}
                                                         nameChart={CUSTOM_CHART.lineChart.lineChartDateChannel.aveReach.name}
-                                                        description={CUSTOM_CHART.lineChart.lineChartDateChannel.aveReach.desciption}
+                                                        description={CUSTOM_CHART.lineChart.lineChartDateChannel.aveReach.description}
                                                         colors={CUSTOM_CHART.lineChart.colorChannel}
                                                         smooth={CUSTOM_CHART.lineChart.smooth}
                                                         symbolSize={CUSTOM_CHART.lineChart.symbolSize}
@@ -549,7 +549,7 @@ const DashboardContent = () => {
                                                         fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                         fontWeight={CUSTOM_CHART.lineChart.fontWeight}
                                                         nameChart={CUSTOM_CHART.lineChart.lineChartDateChannel.rating.name}
-                                                        description={CUSTOM_CHART.lineChart.lineChartDateChannel.rating.desciption}
+                                                        description={CUSTOM_CHART.lineChart.lineChartDateChannel.rating.description}
                                                         colors={CUSTOM_CHART.lineChart.colorChannel}
                                                         smooth={CUSTOM_CHART.lineChart.smooth}
                                                         symbolSize={CUSTOM_CHART.lineChart.symbolSize}
@@ -566,7 +566,7 @@ const DashboardContent = () => {
                                                         fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                         fontWeight={CUSTOM_CHART.lineChart.fontWeight}
                                                         nameChart={CUSTOM_CHART.lineChart.lineChartDateChannel.aveReach.name}
-                                                        description={CUSTOM_CHART.lineChart.lineChartDateChannel.aveReach.desciption}
+                                                        description={CUSTOM_CHART.lineChart.lineChartDateChannel.aveReach.description}
                                                         colors={CUSTOM_CHART.lineChart.colorChannel}
                                                         smooth={CUSTOM_CHART.lineChart.smooth}
                                                         symbolSize={CUSTOM_CHART.lineChart.symbolSize}
@@ -583,7 +583,7 @@ const DashboardContent = () => {
                                                         fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                         fontWeight={CUSTOM_CHART.lineChart.fontWeight}
                                                         nameChart={CUSTOM_CHART.lineChart.lineChartTimebandDay.rating.name}
-                                                        description={CUSTOM_CHART.lineChart.lineChartTimebandDay.rating.desciption}
+                                                        description={CUSTOM_CHART.lineChart.lineChartTimebandDay.rating.description}
                                                         colors={CUSTOM_CHART.lineChart.colorChannel}
                                                         smooth={CUSTOM_CHART.lineChart.smooth}
                                                         symbolSize={CUSTOM_CHART.lineChart.symbolSize}
@@ -601,7 +601,7 @@ const DashboardContent = () => {
                                                         fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                         fontWeight={CUSTOM_CHART.lineChart.fontWeight}
                                                         nameChart={CUSTOM_CHART.lineChart.lineChartTimebandDay.aveReach.name}
-                                                        description={CUSTOM_CHART.lineChart.lineChartTimebandDay.aveReach.desciption}
+                                                        description={CUSTOM_CHART.lineChart.lineChartTimebandDay.aveReach.description}
                                                         colors={CUSTOM_CHART.lineChart.colorChannel}
                                                         smooth={CUSTOM_CHART.lineChart.smooth}
                                                         symbolSize={CUSTOM_CHART.lineChart.symbolSize}
@@ -619,7 +619,7 @@ const DashboardContent = () => {
                                                         fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                         fontWeight={CUSTOM_CHART.lineChart.fontWeight}
                                                         nameChart={CUSTOM_CHART.lineChart.lineChartTimebandRegional.name}
-                                                        description={CUSTOM_CHART.lineChart.lineChartTimebandRegional.desciption}
+                                                        description={CUSTOM_CHART.lineChart.lineChartTimebandRegional.description}
                                                         colors={CUSTOM_CHART.lineChart.colorChannel}
                                                         smooth={CUSTOM_CHART.lineChart.smooth}
                                                         symbolSize={CUSTOM_CHART.lineChart.symbolSize}
@@ -637,7 +637,7 @@ const DashboardContent = () => {
                                                             fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                             fontWeight={CUSTOM_CHART.treeMapChart.fontWeight}
                                                             nameChart={CUSTOM_CHART.treeMapChart.treeMapChartChannel.name}
-                                                            description={CUSTOM_CHART.treeMapChart.treeMapChartChannel.desciption}
+                                                            description={CUSTOM_CHART.treeMapChart.treeMapChartChannel.description}
                                                             colors={CUSTOM_CHART.treeMapChart.colorChannel}
                                               />
                                             </div>
@@ -663,7 +663,7 @@ const DashboardContent = () => {
                                               fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                               fontWeight={CUSTOM_CHART.pieChart.fontWeight}
                                               nameChart={CUSTOM_CHART.pieChart.pieChartFirstLevel.totalEvent.name}
-                                              description={CUSTOM_CHART.pieChart.pieChartFirstLevel.totalEvent.desciption}
+                                              description={CUSTOM_CHART.pieChart.pieChartFirstLevel.totalEvent.description}
                                               colors={CUSTOM_CHART.pieChart.colorFirstLevel}
                                               donut={CUSTOM_CHART.pieChart.donut}
                                               innerRadius={CUSTOM_CHART.pieChart.innerRadius}
@@ -674,7 +674,7 @@ const DashboardContent = () => {
                                               fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                               fontWeight={CUSTOM_CHART.pieChart.fontWeight}
                                               nameChart={CUSTOM_CHART.pieChart.pieChartFirstLevel.totalView.name}
-                                              description={CUSTOM_CHART.pieChart.pieChartFirstLevel.totalView.desciption}
+                                              description={CUSTOM_CHART.pieChart.pieChartFirstLevel.totalView.description}
                                               colors={CUSTOM_CHART.pieChart.colorFirstLevel}
                                               donut={CUSTOM_CHART.pieChart.donut}
                                               innerRadius={CUSTOM_CHART.pieChart.innerRadius}
@@ -687,7 +687,7 @@ const DashboardContent = () => {
                                                 fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                 fontWeight={CUSTOM_CHART.tableChart.fontWeight}
                                                 nameChart={CUSTOM_CHART.tableChart.tableProgramChannel.programRank.name}
-                                                description={CUSTOM_CHART.tableChart.tableProgramChannel.programRank.desciption}
+                                                description={CUSTOM_CHART.tableChart.tableProgramChannel.programRank.description}
                                                 showSTT={CUSTOM_CHART.tableChart.tableProgramChannel.STT}
                                                 showPagination={CUSTOM_CHART.tableChart.tableProgramChannel.pagination} />
                                   </div>
@@ -698,7 +698,7 @@ const DashboardContent = () => {
                                                 fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                 fontWeight={CUSTOM_CHART.tableChart.fontWeight}
                                                 nameChart={CUSTOM_CHART.tableChart.tableProgramChannel.programDetail.name}
-                                                description={CUSTOM_CHART.tableChart.tableProgramChannel.programDetail.desciption}
+                                                description={CUSTOM_CHART.tableChart.tableProgramChannel.programDetail.description}
                                                 showSTT={CUSTOM_CHART.tableChart.tableProgramChannel.STT}
                                                 showPagination={CUSTOM_CHART.tableChart.tableProgramChannel.pagination} />
                                   </div>
@@ -709,7 +709,7 @@ const DashboardContent = () => {
                                                 fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                 fontWeight={CUSTOM_CHART.tableChart.fontWeight}
                                                 nameChart={CUSTOM_CHART.tableChart.tableProgramChannel.programEvent.name}
-                                                description={CUSTOM_CHART.tableChart.tableProgramChannel.programEvent.desciption}
+                                                description={CUSTOM_CHART.tableChart.tableProgramChannel.programEvent.description}
                                                 showSTT={CUSTOM_CHART.tableChart.tableProgramChannel.STT}
                                                 showPagination={CUSTOM_CHART.tableChart.tableProgramChannel.pagination} />
                                   </div>
@@ -730,7 +730,7 @@ const DashboardContent = () => {
                                               fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                               fontWeight={CUSTOM_CHART.lineChart.fontWeight}
                                               nameChart={CUSTOM_CHART.lineChart.lineChartMinuteChannel.name}
-                                              description={CUSTOM_CHART.lineChart.lineChartMinuteChannel.desciption}
+                                              description={CUSTOM_CHART.lineChart.lineChartMinuteChannel.description}
                                               colors={CUSTOM_CHART.lineChart.colorChannel}
                                               smooth={CUSTOM_CHART.lineChart.smooth}
                                               symbolSize={CUSTOM_CHART.lineChart.symbolSize}
@@ -748,7 +748,7 @@ const DashboardContent = () => {
                                               fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                               fontWeight={CUSTOM_CHART.lineChart.fontWeight}
                                               nameChart={CUSTOM_CHART.lineChart.lineChartMinuteDay.name}
-                                              description={CUSTOM_CHART.lineChart.lineChartMinuteDay.desciption}
+                                              description={CUSTOM_CHART.lineChart.lineChartMinuteDay.description}
                                               colors={CUSTOM_CHART.lineChart.colorChannel}
                                               smooth={CUSTOM_CHART.lineChart.smooth}
                                               symbolSize={CUSTOM_CHART.lineChart.symbolSize}
@@ -766,7 +766,7 @@ const DashboardContent = () => {
                                               fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                               fontWeight={CUSTOM_CHART.lineChart.fontWeight}
                                               nameChart={CUSTOM_CHART.lineChart.lineChartMinuteDays.name}
-                                              description={CUSTOM_CHART.lineChart.lineChartMinuteDays.desciption}
+                                              description={CUSTOM_CHART.lineChart.lineChartMinuteDays.description}
                                               colors={CUSTOM_CHART.lineChart.colorChannel}
                                               smooth={CUSTOM_CHART.lineChart.smooth}
                                               symbolSize={CUSTOM_CHART.lineChart.symbolSize}

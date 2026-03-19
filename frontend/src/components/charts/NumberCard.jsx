@@ -1,5 +1,6 @@
 import Loading from '../commons/Loading';
 import NameChart from '../layouts/components/NameChart';
+import { useCallback } from 'react';
 const NumberCard = ({ title, description, value, icon=false, background, height='', widthIcon='', suffix = '' }) => {
   if(value==='isLoading') {
     return (
@@ -9,9 +10,23 @@ const NumberCard = ({ title, description, value, icon=false, background, height=
       </div>
     );
   }
+
+  const getEChartsData = useCallback(() => {
+    
+    const numericValue = value || 0;
+    
+    return { 
+      labels: ['Label'], 
+      series: [{ 
+        name: 'Value',  // ✅ Fixed name, bỏ title
+        data: [numericValue] 
+      }] 
+    };
+  }, [value]);
+
   return (
     <div className={`p-6 bg-background-light border border-border-black-10 rounded-2xl shadow-component`} style={{ height: `${height}px` }}>
-      <NameChart nameChart={title} description={description} icon={icon} width={widthIcon} backgound={background} />
+      <NameChart nameChart={title} description={description} icon={icon} width={widthIcon} backgound={background} getChartData={getEChartsData} />
         <p className="text-color-black-100 text-[32px] font-semibold">
           {value?.toLocaleString()} {suffix}
         </p>

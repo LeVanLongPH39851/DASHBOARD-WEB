@@ -1,5 +1,5 @@
 // TreeMapChart.jsx
-import React, { memo, useRef } from 'react';
+import React, { memo, useRef, useCallback } from 'react';
 import ReactECharts from 'echarts-for-react';
 import NameChart from '../layouts/components/NameChart';
 import Loading from '../commons/Loading';
@@ -28,6 +28,55 @@ const TreeMapChart = ({
   }
 
   const chartRef = useRef(null);
+
+  // TreeMapChart.jsx - getEChartsData giống PieChart (đơn giản & chính xác)
+  const getEChartsData = useCallback(() => {
+    
+    if (!chartRef.current) {
+      console.log('❌ No chartRef');
+      return { labels: [], series: [] };
+    }
+
+    try {
+      const instance = chartRef.current.getEchartsInstance();
+      const option = instance.getOption();
+      
+      // ✅ Giống PieChart: lấy legend selected + series data
+      const legendSelected = option.legend?.[0]?.selected || {};
+      const treeMapData = option.series?.[0]?.data || [];
+      
+      // Filter theo legend (nếu có)
+      const visibleData = Array.isArray(treeMapData) 
+        ? treeMapData.filter(item => legendSelected[item.name] !== false)
+        : treeMapData;
+      
+      // ✅ Transform thành {labels, series} format chuẩn Excel
+      if (visibleData.length > 0) {
+        // Flat TreeMap hoặc children level
+        const labels = visibleData.map(item => item.name);
+        const series = [{
+          name: 'Value',
+          data: visibleData.map(item => item.value || 0)
+        }];
+        
+        return { labels, series };
+      }
+      
+    } catch (error) {
+      console.error('Lỗi TreeMap data:', error);
+    }
+    
+    // ✅ Fallback giống PieChart
+    const { labels = [], series = [] } = data || {};
+    return {
+      labels,
+      series: series.length > 0 ? series : [{
+        name: 'Value',
+        data: labels.map((_, i) => series[0]?.data?.[i] || 0)
+      }]
+    };
+  }, []); // ✅ Không deps phức tạp
+
 
   // Default colors nếu không truyền
   const defaultColors = [
@@ -195,7 +244,7 @@ const TreeMapChart = ({
 
   return (
     <div className='p-6 bg-background-light border border-border-black-10 rounded-2xl shadow-component'>
-      <NameChart nameChart={nameChart} description={description} />
+      <NameChart nameChart={nameChart} description={description} getChartData={getEChartsData} />
       <ReactECharts
         ref={chartRef}
         option={option}

@@ -9,9 +9,17 @@ import { useState, useEffect, useRef } from 'react';
 import { toPng } from 'html-to-image';
 import html2canvas from 'html2canvas-pro';
 import { useDashboardStateGlobals } from '../../../context/DashboardFilterContext';
+import iconPDF from '../../../assets/icon_pdf.png';
+import iconIMG from '../../../assets/icon_img.png';
 
 const BreadCrumb = () => {
     const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
+    const LABEL_TABS = {
+        overview: 'Tổng quan',
+        channel: 'Kênh',
+        program: 'Chương trình',
+        rating_by_minute: 'Rating theo phút'
+    }
 
     const handleCapture = async () => {
         const target = document.getElementById(`target_capture_${stateGlobals.currentTab}`);
@@ -38,8 +46,8 @@ const BreadCrumb = () => {
         });
 
         const link = document.createElement('a');
-        const dateStr = `${String(now.getDate()).padStart(2, '0')}_${String(now.getMonth() + 1).padStart(2, '0')}_${now.getFullYear()}_${String(now.getHours()).padStart(2, '0')}h_${String(now.getMinutes()).padStart(2, '0')}m_${String(now.getSeconds()).padStart(2, '0')}s`;
-        link.download = `Report_Dashboard_VTVRatings_${dateStr}.png`;
+        const dateStr = `${String(now.getDate()).padStart(2, '0')}-${String(now.getMonth() + 1).padStart(2, '0')}-${now.getFullYear()} ${String(now.getHours()).padStart(2, '0')}h${String(now.getMinutes()).padStart(2, '0')}m${String(now.getSeconds()).padStart(2, '0')}s`;
+        link.download = `Report Dashboard VTVRatings ${LABEL_TABS[stateGlobals.currentTab]} ${dateStr}.png`;
         link.href = dataUrl;
         link.click();
 
@@ -81,7 +89,7 @@ const BreadCrumb = () => {
             });
 
             const imgData = canvas.toDataURL('image/png');
-            const dateStr = `${String(now.getDate()).padStart(2, '0')}_${String(now.getMonth() + 1).padStart(2, '0')}_${now.getFullYear()}_${String(now.getHours()).padStart(2, '0')}h_${String(now.getMinutes()).padStart(2, '0')}m_${String(now.getSeconds()).padStart(2, '0')}s`;
+            const dateStr = `${String(now.getDate()).padStart(2, '0')}-${String(now.getMonth() + 1).padStart(2, '0')}-${now.getFullYear()} ${String(now.getHours()).padStart(2, '0')}h${String(now.getMinutes()).padStart(2, '0')}m${String(now.getSeconds()).padStart(2, '0')}s`;
 
             // ✅ FIX jsPDF: Tạo PDF đơn giản 1 trang, KHÔNG multi-page
             const { jsPDF } = await import('jspdf');
@@ -99,7 +107,7 @@ const BreadCrumb = () => {
             // ✅ SINGLE PAGE - ĐẸP NHƯ PNG
             pdf.addImage(imgData, 'PNG', 10, 10, pdfWidth, pdfHeight);
 
-            pdf.save(`Report_Dashboard_VTVRatings_${dateStr}.pdf`);
+            pdf.save(`Report Dashboard VTVRatings ${LABEL_TABS[stateGlobals.currentTab]} ${dateStr}.pdf`);
             console.log('✅ PDF created successfully!');
 
         } catch (error) {
@@ -166,16 +174,14 @@ const BreadCrumb = () => {
                         <Button background={'bg-color-black-100'} color={'text-color-white-90'} src={iconDownload}
                             widthImage='w-3.5' heightImage='h-3.5' alt='Icon Download' text={'Tải xuống'} click={handleToggle}/>
                     </div>
-                    <div ref={dropdownRef} className={`${isDropdownOpen ? 'scale-100 opacity-100 origin-top' : 'scale-0 opacity-0 origin-top'} transition-all duration-300 absolute top-full left-0 bg-background-light flex flex-col border border-border-black-10 rounded-xl w-full`}>
+                    <div ref={dropdownRef} className={`${isDropdownOpen ? 'scale-100 opacity-100 origin-top' : 'scale-0 opacity-0 origin-top'} transition-all duration-300 absolute top-full left-0 bg-background-light flex flex-col border border-border-black-10 rounded-xl w-full overflow-hidden`}>
                             <div className='hover:bg-background-black-4 transition-all duration-300'>
-                                <Button background={'bg-transparent'} color={'text-color-black-100'} src={iconInstruct}
-                                        widthImage='w-4' heightImage='h-4' alt='Icon Instruct' text={'Tải Ảnh'} click={handleCapture}
-                                        widthImage2='w-3.5' alt2='Icon Succes' />
+                                <Button background={'bg-transparent'} color={'text-color-black-100'} src={iconIMG}
+                                        widthImage='w-4' alt='Icon Instruct' text={'Tải Ảnh'} click={handleCapture} />
                             </div>
                             <div className='hover:bg-background-black-4 transition-all duration-300'>
-                                <Button background={'bg-transparent'} color={'text-color-black-100'} src={iconInstruct}
-                                widthImage='w-4' heightImage='h-4' alt='Icon Instruct' text={'Tải PDF'} click={handlePDF}
-                                widthImage2='w-3.5' alt2='Icon Succes' />
+                                <Button background={'bg-transparent'} color={'text-color-black-100'} src={iconPDF}
+                                widthImage='w-4' alt='Icon Instruct' text={'Tải PDF'} click={handlePDF} />
                             </div>
                     </div>
                 </div>

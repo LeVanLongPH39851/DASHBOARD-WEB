@@ -1,5 +1,5 @@
 // LineChart.jsx - showTopNSeries = 0: ẩn value, null: hiện hết
-import React, { memo, useRef, useMemo, useState, useEffect } from 'react';
+import React, { memo, useRef, useMemo, useState, useEffect, useCallback } from 'react';
 import ReactECharts from 'echarts-for-react';
 import NumberChart from '../layouts/components/NameChart';
 import Loading from '../commons/Loading';
@@ -93,6 +93,43 @@ const LineChart = ({
       return acc;
     }, {});
   }, [series, colors]);
+
+  const getEChartsData = useCallback(() => {
+    if (chartRef.current) {
+      try {
+        const instance = chartRef.current.getEchartsInstance();
+        const option = instance.getOption();
+        
+        // ✅ Lấy legend selected state
+        const legendSelected = option.legend?.[0]?.selected || {};
+        
+        // ✅ Lấy dataZoom range để filter labels
+        const dataZoom = option.dataZoom?.[0] || {};
+        const start = dataZoom.start || 0;
+        const end = dataZoom.end || 100;
+        const startIndex = Math.floor((start / 100) * labels.length);
+        const endIndex = Math.floor((end / 100) * labels.length);
+        
+        // ✅ Filter labels theo dataZoom
+        const visibleLabels = labels.slice(startIndex, endIndex);
+        
+        return {
+          labels: visibleLabels,  // ✅ Chỉ labels đang zoom
+          series: (option.series || series)
+            .filter(s => legendSelected[s.name] !== false)  // ✅ Chỉ series đang visible
+            .map(s => ({
+              name: s.name,
+              data: visibleLabels.map((_, i) => s.data[startIndex + i] || 0)  // ✅ Data theo zoom range
+            }))
+        };
+      } catch (error) {
+        console.error('Lỗi lấy LineChart data:', error);
+        return { labels, series };
+      }
+    }
+    return { labels, series };
+  }, [labels, series]);
+
 
   useEffect(() => {
     const chart = chartRef.current?.getEchartsInstance();
@@ -380,16 +417,16 @@ const LineChart = ({
 
   return (
     <div className='p-6 bg-background-light border border-border-black-10 rounded-2xl shadow-component'>
-      <NumberChart nameChart={nameChart} description={description}/>
-      <ReactECharts 
-        ref={chartRef}
-        option={option} 
-        style={{ height, width: '100%' }}
-        opts={{
-          renderer: 'canvas',
-          locale: 'VN'
-        }}
-      />
+      <NumberChart nameChart={nameChart} description={description} getChartData={getEChartsData}/>
+        <ReactECharts 
+          ref={chartRef}
+          option={option} 
+          style={{ height, width: '100%' }}
+          opts={{
+            renderer: 'canvas',
+            locale: 'VN'
+          }}
+        />
     </div>
   );
 };

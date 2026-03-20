@@ -2,7 +2,7 @@ import axiosClient from './axiosClient';
 import * as payloads from './payloads';
 import { buildPayloadWithFilters } from './payloads/buildPayloadWithFilters';
 
-const apiRoute = '/api/superset'
+const apiRoute = import.meta.env.VITE_API_ROUTE;
 
 const postChart = (basePayload, appliedFilters, disibledFilters = []) => {
   const finalPayload = appliedFilters ? buildPayloadWithFilters(basePayload, appliedFilters, disibledFilters) : basePayload;

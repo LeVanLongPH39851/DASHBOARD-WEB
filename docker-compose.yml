@@ -18,7 +18,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     ports:
-      - "3001:3001"
+      - "3022:3022"
     env_file:
       - ./frontend/.env
     depends_on:

@@ -40,6 +40,9 @@
   --color-color-check-box: rgba(28, 28, 28, 1);
   --color-border-black-20: rgba(0, 0, 0, 0.2);
   --color-color-icon-infor: #ffd04c;
+  --color-color-footer: rgba(142, 152, 163, 1);
+  --color-color-p-login: rgba(107, 118, 130, 1);
+  --color-color-p-black-login: rgba(31, 41, 51, 1);
   --font-family-be-vietnam-pro: "Be Vietnam Pro", sans-serif;
 }
 
@@ -114,4 +117,31 @@ html, #root, body {
 
 .shadow-tooltip {
   box-shadow: 0px 0px 30px 0px rgba(63, 66, 84, 0.15);
+}
+
+/* globals.css */
+@keyframes slideFromRight {
+  0% {
+    opacity: 0;
+    transform: translateX(100px); /* Bắt đầu từ PHÁI */
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0); /* Kết thúc TRÁI */
+  }
+}
+
+.animate-slide-left {
+  animation: slideFromRight 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.animate-slide-right {
+  animation: slideFromRight 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.3s forwards; /* Delay 0.3s */
+}
+
+/* Initial state */
+.section-left,
+.section-right {
+  opacity: 0;
+  transform: translateX(100px);
 }

@@ -1,8 +1,25 @@
+import { BrowserRouter, Routes, Route, Link, Navigate } from "react-router-dom";
 import Dashboard from './pages/Dashboard';
+import Login from "./pages/Login";
+
+const ProtectedRoute = ({ children }) => {
+  const token = sessionStorage.getItem('userToken');
+  return token ? children : <Navigate to="/" replace />;
+};
+
+const PublicRoute = ({ children }) => {
+  const token = sessionStorage.getItem('userToken');
+  return token ? <Navigate to="/dashboard" replace /> : children;
+};
 
 function App() {
   return (
-    <Dashboard />
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<PublicRoute><Login /></PublicRoute>}/>
+        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>}/>
+      </Routes> 
+    </BrowserRouter>
   )
 }
 

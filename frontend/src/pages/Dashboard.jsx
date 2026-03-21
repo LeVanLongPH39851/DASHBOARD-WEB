@@ -30,6 +30,14 @@ import { useDashboardStateGlobals } from '../context/DashboardFilterContext';
 import NumberWithTrendChart from '../components/charts/NumberWithTrendChart';
 import NameChart from '../components/layouts/components/NameChart';
 import { transformNumberWithTrendData } from '../utils/transfromApiNumberWithTrendChart';
+import iconOverview from '../assets/icon_overview.png';
+import iconChannel from '../assets/icon_channel.png';
+import iconProgram from '../assets/icon_program.png';
+import iconRatingByMinute from '../assets/icon_rating_by_minute.png';
+import iconOverviewActive from '../assets/icon_overview_active.png';
+import iconChannelActive from '../assets/icon_channel_active.png';
+import iconProgramActive from '../assets/icon_program_active.png';
+import iconRatingByMinuteActive from '../assets/icon_rating_by_minute_active.png';
 
 const DashboardContent = () => {
   const dashboard = useDashboardData();
@@ -57,7 +65,7 @@ const DashboardContent = () => {
             <ParentTabs uniqueId='dashboard'
                         defaultTab='overview'
                         tabs={[
-                          {id: 'overview', label: 'Tổng quan',
+                          {id: 'overview', label: 'Tổng quan', icon: iconOverview, iconActive: iconOverviewActive,
                             content: (
                               <section id="target_capture_overview">
                                 <InforTab inforTab={"Tổng quan - P4+ toàn quốc"} />
@@ -382,7 +390,7 @@ const DashboardContent = () => {
                               </section>
                             )
                           },
-                          {id: 'channel', label: 'Kênh',
+                          {id: 'channel', label: 'Kênh', icon: iconChannel, iconActive: iconChannelActive,
                             content: (
                               <section id="target_capture_channel">
                                 <InforTab inforTab={"Kênh - P4+ toàn quốc"} />
@@ -650,7 +658,7 @@ const DashboardContent = () => {
                               </section>
                             )
                           },
-                          {id: 'program', label: 'Chương trình',
+                          {id: 'program', label: 'Chương trình', icon: iconProgram, iconActive: iconProgramActive,
                             content: (
                               <section id="target_capture_program">
                                 <InforTab inforTab={"Chương trình - P4+ toàn quốc"} />
@@ -717,7 +725,7 @@ const DashboardContent = () => {
                               </section>
                             )
                           },
-                          {id: 'rating_by_minute', label: 'Rating theo phút',
+                          {id: 'rating_by_minute', label: 'Rating theo phút', icon: iconRatingByMinute, iconActive: iconRatingByMinuteActive,
                             content: (
                               <section id="target_capture_rating_by_minute">
                                 <InforTab inforTab={"Rating theo phút - P4+ toàn quốc"} />

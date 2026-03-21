@@ -51,7 +51,7 @@ export default function ParentTabs({
   const variants = {
     default: {
       container: 'relative flex border-b border-border-black-10 px-6 gap-7 h-12',
-      button: (isActive) => `py-2 font-medium text-[16px] transition-colors duration-300 cursor-pointer ${
+      button: (isActive) => `py-2 font-medium text-[16px] transition-colors duration-300 cursor-pointer flex gap-2 items-center ${
         isActive ? 'text-color-primary-700' : 'text-color-black-50 hover:text-gray-700'
       }`,
       underline: 'absolute -bottom-px block h-[3px] bg-color-primary-700 transition-all duration-400 ease-out rounded-full'
@@ -87,6 +87,7 @@ export default function ParentTabs({
             onClick={() => handleTabChange(tab.id)}
             className={currentVariant.button(activeTab === tab.id)}
           >
+            <figure><img src={activeTab !== tab.id ? tab.icon : tab.iconActive} className='w-5' alt="Icon" /></figure>
             {tab.label}
           </button>
         ))}

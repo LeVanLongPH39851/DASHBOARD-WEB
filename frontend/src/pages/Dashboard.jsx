@@ -34,6 +34,10 @@ import iconOverview from '../assets/icon_overview.png';
 import iconChannel from '../assets/icon_channel.png';
 import iconProgram from '../assets/icon_program.png';
 import iconRatingByMinute from '../assets/icon_rating_by_minute.png';
+import iconOverviewDark from '../assets/icon_overview_dark.png';
+import iconChannelDark from '../assets/icon_channel_dark.png';
+import iconProgramDark from '../assets/icon_program_dark.png';
+import iconRatingByMinuteDark from '../assets/icon_rating_by_minute_dark.png';
 import iconOverviewActive from '../assets/icon_overview_active.png';
 import iconChannelActive from '../assets/icon_channel_active.png';
 import iconProgramActive from '../assets/icon_program_active.png';
@@ -65,7 +69,7 @@ const DashboardContent = () => {
             <ParentTabs uniqueId='dashboard'
                         defaultTab='overview'
                         tabs={[
-                          {id: 'overview', label: 'Tổng quan', icon: iconOverview, iconActive: iconOverviewActive,
+                          {id: 'overview', label: 'Tổng quan', icon: !stateGlobals.darkMode ? iconOverview : iconOverviewDark, iconActive: iconOverviewActive,
                             content: (
                               <section id="target_capture_overview">
                                 <InforTab inforTab={"Tổng quan - P4+ toàn quốc"} />
@@ -390,7 +394,7 @@ const DashboardContent = () => {
                               </section>
                             )
                           },
-                          {id: 'channel', label: 'Kênh', icon: iconChannel, iconActive: iconChannelActive,
+                          {id: 'channel', label: 'Kênh', icon: !stateGlobals.darkMode ? iconChannel : iconChannelDark, iconActive: iconChannelActive,
                             content: (
                               <section id="target_capture_channel">
                                 <InforTab inforTab={"Kênh - P4+ toàn quốc"} />
@@ -658,7 +662,7 @@ const DashboardContent = () => {
                               </section>
                             )
                           },
-                          {id: 'program', label: 'Chương trình', icon: iconProgram, iconActive: iconProgramActive,
+                          {id: 'program', label: 'Chương trình', icon: !stateGlobals.darkMode ? iconProgram : iconProgramDark, iconActive: iconProgramActive,
                             content: (
                               <section id="target_capture_program">
                                 <InforTab inforTab={"Chương trình - P4+ toàn quốc"} />
@@ -725,7 +729,7 @@ const DashboardContent = () => {
                               </section>
                             )
                           },
-                          {id: 'rating_by_minute', label: 'Rating theo phút', icon: iconRatingByMinute, iconActive: iconRatingByMinuteActive,
+                          {id: 'rating_by_minute', label: 'Rating theo phút', icon: !stateGlobals.darkMode ? iconRatingByMinute : iconRatingByMinuteDark, iconActive: iconRatingByMinuteActive,
                             content: (
                               <section id="target_capture_rating_by_minute">
                                 <InforTab inforTab={"Rating theo phút - P4+ toàn quốc"} />

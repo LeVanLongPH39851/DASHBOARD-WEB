@@ -1,7 +1,6 @@
 @import "tailwindcss";
-
+@custom-variant dark (&:where(.dark, .dark *));
 @theme {
-  --color-background-dark: rgba(18, 18, 18, 1);
   --color-background-dashboard: rgba(249, 251, 252, 1);
   --color-background-light: rgba(255, 255, 255, 1);
   --color-color-dark: rgba(0, 0, 0, 1);
@@ -43,6 +42,11 @@
   --color-color-footer: rgba(142, 152, 163, 1);
   --color-color-p-login: rgba(107, 118, 130, 1);
   --color-color-p-black-login: rgba(31, 41, 51, 1);
+  --color-background-dark: rgba(17, 23, 37, 1);
+  --color-color-white-50: rgba(255, 255, 255, 0.5);
+  --color-background-white-15: rgba(255, 255, 255, 0.15);
+  --color-color-white-80: rgba(255, 255, 255, 0.8);
+  --color-background-primary: rgba(91, 214, 216, 1);
   --font-family-be-vietnam-pro: "Be Vietnam Pro", sans-serif;
 }
 
@@ -144,4 +148,8 @@ html, #root, body {
 .section-right {
   opacity: 0;
   transform: translateX(100px);
+}
+
+.slick-dots {
+  bottom: -30px !important;
 }

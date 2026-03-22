@@ -50,9 +50,9 @@ export default function ParentTabs({
 
   const variants = {
     default: {
-      container: 'relative flex border-b border-border-black-10 px-6 gap-7 h-12',
+      container: 'relative flex border-b border-border-black-10 dark:border-transparent transition-colors duration-300 px-6 gap-7 h-12',
       button: (isActive) => `py-2 font-medium text-[16px] transition-colors duration-300 cursor-pointer flex gap-2 items-center ${
-        isActive ? 'text-color-primary-700' : 'text-color-black-50 hover:text-gray-700'
+        isActive ? 'text-color-primary-700' : 'text-color-black-50 dark:text-color-white-50 hover:text-gray-700 hover:text-gray-700 dark:hover:text-color-white-80'
       }`,
       underline: 'absolute -bottom-px block h-[3px] bg-color-primary-700 transition-all duration-400 ease-out rounded-full'
     },
@@ -75,7 +75,7 @@ export default function ParentTabs({
 
   const currentVariant = variants[variant] || variants.default;
   const showUnderline = variant === 'default';
-  const stickyClasses = sticky ? `sticky ${zIndex} bg-background-light shadow-xs` : '';
+  const stickyClasses = sticky ? `sticky ${zIndex} bg-background-light transition-all duration-300 dark:bg-background-dark shadow-xs` : '';
 
   return (
     <div>

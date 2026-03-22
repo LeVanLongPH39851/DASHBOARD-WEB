@@ -1,9 +1,13 @@
 import iconHome from '../../../assets/icon_home.png';
+import iconHomeDark from '../../../assets/icon_home_dark.png';
 import iconArrowRight from '../../../assets/icon_arrow_right.png';
 import iconDisplay from '../../../assets/icon_display.png';
 import iconInstruct from '../../../assets/icon_instruct.png';
 import iconSucces from '../../../assets/icon_succes.png';
 import iconDownload from '../../../assets/icon_download.png';
+import iconDisplayDark from '../../../assets/icon_display_dark.png';
+import iconInstructDark from '../../../assets/icon_instruct_dark.png';
+import iconDownloadDark from '../../../assets/icon_download_dark_mode.png';
 import Button from './Button';
 import { useState, useEffect, useRef } from 'react';
 import { toPng } from 'html-to-image';
@@ -152,35 +156,35 @@ const BreadCrumb = () => {
     };
 
     return (
-    <nav className='px-6 bg-background-light pt-2 pb-1 sticky top-0' style={{zIndex: 300}}>
+    <nav className='px-6 bg-background-light dark:bg-background-dark transition-all duration-300 pt-2 pb-1 sticky top-0' style={{zIndex: 300}}>
         <div className='flex items-center gap-2'>
-            <figure><img src={iconHome} className='w-3 h-3' alt="Icon Home" /></figure>
-            <span className='text-sm font-medium text-color-black-50'>Bảng điều khiển</span>
+            <figure><img src={!stateGlobals.darkMode ? iconHome : iconHomeDark} className='w-3 h-3' alt="Icon Home" /></figure>
+            <span className='text-sm font-medium text-color-black-50 dark:text-color-white-50 transition-all duration-300'>Bảng điều khiển</span>
             <figure><img src={iconArrowRight} className='h-2.75' alt="Icon Arrow Right" /></figure>
-            <span className='text-sm font-medium text-color-black-100'>Kênh truyền hình</span>
+            <span className='text-sm font-medium text-color-black-100 dark:text-color-white-90 transition-all duration-300'>Kênh truyền hình</span>
         </div>
         <div className='pt-2 flex justify-between'>
-            <h1 className='text-[32px] font-semibold text-color-black-100'>Kênh truyền hình VTV</h1>
+            <h1 className='text-[32px] font-semibold text-color-black-100 dark:text-color-white-90 transition-all duration-300'>Kênh truyền hình VTV</h1>
             <div className='flex items-center gap-4'>
-                <Button background={'bg-background-black-4'} color={'text-color-black-100'} src={iconDisplay}
+                <Button background={'bg-background-black-4 dark:bg-background-white-15'} color={'text-color-black-100 dark:text-color-white-80'} src={!stateGlobals.darkMode ? iconDisplay : iconDisplayDark}
                             widthImage='w-3.75' heightImage='h-3.75' alt='Icon Display' text={'Quản lý hiển thị'} />
                 <a href="https://neotam.ami.vn/" target='_blank'>
-                    <Button background={'bg-background-black-4'} color={'text-color-black-100'} src={iconInstruct}
+                    <Button background={'bg-background-black-4 dark:bg-background-white-15'} color={'text-color-black-100 dark:text-color-white-80'} src={!stateGlobals.darkMode ? iconInstruct : iconInstructDark}
                             widthImage='w-4' heightImage='h-4' alt='Icon Instruct' text={'Hướng dẫn'} src2={iconSucces}
                             widthImage2='w-3.5' alt2='Icon Succes' />
                 </a>
                 <div className='relative'>
                     <div ref={buttonRef}>
-                        <Button background={'bg-color-black-100'} color={'text-color-white-90'} src={iconDownload}
+                        <Button background={'bg-color-black-100 dark:bg-background-primary'} color={'text-color-white-90 dark:text-color-black-100'} src={!stateGlobals.darkMode ? iconDownload : iconDownloadDark}
                             widthImage='w-3.5' heightImage='h-3.5' alt='Icon Download' text={'Tải xuống'} click={handleToggle}/>
                     </div>
-                    <div ref={dropdownRef} className={`${isDropdownOpen ? 'scale-100 opacity-100 origin-top' : 'scale-0 opacity-0 origin-top'} transition-all duration-300 absolute top-full left-0 bg-background-light flex flex-col border border-border-black-10 rounded-xl w-full overflow-hidden`}>
-                            <div className='hover:bg-background-black-4 transition-all duration-300'>
-                                <Button background={'bg-transparent'} color={'text-color-black-100'} src={iconIMG}
+                    <div ref={dropdownRef} className={`${isDropdownOpen ? 'scale-100 opacity-100 origin-top' : 'scale-0 opacity-0 origin-top'} transition-all duration-300 absolute top-full left-0 bg-background-light dark:bg-background-dark flex flex-col border border-border-black-10 dark:border-background-white-15 rounded-xl w-full overflow-hidden`}>
+                            <div className='hover:bg-background-black-4 dark:hover:bg-color-black-70 transition-all duration-300'>
+                                <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-80'} src={iconIMG}
                                         widthImage='w-4' alt='Icon Instruct' text={'Tải Ảnh'} click={handleCapture} />
                             </div>
-                            <div className='hover:bg-background-black-4 transition-all duration-300'>
-                                <Button background={'bg-transparent'} color={'text-color-black-100'} src={iconPDF}
+                            <div className='hover:bg-background-black-4 dark:hover:bg-color-black-70 transition-all duration-300'>
+                                <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-80'} src={iconPDF}
                                 widthImage='w-4' alt='Icon Instruct' text={'Tải PDF'} click={handlePDF} />
                             </div>
                     </div>

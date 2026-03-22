@@ -3,12 +3,32 @@ import Footer from '../components/layouts/footers/Footer';
 import iconHideEye from '../assets/icon_hide_eye.png';
 import iconBlockEye from '../assets/icon_block_eye.png';
 import bannerBackGroundLogin from '../assets/banner_background_login.png';
-import bannerIamgeLogin from '../assets/banner_image_login.png';
+import tabOverview from '../assets/tab_overview.png';
+import tabOverviewDark from '../assets/tab_overview_dark.png';
+import tabChannel from '../assets/tab_channel.png';
+import tabChannelDark from '../assets/tab_channel_dark.png';
+import tabProgram from '../assets/tab_program.png';
+import tabRatingByMinute from '../assets/tab_rating_by_minute.png';
 import bannerImageVietNam from '../assets/banner_map_viet_nam.png';
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import Slider from "react-slick";
 
 const Login = () => {
+
+    const settings = {
+        dots: true,
+        infinite: true,
+        speed: 500,
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        autoplay: true,
+        autoplaySpeed: 3000,
+        arrows: false,
+        pauseOnHover: false
+    };
 
     const [ type, setType ] = useState(true);
     const leftSectionRef = useRef(null);
@@ -124,8 +144,15 @@ const Login = () => {
                 <h1 className='text-color-p-black-login text-[38px] font-semibold mb-4'>Kết nối dễ dàng cho tất cả</h1>
                 <p className='max-w-129.5 text-color-p-black-login text-sm font-normal'>Mang AI đến cho tất cả mọi người — bất kể trình độ kỹ thuật, mọi người đều có thể sử dụng AI hiệu quả trong công việc và cuộc sống.</p>
             </div>
-            <figure className='w-[70%] relative z-10'>
-                <img src={bannerIamgeLogin} className='w-full' alt="Banner Image Login" />
+            <figure className='w-[70%] relative z-10 border-[9px] rounded-[11px] border-color-p-black-login bg-color-p-black-login'>
+                <Slider {...settings}>
+                    <img src={tabOverview} className='w-full rounded-lg cursor-grab active:cursor-grabbing select-none' alt="Banner Image" />
+                    <img src={tabOverviewDark} className='w-full rounded-lg cursor-grab active:cursor-grabbing select-none' alt="Banner Image" />
+                    <img src={tabChannel} className='w-full rounded-lg cursor-grab active:cursor-grabbing select-none' alt="Banner Image" />
+                    <img src={tabChannelDark} className='w-full rounded-lg cursor-grab active:cursor-grabbing select-none' alt="Banner Image" />
+                    <img src={tabProgram} className='w-full rounded-lg cursor-grab active:cursor-grabbing select-none' alt="Banner Image" />
+                    <img src={tabRatingByMinute} className='w-full rounded-lg cursor-grab active:cursor-grabbing select-none' alt="Banner Image" />
+                </Slider>
             </figure>
             <figure className='absolute top-1/2 -translate-y-1/2 right-0 h-[90%]'><img src={bannerImageVietNam} className='h-full' alt="Banner Image Viet Nam" /></figure>
         </section>

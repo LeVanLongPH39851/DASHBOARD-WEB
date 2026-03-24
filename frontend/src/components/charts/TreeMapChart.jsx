@@ -3,6 +3,7 @@ import React, { memo, useRef, useCallback } from 'react';
 import ReactECharts from 'echarts-for-react';
 import NameChart from '../layouts/components/NameChart';
 import Loading from '../commons/Loading';
+import { useDashboardStateGlobals } from '../../context/DashboardFilterContext';
 
 const TreeMapChart = ({
   data,
@@ -20,7 +21,7 @@ const TreeMapChart = ({
 
   if(data==='isLoading') {
     return (
-      <div className='p-6 bg-background-light border border-border-black-10 rounded-2xl shadow-component'>
+      <div className='p-6 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
         <NameChart nameChart={nameChart} description={description} />
         <Loading height={height} />
       </div>
@@ -119,6 +120,8 @@ const TreeMapChart = ({
     return sum + (item.value || 0);
   }, 0);
 
+  const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
+  
   const option = {
     tooltip: {
       trigger: 'item',
@@ -220,7 +223,7 @@ const TreeMapChart = ({
           },
           itemStyle: {
             shadowBlur: 10,
-            shadowColor: 'rgba(0,0,0,0.3)'
+            shadowColor: !stateGlobals.darkMode ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.3)'
           }
         },
         levels: [
@@ -243,7 +246,7 @@ const TreeMapChart = ({
   };
 
   return (
-    <div className='p-6 bg-background-light border border-border-black-10 rounded-2xl shadow-component'>
+    <div className='p-6 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
       <NameChart nameChart={nameChart} description={description} getChartData={getEChartsData} />
       <ReactECharts
         ref={chartRef}

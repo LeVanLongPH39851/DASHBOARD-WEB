@@ -3,6 +3,7 @@ import ReactECharts from 'echarts-for-react';
 import NumberChart from '../layouts/components/NameChart';
 import { formatNumber } from '../../utils/formatNumber';
 import Loading from '../commons/Loading';
+import { useDashboardStateGlobals } from '../../context/DashboardFilterContext';
 
 const MixedChart = ({
   data,
@@ -24,7 +25,7 @@ const MixedChart = ({
 
   if(data==='isLoading') {
     return (
-      <div className='p-6 bg-background-light border border-border-black-10 rounded-2xl shadow-component'>
+      <div className='p-6 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
         <NumberChart nameChart={nameChart} description={description}/>
         <Loading height={height} />
       </div>
@@ -75,7 +76,8 @@ const MixedChart = ({
 
   const lastDataIndex = labels.length - 1;
   
-
+  const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
+  
   // ECHARTS OPTION
   const option = {
     tooltip: {
@@ -83,7 +85,7 @@ const MixedChart = ({
       axisPointer: { 
         type: 'cross',
         crossStyle: {
-          color: 'rgba(0, 0, 0, 0.2)'
+          color: !stateGlobals.darkMode ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255, 255, 255, 0.5)'
         }
       },
       backgroundColor: 'rgba(255, 255, 255, 1)',
@@ -124,26 +126,26 @@ const MixedChart = ({
         bottom: 0,
         height: 20,
         borderRadius: 8,
-        backgroundColor: 'rgba(255, 247, 217, 1)',
-        borderColor: 'rgb(252, 233, 167)',
+        backgroundColor: !stateGlobals.darkMode ? 'rgba(255, 247, 217, 1)' : 'rgb(62, 63, 45)',
+        borderColor: !stateGlobals.darkMode ? 'rgb(252, 233, 167)' : 'rgb(159, 135, 39)',
         brushSelect: false,
         handleSize: '100%',
         handleStyle: {
           color: 'rgba(255, 204, 0, 1)',
-          borderColor: 'rgba(255, 255, 255, 1)'
+          borderColor: !stateGlobals.darkMode ? 'rgba(255, 255, 255, 1)' : 'rgba(28, 37, 52, 1)'
         },
         textStyle: {
           fontSize: fontSize.axisLabel,
-          color: 'rgba(0, 0, 0, 0.7)',
+          color: !stateGlobals.darkMode ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.8)',
           fontWeight: 600
         },
         emphasis: {
           handleStyle: {
-            color: 'rgba(255, 255, 255, 1)',
+            color: !stateGlobals.darkMode ? 'rgba(255, 255, 255, 1)' : 'rgba(28, 37, 52, 1)',
             borderColor: 'rgba(255, 204, 0, 1)'
           }
         },
-        fillerColor: 'rgb(252, 233, 167)',
+        fillerColor: !stateGlobals.darkMode ? 'rgb(252, 233, 167)' : 'rgb(159, 135, 39)',
         dataBackground: {
           lineStyle: {
             opacity: 0.2,
@@ -175,7 +177,7 @@ const MixedChart = ({
       itemGap: 10,
       textStyle: { 
         fontSize: fontSize.legend,
-        color: 'rgba(30, 27, 57, 1)',
+        color: !stateGlobals.darkMode ? 'rgba(30, 27, 57, 1)' : 'rgba(255, 255, 255, 0.9)',
         fontWeight: fontWeight.legend,
         letterSpacing: '0.1px',
         fontFamily: fontFamily
@@ -199,12 +201,12 @@ const MixedChart = ({
       data: labels,
       axisLine: { 
         show: true, 
-        lineStyle: { color: 'rgba(0, 0, 0, 0.2)' }
+        lineStyle: { color: !stateGlobals.darkMode ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255, 255, 255, 0.5)' }
       },
       axisTick: { show: false },
       axisLabel: { 
         fontSize: fontSize.axisLabel,
-        color: 'rgba(0, 0, 0, 0.7)',
+        color: !stateGlobals.darkMode ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.9)',
         fontWeight: fontWeight.axisLabel,
         fontFamily: fontFamily,
         rotate: 0,
@@ -216,21 +218,21 @@ const MixedChart = ({
 
     yAxis: {
       type: 'value',
-      axisLine: { show: true, lineStyle: { color: 'rgba(0, 0, 0, 0.2)' } },
+      axisLine: { show: true, lineStyle: { color: !stateGlobals.darkMode ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255, 255, 255, 0.5)' } },
       axisTick: { show: false },
       splitLine: {
         show: true,
         lineStyle: {
-          color: 'rgba(229, 229, 239, 1)',
+          color: !stateGlobals.darkMode ? 'rgba(229, 229, 239, 1)' : 'rgba(255, 255, 255, 0.2)',
           type: 'dashed',
-          width: 1.5,
+          width: 1,
           opacity: 1
         }
       },
       axisLabel: {
         formatter: v => v.toLocaleString(undefined, { maximumFractionDigits: 0 }),
         fontSize: fontSize.axisLabel,
-        color: 'rgba(0, 0, 0, 0.7)',
+        color: !stateGlobals.darkMode ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.9)',
         fontWeight: fontWeight.axisLabel,
         fontFamily: fontFamily
       }
@@ -248,11 +250,11 @@ const MixedChart = ({
           data: s.data.map((val, dataIdx) => ({
             value: val,
             itemStyle: {
-              color: dataIdx === lastDataIndex || !lastDataIndexActive ? color : 'rgba(206, 206, 206, 1)',
+              color: dataIdx === lastDataIndex || !lastDataIndexActive ? color : (!stateGlobals.darkMode ? 'rgba(206, 206, 206, 1)' : 'rgba(60, 74, 96, 1)'),
               borderRadius: [10, 10, 0, 0]
             },
             label: {
-              color: dataIdx === lastDataIndex || !lastDataIndexActive ? 'rgba(0,0,0,0.7)' : 'rgba(206, 206, 206, 1)'
+              color: dataIdx === lastDataIndex || !lastDataIndexActive ? (!stateGlobals.darkMode ? 'rgba(0,0,0,0.7)' : 'rgba(255, 255, 255, 0.8)') : 'rgba(206, 206, 206, 1)'
             }
           })),
           barWidth: barWidthPercent,
@@ -264,7 +266,7 @@ const MixedChart = ({
           emphasis: {
             itemStyle: { 
               shadowBlur: 10, 
-              shadowColor: 'rgba(0,0,0,0.2)',
+              shadowColor: !stateGlobals.darkMode ? 'rgba(0,0,0,0.2)' : 'rgba(225,225,225,0.2)',
               opacity: 0.9
             }
           },
@@ -278,7 +280,7 @@ const MixedChart = ({
             fontSize: fontSize.dataLabel,
             fontWeight: fontWeight.dataLabel,
             fontFamily: fontFamily,
-            color: 'rgba(0, 0, 0, 0.7)'
+            color: !stateGlobals.darkMode ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.8)'
           }
         };
       } else {
@@ -305,7 +307,7 @@ const MixedChart = ({
           emphasis: {
             itemStyle: {
               shadowBlur: 10,
-              shadowColor: 'rgba(0,0,0,0.3)',
+              shadowColor: !stateGlobals.darkMode ? 'rgba(0,0,0,0.3)' : 'rgba(225,225,225,0.3)',
               borderWidth: 3
             }
           },
@@ -327,7 +329,7 @@ const MixedChart = ({
   };
 
   return (
-    <div className='p-6 bg-background-light border border-border-black-10 rounded-2xl shadow-component'>
+    <div className='p-6 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
       <NumberChart nameChart={nameChart} description={description} getChartData={getEChartsData} />
       <ReactECharts 
         ref={chartRef}

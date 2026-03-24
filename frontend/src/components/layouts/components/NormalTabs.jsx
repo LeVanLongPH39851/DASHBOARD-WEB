@@ -41,13 +41,13 @@ export default function NormalTabs({
   // ✅ MÀU SẮC + STYLE GIỐNG HẾT CHILD TABS
   const variants = {
     default: {
-      container: 'relative flex gap-1 mb-6 overflow-hidden rounded-2xl p-1 bg-background-black-4 w-fit', // ✅ Không bg-gray-100
+      container: 'relative flex gap-1 mb-6 overflow-hidden rounded-2xl p-1 bg-background-black-4 dark:bg-background-white-8 w-fit transition-all duration-300', // ✅ Không bg-gray-100
       button: (isActive) => `relative px-6 w-36 py-2 font-medium text-sm transition-all duration-300 cursor-pointer z-10 ${
         isActive
-          ? 'text-color-light font-semibold'  // ✅ color-light (không hardcode)
-          : 'text-gray-500 hover:text-gray-700'
+          ? 'text-color-light dark:text-background-check-box font-semibold'  // ✅ color-light (không hardcode)
+          : 'text-color-gray-600 dark:text-color-white-50 hover:text-gray-700 dark:hover:text-gray-100'
       }`,
-      background: 'absolute inset-0 bg-background-black-child-tab rounded-2xl transition-all duration-500 ease-out'  // ✅ background-dark
+      background: 'absolute inset-0 bg-background-black-child-tab dark:bg-color-white-80 rounded-2xl transition-all duration-500 ease-out'  // ✅ background-dark
     },
     pills: {
       container: 'flex gap-2 mb-2',

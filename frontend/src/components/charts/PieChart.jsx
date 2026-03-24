@@ -2,6 +2,7 @@ import React, { memo, useRef, useCallback } from 'react';
 import ReactECharts from 'echarts-for-react';
 import NameChart from '../layouts/components/NameChart';
 import Loading from '../commons/Loading';
+import { useDashboardStateGlobals } from '../../context/DashboardFilterContext';
 
 const PieChart = ({
   data,
@@ -20,7 +21,7 @@ const PieChart = ({
 
   if(data==='isLoading') {
     return (
-      <div className='p-6 bg-background-light border border-border-black-10 rounded-2xl shadow-component'>
+      <div className='p-6 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
         <NameChart nameChart={nameChart} description={description} />
         <Loading height={height} />
       </div>
@@ -95,6 +96,8 @@ const PieChart = ({
     }
   };
 
+  const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
+  
   const option = {
     tooltip: {
       trigger: 'item',
@@ -126,13 +129,13 @@ const PieChart = ({
       orient: 'vertical',
       left: 0,
       top: 0,
-      itemWidth: 14,
-      itemHeight: 14,
+      itemWidth: 13,
+      itemHeight: 13,
       icon: 'circle',
       itemGap: 8,
       textStyle: {
         fontSize: fontSize?.legend,
-        color: 'rgba(30, 27, 57, 1)',
+        color: !stateGlobals.darkMode ? 'rgba(30, 27, 57, 1)' : 'rgba(225, 225, 225, 0.9)',
         fontWeight: fontWeight?.legend,
         fontFamily: fontFamily,
         letterSpacing: '0.1px'
@@ -150,7 +153,7 @@ const PieChart = ({
       emphasis: {
         itemStyle: {
           shadowBlur: 15,
-          shadowColor: 'rgba(0,0,0,0.2)',
+          shadowColor: !stateGlobals.darkMode ? 'rgba(0,0,0,0.2)' : 'rgba(225,225,225,225.2)',
         },
         labelLine: {
           lineStyle: {
@@ -197,7 +200,7 @@ const PieChart = ({
       data: pieSeriesData.map((item, idx) => ({
         ...item,
         itemStyle: {
-          color: getColorForItem(item.name, idx), // ✅ Slice màu từ colors
+          color: getColorForItem(item.name, idx),
         },
         label: {
           rich: {
@@ -211,7 +214,7 @@ const PieChart = ({
   };
 
   return (
-    <div className='p-6 bg-background-light border border-border-black-10 rounded-2xl shadow-component'>
+    <div className='p-6 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
       <NameChart nameChart={nameChart} description={description} getChartData={getEChartsData} />
       <ReactECharts
         ref={chartRef}

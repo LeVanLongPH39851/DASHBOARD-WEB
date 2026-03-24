@@ -61,17 +61,17 @@ const DashboardContent = () => {
   return (
     <main className='font-family-be-vietnam-pro w-full h-full tracking-[0.1px] overflow-x-clip'>
       <Header />
-      <div className='flex w-full h-full'>
+      <div className='flex w-full h-full bg-background-light dark:bg-background-dark transition-all duration-300'>
         <Filter filters={scopeFilterData} />
-        <div className={`mb-6 ${stateGlobals.isOpen && !stateGlobals.horizontal ? 'w-[84%]' : 'w-full'} transition-all duration-300`}>
+        <div className={`pb-6 ${stateGlobals.isOpen && !stateGlobals.horizontal ? 'w-[84%]' : 'w-full'} transition-all duration-300 bg-background-dashboard dark:bg-background-dashboard-dark`}>
           <BreadCrumb/>
-          <div className='bg-background-dashboard'>
+          <div className='bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300'>
             <ParentTabs uniqueId='dashboard'
                         defaultTab='overview'
                         tabs={[
                           {id: 'overview', label: 'Tổng quan', icon: !stateGlobals.darkMode ? iconOverview : iconOverviewDark, iconActive: iconOverviewActive,
                             content: (
-                              <section id="target_capture_overview">
+                              <section className='bg-background-dashboard dark:bg-background-dashboard-dark transiton-all duration-300' id="target_capture_overview">
                                 <InforTab inforTab={"Tổng quan - P4+ toàn quốc"} />
                                 <InforFilter filters={scopeFilterData} />
                                 <div className='px-6 pt-6'>
@@ -93,7 +93,7 @@ const DashboardContent = () => {
                                   </div>
                                   <div className='w-full flex gap-6 pb-6'>
                                     <div className='w-[60%]'>
-                                      <div className={`p-6 bg-background-light border border-border-black-10 rounded-2xl shadow-component relative`}>
+                                      <div className={`p-6 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
                                         <NameChart nameChart={CUSTOM_CHART.barChart.barChartChannelEvent.ratingNameChart} description={METRICS.rating.description} opacity={true} />
                                         <ChildTabs tabs={[
                                           {id: CUSTOM_TAB.childTabRatingReach.rating.id, label: CUSTOM_TAB.childTabRatingReach.rating.label,
@@ -130,7 +130,7 @@ const DashboardContent = () => {
                                       </div>
                                     </div>
                                     <div className='w-[40%]'>
-                                      <div className={`p-6 bg-background-light border border-border-black-10 rounded-2xl shadow-component relative`}>
+                                      <div className={`p-6 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
                                         <NameChart nameChart={CUSTOM_CHART.barChart.barChartChannelEvent.ratingNameChart} description={METRICS.rating.description} opacity={true} />
                                         <ChildTabs tabs={[
                                           {id: CUSTOM_TAB.childTabRatingReach.rating.id, label: CUSTOM_TAB.childTabRatingReach.rating.label,
@@ -169,7 +169,7 @@ const DashboardContent = () => {
                                   </div>
                                   <div className='w-full flex gap-6 pb-6'>
                                     <div className='w-[60%]'>
-                                      <div className={`p-6 bg-background-light border border-border-black-10 rounded-2xl shadow-component relative`}>
+                                      <div className={`p-6 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
                                         <NameChart nameChart={CUSTOM_CHART.tableChart.tableChartChannel.name} description={CUSTOM_CHART.tableChart.tableChartChannel.description} opacity={true} />
                                         <ChildTabs tabs={[
                                           {id: CUSTOM_TAB.childTabChannel.channel.id, label: CUSTOM_TAB.childTabChannel.channel.label,
@@ -202,7 +202,7 @@ const DashboardContent = () => {
                                       </div>
                                     </div>
                                     <div className='w-[40%]'>
-                                      <div className={`p-6 bg-background-light border border-border-black-10 rounded-2xl shadow-component relative`}>
+                                      <div className={`p-6 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
                                         <NameChart nameChart={CUSTOM_CHART.tableChart.tableChartArea.name} description={CUSTOM_CHART.tableChart.tableChartArea.description} opacity={true} />
                                         <ChildTabs tabs={[
                                           {id: CUSTOM_TAB.childTabArea.regional.id, label: CUSTOM_TAB.childTabArea.regional.label,
@@ -236,7 +236,7 @@ const DashboardContent = () => {
                                     </div>
                                   </div>
                                   <div className='w-full grid grid-cols-2 gap-6 pb-6'>
-                                      <div className={`p-6 bg-background-light border border-border-black-10 rounded-2xl shadow-component relative`}>
+                                      <div className={`p-6 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
                                         <NameChart nameChart={CUSTOM_CHART.barChart.barChartArea.rating.name} description={METRICS.rating.description} opacity={true} />
                                         <ChildTabs tabs={[
                                           {id: CUSTOM_TAB.childTabArea.regional.id, label: CUSTOM_TAB.childTabArea.regional.label,
@@ -305,7 +305,7 @@ const DashboardContent = () => {
                                           )}
                                           ]} />
                                       </div>
-                                      <div className={`p-6 bg-background-light border border-border-black-10 rounded-2xl shadow-component relative`}>
+                                      <div className={`p-6 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
                                         <NameChart nameChart={CUSTOM_CHART.barChart.barChartArea.aveReach.name} description={METRICS.ave_reach.description} opacity={true} />
                                         <ChildTabs tabs={[
                                           {id: CUSTOM_TAB.childTabArea.regional.id, label: CUSTOM_TAB.childTabArea.regional.label,
@@ -396,7 +396,7 @@ const DashboardContent = () => {
                           },
                           {id: 'channel', label: 'Kênh', icon: !stateGlobals.darkMode ? iconChannel : iconChannelDark, iconActive: iconChannelActive,
                             content: (
-                              <section id="target_capture_channel">
+                              <section className='bg-background-dashboard dark:bg-background-dashboard-dark transiton-all duration-300' id="target_capture_channel">
                                 <InforTab inforTab={"Kênh - P4+ toàn quốc"} />
                                 <InforFilter filters={scopeFilterData} />
                                 <div className='px-6 py-6'>
@@ -664,7 +664,7 @@ const DashboardContent = () => {
                           },
                           {id: 'program', label: 'Chương trình', icon: !stateGlobals.darkMode ? iconProgram : iconProgramDark, iconActive: iconProgramActive,
                             content: (
-                              <section id="target_capture_program">
+                              <section className='bg-background-dashboard dark:bg-background-dashboard-dark transiton-all duration-300' id="target_capture_program">
                                 <InforTab inforTab={"Chương trình - P4+ toàn quốc"} />
                                 <InforFilter filters={scopeFilterData} />
                                 <div className='px-6'>
@@ -731,7 +731,7 @@ const DashboardContent = () => {
                           },
                           {id: 'rating_by_minute', label: 'Rating theo phút', icon: !stateGlobals.darkMode ? iconRatingByMinute : iconRatingByMinuteDark, iconActive: iconRatingByMinuteActive,
                             content: (
-                              <section id="target_capture_rating_by_minute">
+                              <section className='bg-background-dashboard dark:bg-background-dashboard-dark transiton-all duration-300' id="target_capture_rating_by_minute">
                                 <InforTab inforTab={"Rating theo phút - P4+ toàn quốc"} />
                                 <InforFilter filters={scopeFilterData} />
                                 <div className='px-6'>
@@ -796,8 +796,8 @@ const DashboardContent = () => {
                         ]}
             />
           </div>
-          <div className='px-6'>
-            <Footer />
+          <div className='px-6 bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300'>
+            <Footer color='text-color-black-100 dark:text-color-white-90' />
           </div>
         </div>
       </div>

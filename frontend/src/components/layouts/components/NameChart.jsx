@@ -1,11 +1,14 @@
 import IconInfor from './IconInfor';
-import iConEyeHidden from '../../../assets/icon_eye_hidden.png'
-import iConDownloadDark from '../../../assets/icon_download_dark.png'
+import iconEyeHidden from '../../../assets/icon_eye_hidden.png';
+import iconDownloadDark from '../../../assets/icon_download_dark.png';
+import iconEyeHiddenDark from '../../../assets/icon_eye_hidden_dark.png';
+import iconDownloadDarkDark from '../../../assets/icon_download_dark_dark.png';
 import Button from '../headers/Button';
 import { useState, useEffect, useRef } from 'react';
 import { toPng } from 'html-to-image';
 import iconExcel from '../../../assets/icon_excel.png';
 import iconIMG from '../../../assets/icon_img.png';
+import { useDashboardStateGlobals } from '../../../context/DashboardFilterContext';
 
 
 const NameChart = ({ nameChart, description, icon=false, width='', height='', backgound='', display=true, opacity=false, getChartData=null, table=false }) => {
@@ -65,7 +68,7 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
     const dataUrl = await toPng(chartParent, {
         quality: 1,
         pixelRatio: 2,
-        backgroundColor: '#ffffff'
+        backgroundColor: null
     });
 
     const link = document.createElement('a');
@@ -333,29 +336,30 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
     }
 };
 
+  const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
 
   return (
-      <div className={`${opacity ? 'opacity-0 invisible' : ''} pb-6 text-[16px] font-semibold text-color-black-100 flex justify-between ${!display ? 'absolute top-0 left-0 p-6 w-full' : ''}`}>
+      <div className={`${opacity ? 'opacity-0 invisible' : ''} pb-6 text-[16px] font-semibold text-color-black-100 dark:text-color-white-90 transition-all duration-300 flex justify-between ${!display ? 'absolute top-0 left-0 p-6 w-full' : ''}`}>
         <div className='flex items-center gap-2'>
-          {icon && <div className={`w-8 h-8 flex justify-center items-center rounded-lg ${backgound}`}><figure><img src={icon} className={`${width+' '+height+' '+backgound}`} /></figure></div>}
+          {icon && <div className={`w-8 h-8 flex justify-center items-center rounded-lg ${backgound} transition-all duration-300`}><figure><img src={icon} className={`${width+' '+height+' '+backgound}`} /></figure></div>}
           <span>{nameChart}</span>
           <IconInfor description={description} />
         </div>
         <div className='flex gap-1 div-hideen'>
           <figure ref={buttonRef} className='p-2 cursor-pointer relative'>
-            <img src={iConDownloadDark} alt="Icon Download" className='w-3.25' onClick={handleToggle} />
-              <div ref={dropdownRef} className={`${isDropdownOpen ? 'scale-100 opacity-100 origin-top' : 'scale-0 opacity-0 origin-top'} left-1/2 -translate-x-1/2 transition-all duration-300 absolute z-20 top-full bg-background-light flex flex-col border border-border-black-10 rounded-xl w-28 overflow-hidden`}>
-                  <div className='hover:bg-background-black-4 transition-all duration-300'>
-                      <Button background={'bg-transparent'} color={'text-color-black-100'} src={iconIMG}
+            <img src={!stateGlobals.darkMode ? iconDownloadDark : iconDownloadDarkDark} alt="Icon Download" className='w-3.25' onClick={handleToggle} />
+              <div ref={dropdownRef} className={`${isDropdownOpen ? 'scale-100 opacity-100 origin-top' : 'scale-0 opacity-0 origin-top'} left-1/2 -translate-x-1/2 transition-all duration-300 absolute z-20 top-full bg-background-light dark:bg-background-dark dark:border-background-white-15 flex flex-col border border-border-black-10 rounded-xl w-28 overflow-hidden`}>
+                  <div className='hover:bg-background-black-4 dark:hover:bg-background-hover-dark transition-all duration-300'>
+                      <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-90'} src={iconIMG}
                               widthImage='w-4' alt='Icon Instruct' text={'Tải Ảnh'} click={handleChartCapture} />
                   </div>
-                  <div className='hover:bg-background-black-4 transition-all duration-300'>
-                      <Button background={'bg-transparent'} color={'text-color-black-100'} src={iconExcel}
+                  <div className='hover:bg-background-black-4 dark:hover:bg-background-hover-dark transition-all duration-300'>
+                      <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-90'} src={iconExcel}
                       widthImage='w-4' alt='Icon Instruct' text={'Tải Excel'} click={table ? handleChartExcelTable : handleChartExcel} />
                   </div>
               </div>
             </figure>
-          <figure className='p-2 cursor-pointer'><img src={iConEyeHidden} alt="Icon Eye Hidden" className='w-4.5' onClick={handleHideChart} />
+          <figure className='p-2 cursor-pointer'><img src={!stateGlobals.darkMode ? iconEyeHidden : iconEyeHiddenDark} alt="Icon Eye Hidden" className='w-4.5' onClick={handleHideChart} />
           </figure>
         </div>
         <span className='text-color-error font-semibold text-xs hidden'></span>

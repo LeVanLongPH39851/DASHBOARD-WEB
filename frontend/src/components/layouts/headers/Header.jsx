@@ -17,7 +17,7 @@ const Header = () => {
     useEffect(() => {
         const savedTheme = localStorage.getItem('theme');
         
-        if (savedTheme) {
+        if (savedTheme && savedTheme === 'dark') {
             setStateGlobals(prev => ({...prev, darkMode: true}));
             document.documentElement.classList.add('dark');
         } else {

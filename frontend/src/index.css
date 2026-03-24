@@ -31,6 +31,8 @@
   --color-border-succes-type-1: rgba(212, 241, 238, 1);
   --color-background-succes-type-2: rgba(225, 248, 248, 1);
   --color-background-purple: rgba(232, 233, 253, 1);
+  --color-background-succes-type-2-dark: rgba(40, 153, 156, 0.5);
+  --color-background-purple-dark: rgba(131, 134, 243, 0.5);
   --color-background-search: rgba(249, 249, 249, 1);
   --color-color-error: rgba(255, 56, 60, 1);
   --color-background-error: rgba(255, 56, 60, 0.1);
@@ -47,6 +49,12 @@
   --color-background-white-15: rgba(255, 255, 255, 0.15);
   --color-color-white-80: rgba(255, 255, 255, 0.8);
   --color-background-primary: rgba(91, 214, 216, 1);
+  --color-background-dashboard-dark: rgba(6, 10, 23, 1);
+  --color-background-primary-2: rgba(171, 234, 235, 1);
+  --color-border-white-20: rgba(255, 255, 255, 0.2);
+  --color-background-white-8: rgba(255, 255, 255, 0.08);
+  --color-background-hover-dark: #1f2937;
+  --color-background-chart-dark: rgba(28, 37, 52, 1);
   --font-family-be-vietnam-pro: "Be Vietnam Pro", sans-serif;
 }
 
@@ -66,6 +74,12 @@ html, #root, body {
 ::-webkit-scrollbar-track {
   background: #e5e7eb;
   border-radius: 0;
+}
+
+html.dark body::-webkit-scrollbar-thumb, html.dark #filter::-webkit-scrollbar-thumb, html.dark .divTable::-webkit-scrollbar-thumb {
+  background: rgb(91 214 216);
+  /* border: 1px solid #e5e7eb; */
+  border-radius: 50px;
 }
 
 ::-webkit-scrollbar-thumb {

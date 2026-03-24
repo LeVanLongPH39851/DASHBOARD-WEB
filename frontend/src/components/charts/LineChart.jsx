@@ -3,6 +3,7 @@ import React, { memo, useRef, useMemo, useState, useEffect, useCallback } from '
 import ReactECharts from 'echarts-for-react';
 import NumberChart from '../layouts/components/NameChart';
 import Loading from '../commons/Loading';
+import { useDashboardStateGlobals } from '../../context/DashboardFilterContext';
 
 const LineChart = ({
   data,
@@ -29,7 +30,7 @@ const LineChart = ({
 
   if(data==='isLoading') {
     return (
-      <div className='p-6 bg-background-light border border-border-black-10 rounded-2xl shadow-component'>
+      <div className='p-6 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
         <NumberChart nameChart={nameChart} description={description}/>
         <Loading height={height} />
       </div>
@@ -146,6 +147,8 @@ const LineChart = ({
     };
   }, []);
 
+  const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
+
   const option = {
     color: legendData.map(name => {
       const seriesIndex = series.findIndex(s => s.name === name);
@@ -156,7 +159,7 @@ const LineChart = ({
       trigger: 'axis',
       axisPointer: { 
         type: 'cross',
-        crossStyle: { color: 'rgba(0, 0, 0, 0.2)' }
+        crossStyle: { color: !stateGlobals.darkMode ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255, 255, 255, 0.5)' }
       },
       backgroundColor: 'rgba(255, 255, 255, 1)',
       borderWidth: 0,
@@ -217,26 +220,26 @@ const LineChart = ({
         bottom: 0,
         height: 20,
         borderRadius: 8,
-        backgroundColor: 'rgb(223, 249, 245)',
-        borderColor: 'rgb(205, 240, 246)',
+        backgroundColor: !stateGlobals.darkMode ? 'rgb(223, 249, 245)' : 'rgb(31, 60, 72)',
+        borderColor: !stateGlobals.darkMode ? 'rgb(205, 240, 246)' : 'rgb(38, 128, 136)',
         brushSelect: false,
         handleSize: '100%',
         handleStyle: {
           color: 'rgb(42, 198, 193)',
-          borderColor: 'rgba(255, 255, 255, 1)'
+          borderColor: !stateGlobals.darkMode ? 'rgba(255, 255, 255, 1)' : 'rgba(28, 37, 52, 1)'
         },
         textStyle: {
           fontSize: fontSize.axisLabel,
-          color: 'rgba(0, 0, 0, 0.7)',
+          color: !stateGlobals.darkMode ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.8)',
           fontWeight: 600
         },
         emphasis: {
           handleStyle: {
-            color: 'rgba(255, 255, 255, 1)',
+            color: !stateGlobals.darkMode ? 'rgba(255, 255, 255, 1)' : 'rgba(28, 37, 52, 1)',
             borderColor: 'rgb(42, 198, 193)'
           }
         },
-        fillerColor: 'rgb(205, 240, 246)',
+        fillerColor: !stateGlobals.darkMode ? 'rgb(205, 240, 246)' : 'rgb(38, 128, 136)',
         dataBackground: {
           lineStyle: {
             opacity: 0.2,
@@ -272,7 +275,7 @@ const LineChart = ({
       itemGap: !legendTop ? 8 : 10,
       textStyle: { 
         fontSize: fontSize.legend,
-        color: 'rgba(30, 27, 57, 1)',
+        color: !stateGlobals.darkMode ? 'rgba(30, 27, 57, 1)' : 'rgba(255, 255, 255, 0.8)',
         fontWeight: fontWeight.legend,
         letterSpacing: '0.1px',
         fontFamily: fontFamily
@@ -297,11 +300,11 @@ const LineChart = ({
     xAxis: {
       type: 'category',
       data: labels,
-      axisLine: { show: true, lineStyle: { color: 'rgba(229, 229, 239, 1)' } },
+      axisLine: { show: !stateGlobals.darkMode ? true : false, lineStyle: { color: 'rgba(229, 229, 239, 1)' } },
       axisTick: { show: false },
       axisLabel: { 
         fontSize: fontSize.axisLabel,
-        color: 'rgba(97, 94, 131, 1)',
+        color: !stateGlobals.darkMode ? 'rgba(97, 94, 131, 1)' : 'rgba(255, 255, 255, 0.9)',
         fontWeight: fontWeight.axisLabel,
         rotate: 0,
         interval: 'auto',
@@ -319,8 +322,8 @@ const LineChart = ({
       splitLine: {
         show: true,
         lineStyle: {
-          color: 'rgba(229, 229, 239, 1)',
-          type: 'solid',
+          color: !stateGlobals.darkMode ? 'rgba(229, 229, 239, 1)' : 'rgba(255, 255, 255, 0.2)',
+          type: !stateGlobals.darkMode ? 'solid' : 'dashed',
           width: 1,
           opacity: 1
         }
@@ -328,7 +331,7 @@ const LineChart = ({
       axisLabel: {
         formatter: v => v.toLocaleString(undefined, { maximumFractionDigits: 0 }),
         fontSize: fontSize.axisLabel,
-        color: 'rgba(97, 94, 131, 1)',
+        color: !stateGlobals.darkMode ? 'rgba(97, 94, 131, 1)' : 'rgba(255, 255, 255, 0.9)',
         fontWeight: fontWeight.axisLabel,
         fontFamily: fontFamily
       }
@@ -379,7 +382,7 @@ const LineChart = ({
             borderWidth: labelLength===0 ? 3 : 2,
             borderColor: 'rgba(255, 255, 255, 1)',
             shadowBlur: labelLength===0 ? 10 : 0,
-            shadowColor: labelLength===0 ? 'rgba(0,0,0,0.3)' : '',
+            shadowColor: labelLength===0 ? !stateGlobals.darkMode ? 'rgba(0,0,0,0.3)' : 'rgba(225,225,225,0.3)' : '',
           },
           lineStyle: {
             width: lineWidth + 1,  // ✅ Đậm hơn khi hover
@@ -416,7 +419,7 @@ const LineChart = ({
   };
 
   return (
-    <div className='p-6 bg-background-light border border-border-black-10 rounded-2xl shadow-component'>
+    <div className='p-6 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
       <NumberChart nameChart={nameChart} description={description} getChartData={getEChartsData}/>
         <ReactECharts 
           ref={chartRef}

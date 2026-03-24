@@ -6,7 +6,9 @@ import SelectMultiFilter from './components/SelectMultiFilter';
 import CheckboxMultiFilter from './components/CheckboxMultiFilter';
 import { getYesterday } from '../../../helpers/helper';
 import iconXBlack from '../../../assets/icon_x_black.png';
+import iconXBlackDark from '../../../assets/icon_x_black_dark.png';
 import iconReset from '../../../assets/icon_reset.png';
+import iconResetDark from '../../../assets/icon_reset_dark.png';
 import { useDashboardFilters, useDashboardFilterValues, useDashboardStateGlobals } from '../../../context/DashboardFilterContext'
 
 const ALL_CHANNELS = [
@@ -250,9 +252,9 @@ const Filter = ({ filters, horizontalFixed=false
   return (
     <>
     <aside className={`${horizontalFixed ? 'w-full' : `${!stateGlobals.isOpen || stateGlobals.horizontal ? 'w-0' : 'w-[16%]'} h-full`} transition-all duration-300`}>
-      <div id='filter' className={`${horizontalFixed ? 'w-full' : `bg-background-light border-r border-background-line-gray w-[16%] overflow-y-auto fixed left-0 ${!stateGlobals.isOpen || stateGlobals.horizontal ? '-translate-x-full' : ''} top-15 px-6 pt-4 pb-15.5 transition-all duration-300 h-full`}`}>
+      <div id='filter' className={`${horizontalFixed ? 'w-full' : `bg-background-light dark:bg-background-dark border-r border-background-line-gray dark:border-background-white-15 w-[16%] overflow-y-auto fixed left-0 ${!stateGlobals.isOpen || stateGlobals.horizontal ? '-translate-x-full' : ''} top-15 px-6 pt-4 pb-15.5 transition-all duration-300 h-full`}`}>
         {!horizontalFixed && (<div className='flex justify-between items-center h-10.5 mb-2'>
-          <span className='text-background-black-child-tab text-[16px] font-semibold'>Bộ lọc</span><figure className='cursor-pointer transition-all duration-300 hover:rotate-180' onClick={() => setStateGlobals(prev => ({...prev, isOpen: !prev.isOpen}))}><img src={iconXBlack} className='w-3.25' alt="Icon X Black" /></figure>
+          <span className='text-background-black-child-tab dark:text-color-white-90 transition-all duration-300 text-[16px] font-semibold'>Bộ lọc</span><figure className='cursor-pointer transition-all duration-300 hover:rotate-180' onClick={() => setStateGlobals(prev => ({...prev, isOpen: !prev.isOpen}))}><img src={!stateGlobals.darkMode ? iconXBlack : iconXBlackDark} className='w-3.25' alt="Icon X Black" /></figure>
         </div>)}
         <form className={`${horizontalFixed ? 'flex flex-wrap gap-2 items-center' : ''}`} onSubmit={onSubmit} onReset={onReset}>
           <DateRangeFilter
@@ -376,9 +378,9 @@ const Filter = ({ filters, horizontalFixed=false
             horizontalFixed={horizontalFixed}
           />))}
 
-          <div className={`flex justify-center items-center transition-all duration-700 bg-background-light ${!horizontalFixed ? `fixed bottom-0 left-0 w-[16%] border-r border-background-line-gray ${!stateGlobals.isOpen || stateGlobals.horizontal ? '-translate-x-full' : ''} shadow-2xl shadow-color-black-50 py-3 gap-4` : 'gap-1'}`}>
-            <ButtonFilter text={'Áp dụng bộ lọc'} background={'bg-background-black-90'} color={'text-color-white-90'} type={'submit'} />
-            <ButtonFilter text={'Đặt lại'} background={'bg-background-light'} color={'text-background-black-90'} type={'reset'} src={iconReset} alt={'Icon Reset'} width={'w-3'} />
+          <div className={`flex justify-center items-center transition-all duration-700 bg-background-light dark:bg-background-dark ${!horizontalFixed ? `fixed bottom-0 left-0 w-[16%] border-r border-background-line-gray dark:border-background-white-15 ${!stateGlobals.isOpen || stateGlobals.horizontal ? '-translate-x-full' : ''} shadow-2xl shadow-color-black-50 dark:shadow-color-white-90 py-3 gap-4` : 'gap-1'}`}>
+            <ButtonFilter text={'Áp dụng bộ lọc'} background={'bg-background-black-90 dark:bg-background-primary'} color={'text-color-white-90 dark:text-background-check-box'} type={'submit'} />
+            <ButtonFilter text={'Đặt lại'} background={'bg-background-light dark:bg-background-dark'} color={'text-background-black-90 dark:text-color-white-50'} type={'reset'} src={!stateGlobals.darkMode ? iconReset : iconResetDark} alt={'Icon Reset'} width={'w-3'} />
           </div>
         </form>
       </div>

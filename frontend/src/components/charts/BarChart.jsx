@@ -2,6 +2,7 @@ import React, { memo, useRef, useCallback } from 'react';
 import ReactECharts from 'echarts-for-react';
 import NameChart from '../layouts/components/NameChart';
 import Loading from '../commons/Loading';
+import { useDashboardStateGlobals } from '../../context/DashboardFilterContext';
 
 
 
@@ -24,12 +25,14 @@ const BarChart = ({
   
   if(data==='isLoading') {
     return (
-      <div className={`${displayName ? 'p-6 bg-background-light border border-border-black-10 rounded-2xl shadow-component' : ''}`}>
+      <div className={`${displayName ? 'p-6 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : ''}`}>
         <NameChart nameChart={nameChart} description={description} display={displayName} />
         <Loading height={height} />
       </div>
     );
   }
+
+  const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
 
   const { labels = [], series = [] } = data;
   const chartRef = useRef(null);
@@ -179,34 +182,34 @@ const BarChart = ({
         [isHorizontal ? 'width' : 'height']: 20,
         brushSelect: false,
         handleSize: '100%',
-        backgroundColor: colorZoom=='yellow' ? 'rgba(255, 247, 217, 1)' : 'rgba(255, 225, 226, 1)',
-        borderColor: colorZoom=='yellow' ? 'rgb(252, 233, 167)' : 'rgba(255, 185, 187, 1)',
+        backgroundColor: colorZoom=='yellow' ? (!stateGlobals.darkMode ? 'rgba(255, 247, 217, 1)' : 'rgb(62, 63, 45)') : (!stateGlobals.darkMode ? 'rgba(254, 226, 226, 1)' : 'rgb(45, 29, 29)'),
+        borderColor: colorZoom=='yellow' ? (!stateGlobals.darkMode ? 'rgb(252, 233, 167)' : 'rgb(159, 135, 39)') : (!stateGlobals.darkMode ? 'rgba(255, 185, 187, 1)' : 'rgb(153, 80, 80)'),
         borderRadius: 8,
         handleStyle: {
           color: colorZoom=='yellow' ? 'rgba(255, 204, 0, 1)' : 'rgba(255, 56, 60, 1)',
-          borderColor: 'rgba(255, 255, 255, 1)'
+          borderColor: !stateGlobals.darkMode ? 'rgba(255, 255, 255, 1)' : 'rgba(28, 37, 52, 1)'
         },
         textStyle: {
           fontSize: fontSize.axisLabel,
-          color: 'rgba(0, 0, 0, 0.7)',
+          color: !stateGlobals.darkMode ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.8)',
           fontWeight: isHorizontal ? 500 : 600,
           fontFamily: fontFamily
         },
         emphasis: {
           handleStyle: {
-            color: 'rgba(255, 255, 255, 1)',
+            color: !stateGlobals.darkMode ? 'rgba(255, 255, 255, 1)' : 'rgba(28, 37, 52, 1)',
             borderColor:  colorZoom=='yellow' ? 'rgba(255, 204, 0, 1)' : 'rgba(255, 56, 60, 1)'
           }
         },
-        fillerColor: colorZoom=='yellow' ? 'rgb(252, 233, 167)' : 'rgba(255, 185, 187, 1)',
+        fillerColor: colorZoom=='yellow' ? (!stateGlobals.darkMode ? 'rgb(252, 233, 167)' : 'rgb(159, 135, 39)') : stateGlobals.darkMode ? 'rgb(153, 80, 80)' : 'rgba(255, 185, 187, 1)',
         dataBackground: {
           lineStyle: {
-            color: colorZoom=='yellow' ? 'rgb(252, 233, 167)' : 'rgba(255, 185, 187, 1)',
-            opacity: 0.4
+            color: colorZoom=='yellow' ? 'rgba(255, 204, 0, 1)' : 'rgba(255, 56, 60, 1)',
+            opacity: 0.2
           },
           areaStyle: {
-            color: colorZoom=='yellow' ? 'rgb(252, 233, 167)' : 'rgba(255, 185, 187, 1)',
-            opacity: 0.4
+            color: colorZoom=='yellow' ? 'rgba(255, 204, 0, 1)' : 'rgba(255, 56, 60, 1)',
+            opacity: 0.2
           }
         }
       },
@@ -233,7 +236,7 @@ const BarChart = ({
       itemGap: 10,
       textStyle: { 
         fontSize: fontSize.legend,
-        color: 'rgba(30, 27, 57, 1)',
+        color: !stateGlobals.darkMode ? 'rgba(30, 27, 57, 1)' : 'rgba(255, 255, 255, 0.8)',
         fontWeight: fontWeight.legend,
         letterSpacing: '0.1px',
         fontFamily: fontFamily
@@ -262,27 +265,27 @@ const BarChart = ({
       splitLine: {
         show: true,
         lineStyle: {
-          color: 'rgba(229, 229, 239, 1)',
+          color: !stateGlobals.darkMode ? 'rgba(229, 229, 239, 1)' : 'rgb(61, 69, 82)',
           type: 'dashed',
-          width: 1.5,
+          width: 1,
           opacity: 1
         }
       },
       axisLabel: {
         formatter: v => v.toLocaleString(undefined, { maximumFractionDigits: 0 }),
         fontSize: fontSize.axisLabel,
-        color: 'rgba(0, 0, 0, 0.7)',
+        color: !stateGlobals.darkMode ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.8)',
         fontWeight: fontWeight.axisLabel,
         fontFamily: fontFamily
       }
     } : {
       type: 'category',
       data: sortedLabels,
-      axisLine: { show: true, lineStyle: { color: 'rgba(0, 0, 0, 0.2)' } },
+      axisLine: { show: true, lineStyle: { color: !stateGlobals.darkMode ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255, 255, 255, 0.2)' } },
       axisTick: { show: false },
       axisLabel: { 
         fontSize: fontSize.axisLabel,
-        color: 'rgba(0, 0, 0, 0.7)',
+        color: !stateGlobals.darkMode ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.8)',
         fontWeight: fontWeight.axisLabel,
         rotate: 0,
         interval: 0,
@@ -302,28 +305,28 @@ const BarChart = ({
       axisTick: { show: false },
       axisLabel: { 
         fontSize: fontSize.axisLabel,
-        color: 'rgba(0, 0, 0, 0.7)',
+        color: !stateGlobals.darkMode ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.8)',
         fontWeight: fontWeight.axisLabel,
         fontFamily: fontFamily
       },
       splitLine: { show: false }
     } : {
       type: 'value',
-      axisLine: { show: true, lineStyle: { color: 'rgba(0, 0, 0, 0.2)' } },
+      axisLine: { show: true, lineStyle: { color: !stateGlobals.darkMode ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255, 255, 255, 0.2)' } },
       axisTick: { show: false },
       splitLine: {
         show: true,
         lineStyle: {
-          color: 'rgba(229, 229, 239, 1)',
+          color: !stateGlobals.darkMode ? 'rgba(229, 229, 239, 1)' : 'rgb(61, 69, 82)',
           type: 'dashed',
-          width: 1.5,
+          width: 1,
           opacity: 1
         }
       },
       axisLabel: {
         formatter: v => v.toLocaleString(undefined, { maximumFractionDigits: 0 }),
         fontSize: fontSize.axisLabel,
-        color: 'rgba(0, 0, 0, 0.7)',
+        color: !stateGlobals.darkMode ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.8)',
         fontWeight: fontWeight.axisLabel,
         fontFamily: fontFamily
       }
@@ -346,8 +349,8 @@ const BarChart = ({
       },
       emphasis: {
         itemStyle: { 
-          shadowBlur: 15, 
-          shadowColor: 'rgba(0,0,0,0.15)',
+          shadowBlur: 15,
+          shadowColor: !stateGlobals.darkMode ? 'rgba(0,0,0,0.15)' : 'rgba(255,255,255,0.2)',
           opacity: 0.9
         }
       },
@@ -398,7 +401,7 @@ const BarChart = ({
         fontSize: fontSize.dataLabel,
         fontWeight: fontWeight.dataLabel,
         fontFamily: fontFamily,
-        color: 'rgba(0, 0, 0, 0.7)',
+        color: !stateGlobals.darkMode ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.8)',
         // backgroundColor: 'rgba(255,255,255,0.95)',
         backgroundColor: 'transparent',
         borderRadius: 6,
@@ -407,7 +410,7 @@ const BarChart = ({
         // borderColor: 'rgba(0,0,0,0.1)',
         borderColor: 'transparent',
         shadowBlur: 4,
-        shadowColor: 'rgba(0,0,0,0.1)'
+        shadowColor: !stateGlobals.darkMode ? 'rgba(0, 0, 0, 0.1)' : 'rgba(0, 0, 0, 4)',
       }
     }))
   };
@@ -416,7 +419,7 @@ const BarChart = ({
 
 
   return (
-    <div className={`${displayName ? 'p-6 bg-background-light border border-border-black-10 rounded-2xl shadow-component' : ''}`}>
+    <div className={`${displayName ? 'p-6 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : ''}`}>
       <NameChart nameChart={nameChart} description={description} display={displayName} getChartData={getEChartsData} />
       <ReactECharts 
         ref={chartRef}

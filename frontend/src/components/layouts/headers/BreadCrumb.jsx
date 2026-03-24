@@ -35,6 +35,10 @@ const BreadCrumb = () => {
         const divTables = document.querySelectorAll('.divTable');
         const exportTime = document?.getElementById('exportTime');
 
+        inforTabSticky.classList.replace('transition-all', 'transition-delete');
+        inforFilterSticky.classList.replace('transition-all', 'transition-delete');
+        inforTabSticky.classList.replace('duration-300', 'duration-delete');
+        inforFilterSticky.classList.replace('duration-300', 'duration-delete');
         inforTabSticky.classList.replace('top-34', 'top-0');
         inforFilterSticky.classList.replace('top-46', 'top-12');
         divTables.forEach(table => table?.classList.replace('overflow-auto', 'overflow-hidden'));
@@ -46,7 +50,7 @@ const BreadCrumb = () => {
         const dataUrl = await toPng(target, {
             quality: 1,
             pixelRatio: 2,
-            backgroundColor: '#ffffff'
+            backgroundColor: null
         });
 
         const link = document.createElement('a');
@@ -55,6 +59,10 @@ const BreadCrumb = () => {
         link.href = dataUrl;
         link.click();
 
+        inforTabSticky.classList.replace('transition-delete', 'transition-all');
+        inforFilterSticky.classList.replace('transition-delete', 'transition-all');
+        inforTabSticky.classList.replace('duration-delete', 'duration-300');
+        inforFilterSticky.classList.replace('duration-delete', 'duration-300');
         inforTabSticky.classList.replace('top-0', 'top-34');
         inforFilterSticky.classList.replace('top-12', 'top-46');
         divTables.forEach(table => table?.classList.replace('overflow-hidden', 'overflow-auto'));
@@ -74,6 +82,10 @@ const BreadCrumb = () => {
         const divTables = document.querySelectorAll('.divTable');
         const exportTime = document?.getElementById('exportTime');
 
+        inforTabSticky.classList.replace('transition-all', 'transition-delete');
+        inforFilterSticky.classList.replace('transition-all', 'transition-delete');
+        inforTabSticky.classList.replace('duration-300', 'duration-delete');
+        inforFilterSticky.classList.replace('duration-300', 'duration-delete');
         inforTabSticky.classList.replace('top-34', 'top-0');
         inforFilterSticky.classList.replace('top-46', 'top-12');
         divTables.forEach(table => table?.classList.replace('overflow-auto', 'overflow-hidden'));
@@ -86,7 +98,7 @@ const BreadCrumb = () => {
             // ✅ CONFIG GIỐNG HỆT handleCapture
             const canvas = await html2canvas(target, {
                 scale: 2,
-                backgroundColor: '#ffffff',
+                backgroundColor: null,
                 useCORS: true,
                 allowTaint: true,
                 logging: false
@@ -117,6 +129,10 @@ const BreadCrumb = () => {
         } catch (error) {
             console.error('❌ Lỗi tạo PDF:', error);
         } finally {
+            inforTabSticky.classList.replace('transition-delete', 'transition-all');
+            inforFilterSticky.classList.replace('transition-delete', 'transition-all');
+            inforTabSticky.classList.replace('duration-delete', 'duration-300');
+            inforFilterSticky.classList.replace('duration-delete', 'duration-300');
             inforTabSticky.classList.replace('top-0', 'top-34');
             inforFilterSticky.classList.replace('top-12', 'top-46');
             divTables.forEach(table => table?.classList.replace('overflow-hidden', 'overflow-auto'));

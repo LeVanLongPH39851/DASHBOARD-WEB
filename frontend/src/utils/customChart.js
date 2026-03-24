@@ -81,7 +81,7 @@ export const CUSTOM_CHART = {
         td: 14
     },
     fontWeight: {
-        label: 600,
+        label: 500,
         td: 500
     },
     tableChartChannel: {

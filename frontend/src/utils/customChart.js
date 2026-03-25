@@ -135,6 +135,7 @@ export const CUSTOM_CHART = {
         'rating': variableCustoms.colorRating,
         'ave_reach': variableCustoms.colorAveReach
       },
+      maxVisibleItems: 10,
       lastDataIndexActive: true
     },
     mixedChartPercentTimeband: {

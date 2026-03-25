@@ -81,23 +81,23 @@ const InforFilter = ({ filters }) => {
   }, []);
   
   return (
-    <section id='inforFilterSticky' className='mx-6 bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300 sticky top-46 rounded-b-2xl' style={{zIndex: 100}}>
+    <section id='inforFilterSticky' className='mx-6 max-md:mx-4 bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300 sticky top-46 max-md:top-28 rounded-b-2xl' style={{zIndex: 100}}>
       <div id='inforFilterRelative' className='transition-all duration-300 w-full'>
-        <div id='inforFilter' className={`px-6 py-4 bg-background-light dark:bg-background-chart-dark w-full border transition-all duration-300 absolute left-0 border-border-black-10 dark:border-background-white-15 rounded-2xl ${stateGlobals.isInfor ? 'visible opacity-100 top-0' : 'invisible opacity-0 -top-1/2'}`}>
-          <div className='flex gap-2 mb-2.5'>
+        <div id='inforFilter' className={`px-6 max-md:px-4 py-4 max-md:py-2.5 bg-background-light dark:bg-background-chart-dark w-full border transition-all duration-300 absolute left-0 border-border-black-10 dark:border-background-white-15 rounded-2xl ${stateGlobals.isInfor ? 'visible opacity-100 top-0' : 'invisible opacity-0 -top-1/2'}`}>
+          <div className='flex gap-2 mb-2.5  max-md:mb-1.5'>
             <Button background={'bg-color-black-100 dark:bg-background-primary-2'} color={'text-color-white-90 dark:text-background-check-box'} src={!stateGlobals.darkMode ? iconArrowLeftLine : iconArrowLefLineDark} rotate={`${stateGlobals.isOpen ? (!stateGlobals.horizontal ? '' : 'rotate-90') : (!stateGlobals.horizontal ? 'rotate-180' : 'rotate-270')} transition-all duration-300`}
-                    heightImage={'h-2.5'} alt='Icon Arrow Down Line' text={`Bộ lọc (${Object.entries(appliedFilters || {}).filter(([, values]) => Array.isArray(values) && values.length > 0).length + 1 || 1})`} click={() => setStateGlobals(prev => ({...prev, isOpen: !prev.isOpen}))} />
+                    heightImage={'h-2.5 max-md:h-2'} alt='Icon Arrow Down Line' text={`Bộ lọc (${Object.entries(appliedFilters || {}).filter(([, values]) => Array.isArray(values) && values.length > 0).length + 1 || 1})`} click={() => setStateGlobals(prev => ({...prev, isOpen: !prev.isOpen}))} />
             <Button background={'bg-background-black-4 dark:bg-background-white-15'} color={''} src={stateGlobals.horizontal ? (!stateGlobals.darkMode ? iconNavUp : iconNavUpDark) : (!stateGlobals.darkMode ? iconNavLeft : iconNavLeftDark)}
-                    widthImage='w-3' heightImage='h-3' alt='Icon Arrow Nav Left' text={''}
-                    src2={!stateGlobals.darkMode ? iconArrowDown : iconArrowDownDark} widthImage2='w-2' alt2='Icon Arrow Down' rotate2={`${stateGlobals.horizontal ? '-rotate-90' : ''} transition-all duration-300`} click={() => setStateGlobals(prev => ({...prev, horizontal: !prev.horizontal}))} />
+                    widthImage='w-3 max-md:w-2.5' heightImage='h-3 max-md:h-2.5' alt='Icon Arrow Nav Left' text={''}
+                    src2={!stateGlobals.darkMode ? iconArrowDown : iconArrowDownDark} widthImage2='w-2 max-md:w-1.5' alt2='Icon Arrow Down' rotate2={`${stateGlobals.horizontal ? '-rotate-90' : ''} transition-all duration-300`} click={() => setStateGlobals(prev => ({...prev, horizontal: !prev.horizontal}))} />
           </div>
-          <div id='filterHorizontalRelative' className={`w-full transition-all duration-300 relative ${stateGlobals.horizontal && stateGlobals.isOpen ? 'mb-2.5' : ''}`}>
+          <div id='filterHorizontalRelative' className={`w-full overflow-hidden transition-all duration-300 relative ${stateGlobals.horizontal && stateGlobals.isOpen ? 'mb-2.5 max-md:mb-1.5' : ''}`}>
               <div id='filterHorizontal' className={`w-full absolute left-0 transition-all duration-300 ${stateGlobals.horizontal && stateGlobals.isOpen ? 'visible opacity-100 top-0' : 'invisible opacity-0 -top-1/2'}`}>
                 {stateGlobals.horizontal && <Filter
                   filters={filters} horizontalFixed={true} />}
               </div>
           </div>
-          <div className='flex gap-4 items-center'>
+          <div className='flex gap-4 items-center flex-wrap'>
             <ul className='flex gap-2 items-center flex-wrap'>
               <InforFilterItem keyFilter={'Ngày'} nameFilter={'Ngày'} valueFilters={[appliedFilters?.startDate || yesterday, appliedFilters?.endDate || yesterday]} space={' - '} />
               {appliedFilters && (
@@ -113,7 +113,7 @@ const InforFilter = ({ filters }) => {
                 ))
               )}
             </ul>
-            <span onClick={() => clearSetAll(setFilterValues)} className='text-sm font-medium text-color-black-50 dark:text-color-white-50 transition-all duration-300 underline cursor-pointer'>Xóa toàn bộ</span>
+            <span onClick={() => clearSetAll(setFilterValues)} className='text-sm max-md:text-xs font-medium text-color-black-50 dark:text-color-white-50 transition-all duration-300 underline cursor-pointer'>Xóa toàn bộ</span>
           </div>
         </div>
       </div>

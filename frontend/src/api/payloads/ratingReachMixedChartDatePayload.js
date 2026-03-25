@@ -11,6 +11,13 @@ export const ratingReachMixedChartDatePayload = {
         "time_range": "DATEADD(DATETIME(\"today\"),-1, DAY) : DATEADD(DATETIME(\"today\"),-1, SECOND)",
         "filters": [
           {
+            "col": "day",
+            "op": "NOT IN",
+            "val": [
+              "7 days"
+            ]
+          },
+          {
             "col": "date",
             "op": "TEMPORAL_RANGE",
             "val": "No filter"
@@ -72,6 +79,13 @@ export const ratingReachMixedChartDatePayload = {
       {
         "time_range": "DATEADD(DATETIME(\"today\"),-1, DAY) : DATEADD(DATETIME(\"today\"),-1, SECOND)",
         "filters": [
+          {
+            "col": "day",
+            "op": "NOT IN",
+            "val": [
+              "7 days"
+            ]
+          },
           {
             "col": "date",
             "op": "TEMPORAL_RANGE",
@@ -203,6 +217,15 @@ export const ratingReachMixedChartDatePayload = {
         39
       ],
       "extra_form_data": {
+        "filters" : [
+          {
+            "col": "day",
+            "op": "NOT IN",
+            "val": [
+              "7 days"
+            ]
+          }
+        ],
         "time_range": "DATEADD(DATETIME(\"today\"),-1, DAY) : DATEADD(DATETIME(\"today\"),-1, SECOND)"
       },
       "chart_id": 470,

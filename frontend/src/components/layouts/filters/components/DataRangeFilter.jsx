@@ -52,25 +52,25 @@ const DateRangeFilter = ({ startDate, endDate, onChange, horizontalFixed=false }
   const [isOpenFilter, setIsOpenFilter] = useState(true);
 
   return (
-    <div className={`${horizontalFixed ? '' : isOpenFilter ? `mb-4` : ''}`}>
-      {!horizontalFixed && (<div className={`flex justify-between items-center h-10.5 ${isOpenFilter ? 'mb-1' : ''}`}>
-                        <label className='text-[16px] text-background-black-child-tab dark:text-color-white-90 transition-all duration-300 font-medium'>Ngày</label>
-                        <figure onClick={() => setIsOpenFilter(prev => !prev)} className={`cursor-pointer ${isOpenFilter ? '' : 'rotate-180'}`}><img src={!stateGlobals ? iconArrowUpGray : iconArrowUpGrayDark} className='w-2.75' alt="Icon Arrow Up Gray" /></figure>
+    <div className={`${horizontalFixed ? '' : isOpenFilter ? `mb-4 max-md:mb-2` : ''}`}>
+      {!horizontalFixed && (<div className={`flex justify-between items-center h-10.5 max-md:h-8 ${isOpenFilter ? 'mb-1' : ''}`}>
+                        <label className='text-[16px] max-md:text-xs text-background-black-child-tab dark:text-color-white-90 transition-all duration-300 font-medium'>Ngày</label>
+                        <figure onClick={() => setIsOpenFilter(prev => !prev)} className={`cursor-pointer ${isOpenFilter ? '' : 'rotate-180'}`}><img src={!stateGlobals ? iconArrowUpGray : iconArrowUpGrayDark} className='w-2.75 max-md:w-2' alt="Icon Arrow Up Gray" /></figure>
                       </div>)}
       <div className={!horizontalFixed ? `transition-all duration-300 relative filter-relative overflow-hidden` : ''} data-initial-height="match">
-        <div className={`flex ${horizontalFixed ? 'gap-1' : 'flex-col'} ${!horizontalFixed ? `transition-all duration-300 absolute w-full left-0 filter-absolute ${isOpenFilter ? 'visible opacity-100 top-0' : 'invisible opacity-0 -top-1/2'}` : ''}`}>
-          {!horizontalFixed && <label className='text-sm font-medium text-color-black-50 dark:text-color-white-50 transition-all duration-300 mb-1.5'>Từ ngày</label>}
+        <div className={`flex ${horizontalFixed ? 'gap-1 max-md:grid max-md:grid-cols-2' : 'flex-col'} ${!horizontalFixed ? `transition-all duration-300 absolute w-full left-0 filter-absolute ${isOpenFilter ? 'visible opacity-100 top-0' : 'invisible opacity-0 -top-1/2'}` : ''}`}>
+          {!horizontalFixed && <label className='text-sm max-md:text-xs font-medium text-color-black-50 dark:text-color-white-50 transition-all duration-300 mb-1.5 max-md:mb-1'>Từ ngày</label>}
           <input
-            className={`px-4 rounded-xl border border-background-line-gray dark:border-background-white-15 text-sm font-medium text-color-black-50 dark:text-color-white-50 transition-all duration-300 dark:bg-background-white-8 outline-none ${horizontalFixed ? 'py-2' : 'mb-2 py-2.25'}`}
+            className={`px-4 max-md:px-2.5 rounded-xl border border-background-line-gray dark:border-background-white-15 text-sm max-md:text-xs font-medium text-color-black-50 dark:text-color-white-50 transition-all duration-300 dark:bg-background-white-8 outline-none ${horizontalFixed ? 'py-2 max-md:py-1.5' : 'mb-2 py-2.25 max-md:py-1.5'}`}
             type="date"
             value={localStart}
             min={getMinStartDate(localEnd)}
             max={localEnd}
             onChange={handleStartChange}
           />
-          {!horizontalFixed && <label className='text-sm font-medium text-color-black-50 dark:text-color-white-50 transition-all duration-300 mb-1.5'>Đến ngày</label>}
+          {!horizontalFixed && <label className='text-sm max-md:text-xs font-medium text-color-black-50 dark:text-color-white-50 transition-all duration-300 mb-1.5 max-md:mb-1'>Đến ngày</label>}
           <input
-            className={`px-4 rounded-xl border border-background-line-gray dark:border-background-white-15 text-sm font-medium text-color-black-50 dark:text-color-white-50 transition-all duration-300 dark:bg-background-white-8 outline-none ${horizontalFixed ? 'py-2' : 'py-2.25'}`}
+            className={`px-4 max-md:px-2.5 rounded-xl border border-background-line-gray dark:border-background-white-15 text-sm max-md:text-xs font-medium text-color-black-50 dark:text-color-white-50 transition-all duration-300 dark:bg-background-white-8 outline-none ${horizontalFixed ? 'py-2 max-md:py-1.5' : 'py-2.25 max-md:py-1.5'}`}
             type="date"
             value={localEnd}
             min={localStart}

@@ -41,7 +41,7 @@ export default function NormalTabs({
   // ✅ MÀU SẮC + STYLE GIỐNG HẾT CHILD TABS
   const variants = {
     default: {
-      container: 'relative flex gap-1 mb-6 overflow-hidden rounded-2xl p-1 bg-background-black-4 dark:bg-background-white-8 w-fit transition-all duration-300', // ✅ Không bg-gray-100
+      container: 'relative flex gap-1 mb-6 max-md:mb-4 overflow-hidden rounded-2xl p-1 bg-background-black-4 dark:bg-background-white-8 w-fit transition-all duration-300', // ✅ Không bg-gray-100
       button: (isActive) => `relative px-6 w-36 py-2 font-medium text-sm transition-all duration-300 cursor-pointer z-10 ${
         isActive
           ? 'text-color-light dark:text-background-check-box font-semibold'  // ✅ color-light (không hardcode)

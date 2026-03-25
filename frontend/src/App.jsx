@@ -16,8 +16,8 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<PublicRoute><Login /></PublicRoute>}/>
-        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>}/>
+        {/* <Route path="/" element={<PublicRoute><Login /></PublicRoute>}/> */}
+        <Route path="/rating" element={<Dashboard />}/>
       </Routes> 
     </BrowserRouter>
   )

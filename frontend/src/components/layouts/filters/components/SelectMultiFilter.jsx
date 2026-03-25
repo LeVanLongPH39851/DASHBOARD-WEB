@@ -20,14 +20,13 @@ const SelectMultiFilter = ({
   const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
 
    const darkMode = stateGlobals.darkMode;
+   const isMobile = window.innerWidth < 1000;
 
     const customStyles = {
       control: (provided, state) => ({
         ...provided,
-        minHeight: '38px',
-        minWidth: '200px',
-        maxWidth: '350px',
-        fontSize: '13px',
+        minHeight: !horizontalFixed ? (!isMobile ? '40px' : '30px') : (!isMobile ? '38px' : '30px'),
+        fontSize: !isMobile ? '13px' : '11px',
         borderRadius: '12px',
         outline: 'none',
         boxShadow: 'none',
@@ -44,7 +43,7 @@ const SelectMultiFilter = ({
             ? '1px solid rgba(255, 255, 255, 0.15)'
             : '1px solid rgba(225, 227, 234, 1)'
         },
-        padding: horizontalFixed ? '0px 8px 0px 2px' : '1px 8px 1px 2px'
+        padding: '0px 8px 0px 2px'
       }),
       singleValue: (provided) => ({
         ...provided,
@@ -85,7 +84,7 @@ const SelectMultiFilter = ({
         const hoverBg = darkMode ? 'rgba(31, 41, 55, 1)' : '#e0e0e0';
         return {
           ...provided,
-          fontSize: '14px',
+          fontSize: !isMobile ? '14px' : '12px',
           fontWeight: 500,
           backgroundColor: state.isSelected
             ? '#20A7C9'
@@ -102,14 +101,13 @@ const SelectMultiFilter = ({
       placeholder: (provided) => ({
         ...provided,
         color: darkMode ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)',
-        fontSize: '14px',
-        fontWeight: 500,
-        transition: 'all 0.3s ease-in-out'
+        fontSize: !isMobile ? '14px' : '11.9px',
+        fontWeight: 500
       }),
       input: (provided) => ({
         ...provided,
         color: darkMode ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)',
-        fontSize: '14px',
+        fontSize: !isMobile ? '14px' : '12px',
         fontWeight: 500,
         cursor: 'text',
         transition: 'all 0.3s ease-in-out'
@@ -121,7 +119,8 @@ const SelectMultiFilter = ({
           color: darkMode ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)'
         },
         transition: 'all 0.3s ease-in-out',
-        cursor: 'pointer'
+        cursor: 'pointer',
+        padding: '0px 8px 0px 8px'
       }),
       clearIndicator: (provided, state) => ({
         ...provided,
@@ -138,9 +137,9 @@ const SelectMultiFilter = ({
 
   return (
     <div className={`${horizontalFixed ? '' : isOpenFilter ? `${marginBottom}` : ''}`}>
-      {!horizontalFixed && (<div className={`flex justify-between items-center h-10.5 ${isOpenFilter ? 'mb-1' : ''}`}>
-                        <label className='text-[16px] text-background-black-child-tab dark:text-color-white-90 transition-all duration-300 font-medium'>{label}</label>
-                        <figure onClick={() => setIsOpenFilter(prev => !prev)} className={`cursor-pointer ${isOpenFilter ? '' : 'rotate-180'}`}><img src={!stateGlobals.darkMode ? iconArrowUpGray : iconArrowUpGrayDark} className='w-2.75' alt="Icon Arrow Up Gray" /></figure>
+      {!horizontalFixed && (<div className={`flex justify-between items-center h-10.5 max-md:h-8 ${isOpenFilter ? 'mb-1' : ''}`}>
+                        <label className='text-[16px] max-md:text-xs text-background-black-child-tab dark:text-color-white-90 transition-all duration-300 font-medium'>{label}</label>
+                        <figure onClick={() => setIsOpenFilter(prev => !prev)} className={`cursor-pointer ${isOpenFilter ? '' : 'rotate-180'}`}><img src={!stateGlobals.darkMode ? iconArrowUpGray : iconArrowUpGrayDark} className='w-2.75 max-md:w-2' alt="Icon Arrow Up Gray" /></figure>
                       </div>)}
       <div className={!horizontalFixed ? 'transition-all duration-300 relative filter-relative overflow-hidden' : ''} data-initial-height="match">
         <div className={!horizontalFixed ? `transition-all duration-300 absolute w-full left-0 filter-absolute ${isOpenFilter ? 'visible opacity-100 top-0' : 'invisible opacity-0 -top-1/2'}` : ''}>

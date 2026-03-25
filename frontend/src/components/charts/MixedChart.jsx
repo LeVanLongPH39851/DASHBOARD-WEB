@@ -14,7 +14,7 @@ const MixedChart = ({
   nameChart,
   description,
   enableZoom = true,
-  maxVisibleItems = 10,
+  maxVisibleItems = true,
   barSeriesKeys,
   lineSeriesKeys,
   colors,
@@ -69,10 +69,10 @@ const MixedChart = ({
   }, [labels, series]);
 
   // Tính toán có cần dataZoom hay không
-  const needsScroll = enableZoom && labels.length > maxVisibleItems;
-  const zoomEndPercent = needsScroll 
-    ? Math.round((maxVisibleItems / labels.length) * 100) 
-    : 100;
+  const needsScroll = maxVisibleItems!=true ? enableZoom && labels.length > maxVisibleItems : true;
+  const zoomEndPercent = maxVisibleItems!=true ? (needsScroll 
+    ? Math.round((maxVisibleItems / labels.length) * 100)
+    : 100) : 100;
 
   const lastDataIndex = labels.length - 1;
   

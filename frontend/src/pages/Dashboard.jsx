@@ -63,7 +63,7 @@ const DashboardContent = () => {
       <Header />
       <div className='flex w-full h-full bg-background-light dark:bg-background-dark transition-all duration-300'>
         <Filter filters={scopeFilterData} />
-        <div className={`pb-6 ${stateGlobals.isOpen && !stateGlobals.horizontal ? 'w-[84%]' : 'w-full'} transition-all duration-300 bg-background-dashboard dark:bg-background-dashboard-dark`}>
+        <div className={`pb-6 max-md:pb-4 ${stateGlobals.isOpen && !stateGlobals.horizontal ? 'w-[84%] max-md:w-full' : 'w-full'} transition-all duration-300 bg-background-dashboard dark:bg-background-dashboard-dark`}>
           <BreadCrumb/>
           <div className='bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300'>
             <ParentTabs uniqueId='dashboard'
@@ -74,10 +74,10 @@ const DashboardContent = () => {
                               <section className='bg-background-dashboard dark:bg-background-dashboard-dark transiton-all duration-300' id="target_capture_overview">
                                 <InforTab inforTab={"Tổng quan - P4+ toàn quốc"} />
                                 <InforFilter filters={scopeFilterData} />
-                                <div className='px-6 pt-6'>
-                                  <div className='w-full grid grid-cols-2 gap-6 pb-6'>
+                                <div className='px-6 max-md:px-4 pt-6 max-md:pt-4'>
+                                  <div className='w-full grid grid-cols-2 max-md:grid-cols-1 gap-6 max-md:gap-4 pb-6 max-md:pb-4'>
                                     <NumberWithTrendChart nameChart={METRICS['rating%'].title} description={METRICS['rating%'].description} data={!dashboard.isLoading.ratingPercentTrendNumberData ? transformNumberWithTrendData(dashboard.ratingPercentTrendNumberData?.data, dashboard.ratingPercentTrendNumberData?.colnames) : 'isLoading'} height={395} icon={METRICS.rating.icon}/>
-                                    <div className="grid grid-cols-2 gap-6">
+                                    <div className="grid grid-cols-2 gap-6 max-md:gap-4">
                                     {Object.values(METRICS).map(card => (
                                       <NumberCard
                                         key={card.name}
@@ -91,8 +91,8 @@ const DashboardContent = () => {
                                     ))}
                                     </div>
                                   </div>
-                                  <div className='w-full flex gap-6 pb-6'>
-                                    <div className='w-[60%]'>
+                                  <div className='w-full flex gap-6 max-md:gap-4 max-md:flex-wrap pb-6 max-md:pb-4'>
+                                    <div className='w-[60%] max-md:w-full'>
                                       <div className={`p-6 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
                                         <NameChart nameChart={CUSTOM_CHART.barChart.barChartChannelEvent.ratingNameChart} description={METRICS.rating.description} opacity={true} />
                                         <ChildTabs tabs={[
@@ -129,7 +129,7 @@ const DashboardContent = () => {
                                           ]} />
                                       </div>
                                     </div>
-                                    <div className='w-[40%]'>
+                                    <div className='w-[40%] max-md:w-full'>
                                       <div className={`p-6 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
                                         <NameChart nameChart={CUSTOM_CHART.barChart.barChartChannelEvent.ratingNameChart} description={METRICS.rating.description} opacity={true} />
                                         <ChildTabs tabs={[
@@ -167,8 +167,8 @@ const DashboardContent = () => {
                                       </div>
                                     </div>
                                   </div>
-                                  <div className='w-full flex gap-6 pb-6'>
-                                    <div className='w-[60%]'>
+                                  <div className='w-full flex gap-6 max-md:gap-4 max-md:flex-wrap pb-6 max-md:pb-4'>
+                                    <div className='w-[60%] max-md:w-full'>
                                       <div className={`p-6 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
                                         <NameChart nameChart={CUSTOM_CHART.tableChart.tableChartChannel.name} description={CUSTOM_CHART.tableChart.tableChartChannel.description} opacity={true} />
                                         <ChildTabs tabs={[
@@ -201,7 +201,7 @@ const DashboardContent = () => {
                                           ]} />
                                       </div>
                                     </div>
-                                    <div className='w-[40%]'>
+                                    <div className='w-[40%] max-md:w-full'>
                                       <div className={`p-6 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
                                         <NameChart nameChart={CUSTOM_CHART.tableChart.tableChartArea.name} description={CUSTOM_CHART.tableChart.tableChartArea.description} opacity={true} />
                                         <ChildTabs tabs={[
@@ -235,7 +235,7 @@ const DashboardContent = () => {
                                       </div>
                                     </div>
                                   </div>
-                                  <div className='w-full grid grid-cols-2 gap-6 pb-6'>
+                                  <div className='w-full grid grid-cols-2 max-md:flex-wrap max-md:grid-cols-1 gap-6 max-md:gap-4 pb-6 max-md:pb-4'>
                                       <div className={`p-6 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
                                         <NameChart nameChart={CUSTOM_CHART.barChart.barChartArea.rating.name} description={METRICS.rating.description} opacity={true} />
                                         <ChildTabs tabs={[
@@ -375,13 +375,14 @@ const DashboardContent = () => {
                                           ]} />
                                       </div>
                                   </div>
-                                  <div className='w-full pb-6'>
+                                  <div className='w-full pb-6 max-md:pb-4'>
                                     <MixedChart data={!dashboard.isLoading.ratingReachMixedDateData ? transformMixedChartData(dashboard.ratingReachMixedDateData?.data, 'date', dashboard.ratingReachMixedDateData?.colnames) : 'isLoading'}
                                                 height={CUSTOM_CHART.mixedChart.height}
                                                 fontSize={CUSTOM_CHART.mixedChart.fontSize}
                                                 fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                 fontWeight={CUSTOM_CHART.mixedChart.fontWeight}
                                                 nameChart={CUSTOM_CHART.mixedChart.mixedChartDate.name}
+                                                maxVisibleItems={CUSTOM_CHART.mixedChart.mixedChartDate.maxVisibleItems}
                                                 description={CUSTOM_CHART.mixedChart.mixedChartDate.description}
                                                 barSeriesKeys={CUSTOM_CHART.mixedChart.mixedChartDate.metrics.aveReach}
                                                 lineSeriesKeys={CUSTOM_CHART.mixedChart.mixedChartDate.metrics.rating}
@@ -399,13 +400,13 @@ const DashboardContent = () => {
                               <section className='bg-background-dashboard dark:bg-background-dashboard-dark transiton-all duration-300' id="target_capture_channel">
                                 <InforTab inforTab={"Kênh - P4+ toàn quốc"} />
                                 <InforFilter filters={scopeFilterData} />
-                                <div className='px-6 py-6'>
-                                  <div className='px-6 pt-4 bg-background-black-4 rounded-2xl'>
+                                <div className='px-6 max-md:px-4 py-6 max-md:py-4'>
+                                  <div className='px-6 max-md:px-0 pt-4 max-md:pt-0 bg-background-black-4 max-md:bg-background-dashboard dark:bg-background-dark max-md:dark:bg-background-dashboard-dark transition-all duration-300 rounded-2xl'>
                                     <NormalTabs tabs={[
                                       {id: '%', label: '(%)',
                                         content: (
                                           <>
-                                            <div className='w-full pb-6'>
+                                            <div className='w-full pb-6 max-md:pb-4'>
                                               <MixedChart data={!dashboard.isLoading.ratingReachPercentMixedTimebandData ? transformMixedChartData(dashboard.ratingReachPercentMixedTimebandData?.data, 'time_band', dashboard.ratingReachPercentMixedTimebandData?.colnames) : 'isLoading'}
                                                           height={CUSTOM_CHART.mixedChart.height}
                                                           fontSize={CUSTOM_CHART.mixedChart.fontSize}
@@ -420,7 +421,7 @@ const DashboardContent = () => {
                                                           barWidthPercent={CUSTOM_CHART.mixedChart.barWidthPercent}
                                               />
                                             </div>
-                                            <div className='w-full pb-6'>
+                                            <div className='w-full pb-6 max-md:pb-4'>
                                               <LineChart data={!dashboard.isLoading.ratingPercentLineTimebandChannelData ? transformMixedChartData(dashboard.ratingPercentLineTimebandChannelData?.data, 'time_band', dashboard.ratingPercentLineTimebandChannelData?.colnames) : 'isLoading'}
                                                         height={CUSTOM_CHART.lineChart.height}
                                                         fontSize={CUSTOM_CHART.lineChart.fontSize}
@@ -437,7 +438,7 @@ const DashboardContent = () => {
                                                         showTopNSeries={CUSTOM_CHART.lineChart.lineChartPercentTimebandChannel.showTopNSeries}
                                               />
                                             </div>
-                                            <div className='w-full pb-6'>
+                                            <div className='w-full pb-6 max-md:pb-4'>
                                               <LineChart data={!dashboard.isLoading.aveReachPercentLineDateChannelData ? transformMixedChartData(dashboard.aveReachPercentLineDateChannelData?.data, 'date', dashboard.aveReachPercentLineDateChannelData?.colnames) : 'isLoading'}
                                                         height={CUSTOM_CHART.lineChart.height}
                                                         fontSize={CUSTOM_CHART.lineChart.fontSize}
@@ -454,7 +455,7 @@ const DashboardContent = () => {
                                                         showTopNSeries={CUSTOM_CHART.lineChart.showTopNSeries}
                                               />
                                             </div>
-                                            <div className='w-full pb-6'>
+                                            <div className='w-full pb-6 max-md:pb-4'>
                                               <LineChart data={!dashboard.isLoading.ratingPercentLineDateChannelData ? transformMixedChartData(dashboard.ratingPercentLineDateChannelData?.data, 'date', dashboard.ratingPercentLineDateChannelData?.colnames) : 'isLoading'}
                                                         height={CUSTOM_CHART.lineChart.height}
                                                         fontSize={CUSTOM_CHART.lineChart.fontSize}
@@ -471,7 +472,7 @@ const DashboardContent = () => {
                                                         showTopNSeries={CUSTOM_CHART.lineChart.showTopNSeries}
                                               />
                                             </div>
-                                            <div className='w-full pb-6'>
+                                            <div className='w-full pb-6 max-md:pb-4'>
                                               <TreeMapChart data={!dashboard.isLoading.aveReachPercentTreemapChannelData ? transformTreeMapData(dashboard.aveReachPercentTreemapChannelData?.data, dashboard.aveReachPercentTreemapChannelData?.colnames) : 'isLoading'}
                                                             height={CUSTOM_CHART.treeMapChart.height}
                                                             fontSize={CUSTOM_CHART.treeMapChart.fontSize}
@@ -488,7 +489,7 @@ const DashboardContent = () => {
                                       {id: '000', label: '(000)',
                                         content: (
                                           <>
-                                            <div className='w-full pb-6'>
+                                            <div className='w-full pb-6 max-md:pb-4'>
                                               <MixedChart data={!dashboard.isLoading.ratingReachMixedTimebandData ? transformMixedChartData(dashboard.ratingReachMixedTimebandData?.data, 'time_band', dashboard.ratingReachMixedTimebandData?.colnames) : 'isLoading'}
                                                           height={CUSTOM_CHART.mixedChart.height}
                                                           fontSize={CUSTOM_CHART.mixedChart.fontSize}
@@ -503,7 +504,7 @@ const DashboardContent = () => {
                                                           barWidthPercent={CUSTOM_CHART.mixedChart.barWidthPercent}
                                               />
                                             </div>
-                                            <div className='w-full pb-6'>
+                                            <div className='w-full pb-6 max-md:pb-4'>
                                               <LineChart data={!dashboard.isLoading.ratingLineTimebandChannelData ? transformMixedChartData(dashboard.ratingLineTimebandChannelData?.data, 'time_band', dashboard.ratingLineTimebandChannelData?.colnames) : 'isLoading'}
                                                         height={CUSTOM_CHART.lineChart.height}
                                                         fontSize={CUSTOM_CHART.lineChart.fontSize}
@@ -520,7 +521,7 @@ const DashboardContent = () => {
                                                         showTopNSeries={CUSTOM_CHART.lineChart.lineChartTimebandChannel.showTopNSeries}
                                               />
                                             </div>
-                                            <div className='w-full pb-6'>
+                                            <div className='w-full pb-6 max-md:pb-4'>
                                               <LineChart data={!dashboard.isLoading.aveReachLineTimebandChannelData ? transformMixedChartData(dashboard.aveReachLineTimebandChannelData?.data, 'time_band', dashboard.aveReachLineTimebandChannelData?.colnames) : 'isLoading'}
                                                         height={CUSTOM_CHART.lineChart.height}
                                                         fontSize={CUSTOM_CHART.lineChart.fontSize}
@@ -537,7 +538,7 @@ const DashboardContent = () => {
                                                         showTopNSeries={CUSTOM_CHART.lineChart.lineChartTimebandChannel.showTopNSeries}
                                               />
                                             </div>
-                                            <div className='w-full pb-6'>
+                                            <div className='w-full pb-6 max-md:pb-4'>
                                               <LineChart data={!dashboard.isLoading.ratingLineDateChannelData ? transformMixedChartData(dashboard.ratingLineDateChannelData?.data, 'date', dashboard.ratingLineDateChannelData?.colnames) : 'isLoading'}
                                                         height={CUSTOM_CHART.lineChart.height}
                                                         fontSize={CUSTOM_CHART.lineChart.fontSize}
@@ -554,7 +555,7 @@ const DashboardContent = () => {
                                                         showTopNSeries={CUSTOM_CHART.lineChart.showTopNSeries}
                                               />
                                             </div>
-                                            <div className='w-full pb-6'>
+                                            <div className='w-full pb-6 max-md:pb-4'>
                                               <LineChart data={!dashboard.isLoading.ratingLineDateChannelData ? transformMixedChartData(dashboard.ratingLineDateChannelData?.data, 'date', dashboard.ratingLineDateChannelData?.colnames) : 'isLoading'}
                                                         height={CUSTOM_CHART.lineChart.height}
                                                         fontSize={CUSTOM_CHART.lineChart.fontSize}
@@ -571,7 +572,7 @@ const DashboardContent = () => {
                                                         showTopNSeries={CUSTOM_CHART.lineChart.showTopNSeries}
                                               />
                                             </div>
-                                            <div className='w-full pb-6'>
+                                            <div className='w-full pb-6 max-md:pb-4'>
                                               <LineChart data={!dashboard.isLoading.aveReachLineDateChannelData ? transformMixedChartData(dashboard.aveReachLineDateChannelData?.data, 'date', dashboard.aveReachLineDateChannelData?.colnames) : 'isLoading'}
                                                         height={CUSTOM_CHART.lineChart.height}
                                                         fontSize={CUSTOM_CHART.lineChart.fontSize}
@@ -588,7 +589,7 @@ const DashboardContent = () => {
                                                         showTopNSeries={CUSTOM_CHART.lineChart.showTopNSeries}
                                               />
                                             </div>
-                                            <div className='w-full pb-6'>
+                                            <div className='w-full pb-6 max-md:pb-4'>
                                               <LineChart data={!dashboard.isLoading.ratingLineTimebandDayData ? transformMixedChartData(dashboard.ratingLineTimebandDayData?.data, 'time_band', dashboard.ratingLineTimebandDayData?.colnames) : 'isLoading'}
                                                         height={CUSTOM_CHART.lineChart.height}
                                                         fontSize={CUSTOM_CHART.lineChart.fontSize}
@@ -606,7 +607,7 @@ const DashboardContent = () => {
                                                         left={CUSTOM_CHART.lineChart.lineChartTimebandDay.left}
                                               />
                                             </div>
-                                            <div className='w-full pb-6'>
+                                            <div className='w-full pb-6 max-md:pb-4'>
                                               <LineChart data={!dashboard.isLoading.aveReachLineTimebandDayData ? transformMixedChartData(dashboard.aveReachLineTimebandDayData?.data, 'time_band', dashboard.aveReachLineTimebandDayData?.colnames) : 'isLoading'}
                                                         height={CUSTOM_CHART.lineChart.height}
                                                         fontSize={CUSTOM_CHART.lineChart.fontSize}
@@ -624,7 +625,7 @@ const DashboardContent = () => {
                                                         left={CUSTOM_CHART.lineChart.lineChartTimebandDay.left}
                                               />
                                             </div>
-                                            <div className='w-full pb-6'>
+                                            <div className='w-full pb-6 max-md:pb-4'>
                                               <LineChart data={!dashboard.isLoading.aveReachLineTimebandRegionalData ? transformMixedChartData(dashboard.aveReachLineTimebandRegionalData?.data, 'time_band', dashboard.aveReachLineTimebandRegionalData?.colnames) : 'isLoading'}
                                                         height={CUSTOM_CHART.lineChart.height}
                                                         fontSize={CUSTOM_CHART.lineChart.fontSize}
@@ -642,7 +643,7 @@ const DashboardContent = () => {
                                                         left={CUSTOM_CHART.lineChart.lineChartTimebandRegional.left}
                                               />
                                             </div>
-                                            <div className='w-full pb-6'>
+                                            <div className='w-full pb-6 max-md:pb-4'>
                                               <TreeMapChart data={!dashboard.isLoading.ratingTreemapChannelData ? transformTreeMapData(dashboard.ratingTreemapChannelData?.data, dashboard.ratingTreemapChannelData?.colnames) : 'isLoading'}
                                                             height={CUSTOM_CHART.treeMapChart.height}
                                                             fontSize={CUSTOM_CHART.treeMapChart.fontSize}
@@ -667,8 +668,8 @@ const DashboardContent = () => {
                               <section className='bg-background-dashboard dark:bg-background-dashboard-dark transiton-all duration-300' id="target_capture_program">
                                 <InforTab inforTab={"Chương trình - P4+ toàn quốc"} />
                                 <InforFilter filters={scopeFilterData} />
-                                <div className='px-6'>
-                                  <div className='w-full grid grid-cols-2 gap-6 py-6'>
+                                <div className='px-6 max-md:px-4'>
+                                  <div className='w-full grid grid-cols-2 max-md:grid-cols-1 gap-6 max-md:gap-4 py-6 max-md:py-4'>
                                     <PieChart data={!dashboard.isLoading.totalEventDurationPieFirstLevelData ? transformPieChartData(dashboard.totalEventDurationPieFirstLevelData?.data, dashboard.totalEventDurationPieFirstLevelData?.colnames) : 'isLoading'}
                                               height={CUSTOM_CHART.pieChart.height}
                                               fontSize={CUSTOM_CHART.pieChart.fontSize}
@@ -692,7 +693,7 @@ const DashboardContent = () => {
                                               innerRadius={CUSTOM_CHART.pieChart.innerRadius}
                                     />
                                   </div>
-                                  <div className='w-full pb-6'>
+                                  <div className='w-full pb-6 max-md:pb-4'>
                                     <TableChart data={!dashboard.isLoading.allTableRankData ? transformTableChartData(dashboard.allTableRankData?.data, dashboard.allTableRankData?.colnames) : 'isLoading'}
                                                 height={CUSTOM_CHART.tableChart.tableProgramChannel.height}
                                                 fontSize={CUSTOM_CHART.tableChart.fontSize}
@@ -703,7 +704,7 @@ const DashboardContent = () => {
                                                 showSTT={CUSTOM_CHART.tableChart.tableProgramChannel.STT}
                                                 showPagination={CUSTOM_CHART.tableChart.tableProgramChannel.pagination} />
                                   </div>
-                                  <div className='w-full pb-6'>
+                                  <div className='w-full pb-6 max-md:pb-4'>
                                     <TableChart data={!dashboard.isLoading.allTableDetailData ? transformTableChartData(dashboard.allTableDetailData?.data, dashboard.allTableDetailData?.colnames) : 'isLoading'}
                                                 height={CUSTOM_CHART.tableChart.tableProgramChannel.height}
                                                 fontSize={CUSTOM_CHART.tableChart.fontSize}
@@ -714,7 +715,7 @@ const DashboardContent = () => {
                                                 showSTT={CUSTOM_CHART.tableChart.tableProgramChannel.STT}
                                                 showPagination={CUSTOM_CHART.tableChart.tableProgramChannel.pagination} />
                                   </div>
-                                  <div className='w-full pb-6'>
+                                  <div className='w-full pb-6 max-md:pb-4'>
                                     <TableChart data={!dashboard.isLoading.allTableEventData ? transformTableChartData(dashboard.allTableEventData?.data, dashboard.allTableEventData?.colnames) : 'isLoading'}
                                                 height={CUSTOM_CHART.tableChart.tableProgramChannel.height}
                                                 fontSize={CUSTOM_CHART.tableChart.fontSize}
@@ -734,8 +735,8 @@ const DashboardContent = () => {
                               <section className='bg-background-dashboard dark:bg-background-dashboard-dark transiton-all duration-300' id="target_capture_rating_by_minute">
                                 <InforTab inforTab={"Rating theo phút - P4+ toàn quốc"} />
                                 <InforFilter filters={scopeFilterData} />
-                                <div className='px-6'>
-                                  <div className='w-full py-6'>
+                                <div className='px-6 max-md:px-4'>
+                                  <div className='w-full py-6 max-md:pb-4'>
                                     <LineChart data={!dashboard.isLoading.ratingLineMinuteChannelData ? transformMixedChartData(dashboard.ratingLineMinuteChannelData?.data, 'event_start_time_split_m', dashboard.ratingLineMinuteChannelData?.colnames) : 'isLoading'}
                                               height={CUSTOM_CHART.lineChart.height}
                                               fontSize={CUSTOM_CHART.lineChart.fontSize}
@@ -753,7 +754,7 @@ const DashboardContent = () => {
                                               legendTop={CUSTOM_CHART.lineChart.lineChartMinuteChannel.legendTop}
                                     />
                                   </div>
-                                  <div className='w-full pb-6'>
+                                  <div className='w-full pb-6 max-md:pb-4'>
                                     <LineChart data={!dashboard.isLoading.ratingLineMinuteChannelOneDateData ? transformMixedChartData(dashboard.ratingLineMinuteChannelOneDateData?.data, 'event_start_time_split_m', dashboard.ratingLineMinuteChannelOneDateData?.colnames) : 'isLoading'}
                                               height={CUSTOM_CHART.lineChart.height}
                                               fontSize={CUSTOM_CHART.lineChart.fontSize}
@@ -771,7 +772,7 @@ const DashboardContent = () => {
                                               legendTop={CUSTOM_CHART.lineChart.lineChartMinuteChannel.legendTop}
                                     />
                                   </div>
-                                  <div className='w-full pb-6'>
+                                  <div className='w-full pb-6 max-md:pb-4'>
                                     <LineChart data={!dashboard.isLoading.ratingLineMinuteChannelDatesData ? transformMixedChartData(dashboard.ratingLineMinuteChannelDatesData?.data, 'event_start_time_split_m', dashboard.ratingLineMinuteChannelDatesData?.colnames) : 'isLoading'}
                                               height={CUSTOM_CHART.lineChart.height}
                                               fontSize={CUSTOM_CHART.lineChart.fontSize}
@@ -796,7 +797,7 @@ const DashboardContent = () => {
                         ]}
             />
           </div>
-          <div className='px-6 bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300'>
+          <div className='px-6 max-md:px-4 bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300'>
             <Footer color='text-color-black-100 dark:text-color-white-90' />
           </div>
         </div>

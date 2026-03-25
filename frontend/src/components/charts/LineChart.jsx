@@ -14,7 +14,6 @@ const LineChart = ({
   nameChart,
   description,
   enableZoom = true,
-  maxVisibleItems = 10,
   colors = {},
   showLabel = true,
   smooth,
@@ -43,10 +42,8 @@ const LineChart = ({
     series.reduce((acc, s) => ({ ...acc, [s.name]: true }), {})
   );
 
-  const needsScroll = enableZoom && labels.length > maxVisibleItems;
-  const zoomEndPercent = needsScroll 
-    ? Math.round((maxVisibleItems / labels.length) * 100) 
-    : 100;
+  const needsScroll = true;
+  const zoomEndPercent = 100;
 
   const defaultColors = [
     '#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6',

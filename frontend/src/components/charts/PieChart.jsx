@@ -19,11 +19,13 @@ const PieChart = ({
   labelDisplay = 'percent', // NEW: 'percent', 'label', 'label-percent', 'percent-label'
 }) => {
 
+  const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
+
   if(data==='isLoading') {
     return (
-      <div className='p-6 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
+      <div className='p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
         <NameChart nameChart={nameChart} description={description} />
-        <Loading height={height} />
+        <Loading height={!stateGlobals.screen_md ? height : 250} />
       </div>
     );
   }
@@ -95,8 +97,6 @@ const PieChart = ({
         return '{b|{b}}\n{c|{d}%}';  // ✅ Chỉ 1 backslash
     }
   };
-
-  const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
   
   const option = {
     tooltip: {
@@ -112,11 +112,11 @@ const PieChart = ({
       formatter: (params) => {
         const percent = params.percent;
         return `
-          <div style="padding: 12px 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-            <div style="font-weight: 600; font-size: 13px; color: rgba(0, 0, 0, 0.7);">
+            <div style="padding: ${!stateGlobals.screen_md ? '12' : '4'}px ${!stateGlobals.screen_md ? '16' : '8'}px; box-shadow: 0 ${!stateGlobals.screen_md ? '4' : '2'}px ${!stateGlobals.screen_md ? '12' : '4'}px rgba(0,0,0,0.1);">
+            <div style="font-weight: 600; font-size: ${!stateGlobals.screen_md ? '13' : '11'}px; color: rgba(0, 0, 0, 0.7);">
               ${params.marker} ${params.name}
             </div>
-            <div style="font-weight: 700; color: #059669; font-size: 12px;">
+            <div style="font-weight: 700; color: #059669; font-size: ${!stateGlobals.screen_md ? '12' : '10.5'}px;">
               ${params.value.toLocaleString(undefined, { maximumFractionDigits: (nameChart.includes('%') ? 2 : 0) })} <span style="font-size: 11px">(${(percent || 0).toFixed(2)}%)</span>
             </div>
           </div>
@@ -126,15 +126,15 @@ const PieChart = ({
 
     legend: enableLegend ? {
       type: 'scroll',
-      orient: 'vertical',
+      orient: !stateGlobals.screen_md ? 'vertical' : 'horizontal',
       left: 0,
       top: 0,
-      itemWidth: 13,
-      itemHeight: 13,
+      itemWidth: !stateGlobals.screen_md ? 13 : 10,
+      itemHeight: !stateGlobals.screen_md ? 13 : 10,
       icon: 'circle',
       itemGap: 8,
       textStyle: {
-        fontSize: fontSize?.legend,
+        fontSize: !stateGlobals.screen_md ? fontSize?.legend : '10.5px',
         color: !stateGlobals.darkMode ? 'rgba(30, 27, 57, 1)' : 'rgba(225, 225, 225, 0.9)',
         fontWeight: fontWeight?.legend,
         fontFamily: fontFamily,
@@ -149,7 +149,8 @@ const PieChart = ({
       type: 'pie',
       radius: donut ? [innerRadius + '%', '75%'] : ['0%', '75%'],
       avoidLabelOverlap: false,
-      center: ['60%', '50%'],
+      center: [!stateGlobals.screen_md ? '60%' : '50%', '50%'],
+      top: !stateGlobals.screen_md ? 0 : '10%',
       emphasis: {
         itemStyle: {
           shadowBlur: 15,
@@ -170,13 +171,13 @@ const PieChart = ({
         fontFamily: fontFamily,
         rich: {
           b: {
-            fontSize: fontSize?.dataLabel,
+            fontSize: !stateGlobals.screen_md ? fontSize?.dataLabel : '10.5px',
             fontWeight: fontWeight?.dataLabel,
             height: 24,
             lineHeight: 24
           },
           c: {
-            fontSize: fontSize?.dataLabel,
+            fontSize: !stateGlobals.screen_md ? fontSize?.dataLabel : '10.5px',
             fontWeight: fontWeight.dataLabel,
             height: 20,
             lineHeight: 20
@@ -185,8 +186,8 @@ const PieChart = ({
       },
       labelLine: {
         show: true,
-        length: 15,
-        length2: 70,
+        length: !stateGlobals.screen_md ? 15 : 10,
+        length2: !stateGlobals.screen_md ? 70 : 30,
         lineStyle: {
           width: 2,
           type: 'solid'
@@ -214,12 +215,12 @@ const PieChart = ({
   };
 
   return (
-    <div className='p-6 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
+    <div className='p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
       <NameChart nameChart={nameChart} description={description} getChartData={getEChartsData} />
       <ReactECharts
         ref={chartRef}
         option={option}
-        style={{ height, width: '100%' }}
+        style={{ height: !stateGlobals.screen_md ? height : 250, width: '100%' }}
         opts={{
           renderer: 'canvas',
           locale: 'VN',

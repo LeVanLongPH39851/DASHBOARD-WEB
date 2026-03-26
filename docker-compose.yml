@@ -1,6 +1,19 @@
 # ← **SỬA 1**: Bỏ version (deprecated)
 
 services:
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - frontend
+      - backend
+    restart: unless-stopped
+    networks:
+      - app-network
+      
   backend:
     build:
       context: ./backend_superset

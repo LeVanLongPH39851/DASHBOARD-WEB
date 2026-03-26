@@ -17,15 +17,15 @@ const NumberWithTrendChart = ({
   data,
   trendPeriod = 'so với 1 ngày trước',
   unit = '%',
-  height = 395,
+  height = '',
   icon = false
 }) => {
   
   if(data==='isLoading') {
     return (
-      <div className={`p-6 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component`} style={{ height: `${height}px` }}>
-        <NameChart nameChart={nameChart} description={description} icon={icon} width='w-5.5' backgound='bg-background-succes-type-2' />
-        <Loading height={height - 56.5} />
+      <div className={`p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component`} style={{ height: `${height}px` }}>
+        <NameChart nameChart={nameChart} description={description} icon={icon} width='w-5.5' backgound='bg-background-succes-type-2 dark:bg-background-succes-type-2-dark' />
+        <Loading height={250} />
       </div>
     );
   }
@@ -65,17 +65,17 @@ const NumberWithTrendChart = ({
   const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
   
   return (
-    <div className={`p-6 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component`} style={{ height: `${height}px` }}>
+    <div className={`p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component`} style={{ height: `${height}px` }}>
       <NameChart nameChart={nameChart} description={description} icon={icon} width='w-5.5' backgound='bg-background-succes-type-2 dark:bg-background-succes-type-2-dark' getChartData={getEChartsData} />
-      <div className='flex gap-1 items-center mb-2'><span className='text-color-black-100 dark:text-color-white-50 transition-all duration-300 font-medium text-sm'>Ngày {currentDate}</span><figure><img src={!stateGlobals.darkMode ? iconArrowDown : iconArrowDownDark} alt="Icon Arrow Down" className='w-2.25' /></figure></div>
-      <div className="mb-6 flex items-center gap-3">
-        <h4 className='text-5xl text-color-black-100 dark:text-color-white-90 transition-all duration-300 font-semibold'>{currentValue.toLocaleString(undefined, { maximumFractionDigits: (nameChart.includes('%') ? 2 : 0) })}</h4>
+      <div className='flex gap-1 items-center mb-2'><span className='text-color-black-100 dark:text-color-white-50 transition-all duration-300 font-medium text-sm max-md:text-xs'>Ngày {currentDate}</span><figure><img src={!stateGlobals.darkMode ? iconArrowDown : iconArrowDownDark} alt="Icon Arrow Down" className='w-2.25' /></figure></div>
+      <div className="mb-6 flex items-center gap-3 max-md:gap-2">
+        <h4 className='text-5xl max-md:text-4xl text-color-black-100 dark:text-color-white-90 transition-all duration-300 font-semibold'>{currentValue.toLocaleString(undefined, { maximumFractionDigits: (nameChart.includes('%') ? 2 : 0) })}</h4>
         <div className='flex gap-2 items-center'>
           <div className={`px-2 py-1 rounded-lg flex items-center gap-1 border ${trendPercent > 0 ? 'bg-background-succes-type-1 text-color-succes-type-1 border-border-succes-type-1' : 'bg-background-error text-color-error border-border-error'}`}>
-            <span className='text-sm font-semibold'>{trendPercent.toFixed(1)}{unit}</span>
+            <span className='text-sm max-md:text-xs font-semibold'>{trendPercent.toFixed(1)}{unit}</span>
             <figure><img src={trendPercent > 0 ? iconArrowUp45 : iconArrowDown45} alt="Icon Arrow Up 45" className='w-2.25 h-2.25' /></figure>
           </div>
-          <span className='text-sm text-color-black-50 dark:text-color-white-50 transition-all duration-300 font-medium'>{trendPeriod}</span>
+          <span className='text-sm max-md:text-xs text-color-black-50 dark:text-color-white-50 transition-all duration-300 font-medium'>{trendPeriod}</span>
         </div>
       </div>
       <figure className='relative'>

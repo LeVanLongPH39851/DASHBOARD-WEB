@@ -8,6 +8,8 @@ import { useState, useEffect, useRef } from 'react';
 import { toPng } from 'html-to-image';
 import iconExcel from '../../../assets/icon_excel.png';
 import iconIMG from '../../../assets/icon_img.png';
+import iconList from '../../../assets/icon_list.png';
+import iconListDark from '../../../assets/icon_list_dark.png';
 import { useDashboardStateGlobals } from '../../../context/DashboardFilterContext';
 
 
@@ -339,30 +341,49 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
   const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
 
   return (
-      <div className={`${opacity ? 'opacity-0 invisible' : ''} pb-6 text-[16px] font-semibold text-color-black-100 dark:text-color-white-90 transition-all duration-300 flex justify-between ${!display ? 'absolute top-0 left-0 p-6 w-full' : ''}`}>
-        <div className='flex items-center gap-2'>
-          {icon && <div className={`w-8 h-8 flex justify-center items-center rounded-lg ${backgound} transition-all duration-300`}><figure><img src={icon} className={`${width+' '+height+' '+backgound}`} /></figure></div>}
+      <div className={`${opacity ? 'opacity-0 invisible' : ''} pb-6 max-md:pb-4 text-[16px] max-md:text-xs text-nowrap font-semibold text-color-black-100 dark:text-color-white-90 transition-all duration-300 flex justify-between ${!display ? 'absolute top-0 left-0 p-6 w-full max-md:p-4' : ''}`}>
+        <div className='flex items-center gap-2 max-md:gap-1'>
+          {icon && <div className={`w-8 h-8 max-md:w-7 max-md:h-7 max-md:hidden flex justify-center items-center rounded-lg ${backgound} transition-all duration-300`}><figure><img src={icon} className={`${width+' '+height+' '+backgound}`} /></figure></div>}
           <span>{nameChart}</span>
           <IconInfor description={description} />
         </div>
-        <div className='flex gap-1 div-hideen'>
-          <figure ref={buttonRef} className='p-2 cursor-pointer relative'>
-            <img src={!stateGlobals.darkMode ? iconDownloadDark : iconDownloadDarkDark} alt="Icon Download" className='w-3.25' onClick={handleToggle} />
-              <div ref={dropdownRef} className={`${isDropdownOpen ? 'scale-100 opacity-100 origin-top' : 'scale-0 opacity-0 origin-top'} left-1/2 -translate-x-1/2 transition-all duration-300 absolute z-20 top-full bg-background-light dark:bg-background-dark dark:border-background-white-15 flex flex-col border border-border-black-10 rounded-xl w-28 overflow-hidden`}>
-                  <div className='hover:bg-background-black-4 dark:hover:bg-background-hover-dark transition-all duration-300'>
-                      <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-90'} src={iconIMG}
-                              widthImage='w-4' alt='Icon Instruct' text={'Tải Ảnh'} click={handleChartCapture} />
-                  </div>
-                  <div className='hover:bg-background-black-4 dark:hover:bg-background-hover-dark transition-all duration-300'>
-                      <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-90'} src={iconExcel}
-                      widthImage='w-4' alt='Icon Instruct' text={'Tải Excel'} click={table ? handleChartExcelTable : handleChartExcel} />
-                  </div>
-              </div>
-            </figure>
+        <div className='flex gap-1 div-hideen max-md:hidden'>
+          <figure ref={buttonRef} className='p-2 cursor-pointer relative' onClick={handleToggle}>
+            <img src={!stateGlobals.darkMode ? iconDownloadDark : iconDownloadDarkDark} alt="Icon Download" className='w-3.25' />
+            <div ref={dropdownRef} className={`${isDropdownOpen ? 'scale-100 opacity-100 origin-top' : 'scale-0 opacity-0 origin-top'} left-1/2 -translate-x-1/2 transition-all duration-300 absolute z-20 top-full bg-background-light dark:bg-background-dark dark:border-background-white-15 flex flex-col border border-border-black-10 rounded-xl w-28 overflow-hidden`}>
+                <div className='hover:bg-background-black-4 dark:hover:bg-background-hover-dark transition-all duration-300'>
+                    <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-90'} src={iconIMG}
+                            widthImage='w-4' alt='Icon Instruct' text={'Tải Ảnh'} click={handleChartCapture} />
+                </div>
+                <div className='hover:bg-background-black-4 dark:hover:bg-background-hover-dark transition-all duration-300'>
+                    <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-90'} src={iconExcel}
+                    widthImage='w-4' alt='Icon Instruct' text={'Tải Excel'} click={table ? handleChartExcelTable : handleChartExcel} />
+                </div>
+            </div>
+          </figure>
           <figure className='p-2 cursor-pointer'><img src={!stateGlobals.darkMode ? iconEyeHidden : iconEyeHiddenDark} alt="Icon Eye Hidden" className='w-4.5' onClick={handleHideChart} />
           </figure>
         </div>
-        <span className='text-color-error font-semibold text-xs hidden'></span>
+        <div className='hidden div-hideen max-md:block'>
+          <figure ref={buttonRef} className='p-2 max-md:px-0 cursor-pointer relative' onClick={handleToggle}>
+            <img src={!stateGlobals.darkMode ? iconList : iconListDark} alt="Icon List" className='w-2.75' />
+            <div ref={dropdownRef} className={`${isDropdownOpen ? 'scale-100 opacity-100 origin-top max-md:origin-top-right' : 'scale-0 opacity-0 origin-top max-md:origin-top-right'} left-1/2 -translate-x-1/2 max-md:left-auto max-md:translate-x-0 max-md:right-0 transition-all duration-300 absolute z-20 top-full bg-background-light dark:bg-background-dark dark:border-background-white-15 flex flex-col border border-border-black-10 rounded-xl w-28 overflow-hidden`}>
+                <div className='hover:bg-background-black-4 dark:hover:bg-background-hover-dark transition-all duration-300'>
+                    <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-90'} src={iconIMG}
+                            widthImage='w-4 max-md:w-3.5' alt='Icon Instruct' text={'Tải Ảnh'} click={handleChartCapture} />
+                </div>
+                <div className='hover:bg-background-black-4 dark:hover:bg-background-hover-dark transition-all duration-300'>
+                    <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-90'} src={iconExcel}
+                    widthImage='w-4 max-md:w-3.5' alt='Icon Instruct' text={'Tải Excel'} click={table ? handleChartExcelTable : handleChartExcel} />
+                </div>
+                <div className='hover:bg-background-black-4 dark:hover:bg-background-hover-dark transition-all duration-300'>
+                    <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-90'} src={!stateGlobals.darkMode ? iconEyeHidden : iconEyeHiddenDark}
+                    widthImage='w-4.5 max-md:w-3.5' alt='Icon Eye Hidden' text={'Ẩn biểu đồ'} click={handleHideChart} />
+                </div>
+            </div>
+          </figure>
+        </div>
+        <span className='text-color-error font-semibold text-xs hidden max-md:hidden'></span>
       </div>
   );
 };

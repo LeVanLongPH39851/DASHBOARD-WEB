@@ -42,7 +42,7 @@ export default function NormalTabs({
   const variants = {
     default: {
       container: 'relative flex gap-1 mb-6 max-md:mb-4 overflow-hidden rounded-2xl p-1 bg-background-black-4 dark:bg-background-white-8 w-fit transition-all duration-300', // ✅ Không bg-gray-100
-      button: (isActive) => `relative px-6 w-36 py-2 font-medium text-sm transition-all duration-300 cursor-pointer z-10 ${
+      button: (isActive) => `relative px-6 max-md:px-4 w-36 max-md:w-30 py-2 font-medium text-sm max-md:text-xs transition-all duration-300 cursor-pointer z-10 ${
         isActive
           ? 'text-color-light dark:text-background-check-box font-semibold'  // ✅ color-light (không hardcode)
           : 'text-color-gray-600 dark:text-color-white-50 hover:text-gray-700 dark:hover:text-gray-100'

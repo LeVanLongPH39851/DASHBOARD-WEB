@@ -76,7 +76,7 @@ const DashboardContent = () => {
                                 <InforFilter filters={scopeFilterData} />
                                 <div className='px-6 max-md:px-4 pt-6 max-md:pt-4'>
                                   <div className='w-full grid grid-cols-2 max-md:grid-cols-1 gap-6 max-md:gap-4 pb-6 max-md:pb-4'>
-                                    <NumberWithTrendChart nameChart={METRICS['rating%'].title} description={METRICS['rating%'].description} data={!dashboard.isLoading.ratingPercentTrendNumberData ? transformNumberWithTrendData(dashboard.ratingPercentTrendNumberData?.data, dashboard.ratingPercentTrendNumberData?.colnames) : 'isLoading'} height={395} icon={METRICS.rating.icon}/>
+                                    <NumberWithTrendChart nameChart={METRICS['rating%'].title} description={METRICS['rating%'].description} data={!dashboard.isLoading.ratingPercentTrendNumberData ? transformNumberWithTrendData(dashboard.ratingPercentTrendNumberData?.data, dashboard.ratingPercentTrendNumberData?.colnames) : 'isLoading'} icon={METRICS.rating.icon}/>
                                     <div className="grid grid-cols-2 gap-6 max-md:gap-4">
                                     {Object.values(METRICS).map(card => (
                                       <NumberCard
@@ -93,7 +93,7 @@ const DashboardContent = () => {
                                   </div>
                                   <div className='w-full flex gap-6 max-md:gap-4 max-md:flex-wrap pb-6 max-md:pb-4'>
                                     <div className='w-[60%] max-md:w-full'>
-                                      <div className={`p-6 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
+                                      <div className={`p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
                                         <NameChart nameChart={CUSTOM_CHART.barChart.barChartChannelEvent.ratingNameChart} description={METRICS.rating.description} opacity={true} />
                                         <ChildTabs tabs={[
                                           {id: CUSTOM_TAB.childTabRatingReach.rating.id, label: CUSTOM_TAB.childTabRatingReach.rating.label,
@@ -130,7 +130,7 @@ const DashboardContent = () => {
                                       </div>
                                     </div>
                                     <div className='w-[40%] max-md:w-full'>
-                                      <div className={`p-6 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
+                                      <div className={`p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
                                         <NameChart nameChart={CUSTOM_CHART.barChart.barChartChannelEvent.ratingNameChart} description={METRICS.rating.description} opacity={true} />
                                         <ChildTabs tabs={[
                                           {id: CUSTOM_TAB.childTabRatingReach.rating.id, label: CUSTOM_TAB.childTabRatingReach.rating.label,
@@ -169,7 +169,7 @@ const DashboardContent = () => {
                                   </div>
                                   <div className='w-full flex gap-6 max-md:gap-4 max-md:flex-wrap pb-6 max-md:pb-4'>
                                     <div className='w-[60%] max-md:w-full'>
-                                      <div className={`p-6 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
+                                      <div className={`p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
                                         <NameChart nameChart={CUSTOM_CHART.tableChart.tableChartChannel.name} description={CUSTOM_CHART.tableChart.tableChartChannel.description} opacity={true} />
                                         <ChildTabs tabs={[
                                           {id: CUSTOM_TAB.childTabChannel.channel.id, label: CUSTOM_TAB.childTabChannel.channel.label,
@@ -202,7 +202,7 @@ const DashboardContent = () => {
                                       </div>
                                     </div>
                                     <div className='w-[40%] max-md:w-full'>
-                                      <div className={`p-6 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
+                                      <div className={`p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
                                         <NameChart nameChart={CUSTOM_CHART.tableChart.tableChartArea.name} description={CUSTOM_CHART.tableChart.tableChartArea.description} opacity={true} />
                                         <ChildTabs tabs={[
                                           {id: CUSTOM_TAB.childTabArea.regional.id, label: CUSTOM_TAB.childTabArea.regional.label,
@@ -236,7 +236,7 @@ const DashboardContent = () => {
                                     </div>
                                   </div>
                                   <div className='w-full grid grid-cols-2 max-md:flex-wrap max-md:grid-cols-1 gap-6 max-md:gap-4 pb-6 max-md:pb-4'>
-                                      <div className={`p-6 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
+                                      <div className={`p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
                                         <NameChart nameChart={CUSTOM_CHART.barChart.barChartArea.rating.name} description={METRICS.rating.description} opacity={true} />
                                         <ChildTabs tabs={[
                                           {id: CUSTOM_TAB.childTabArea.regional.id, label: CUSTOM_TAB.childTabArea.regional.label,
@@ -305,7 +305,7 @@ const DashboardContent = () => {
                                           )}
                                           ]} />
                                       </div>
-                                      <div className={`p-6 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
+                                      <div className={`p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
                                         <NameChart nameChart={CUSTOM_CHART.barChart.barChartArea.aveReach.name} description={METRICS.ave_reach.description} opacity={true} />
                                         <ChildTabs tabs={[
                                           {id: CUSTOM_TAB.childTabArea.regional.id, label: CUSTOM_TAB.childTabArea.regional.label,
@@ -797,7 +797,7 @@ const DashboardContent = () => {
                         ]}
             />
           </div>
-          <div className='px-6 max-md:px-4 bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300'>
+          <div className='px-6 max-md:px-4 max-md:pb-15 bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300'>
             <Footer color='text-color-black-100 dark:text-color-white-90' />
           </div>
         </div>

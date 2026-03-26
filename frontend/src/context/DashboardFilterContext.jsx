@@ -8,7 +8,7 @@ const StateGlobalContext = createContext(null);
 export const DashboardFilterProvider = ({ children }) => {
   const [appliedFilters, setAppliedFilters] = useState(null);
   const [filterValues, setFilterValues] = useState(null);
-  const [stateGlobals, setStateGlobals] = useState({isOpen: true, horizontal: false, isInfor: true, currentTab: 'overview', darkMode: false});
+  const [stateGlobals, setStateGlobals] = useState({isOpen: true, horizontal: false, isInfor: true, currentTab: 'overview', darkMode: false, screen_md: false});
   const appliedValue = useMemo(() => ({ appliedFilters, setAppliedFilters }), [appliedFilters]);
   const filterValue = useMemo(() => ({ filterValues, setFilterValues }), [filterValues]);
   const stateGlobalValue = useMemo(() => ({ stateGlobals, setStateGlobals }), [stateGlobals]);

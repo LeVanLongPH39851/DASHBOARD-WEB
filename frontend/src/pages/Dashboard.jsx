@@ -473,7 +473,7 @@ const DashboardContent = () => {
                                                         showTopNSeries={CUSTOM_CHART.lineChart.showTopNSeries}
                                               />
                                             </div>
-                                            <div className='w-full pb-6 max-md:pb-4'>
+                                            <div className='w-full pb-6 max-md:pb-0'>
                                               <TreeMapChart data={!dashboard.isLoading.aveReachPercentTreemapChannelData ? transformTreeMapData(dashboard.aveReachPercentTreemapChannelData?.data, dashboard.aveReachPercentTreemapChannelData?.colnames) : 'isLoading'}
                                                             height={CUSTOM_CHART.treeMapChart.height}
                                                             fontSize={CUSTOM_CHART.treeMapChart.fontSize}
@@ -605,7 +605,7 @@ const DashboardContent = () => {
                                                         lineWidth={CUSTOM_CHART.lineChart.lineWidth}
                                                         areaStyle={CUSTOM_CHART.lineChart.areaStyle}
                                                         stack={CUSTOM_CHART.lineChart.stack}
-                                                        showTopNSeries={CUSTOM_CHART.lineChart.showTopNSeries}
+                                                        showTopNSeries={CUSTOM_CHART.lineChart.lineChartTimebandDay.showTopNSeries}
                                                         left={CUSTOM_CHART.lineChart.lineChartTimebandDay.left}
                                               />
                                             </div>
@@ -623,7 +623,7 @@ const DashboardContent = () => {
                                                         lineWidth={CUSTOM_CHART.lineChart.lineWidth}
                                                         areaStyle={CUSTOM_CHART.lineChart.areaStyle}
                                                         stack={CUSTOM_CHART.lineChart.stack}
-                                                        showTopNSeries={CUSTOM_CHART.lineChart.showTopNSeries}
+                                                        showTopNSeries={CUSTOM_CHART.lineChart.lineChartTimebandDay.showTopNSeries}
                                                         left={CUSTOM_CHART.lineChart.lineChartTimebandDay.left}
                                               />
                                             </div>
@@ -645,7 +645,7 @@ const DashboardContent = () => {
                                                         left={CUSTOM_CHART.lineChart.lineChartTimebandRegional.left}
                                               />
                                             </div>
-                                            <div className='w-full pb-6 max-md:pb-4'>
+                                            <div className='w-full pb-6 max-md:pb-0'>
                                               <TreeMapChart data={!dashboard.isLoading.ratingTreemapChannelData ? transformTreeMapData(dashboard.ratingTreemapChannelData?.data, dashboard.ratingTreemapChannelData?.colnames) : 'isLoading'}
                                                             height={CUSTOM_CHART.treeMapChart.height}
                                                             fontSize={CUSTOM_CHART.treeMapChart.fontSize}

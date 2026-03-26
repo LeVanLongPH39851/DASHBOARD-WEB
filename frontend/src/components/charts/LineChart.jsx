@@ -27,11 +27,13 @@ const LineChart = ({
   legendTop=false
 }) => {
 
+  const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
+
   if(data==='isLoading') {
     return (
-      <div className='p-6 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
+      <div className='p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
         <NumberChart nameChart={nameChart} description={description}/>
-        <Loading height={height} />
+        <Loading height={!stateGlobals.screen_md ? height : 270} />
       </div>
     );
   }
@@ -143,8 +145,6 @@ const LineChart = ({
       chart.off('legendselectchanged', handleLegendSelectChanged);
     };
   }, []);
-
-  const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
 
   const option = {
     color: legendData.map(name => {
@@ -416,12 +416,12 @@ const LineChart = ({
   };
 
   return (
-    <div className='p-6 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
+    <div className='p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
       <NumberChart nameChart={nameChart} description={description} getChartData={getEChartsData}/>
         <ReactECharts 
           ref={chartRef}
           option={option} 
-          style={{ height, width: '100%' }}
+          style={{ height: !stateGlobals.screen_md ? height : 270, width: '100%' }}
           opts={{
             renderer: 'canvas',
             locale: 'VN'

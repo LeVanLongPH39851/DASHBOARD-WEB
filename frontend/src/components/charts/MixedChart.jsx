@@ -276,7 +276,7 @@ const MixedChart = ({
             position: 'top',
             offset: [0, !stateGlobals.screen_md ? -8 : 0],
             formatter: (params) => {
-              return typeof params.value === 'number' ? (!stateGlobals.screen_md ? formatNumber(params.value, { isPercent: params.seriesName.includes('%') }) : formatKMB(params.value)) : (params.value || '-')
+              return typeof params.value === 'number' ? (!stateGlobals.screen_md ? formatNumber(params.value, { isPercent: params.seriesName.includes('%') }) : (params.seriesName.includes('%') ? formatNumber(params.value, { isPercent: params.seriesName.includes('%') }) : formatKMB(params.value))) : (params.value || '-')
             },
             fontSize: !stateGlobals.screen_md ? fontSize.dataLabel : '10.5px',
             fontWeight: fontWeight.dataLabel,
@@ -317,7 +317,7 @@ const MixedChart = ({
             position: 'top',
             offset: [0, !stateGlobals.screen_md ? -8 : 0],
             formatter: (params) => {
-              return typeof params.value === 'number' ? (!stateGlobals.screen_md ? formatNumber(params.value, { isPercent: params.seriesName.includes('%') }) : formatKMB(params.value)) : (params.value || '-')
+              return typeof params.value === 'number' ? (!stateGlobals.screen_md ? formatNumber(params.value, { isPercent: params.seriesName.includes('%') }) : (params.seriesName.includes('%') ? formatNumber(params.value, { isPercent: params.seriesName.includes('%') }) : formatKMB(params.value))) : (params.value || '-')
             },
             fontSize: !stateGlobals.screen_md ? fontSize.dataLabel : '10.5px',
             fontWeight: fontWeight.dataLabel,

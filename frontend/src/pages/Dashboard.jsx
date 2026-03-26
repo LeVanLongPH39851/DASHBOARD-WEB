@@ -413,6 +413,7 @@ const DashboardContent = () => {
                                                           fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                           fontWeight={CUSTOM_CHART.mixedChart.fontWeight}
                                                           nameChart={CUSTOM_CHART.mixedChart.mixedChartPercentTimeband.name}
+                                                          maxVisibleItems={!stateGlobals.screen_md ? true : CUSTOM_CHART.mixedChart.mixedChartDate.maxVisibleItems}
                                                           description={CUSTOM_CHART.mixedChart.mixedChartPercentTimeband.description}
                                                           barSeriesKeys={CUSTOM_CHART.mixedChart.mixedChartPercentTimeband.metrics.aveReachPercent}
                                                           lineSeriesKeys={CUSTOM_CHART.mixedChart.mixedChartPercentTimeband.metrics.ratingPercent}
@@ -496,6 +497,7 @@ const DashboardContent = () => {
                                                           fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                           fontWeight={CUSTOM_CHART.mixedChart.fontWeight}
                                                           nameChart={CUSTOM_CHART.mixedChart.mixedChartTimeband.name}
+                                                          maxVisibleItems={!stateGlobals.screen_md ? true : CUSTOM_CHART.mixedChart.mixedChartDate.maxVisibleItems}
                                                           description={CUSTOM_CHART.mixedChart.mixedChartTimeband.description}
                                                           barSeriesKeys={CUSTOM_CHART.mixedChart.mixedChartTimeband.metrics.aveReach}
                                                           lineSeriesKeys={CUSTOM_CHART.mixedChart.mixedChartTimeband.metrics.rating}

@@ -218,7 +218,8 @@ export const CUSTOM_CHART = {
         name: 'Biến động RATING (000) ngày trong tuần theo khung giờ',
         description: 'Biến động'
       },
-      left: 100
+      left: 100,
+      showTopNSeries: 3,
     },
     lineChartTimebandRegional: {
         name: 'Biến động Ave.REACH (000) vùng theo khung giờ',

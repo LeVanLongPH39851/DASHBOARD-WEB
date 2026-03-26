@@ -5,8 +5,6 @@ services:
     image: nginx:alpine
     ports:
       - "79:80"
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
       - frontend
       - backend

@@ -22,6 +22,6 @@ RUN npm install -g serve@14
 
 # Copy dist từ builder
 COPY --from=builder /app/dist ./dist
-EXPOSE 3001
+EXPOSE 3022
 
 CMD ["serve", "-s", "dist", "-l", "3022"]

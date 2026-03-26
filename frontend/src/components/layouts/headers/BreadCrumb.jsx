@@ -44,7 +44,9 @@ const BreadCrumb = () => {
         inforTabSticky.classList.replace('duration-300', 'duration-delete');
         inforFilterSticky.classList.replace('duration-300', 'duration-delete');
         inforTabSticky.classList.replace('top-34', 'top-0');
+        inforTabSticky.classList.replace('max-md:top-18', 'max-md:top-0');
         inforFilterSticky.classList.replace('top-46', 'top-12');
+        inforFilterSticky.classList.replace('max-md:top-28', 'max-md:top-10');
         divTables.forEach(table => table?.classList.replace('overflow-auto', 'overflow-hidden'));
         const now = new Date();
 
@@ -68,7 +70,9 @@ const BreadCrumb = () => {
         inforTabSticky.classList.replace('duration-delete', 'duration-300');
         inforFilterSticky.classList.replace('duration-delete', 'duration-300');
         inforTabSticky.classList.replace('top-0', 'top-34');
+        inforTabSticky.classList.replace('max-md:top-0', 'max-md:top-18');
         inforFilterSticky.classList.replace('top-12', 'top-46');
+        inforFilterSticky.classList.replace('max-md:top-10', 'max-md:top-28');
         divTables.forEach(table => table?.classList.replace('overflow-hidden', 'overflow-auto'));
         exportTime.textContent = '';
     };
@@ -91,7 +95,9 @@ const BreadCrumb = () => {
         inforTabSticky.classList.replace('duration-300', 'duration-delete');
         inforFilterSticky.classList.replace('duration-300', 'duration-delete');
         inforTabSticky.classList.replace('top-34', 'top-0');
+        inforTabSticky.classList.replace('max-md:top-18', 'max-md:top-0');
         inforFilterSticky.classList.replace('top-46', 'top-12');
+        inforFilterSticky.classList.replace('max-md:top-28', 'max-md:top-10');
         divTables.forEach(table => table?.classList.replace('overflow-auto', 'overflow-hidden'));
         const now = new Date();
 
@@ -138,7 +144,9 @@ const BreadCrumb = () => {
             inforTabSticky.classList.replace('duration-delete', 'duration-300');
             inforFilterSticky.classList.replace('duration-delete', 'duration-300');
             inforTabSticky.classList.replace('top-0', 'top-34');
+            inforTabSticky.classList.replace('max-md:top-0', 'max-md:top-18');
             inforFilterSticky.classList.replace('top-12', 'top-46');
+            inforFilterSticky.classList.replace('max-md:top-10', 'max-md:top-28');
             divTables.forEach(table => table?.classList.replace('overflow-hidden', 'overflow-auto'));
             exportTime.textContent = '';
         }
@@ -185,7 +193,7 @@ const BreadCrumb = () => {
         </div>
         <div className='pt-2 flex justify-between items-center'>
             <div className='flex items-center'>
-                <figure className='cursor-pointer p-2 pl-0 mr-2'><img src={!stateGlobals.darkMode ? iconArrowLeft2 : iconArrowLeft2Dark} className='w-3.5' alt="Icon Arrow Left 2" /></figure>
+                <figure className='cursor-pointer p-2 pl-0 mr-2 hidden max-md:block'><img src={!stateGlobals.darkMode ? iconArrowLeft2 : iconArrowLeft2Dark} className='w-3.5' alt="Icon Arrow Left 2" /></figure>
                 <h1 className='text-[32px] max-md:text-lg font-semibold text-color-black-100 dark:text-color-white-90 transition-all duration-300'>Kênh truyền hình VTV</h1>
             </div>
             <div className='flex items-center gap-4 max-md:hidden'>

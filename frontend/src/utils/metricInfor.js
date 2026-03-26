@@ -9,7 +9,7 @@ export const METRICS = {
     description: 'Tỷ lệ khán giả đang xem',
     isPercent: false,
     icon: iconEye,
-    widthIcon: 'w-5.5',
+    widthIcon: 'w-5.5 max-md:w-4.5',
     color: 'text-color-rating',
     background: 'bg-background-succes-type-2 dark:bg-background-succes-type-2-dark'
   },
@@ -20,7 +20,7 @@ export const METRICS = {
     description: 'Tỷ lệ trung bình khán giả duy nhất',
     isPercent: false,
     icon: iconUsers,
-    widthIcon: 'w-6',
+    widthIcon: 'w-6 max-md:w-5',
     color: 'text-color-ave-reach',
     background: 'bg-background-purple dark:bg-background-purple-dark'
   },
@@ -31,7 +31,7 @@ export const METRICS = {
     description: 'Tỷ lệ khán giả đang xem (%)',
     isPercent: true,
     icon: iconEye,
-    widthIcon: 'w-5.5',
+    widthIcon: 'w-5.5 max-md:w-4.5',
     color: 'text-color-rating-percent',
     background: 'bg-background-succes-type-2 dark:bg-background-succes-type-2-dark'
   },
@@ -42,7 +42,7 @@ export const METRICS = {
     description: 'tỷ lệ trung bình (%) khán giả duy nhất',
     isPercent: true,
     icon: iconUsers,
-    widthIcon: 'w-6',
+    widthIcon: 'w-6 max-md:w-5',
     color: 'text-color-ave-reach-percent',
     background: 'bg-background-purple dark:bg-background-purple-dark'
   }

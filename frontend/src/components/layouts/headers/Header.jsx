@@ -26,6 +26,32 @@ const Header = () => {
         }
     }, []);
 
+    useEffect(() => {
+        let timeoutId;
+        
+        const checkMobile = () => {
+            // ✅ Cancel timeout cũ
+            clearTimeout(timeoutId);
+            
+            // ✅ Debounce manual 150ms
+            timeoutId = setTimeout(() => {
+            const isMobile = window.innerWidth < 1000;
+            setStateGlobals(prev => ({ ...prev, screen_md: isMobile }));
+            }, 150);
+        };
+
+        // ✅ Initial check ngay lập tức
+        checkMobile();
+        
+        // ✅ Listen resize
+        window.addEventListener('resize', checkMobile);
+        
+        return () => {
+            window.removeEventListener('resize', checkMobile);
+            clearTimeout(timeoutId); // ✅ Cleanup timeout
+        };
+    }, []);
+
     const toggleDarkMode = () => {
         const newDarkMode = !stateGlobals.darkMode;
         setStateGlobals(prev => ({...prev, darkMode: newDarkMode}));

@@ -3,6 +3,7 @@ import ReactECharts from 'echarts-for-react';
 import NameChart from '../layouts/components/NameChart';
 import Loading from '../commons/Loading';
 import { useDashboardStateGlobals } from '../../context/DashboardFilterContext';
+import { formatKMB } from '../../utils/formatNumber';
 
 
 
@@ -23,16 +24,16 @@ const BarChart = ({
   colorZoom = 'yellow'
 }) => {
   
+  const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
+  
   if(data==='isLoading') {
     return (
-      <div className={`${displayName ? 'p-6 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : ''}`}>
+      <div className={`${displayName ? 'p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : ''}`}>
         <NameChart nameChart={nameChart} description={description} display={displayName} />
-        <Loading height={height} />
+        <Loading height={ !stateGlobals.screen_md ? height : 250 } />
       </div>
     );
   }
-
-  const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
 
   const { labels = [], series = [] } = data;
   const chartRef = useRef(null);
@@ -127,7 +128,7 @@ const BarChart = ({
       backgroundColor: 'rgba(255, 255, 255, 1)',
       borderWidth: 0,
       textStyle: { 
-        fontSize: fontSize.tooltip,
+        fontSize: !stateGlobals.screen_md ? fontSize.tooltip : '10.5px',
         color: 'rgba(0, 0, 0, 0.7)',
         fontWeight: fontWeight.tooltip,
         fontFamily: fontFamily
@@ -142,8 +143,8 @@ const BarChart = ({
         if (visibleParams.length === 0) return '';
 
         return `
-          <div style="padding: 12px 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-            <div style="font-weight: 600; font-size: 13px; color: rgba(0, 0, 0, 0.7);">
+          <div style="padding: ${!stateGlobals.screen_md ? '12' : '4'}px ${!stateGlobals.screen_md ? '16' : '8'}px; box-shadow: 0 ${!stateGlobals.screen_md ? '4' : '2'}px ${!stateGlobals.screen_md ? '12' : '4'}px rgba(0,0,0,0.1);">
+            <div style="font-weight: 600; font-size: ${!stateGlobals.screen_md ? '13' : '11'}px; color: rgba(0, 0, 0, 0.7);">
               ${visibleParams[0].name}
             </div>
             ${visibleParams.map(p => {
@@ -151,16 +152,16 @@ const BarChart = ({
               return `
                 <div style="margin: 2px 0; display: flex; align-items: center;">
                   ${p.marker}
-                  <span style="font-weight: 600; font-size: 12px; margin-right: 4px; color: rgba(0, 0, 0, 0.7);">${p.seriesName}:</span> 
-                  <span style="font-size: 12px; font-weight: 500; color: rgba(0, 0, 0, 0.7);">
-                    ${p.value.toLocaleString(undefined, { maximumFractionDigits: 0 })}${topSeriesIndex != 0 ? ` <span style="font-size: 11px;">(${percent}%)</span>` : ''}
+                  <span style="font-weight: 600; font-size: ${!stateGlobals.screen_md ? '12' : '10.5'}px; margin-right: 4px; color: rgba(0, 0, 0, 0.7);">${p.seriesName}:</span> 
+                  <span style="font-size: ${!stateGlobals.screen_md ? '12' : '10.5'}px; font-weight: 500; color: rgba(0, 0, 0, 0.7);">
+                    ${p.value.toLocaleString(undefined, { maximumFractionDigits: 0 })}${topSeriesIndex != 0 ? ` <span style="font-size: ${!stateGlobals.screen_md ? '12' : '10'}px;">(${percent}%)</span>` : ''}
                   </span>
                 </div>
               `;
             }).join('')}
             ${topSeriesIndex != 0 ? `
-              <hr style="margin: 5px 0; border: none; height: 1px; background: rgba(0, 0, 0, 0.1);">
-              <div style="font-weight: 700; color: #059669; font-size: 12px;">
+              <hr style="margin: ${!stateGlobals.screen_md ? '5' : '4'}px 0; border: none; height: 1px; background: rgba(0, 0, 0, 0.1);">
+              <div style="font-weight: 700; color: #059669; font-size: ${!stateGlobals.screen_md ? '12' : '10.5'}px;">
                 <span>Tổng:</span> <span>${total.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
               </div>
             ` : ''}
@@ -179,7 +180,7 @@ const BarChart = ({
         start: 0,
         end: zoomEndPercent,
         [isHorizontal ? 'right' : 'bottom']: isHorizontal ? 0 : 0,
-        [isHorizontal ? 'width' : 'height']: 20,
+        [isHorizontal ? 'width' : 'height']:!stateGlobals.screen_md ? 20 : 10,
         brushSelect: false,
         handleSize: '100%',
         backgroundColor: colorZoom=='yellow' ? (!stateGlobals.darkMode ? 'rgba(255, 247, 217, 1)' : 'rgb(62, 63, 45)') : (!stateGlobals.darkMode ? 'rgba(254, 226, 226, 1)' : 'rgb(45, 29, 29)'),
@@ -190,7 +191,7 @@ const BarChart = ({
           borderColor: !stateGlobals.darkMode ? 'rgba(255, 255, 255, 1)' : 'rgba(28, 37, 52, 1)'
         },
         textStyle: {
-          fontSize: fontSize.axisLabel,
+          fontSize: !stateGlobals.screen_md ? fontSize.axisLabel : '10.5px',
           color: !stateGlobals.darkMode ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.8)',
           fontWeight: isHorizontal ? 500 : 600,
           fontFamily: fontFamily
@@ -231,11 +232,11 @@ const BarChart = ({
       show: topSeriesIndex !== 0 ? true : false,
       top: needsScroll && !isHorizontal ? 0 : 0,
       left: 0,
-      itemWidth: 14,
-      itemHeight: 14,
+      itemWidth: !stateGlobals.screen_md ? 14 : 10,
+      itemHeight: !stateGlobals.screen_md ? 14 : 10,
       itemGap: 10,
       textStyle: { 
-        fontSize: fontSize.legend,
+        fontSize:  !stateGlobals.screen_md ? fontSize.legend : '10.5px',
         color: !stateGlobals.darkMode ? 'rgba(30, 27, 57, 1)' : 'rgba(255, 255, 255, 0.8)',
         fontWeight: fontWeight.legend,
         letterSpacing: '0.1px',
@@ -249,9 +250,9 @@ const BarChart = ({
 
     grid: {
       left: '1%',
-      right: isHorizontal ? (needsScroll ? '12%' : '10%') : '1%',
-      bottom: isHorizontal ? '1%' : (needsScroll ? '30px' : '1%'),
-      top: topSeriesIndex !== 0 ? 39 : (!isHorizontal ? '4%' : '1%'),
+      right: isHorizontal ? (needsScroll ? (!stateGlobals.screen_md ? '12%' : '12%') : (!stateGlobals.screen_md ? '10%' : '10%')) : '1%',
+      bottom: isHorizontal ? '1%' : (needsScroll ? (!stateGlobals.screen_md ? '30px' : '10px') : '1%'),
+      top: topSeriesIndex !== 0 ? (!stateGlobals.screen_md ? 39 : (isHorizontal ? 27 : 36)) : (!isHorizontal ? '4%' : '1%'),
       containLabel: true
     },
 
@@ -272,8 +273,8 @@ const BarChart = ({
         }
       },
       axisLabel: {
-        formatter: v => v.toLocaleString(undefined, { maximumFractionDigits: 0 }),
-        fontSize: fontSize.axisLabel,
+        formatter: v => !stateGlobals.screen_md ? v.toLocaleString(undefined, { maximumFractionDigits: 0 }) : formatKMB(v),
+        fontSize: !stateGlobals.screen_md ? fontSize.axisLabel : '10.5px',
         color: !stateGlobals.darkMode ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.8)',
         fontWeight: fontWeight.axisLabel,
         fontFamily: fontFamily
@@ -284,7 +285,7 @@ const BarChart = ({
       axisLine: { show: true, lineStyle: { color: !stateGlobals.darkMode ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255, 255, 255, 0.2)' } },
       axisTick: { show: false },
       axisLabel: { 
-        fontSize: fontSize.axisLabel,
+        fontSize: !stateGlobals.screen_md ? fontSize.axisLabel : '10.5px',
         color: !stateGlobals.darkMode ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.8)',
         fontWeight: fontWeight.axisLabel,
         rotate: 0,
@@ -303,8 +304,9 @@ const BarChart = ({
       inverse: true,
       axisLine: { show: false },
       axisTick: { show: false },
-      axisLabel: { 
-        fontSize: fontSize.axisLabel,
+      axisLabel: {
+        show:  !stateGlobals.screen_md ? true : false,
+        fontSize: !stateGlobals.screen_md ? fontSize.axisLabel : '10.5px',
         color: !stateGlobals.darkMode ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.8)',
         fontWeight: fontWeight.axisLabel,
         fontFamily: fontFamily
@@ -324,8 +326,8 @@ const BarChart = ({
         }
       },
       axisLabel: {
-        formatter: v => v.toLocaleString(undefined, { maximumFractionDigits: 0 }),
-        fontSize: fontSize.axisLabel,
+        formatter: v => !stateGlobals.screen_md ? v.toLocaleString(undefined, { maximumFractionDigits: 0 }) : formatKMB(v),
+        fontSize: !stateGlobals.screen_md ? fontSize.axisLabel : '10.5px',
         color: !stateGlobals.darkMode ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.8)',
         fontWeight: fontWeight.axisLabel,
         fontFamily: fontFamily
@@ -357,7 +359,7 @@ const BarChart = ({
       label: {
         show: true,
         position: isHorizontal ? 'right' : 'top',
-        offset: isHorizontal ? [3, 0] : [0, -3],
+        offset: isHorizontal ? [!stateGlobals.screen_md ? 3 : 0, 0] : [0, !stateGlobals.screen_md ? -3 : 0],
         formatter: (params) => {
           const dataIndex = params.dataIndex;
           const seriesIndex = params.seriesIndex;
@@ -394,21 +396,14 @@ const BarChart = ({
           
           // Chỉ hiện label nếu đây là series cao nhất đang visible
           if (seriesIndex === highestVisibleIndex && total > 0) {
-            return total.toLocaleString(undefined, { maximumFractionDigits: 0 });
+            return !stateGlobals.screen_md ? total.toLocaleString(undefined, { maximumFractionDigits: 0 }) : formatKMB(total);
           }
           return '';
         },
-        fontSize: fontSize.dataLabel,
+        fontSize:  !stateGlobals.screen_md ?  fontSize.dataLabel : '10.5px',
         fontWeight: fontWeight.dataLabel,
         fontFamily: fontFamily,
         color: !stateGlobals.darkMode ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.8)',
-        // backgroundColor: 'rgba(255,255,255,0.95)',
-        backgroundColor: 'transparent',
-        borderRadius: 6,
-        padding: [2, 6],
-        borderWidth: 1,
-        // borderColor: 'rgba(0,0,0,0.1)',
-        borderColor: 'transparent',
         shadowBlur: 4,
         shadowColor: !stateGlobals.darkMode ? 'rgba(0, 0, 0, 0.1)' : 'rgba(0, 0, 0, 4)',
       }
@@ -419,12 +414,12 @@ const BarChart = ({
 
 
   return (
-    <div className={`${displayName ? 'p-6 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : ''}`}>
+    <div className={`${displayName ? 'p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : ''}`}>
       <NameChart nameChart={nameChart} description={description} display={displayName} getChartData={getEChartsData} />
       <ReactECharts 
         ref={chartRef}
         option={option} 
-        style={{ height, width: '100%' }}
+        style={{ height: !stateGlobals.screen_md ? height : 250, width: '100%' }}
         opts={{
           renderer: 'canvas',
           locale: 'VN'

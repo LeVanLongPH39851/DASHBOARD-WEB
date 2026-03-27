@@ -30,7 +30,7 @@ const MixedChart = ({
     return (
       <div className='p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
         <NumberChart nameChart={nameChart} description={description}/>
-        <Loading height={!stateGlobals.screen_md ? height : 270} />
+        <Loading height={!stateGlobals.screen_md ? height : 230} />
       </div>
     );
   }
@@ -335,7 +335,7 @@ const MixedChart = ({
       <ReactECharts 
         ref={chartRef}
         option={option} 
-        style={{ height: !stateGlobals.screen_md ? height : 270, width: '100%' }}
+        style={{ height: !stateGlobals.screen_md ? height : 230, width: '100%' }}
         opts={{
           renderer: 'canvas',
           locale: 'VN'

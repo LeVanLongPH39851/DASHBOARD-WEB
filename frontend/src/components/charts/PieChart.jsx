@@ -25,7 +25,7 @@ const PieChart = ({
     return (
       <div className='p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
         <NameChart nameChart={nameChart} description={description} />
-        <Loading height={!stateGlobals.screen_md ? height : 250} />
+        <Loading height={!stateGlobals.screen_md ? height : 210} />
       </div>
     );
   }
@@ -220,7 +220,7 @@ const PieChart = ({
       <ReactECharts
         ref={chartRef}
         option={option}
-        style={{ height: !stateGlobals.screen_md ? height : 250, width: '100%' }}
+        style={{ height: !stateGlobals.screen_md ? height : 210, width: '100%' }}
         opts={{
           renderer: 'canvas',
           locale: 'VN',

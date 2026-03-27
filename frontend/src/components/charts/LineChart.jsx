@@ -34,7 +34,7 @@ const LineChart = ({
     return (
       <div className='p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
         <NumberChart nameChart={nameChart} description={description}/>
-        <Loading height={!stateGlobals.screen_md ? height : 285} />
+        <Loading height={!stateGlobals.screen_md ? height : 240} />
       </div>
     );
   }
@@ -331,7 +331,7 @@ const LineChart = ({
         }
       },
       axisLabel: {
-        formatter: v => v.toLocaleString(undefined, { maximumFractionDigits: 0 }),
+        formatter: v => !stateGlobals.screen_md ? v.toLocaleString(undefined, { maximumFractionDigits: 0 }) : formatKMB(v),
         fontSize: !stateGlobals.screen_md ? fontSize.axisLabel : '10.5px',
         color: !stateGlobals.darkMode ? 'rgba(97, 94, 131, 1)' : 'rgba(255, 255, 255, 0.9)',
         fontWeight: fontWeight.axisLabel,
@@ -426,7 +426,7 @@ const LineChart = ({
         <ReactECharts 
           ref={chartRef}
           option={option} 
-          style={{ height: !stateGlobals.screen_md ? height : 285, width: '100%' }}
+          style={{ height: !stateGlobals.screen_md ? height : 240, width: '100%' }}
           opts={{
             renderer: 'canvas',
             locale: 'VN'

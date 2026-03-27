@@ -53,7 +53,7 @@ const TableChart = ({
       <div className={`${displayName ? 'p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : '' }`} style={{ fontFamily }}>
         <NameChart nameChart={nameChart} description={description} display={displayName} />
         <div className='h-16 max-md:h-12'></div>
-        <Loading height={!stateGlobals.screen_md ? height : stateGlobals.currentTab == 'program' ? '350px'  : '280px'} />
+        <Loading height={!stateGlobals.screen_md ? height : stateGlobals.currentTab == 'program' ? '300px'  : '240px'} />
       </div>
     );
   }
@@ -321,7 +321,7 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
             value={globalFilter ?? ''}
             onChange={(e) => setGlobalFilter(e.target.value)}
             placeholder="Tìm kiếm"
-            className="pl-4 pr-11 max-md:pr-10 py-2.25 border border-border-black-10 dark:border-background-white-15 rounded-2xl outline-none bg-background-search dark:bg-background-white-8 transition-all duration-300 text-sm max-md:text-xs font-medium text-color-black-50 placeholder-color-black-50 dark:text-color-white-50 dark:placeholder-color-white-50 w-70 max-md:w-50"
+            className="pl-4 pr-11 max-md:pr-10 py-2.25 border border-border-black-10 dark:border-background-white-15 rounded-2xl outline-none bg-background-search dark:bg-background-white-8 transition-all duration-300 text-sm max-md:text-xs font-medium text-color-black-50 placeholder-color-black-50 dark:text-color-white-50 dark:placeholder-color-white-50 w-70 max-md:w-35"
           />
           <figure className='absolute top-1/2 -translate-y-1/2 right-4 cursor-pointer'><img src={!stateGlobals.darkMode ? iconSearch : iconSearchDark} alt="Icon Search" className='w-3.75 max-md:w-3' /></figure>
         </div>
@@ -338,7 +338,7 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
         <div className="overflow-hidden">
           <div
             className="overflow-auto divTable"
-            style={{ height: !stateGlobals.screen_md ? height : stateGlobals.currentTab == 'program' ? '350px'  : '280px' }}
+            style={{ height: !stateGlobals.screen_md ? height : stateGlobals.currentTab == 'program' ? '300px'  : '240px' }}
             onClick={() => setShowColumnMenu(false)}
           >
             <table 

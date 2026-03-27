@@ -103,16 +103,9 @@ const Header = () => {
     };
 
     const handleLogout = () => {
-        fetch('/logout/', {
-            method: 'POST',
-            credentials: 'include',
-            })
-            .then(res => {
-            if (res.ok) {
-                window.location.href = CUSTOM_CHART.domain;
-            }
-        });
-    }
+        deleteCookie('session');
+        window.location.href = CUSTOM_CHART.domain;
+    };
 
     const now = new Date();
 

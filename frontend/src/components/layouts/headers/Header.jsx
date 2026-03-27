@@ -103,19 +103,16 @@ const Header = () => {
     };
 
     const handleLogout = () => {
-        fetch('/logout/', {  // Hoặc /superset/logout/
-            method: 'POST',  // Hoặc 'GET'
+        fetch('/logout/', {
+            method: 'POST',
             credentials: 'include',
-        })
-        .then(res => {
-            if (res.ok || res.redirected) {
+            })
+            .then(res => {
+            if (res.ok) {
                 window.location.href = CUSTOM_CHART.domain;
-            } else {
-                console.error('Logout failed:', res.status);
             }
-        })
-        .catch(err => console.error('Error:', err));
-    };
+        });
+    }
 
     const now = new Date();
 

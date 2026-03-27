@@ -799,6 +799,7 @@ const DashboardContent = () => {
                             )
                           } : null)
                         ]}
+                        user={(!userLoading && user?.username !== 'vtvguest')}
             />
           </div>
           <div className='px-6 max-md:px-4 max-md:pb-15 bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300'>

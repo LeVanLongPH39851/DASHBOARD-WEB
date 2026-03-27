@@ -103,7 +103,7 @@ const Header = () => {
     };
 
     const handleLogout = () => {
-        fetch('https://testvtv-long.datahub.net.vn/logout/', {  // Hoặc /superset/logout/
+        fetch('/logout/', {  // Hoặc /superset/logout/
             method: 'POST',  // Hoặc 'GET'
             credentials: 'include',
         })

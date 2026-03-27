@@ -9,6 +9,7 @@ import iconLanguageDark from '../../../assets/icon_language_dark.png';
 import imageUser from '../../../assets/image_user.png';
 import { useEffect } from 'react';
 import { useDashboardStateGlobals } from '../../../context/DashboardFilterContext';
+import { CUSTOM_CHART } from '../../../utils/customChart';
 
 const Header = () => {
 
@@ -68,9 +69,11 @@ const Header = () => {
 
   return (
     <header className="h-15 max-md:h-10 bg-background-light dark:bg-background-dark transition-all duration-300 px-6 max-md:px-4 py-px flex justify-between items-center border-b border-border-black-10 dark:border-background-white-15">
-        <figure>
-            <img src={!stateGlobals.darkMode ? logoVTVRatings : logoVTVRatingsDark} className='h-14.5 max-md:h-9.5' alt="Logo VTVRatings" />
-        </figure>
+        <a href={`${CUSTOM_CHART.domain}/superset/welcome/`}>
+            <figure>
+                <img src={!stateGlobals.darkMode ? logoVTVRatings : logoVTVRatingsDark} className='h-14.5 max-md:h-9.5' alt="Logo VTVRatings" />
+            </figure>
+        </a>
         <div className='flex items-center'>
             <div className='flex items-center gap-2 max-md:gap-1'>
                 <div className='flex items-center gap-2 py-2 px-4 max-md:px-2'>

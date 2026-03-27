@@ -103,16 +103,19 @@ const Header = () => {
     };
 
     const handleLogout = () => {
-        fetch('/api/v1/security/logout', {
-            method: 'POST',
+        fetch('https://testvtv-long.datahub.net.vn/logout/', {  // Hoặc /superset/logout/
+            method: 'POST',  // Hoặc 'GET'
             credentials: 'include',
-            })
-            .then(res => {
-            if (res.ok) {
-                window.location.href = CUSTOM_CHART.domain; 
+        })
+        .then(res => {
+            if (res.ok || res.redirected) {
+                window.location.href = CUSTOM_CHART.domain;
+            } else {
+                console.error('Logout failed:', res.status);
             }
-        });
-    }
+        })
+        .catch(err => console.error('Error:', err));
+    };
 
     const now = new Date();
 

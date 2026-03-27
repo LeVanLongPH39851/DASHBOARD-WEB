@@ -403,7 +403,7 @@ const DashboardContent = () => {
                                 <InforTab inforTab={"Kênh - P4+ toàn quốc"} />
                                 <InforFilter filters={scopeFilterData} />
                                 <div className='px-6 max-md:px-4 py-6 max-md:py-4'>
-                                  <div className='px-6 max-md:px-0 pt-4 max-md:pt-0 bg-background-black-4 max-md:bg-background-dashboard dark:bg-background-dark max-md:dark:bg-background-dashboard-dark transition-all duration-300 rounded-2xl'>
+                                  <div className='px-6 max-md:px-0 pt-4 max-md:pt-0 bg-background-black-4 max-md:bg-background-dashboard dark:bg-background-dark max-md:dark:bg-background-dashboard-dark rounded-2xl'>
                                     <NormalTabs tabs={[
                                       {id: '%', label: '(%)',
                                         content: (

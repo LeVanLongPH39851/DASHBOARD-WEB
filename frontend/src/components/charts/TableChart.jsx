@@ -20,6 +20,7 @@ import iconArrowLeftGrayDark from '../../assets/icon_arrow_left_gray_dark.png'
 import iconArrowRightGrayDark from '../../assets/icon_arrow_right_gray_dark.png'
 import { formatNumber } from '../../utils/formatNumber';
 import Loading from '../commons/Loading';
+import { formatKMB } from '../../utils/formatNumber';
 import { useDashboardStateGlobals } from '../../context/DashboardFilterContext';
 
 
@@ -45,18 +46,19 @@ const TableChart = ({
 }) => {
   const { labels = [], series = [] } = data;
 
+  const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
+
   if(data==='isLoading') {
     return (
-      <div className={`${displayName ? 'p-6 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : '' }`} style={{ fontFamily }}>
+      <div className={`${displayName ? 'p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : '' }`} style={{ fontFamily }}>
         <NameChart nameChart={nameChart} description={description} display={displayName} />
-        <div className='h-16'></div>
-        <Loading height={height} />
+        <div className='h-16 max-md:h-12'></div>
+        <Loading height={!stateGlobals.screen_md ? height : stateGlobals.currentTab == 'program' ? '350px'  : '280px'} />
       </div>
     );
   }
 
-
-
+  showSTT = !stateGlobals.screen_md ? showSTT : false;
 
 
   const tableData = useMemo(() => {
@@ -163,7 +165,7 @@ const TableChart = ({
           const columnId = info.column.id;
           if (typeof value === 'number' && !isNaN(value)) {
             const isPercent = columnId.includes('%');
-            return formatNumber(value, { isPercent });
+            return  isPercent || !stateGlobals.screen_md ? formatNumber(value, { isPercent }) : formatKMB(value);
           }
           return value || '';
         },
@@ -259,36 +261,34 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
       series: series   // ✅ Raw series từ data gốc (bao gồm filter, sort, pagination states)
     };
   }, [labels, series]);
-
-  const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
   
   return (
-    <div className={`${displayName ? 'p-6 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : '' }`} style={{ fontFamily }}>
+    <div className={`${displayName ? 'p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : '' }`} style={{ fontFamily }}>
       <NameChart nameChart={nameChart} description={description} display={displayName} getChartData={getEChartsData} table={true} />
-      <div className="flex justify-between items-center mb-6 gap-4">
-        <div className='flex items-center gap-2'>
+      <div className="flex justify-between items-center mb-6 max-md:mb-3">
+        <div className='flex items-center gap-2 max-md:gap-1'>
           <div className={`relative`}>
             <button
               onClick={() => setShowColumnMenu(!showColumnMenu)}
-              className="px-4 py-1 border border-border-black-10 dark:border-background-white-15 dark:bg-background-white-8 duration-300 rounded-xl flex items-center gap-1 transition-all h-10 cursor-pointer"
+              className="px-4 max-md:px-2 py-1 border border-border-black-10 dark:border-background-white-15 dark:bg-background-white-8 duration-300 rounded-xl flex items-center gap-1 transition-all h-10 max-md:h-9 cursor-pointer"
             >
-              <figure><img src={!stateGlobals.darkMode ? iconShowList : iconShowListDark} alt="Icon Show List" className='w-3' /></figure>
-              <span className='text-sm font-medium text-background-black-90 dark:text-color-white-50 transition-all duration-300'>Columns</span>
+              <figure><img src={!stateGlobals.darkMode ? iconShowList : iconShowListDark} alt="Icon Show List" className='w-3 max-md:w-2.5' /></figure>
+              <span className='text-sm max-md:text-xs font-medium text-background-black-90 dark:text-color-white-50 transition-all duration-300'>Columns</span>
             </button>
             {showColumnMenu && (
-              <div className="absolute left-0 top-full mt-2 bg-background-light dark:bg-background-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-lg z-50 min-w-55">
-                <div className="p-3 max-h-80 overflow-y-auto">
-                  <div className="text-xs font-semibold text-color-black-50 dark:text-color-white-80 transition-all duration-300 uppercase mb-2 px-2">Toggle Columns</div>
+              <div className="absolute left-0 top-full mt-2 max-md:mt-1 bg-background-light dark:bg-background-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-lg z-50 min-w-55 max-md:min-w-50">
+                <div className="p-3 max-md:p-2 max-h-80 max-md:max-h-70 overflow-y-auto">
+                  <div className="text-xs max-md:text-[10.5px] font-semibold text-color-black-50 dark:text-color-white-80 transition-all duration-300 uppercase mb-2 px-2 max-md:px-1">Toggle Columns</div>
                   {table.getAllLeafColumns().map((column) => (
                     <label
                       key={column.id}
-                      className="flex items-center gap-2 px-3 py-2 cursor-pointer rounded-md text-xs font-medium"
+                      className="flex items-center gap-2 px-3 max-md:px-2 py-2 max-md:py-1.25 cursor-pointer rounded-md text-xs max-md:text-[10.5px] font-medium"
                     >
                       <input
                         type="checkbox"
                         checked={column.getIsVisible()}
                         onChange={column.getToggleVisibilityHandler()}
-                        className="cursor-pointer w-3 h-3 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
+                        className="cursor-pointer w-3 h-3 max-md:w-2.5 max-md:h-2.5 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
                       />
                       <span className="text-color-black-70 dark:text-color-white-80 transition-all duration-300">{column.id}</span>
                     </label>
@@ -302,16 +302,16 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
               <select
                 value={table.getState().pagination.pageSize}
                 onChange={(e) => table.setPageSize(Number(e.target.value))}
-                className="pl-7 pr-6 py-1 border border-border-black-10 dark:border-background-white-15 text-background-black-90 dark:bg-background-white-8 dark:text-color-white-50 duration-300 cursor-pointer rounded-xl text-sm appearance-none transition-all flex items-center h-10 outline-none"
+                className="pl-7 pr-6 py-1 border border-border-black-10 dark:border-background-white-15 text-background-black-90 dark:bg-background-white-8 dark:text-color-white-50 duration-300 cursor-pointer rounded-xl text-sm max-md:text-xs appearance-none transition-all flex items-center h-10 max-md:h-9 outline-none"
               >
                 {[10, 20, 50, 100, 200].map((pageSize) => (
-                  <option className='text-sm font-medium text-background-black-90 dark:text-color-white-80 dark:bg-background-dark transition-all duration-300' key={pageSize} value={pageSize}>
+                  <option className='text-sm max-md:text-xs font-medium text-background-black-90 dark:text-color-white-80 dark:bg-background-dark transition-all duration-300' key={pageSize} value={pageSize}>
                     {pageSize}
                   </option>
                 ))}
               </select>
-              <figure className='absolute top-1/2 -translate-y-1/2 left-3'><img src={!stateGlobals.darkMode ? iconShowList : iconShowListDark} alt="Icon Show List" className='w-3' /></figure>
-              <figure className='absolute top-1/2 -translate-y-1/2 right-3'><img src={!stateGlobals.darkMode ? iconArrowDown : iconArrowDownDark} alt="Icon Arrow Down" className='w-2' /></figure>
+              <figure className='absolute top-1/2 -translate-y-1/2 left-3'><img src={!stateGlobals.darkMode ? iconShowList : iconShowListDark} alt="Icon Show List" className='w-3 max-md:w-2.5' /></figure>
+              <figure className='absolute top-1/2 -translate-y-1/2 right-3'><img src={!stateGlobals.darkMode ? iconArrowDown : iconArrowDownDark} alt="Icon Arrow Down" className='w-2 max-md:w-1.75' /></figure>
             </div>
           )}
         </div>
@@ -321,9 +321,9 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
             value={globalFilter ?? ''}
             onChange={(e) => setGlobalFilter(e.target.value)}
             placeholder="Tìm kiếm"
-            className="pl-4 pr-11 py-2.25 border border-border-black-10 dark:border-background-white-15 rounded-2xl outline-none bg-background-search dark:bg-background-white-8 transition-all duration-300 text-sm font-medium text-color-black-50 placeholder-color-black-50 dark:text-color-white-50 dark:placeholder-color-white-50 w-70"
+            className="pl-4 pr-11 max-md:pr-10 py-2.25 border border-border-black-10 dark:border-background-white-15 rounded-2xl outline-none bg-background-search dark:bg-background-white-8 transition-all duration-300 text-sm max-md:text-xs font-medium text-color-black-50 placeholder-color-black-50 dark:text-color-white-50 dark:placeholder-color-white-50 w-70 max-md:w-50"
           />
-          <figure className='absolute top-1/2 -translate-y-1/2 right-4 cursor-pointer'><img src={!stateGlobals.darkMode ? iconSearch : iconSearchDark} alt="Icon Search" className='w-3.75' /></figure>
+          <figure className='absolute top-1/2 -translate-y-1/2 right-4 cursor-pointer'><img src={!stateGlobals.darkMode ? iconSearch : iconSearchDark} alt="Icon Search" className='w-3.75 max-md:w-3' /></figure>
         </div>
       </div>
 
@@ -338,7 +338,7 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
         <div className="overflow-hidden">
           <div
             className="overflow-auto divTable"
-            style={{ height: height }}
+            style={{ height: !stateGlobals.screen_md ? height : stateGlobals.currentTab == 'program' ? '350px'  : '280px' }}
             onClick={() => setShowColumnMenu(false)}
           >
             <table 
@@ -359,11 +359,11 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
                       return (
                         <th
                           key={header.id}
-                          className="px-2 py-3 text-center relative text-color-black-50 dark:text-color-white-50 bg-background-light dark:bg-background-chart-dark border-b border-border-black-10 dark:border-background-white-15 transition-all duration-300"
+                          className="px-2 max-md:px-1 py-3 max-md:py-2 text-center relative text-color-black-50 dark:text-color-white-50 bg-background-light dark:bg-background-chart-dark border-b border-border-black-10 dark:border-background-white-15 transition-all duration-300"
                           style={{
                             minWidth: `${header.column.getSize() - 40}px`,
                             maxWidth: `${header.column.getSize() + 100}px`,
-                            fontSize: fontSize.label,
+                            fontSize: !stateGlobals.screen_md ? fontSize.label : '10.5px',
                             fontWeight: fontWeight.label,
                             whiteSpace: 'pre-line',
                             wordWrap: 'break-word'
@@ -377,7 +377,7 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
                           >
                             {flexRender(header.column.columnDef.header, header.getContext())}
                             {header.column.getIsSorted() && (
-                              <span className="text-color-black-50 dark:text-color-white-50 transition-all duration-300" style={{ fontSize: '11px' }}>
+                              <span className="text-color-black-50 dark:text-color-white-50 transition-all duration-300 text-[10px] max-md:text-[8px]">
                                 {header.column.getIsSorted() === 'asc' ? '▲' : '▼'}
                               </span>
                             )}
@@ -414,13 +414,13 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
                         return (
                           <td
                             key={cell.id}
-                            className={`border-b border-border-black-10 dark:border-background-white-15 px-2 py-3 text-color-black-100 dark:text-color-white-90 transition-all duration-300 ${
+                            className={`border-b border-border-black-10 dark:border-background-white-15 px-2 max-md:px-1 py-3 max-md:py-2 text-color-black-100 dark:text-color-white-90 transition-all duration-300 ${
                               isNumericColumn 
                                 ? 'overflow-hidden text-ellipsis whitespace-nowrap' 
                                 : 'whitespace-normal'
                             }`}
                             style={{
-                              fontSize: fontSize.td,
+                              fontSize: !stateGlobals.screen_md ? fontSize.td : '10.5px',
                               fontWeight: columnName === 'STT' ? 700 : fontWeight.td,
                               minWidth: `${cell.column.getSize() - 40}px`,
                               maxWidth: `${cell.column.getSize() + 100}px`,
@@ -453,7 +453,7 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
           <button
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
-            className="w-7.5 h-7.5 flex justify-center items-center disabled:cursor-not-allowed cursor-pointer"
+            className="w-7.5 max-md:w-7 h-7.5 max-md:h-7 flex justify-center items-center disabled:cursor-not-allowed cursor-pointer dark:border dark:border-background-white-15 dark:rounded-lg transition-all duration-300"
           >
           <figure><img src={!stateGlobals.darkMode ? iconArrowLeftGray : iconArrowLeftGrayDark} alt="Icon Arrow Left Gray" className='w-1.25' /></figure>
           </button>
@@ -476,7 +476,7 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
               <button
                 key={pageNum}
                 onClick={() => table.setPageIndex(pageNum)}
-                className={`w-7.5 h-7.5 flex justify-center items-center rounded-lg font-medium transition-all dark:border dark:border-background-white-15 cursor-pointer text-sm duration-300 ${
+                className={`w-7.5 max-md:w-7 h-7.5 max-md:h-7 flex justify-center items-center rounded-lg font-medium transition-all dark:border dark:border-background-white-15 cursor-pointer text-sm max-md:text-xs duration-300 ${
                   pageIndex === pageNum
                     ? 'bg-background-black-90 text-background-light dark:bg-background-white-8 shadow-md transition-all duration-300'
                     : 'text-color-black-50 dark:text-color-white-80'
@@ -496,7 +496,7 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
           <button
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
-            className="w-7.5 h-7.5 flex justify-center items-center disabled:cursor-not-allowed cursor-pointer dark:border dark:border-background-white-15 dark:rounded-lg transition-all duration-300"
+            className="w-7.5 max-md:w-7 h-7.5 max-md:h-7 flex justify-center items-center disabled:cursor-not-allowed cursor-pointer dark:border dark:border-background-white-15 dark:rounded-lg transition-all duration-300"
           >
           <figure><img src={!stateGlobals.darkMode ? iconArrowRightGray : iconArrowRightGrayDark} alt="Icon Arrow Left Gray" className='w-1.25' /></figure>
           </button>

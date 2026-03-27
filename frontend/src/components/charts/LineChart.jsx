@@ -351,7 +351,7 @@ const LineChart = ({
         data: s.data,
         smooth: smooth,
         symbol: 'circle',
-        symbolSize: symbolSize,
+        symbolSize: !stateGlobals.screen_md ? symbolSize : 6,
         // showSymbol: isTopSeries,
         lineStyle: {
           color: color,

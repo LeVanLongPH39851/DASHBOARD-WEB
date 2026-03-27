@@ -104,6 +104,7 @@ const Header = () => {
 
     function getCookie(name) {
         const value = `; ${document.cookie}`;
+        console.log(document.cookie)
         const parts = value.split(`; ${name}=`);
         if (parts.length === 2) {
             const cookiePart = parts.pop().split(';').shift();

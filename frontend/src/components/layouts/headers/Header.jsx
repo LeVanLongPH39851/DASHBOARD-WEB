@@ -102,24 +102,17 @@ const Header = () => {
         }
     };
 
-    const handleLogout = async () => {
-        const csrfRes = await fetch('/api/v1/security/csrf_token/', {
-            credentials: 'include'
-        });
-        const { result: csrfToken } = await csrfRes.json();
-
-        const res = await fetch('/api/v1/security/logout', {
+    const handleLogout = () => {
+        fetch('/api/v1/security/logout', {
             method: 'POST',
             credentials: 'include',
-            headers: {
-                'X-CSRFToken': csrfToken
+            })
+            .then(res => {
+            if (res.ok) {
+                window.location.href = CUSTOM_CHART.domain; 
             }
         });
-
-        if (res.ok) {
-            window.location.href = CUSTOM_CHART.domain;
-        }
-    };
+    }
 
     const now = new Date();
 

@@ -250,7 +250,7 @@ const BarChart = ({
 
     grid: {
       left: '1%',
-      right: isHorizontal ? (needsScroll ? (!stateGlobals.screen_md ? '12%' : '12%') : (!stateGlobals.screen_md ? '10%' : '10%')) : '1%',
+      right: isHorizontal ? (needsScroll ? (!stateGlobals.screen_md ? '12%' : '10%') : (!stateGlobals.screen_md ? '10%' : '8%')) : '1%',
       bottom: isHorizontal ? '1%' : (needsScroll ? (!stateGlobals.screen_md ? '30px' : '10px') : '1%'),
       top: topSeriesIndex !== 0 ? (!stateGlobals.screen_md ? 39 : (isHorizontal ? 27 : 36)) : (!isHorizontal ? '4%' : '1%'),
       containLabel: true

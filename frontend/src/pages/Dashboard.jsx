@@ -42,10 +42,12 @@ import iconOverviewActive from '../assets/icon_overview_active.png';
 import iconChannelActive from '../assets/icon_channel_active.png';
 import iconProgramActive from '../assets/icon_program_active.png';
 import iconRatingByMinuteActive from '../assets/icon_rating_by_minute_active.png';
+import { useCurrentUser } from '../hooks/useCurrentUser';
 
 const DashboardContent = () => {
   const dashboard = useDashboardData();
   const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
+  const { user, loading } = useCurrentUser();
   
   const scopeNumberData = {
     'ratingNumber': !dashboard.isLoading.ratingNumberData ? dashboard.ratingNumberData.data[0] : false,

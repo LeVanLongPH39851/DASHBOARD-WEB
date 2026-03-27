@@ -38,6 +38,7 @@ var variableCustoms = {
 }
 
 export const CUSTOM_CHART = {
+  domain: 'https://testvtv-long.datahub.net.vn',
   allChart: {
     fontFamily: variableCustoms.fontFamily
   },

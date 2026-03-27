@@ -19,6 +19,7 @@ import iconList from '../../../assets/icon_list.png';
 import iconArrowLeft2 from '../../../assets/icon_arrow_left_2.png';
 import iconListDark from '../../../assets/icon_list_dark.png';
 import iconArrowLeft2Dark from '../../../assets/icon_arrow_left_2_dark.png';
+import { CUSTOM_CHART } from '../../../utils/customChart';
 
 const BreadCrumb = () => {
     const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
@@ -193,7 +194,7 @@ const BreadCrumb = () => {
         </div>
         <div className='pt-2 flex justify-between items-center'>
             <div className='flex items-center'>
-                <figure className='cursor-pointer p-2 pl-0 mr-2 hidden max-md:block'><img src={!stateGlobals.darkMode ? iconArrowLeft2 : iconArrowLeft2Dark} className='w-3.5' alt="Icon Arrow Left 2" /></figure>
+                <a href={`${CUSTOM_CHART.domain}/superset/welcome/`}><figure className='cursor-pointer p-2 pl-0 mr-2 hidden max-md:block'><img src={!stateGlobals.darkMode ? iconArrowLeft2 : iconArrowLeft2Dark} className='w-3.5' alt="Icon Arrow Left 2" /></figure></a>
                 <h1 className='text-[32px] max-md:text-lg font-semibold text-color-black-100 dark:text-color-white-90 transition-all duration-300'>Kênh truyền hình VTV</h1>
             </div>
             <div className='flex items-center gap-4 max-md:hidden'>

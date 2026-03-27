@@ -7,13 +7,48 @@ import iconDarkMode from '../../../assets/icon_dark_mode.png';
 import iconDarkModeDark from '../../../assets/icon_dark_mode_dark.png';
 import iconLanguageDark from '../../../assets/icon_language_dark.png';
 import imageUser from '../../../assets/image_user.png';
-import { useEffect } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useDashboardStateGlobals } from '../../../context/DashboardFilterContext';
+import Button from './Button';
 import { CUSTOM_CHART } from '../../../utils/customChart';
+import iconUserInfor from '../../../assets/icon_user_infor.png';
+import iconUserInforDark from '../../../assets/icon_user_infor_dark.png';
+import iconLogout from '../../../assets/icon_logout.png';
 
 const Header = () => {
-
+    
     const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
+
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const dropdownRef = useRef(null);
+    const buttonRef = useRef(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+        if (dropdownRef.current && !dropdownRef.current.contains(event.target) &&
+            buttonRef.current && !buttonRef.current.contains(event.target)) {
+            setIsDropdownOpen(false);
+        }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    // ✅ ESC key close
+    useEffect(() => {
+        const handleEsc = (event) => {
+        if (event.key === 'Escape') {
+            setIsDropdownOpen(false);
+        }
+        };
+        document.addEventListener('keydown', handleEsc);
+        return () => document.removeEventListener('keydown', handleEsc);
+    }, []);
+
+    const handleToggle = () => {
+        setIsDropdownOpen(prev => !prev);
+    };
 
     useEffect(() => {
         const savedTheme = localStorage.getItem('theme');
@@ -67,6 +102,40 @@ const Header = () => {
         }
     };
 
+    const handleLogout = async () => {
+        const csrfRes = await fetch('/api/v1/security/csrf_token/', {
+            credentials: 'include'
+        });
+        const { result: csrfToken } = await csrfRes.json();
+
+        const res = await fetch('/api/v1/security/logout', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'X-CSRFToken': csrfToken
+            }
+        });
+
+        if (res.ok) {
+            window.location.href = CUSTOM_CHART.domain;
+        }
+    };
+
+    const now = new Date();
+
+    const time = now.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true
+    });
+
+    const date = now.toLocaleDateString('en-US', {
+        month: 'long',
+        day: '2-digit',
+        year: 'numeric'
+    });
+        
   return (
     <header className="h-15 max-md:h-10 bg-background-light dark:bg-background-dark transition-all duration-300 px-6 max-md:px-4 py-px flex justify-between items-center border-b border-border-black-10 dark:border-background-white-15">
         <a href={`${CUSTOM_CHART.domain}/superset/welcome/`}>
@@ -86,15 +155,27 @@ const Header = () => {
                 </figure>
             </div>
             <div className='w-px h-6 rounded-full bg-background-line-gray mx-2 max-md:hidden'></div>
-            <div className='flex items-center gap-2 max-md:hidden'>
-                <figure>
-                    <img src={imageUser} className='w-10 h-10' alt="Image User" />
-                </figure>
-                <div className='flex flex-col justify-between'>
-                    <span className='text-[16px] font-medium text-color-gray-800 dark:text-color-white-90 transition-all duration-300'>07:25:11 AM</span>
-                    <span className='text-xs font-medium text-color-gray-600 dark:text-color-white-50 transition-all duration-300'>April 27, 2023</span>
+            <div className='relative z-500 max-md:hidden'>
+                <div ref={buttonRef} className='flex items-center gap-2 cursor-pointer' onClick={handleToggle}>
+                    <figure>
+                        <img src={imageUser} className='w-10 h-10' alt="Image User" />
+                    </figure>
+                    <div className='flex flex-col justify-between'>
+                        <span className='text-[16px] font-medium text-color-gray-800 dark:text-color-white-90 transition-all duration-300'>{time}</span>
+                        <span className='text-xs font-medium text-color-gray-600 dark:text-color-white-50 transition-all duration-300'>{date}</span>
+                    </div>
+                    <figure><img src={!stateGlobals.darkMode ? iconArrowDown : iconArrowDownDark} className={`w-2.25 transition-all duration-300 ${!isDropdownOpen ? '' : 'rotate-180'}`} alt="Icon Arrow Down" /></figure>
                 </div>
-                <figure><img src={!stateGlobals.darkMode ? iconArrowDown : iconArrowDownDark} className='w-2.25' alt="Icon Arrow Down" /></figure>
+                <div ref={dropdownRef} className={`${isDropdownOpen ? 'scale-100 opacity-100 origin-top' : 'scale-0 opacity-0 origin-top'} transition-all duration-300 absolute top-full left-0 bg-background-light dark:bg-background-dark flex flex-col border border-border-black-10 dark:border-background-white-15 rounded-xl w-full overflow-hidden`}>
+                        <div className='hover:bg-background-black-4 dark:hover:bg-color-black-70 transition-all duration-300'>
+                            <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-80'} src={!stateGlobals.darkMode ? iconUserInfor : iconUserInforDark}
+                                        widthImage='w-4.5 max-md:w-4' alt='Icon User' text={'vtvguest'} />
+                        </div>
+                        <div className='hover:bg-background-black-4 dark:hover:bg-color-black-70 transition-all duration-300'>
+                            <Button background={'bg-transparent'} color={'text-color-error'} src={iconLogout}
+                                        widthImage='w-4.5 max-md:w-4' alt='Icon Logout' text={'Đăng xuất'} click={handleLogout} />
+                        </div>
+                </div>
             </div>
         </div>
     </header>

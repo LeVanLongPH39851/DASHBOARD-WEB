@@ -7,6 +7,8 @@ import iconArrowDown45 from '../../assets/icon_arrow_down_45.png';
 import lineTrend from '../../assets/line_trend.png';
 import lineBorderTrend from '../../assets/line_border_trend.png'
 import lineTrendDown from '../../assets/line_trend_down.png';
+import lineTrendDark from '../../assets/line_trend_dark.png';
+import lineTrendDownDark from '../../assets/line_trend_down_dark.png';
 import lineBorderTrendDown from '../../assets/line_border_trend_down.png'
 import Loading from '../commons/Loading';
 import { useDashboardStateGlobals } from '../../context/DashboardFilterContext';
@@ -71,7 +73,7 @@ const NumberWithTrendChart = ({
       <div className="mb-6 flex items-center gap-3 max-md:gap-2">
         <h4 className='text-5xl max-md:text-4xl text-color-black-100 dark:text-color-white-90 transition-all duration-300 font-semibold'>{currentValue.toLocaleString(undefined, { maximumFractionDigits: (nameChart.includes('%') ? 2 : 0) })}</h4>
         <div className='flex gap-2 items-center'>
-          <div className={`px-2 py-1 rounded-lg flex items-center gap-1 border ${trendPercent > 0 ? 'bg-background-succes-type-1 text-color-succes-type-1 border-border-succes-type-1' : 'bg-background-error text-color-error border-border-error'}`}>
+          <div className={`px-2 py-1 rounded-lg flex items-center gap-1 border ${trendPercent > 0 ? 'bg-background-succes-type-1 text-color-succes-type-1 border-border-succes-type-1 dark:bg-background-succes-type-1-dark dark:text-color-succes-type-1-dark dark:border-border-succes-type-1-dark' : 'bg-background-error text-color-error border-border-error'}`}>
             <span className='text-sm max-md:text-xs font-semibold'>{trendPercent.toFixed(1)}{unit}</span>
             <figure><img src={trendPercent > 0 ? iconArrowUp45 : iconArrowDown45} alt="Icon Arrow Up 45" className='w-2.25 h-2.25' /></figure>
           </div>
@@ -80,7 +82,7 @@ const NumberWithTrendChart = ({
       </div>
       <figure className='relative'>
         <img src={trendPercent > 0 ? lineBorderTrend : lineBorderTrendDown} className='w-full absolute top-0 left-0' alt="Line Border Trend" />
-        <img src={trendPercent > 0 ? lineTrend : lineTrendDown} className='w-full' alt="Line Trend" />
+        <img src={trendPercent > 0 ? !stateGlobals.darkMode ? lineTrend : lineTrendDark : !stateGlobals.darkMode ? lineTrendDown : lineTrendDownDark} className='w-full' alt="Line Trend" />
       </figure>
     </div>
   );

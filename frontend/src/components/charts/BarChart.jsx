@@ -305,7 +305,7 @@ const BarChart = ({
       axisLine: { show: false },
       axisTick: { show: false },
       axisLabel: {
-        show:  !stateGlobals.screen_md ? true : false,
+        // show:  !stateGlobals.screen_md ? true : false,
         fontSize: !stateGlobals.screen_md ? fontSize.axisLabel : '10.5px',
         color: !stateGlobals.darkMode ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.8)',
         fontWeight: fontWeight.axisLabel,

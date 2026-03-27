@@ -61,7 +61,7 @@ const DateRangeFilter = ({ startDate, endDate, onChange, horizontalFixed=false }
         <div className={`flex ${horizontalFixed ? 'gap-1 max-md:grid max-md:grid-cols-2' : 'flex-col'} ${!horizontalFixed ? `transition-all duration-300 absolute w-full left-0 filter-absolute ${isOpenFilter ? 'visible opacity-100 top-0' : 'invisible opacity-0 -top-1/2'}` : ''}`}>
           {!horizontalFixed && <label className='text-sm max-md:text-xs font-medium text-color-black-50 dark:text-color-white-50 transition-all duration-300 mb-1.5 max-md:mb-1'>Từ ngày</label>}
           <input
-            className={`px-4 max-md:px-2.5 rounded-xl border border-background-line-gray dark:border-background-white-15 text-sm max-md:text-xs font-medium text-color-black-50 dark:text-color-white-50 transition-all duration-300 dark:bg-background-white-8 outline-none ${horizontalFixed ? 'py-2 max-md:py-1.5' : 'mb-2 py-2.25 max-md:py-1.5'}`}
+            className={`px-4 max-md:px-2.5 rounded-xl border border-background-line-gray max-md:w-full dark:border-background-white-15 text-sm max-md:text-xs font-medium text-color-black-50 dark:text-color-white-50 transition-all duration-300 dark:bg-background-white-8 outline-none ${horizontalFixed ? 'py-2 max-md:py-1.5' : 'mb-2 py-2.25 max-md:py-1.5'}`}
             type="date"
             value={localStart}
             min={getMinStartDate(localEnd)}
@@ -70,7 +70,7 @@ const DateRangeFilter = ({ startDate, endDate, onChange, horizontalFixed=false }
           />
           {!horizontalFixed && <label className='text-sm max-md:text-xs font-medium text-color-black-50 dark:text-color-white-50 transition-all duration-300 mb-1.5 max-md:mb-1'>Đến ngày</label>}
           <input
-            className={`px-4 max-md:px-2.5 rounded-xl border border-background-line-gray dark:border-background-white-15 text-sm max-md:text-xs font-medium text-color-black-50 dark:text-color-white-50 transition-all duration-300 dark:bg-background-white-8 outline-none ${horizontalFixed ? 'py-2 max-md:py-1.5' : 'py-2.25 max-md:py-1.5'}`}
+            className={`px-4 max-md:px-2.5 rounded-xl border border-background-line-gray max-md:w-full dark:border-background-white-15 text-sm max-md:text-xs font-medium text-color-black-50 dark:text-color-white-50 transition-all duration-300 dark:bg-background-white-8 outline-none ${horizontalFixed ? 'py-2 max-md:py-1.5' : 'py-2.25 max-md:py-1.5'}`}
             type="date"
             value={localEnd}
             min={localStart}

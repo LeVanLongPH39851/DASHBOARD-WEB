@@ -10,7 +10,7 @@ export default function ParentTabs({
   stickyTop = 'top-22',
   zIndex = 'z-100'
 }) {
-
+  tabs = tabs.filter(Boolean);
   const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
   const [activeTab, setActiveTab] = useState(defaultTab || tabs[0]?.id);
   const [underlineStyle, setUnderlineStyle] = useState({ left: 0, width: 0 });

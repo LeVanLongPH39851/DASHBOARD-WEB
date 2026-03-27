@@ -16,7 +16,6 @@ export function useCurrentUser() {
         setLoading(false)
       })
   }, [])
-  console.log(user);
   
   return { user, loading }
 }

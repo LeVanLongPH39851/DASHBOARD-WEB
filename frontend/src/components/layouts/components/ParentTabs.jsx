@@ -8,8 +8,10 @@ export default function ParentTabs({
   uniqueId = 'parent-tab',
   sticky = true,
   stickyTop = 'top-22',
-  zIndex = 'z-100'
+  zIndex = 'z-100',
+  user = true,
 }) {
+  
   tabs = tabs.filter(Boolean);
   const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
   const [activeTab, setActiveTab] = useState(defaultTab || tabs[0]?.id);
@@ -50,7 +52,7 @@ export default function ParentTabs({
 
   const variants = {
     default: {
-      container: 'relative flex border-b border-border-black-10 dark:border-transparent max-md:shadow-2xl max-md:shadow-color-black-70 max-md:dark:shadow-none max-md:border-transparent max-md:w-full transition-colors duration-300 px-6 max-md:px-4 gap-7 max-md:gap-0 h-12 max-md:h-15.5 max-md:grid max-md:grid-cols-4',
+      container: `relative flex border-b border-border-black-10 dark:border-transparent max-md:shadow-2xl max-md:shadow-color-black-70 max-md:dark:shadow-none max-md:border-transparent max-md:w-full transition-colors duration-300 px-6 max-md:px-4 gap-7 max-md:gap-0 h-12 max-md:h-15.5 max-md:grid ${user ? 'max-md:grid-cols-4' : 'max-md:grid-cols-3'}`,
       button: (isActive) => `py-2 text-nowrap font-medium text-[16px] max-md:text-xs transition-colors duration-300 cursor-pointer flex gap-2 max-md:flex-col max-md:justify-center items-center ${
         isActive ? 'text-color-primary-700' : 'text-color-black-50 dark:text-color-white-50 hover:text-gray-700 hover:text-gray-700 dark:hover:text-color-white-80'
       }`,

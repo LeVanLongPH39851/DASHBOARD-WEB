@@ -102,32 +102,8 @@ const Header = () => {
         }
     };
 
-    function getCookie(name) {
-        const value = `; ${document.cookie}`;
-        console.log(document.cookie)
-        const parts = value.split(`; ${name}=`);
-        if (parts.length === 2) {
-            const cookiePart = parts.pop().split(';').shift();
-            console.log(`Cookie "${name}":`, cookiePart);
-            return cookiePart;
-        }
-        console.log(`Cookie "${name}" not found`);
-        return null;
-    }
-
-    function deleteCookie(name) {
-        const fullCookie = getCookie(name);
-        if (!fullCookie) return;
-        
-        const domain = location.hostname
-        const path = '/';
-        
-        document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=${path}; domain=${domain}`;
-        console.log(`Delete attempt: ${name} path=${path} domain=${domain}`);
-    }
-
     const handleLogout = () => {
-        deleteCookie('session');
+        window.location.href = CUSTOM_CHART.domain + '/logout';
     };
 
     const now = new Date();

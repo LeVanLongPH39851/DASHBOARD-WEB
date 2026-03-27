@@ -27,7 +27,7 @@ const TreeMapChart = ({
     return (
       <div className='p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
         <NameChart nameChart={nameChart} description={description} />
-        <Loading height={!stateGlobals.screen_md ? height : 270} />
+        <Loading height={!stateGlobals.screen_md ? height : 240} />
       </div>
     );
   }
@@ -208,7 +208,7 @@ const TreeMapChart = ({
           }
         },
         itemStyle: {
-          borderRadius: 16
+          borderRadius: !stateGlobals.screen_md ? 16 : 5,
         },
         emphasis: {
           label: {
@@ -232,7 +232,7 @@ const TreeMapChart = ({
           {
             itemStyle: {
               borderWidth: 0,
-              gapWidth: !stateGlobals.screen_md ? 5 : 3
+              gapWidth: !stateGlobals.screen_md ? 5 : 1
             }
           },
           {
@@ -253,7 +253,7 @@ const TreeMapChart = ({
       <ReactECharts
         ref={chartRef}
         option={option}
-        style={{ height: !stateGlobals.screen_md ? height : 270, width: '100%' }}
+        style={{ height: !stateGlobals.screen_md ? height : 240, width: '100%' }}
         opts={{
           renderer: 'canvas',
           locale: 'VN'

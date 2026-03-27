@@ -30,7 +30,7 @@ const BarChart = ({
     return (
       <div className={`${displayName ? 'p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : ''}`}>
         <NameChart nameChart={nameChart} description={description} display={displayName} />
-        <Loading height={ !stateGlobals.screen_md ? height : 250 } />
+        <Loading height={ !stateGlobals.screen_md ? height : 220 } />
       </div>
     );
   }
@@ -419,7 +419,7 @@ const BarChart = ({
       <ReactECharts 
         ref={chartRef}
         option={option} 
-        style={{ height: !stateGlobals.screen_md ? height : 250, width: '100%' }}
+        style={{ height: !stateGlobals.screen_md ? height : 220, width: '100%' }}
         opts={{
           renderer: 'canvas',
           locale: 'VN'

@@ -797,7 +797,7 @@ const DashboardContent = () => {
                                 </div>
                               </section>
                             )
-                          } : NULL)
+                          } : null)
                         ]}
             />
           </div>

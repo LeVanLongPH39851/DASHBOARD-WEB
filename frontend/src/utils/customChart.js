@@ -11,7 +11,7 @@ var variableCustoms = {
     colorChannel: {
     "VTV1": "rgba(217, 31, 38, 1)",
     "VTV2": "rgba(7, 150, 71, 1)",
-    "VTV3": "rgba(43, 47, 132, 1)",
+    "VTV3": "rgba(55, 64, 255, 1)",
     "VTV5": "rgba(72, 207, 175, 1)",
     "VTV Cần Thơ": "rgba(200, 147, 253, 1)",
     "VTV4": "rgba(255, 146, 64, 1)",

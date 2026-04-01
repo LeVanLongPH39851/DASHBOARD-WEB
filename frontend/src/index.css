@@ -63,8 +63,6 @@
   --font-family-be-vietnam-pro: "Be Vietnam Pro", sans-serif;
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap');
-
 html, #root, body {
   min-height: 100vh;
   box-sizing: border-box;

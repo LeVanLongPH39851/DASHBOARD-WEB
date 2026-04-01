@@ -185,7 +185,8 @@ const DashboardContent = () => {
                                                   description={CUSTOM_CHART.tableChart.tableChartChannel.description}
                                                   showSTT={CUSTOM_CHART.tableChart.tableChartChannel.STT}
                                                   showPagination={CUSTOM_CHART.tableChart.tableChartChannel.pagination}
-                                                  displayName={false} />
+                                                  displayName={false}
+                                                  center={CUSTOM_CHART.tableChart.tableChartChannel.center} />
                                           )},
                                           {id: CUSTOM_TAB.childTabChannel.event.id, label: CUSTOM_TAB.childTabChannel.event.label,
                                             content: (
@@ -198,7 +199,8 @@ const DashboardContent = () => {
                                                   description={CUSTOM_CHART.tableChart.tableChartChannel.description}
                                                   showSTT={CUSTOM_CHART.tableChart.tableChartChannel.STT}
                                                   showPagination={CUSTOM_CHART.tableChart.tableChartChannel.pagination}
-                                                  displayName={false} />
+                                                  displayName={false}
+                                                  center={CUSTOM_CHART.tableChart.tableChartChannel.center} />
                                             )}
                                           ]} />
                                       </div>
@@ -476,7 +478,7 @@ const DashboardContent = () => {
                                               />
                                             </div>
                                             <div className='w-full pb-6 max-md:pb-0'>
-                                              <TreeMapChart data={!dashboard.isLoading.aveReachPercentTreemapChannelData ? transformTreeMapData(dashboard.aveReachPercentTreemapChannelData?.data, dashboard.aveReachPercentTreemapChannelData?.colnames, CUSTOM_CHART.treeMapChart.colorChannel) : 'isLoading'}
+                                              <TreeMapChart data={!dashboard.isLoading.aveReachPercentTreemapChannelData ? transformTreeMapData(dashboard.aveReachPercentTreemapChannelData?.data, dashboard.aveReachPercentTreemapChannelData?.colnames) : 'isLoading'}
                                                             height={CUSTOM_CHART.treeMapChart.height}
                                                             fontSize={CUSTOM_CHART.treeMapChart.fontSize}
                                                             fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -648,7 +650,7 @@ const DashboardContent = () => {
                                               />
                                             </div>
                                             <div className='w-full pb-6 max-md:pb-0'>
-                                              <TreeMapChart data={!dashboard.isLoading.ratingTreemapChannelData ? transformTreeMapData(dashboard.ratingTreemapChannelData?.data, dashboard.ratingTreemapChannelData?.colnames, CUSTOM_CHART.treeMapChart.colorChannel) : 'isLoading'}
+                                              <TreeMapChart data={!dashboard.isLoading.ratingTreemapChannelData ? transformTreeMapData(dashboard.ratingTreemapChannelData?.data, dashboard.ratingTreemapChannelData?.colnames) : 'isLoading'}
                                                             height={CUSTOM_CHART.treeMapChart.height}
                                                             fontSize={CUSTOM_CHART.treeMapChart.fontSize}
                                                             fontFamily={CUSTOM_CHART.allChart.fontFamily}

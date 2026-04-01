@@ -5,6 +5,7 @@ import NumberChart from '../layouts/components/NameChart';
 import Loading from '../commons/Loading';
 import { formatKMB } from '../../utils/formatNumber';
 import { useDashboardStateGlobals } from '../../context/DashboardFilterContext';
+import NoData from '../commons/NoData';
 
 const LineChart = ({
   data,
@@ -29,12 +30,19 @@ const LineChart = ({
 }) => {
 
   const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
-
+  
   if(data==='isLoading') {
     return (
       <div className='p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
         <NumberChart nameChart={nameChart} description={description}/>
         <Loading height={!stateGlobals.screen_md ? height : 240} />
+      </div>
+    );
+  } else if (!data.labels.length > 0) {
+    return (
+      <div className='p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
+        <NumberChart nameChart={nameChart} description={description}/>
+        <NoData height={!stateGlobals.screen_md ? height : 240} />
       </div>
     );
   }

@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Link, Navigate } from "react-router-dom";
 import Dashboard from './pages/Dashboard';
+import DashboardSpot from './pages/DashboardSpot';
 import Login from "./pages/Login";
 
 const ProtectedRoute = ({ children }) => {
@@ -18,7 +19,8 @@ function App() {
       <Routes>
         {/* <Route path="/" element={<PublicRoute><Login /></PublicRoute>}/> */}
         <Route path="/rating" element={<Dashboard />}/>
-      </Routes> 
+        <Route path="/spot" element={<DashboardSpot />}/>
+      </Routes>
     </BrowserRouter>
   )
 }

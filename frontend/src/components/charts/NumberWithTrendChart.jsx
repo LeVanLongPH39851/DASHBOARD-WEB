@@ -32,8 +32,6 @@ const NumberWithTrendChart = ({
     );
   }
 
-  const chartRef = useRef(null);
-
   const getEChartsData = useCallback(() => {
     
     if (!data || data.length === 0) {

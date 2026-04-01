@@ -6,6 +6,7 @@ import iconDownloadDarkDark from '../../../assets/icon_download_dark_dark.png';
 import Button from '../headers/Button';
 import { useState, useEffect, useRef } from 'react';
 import { toPng } from 'html-to-image';
+import html2canvas from 'html2canvas-pro';
 import iconExcel from '../../../assets/icon_excel.png';
 import iconIMG from '../../../assets/icon_img.png';
 import iconList from '../../../assets/icon_list.png';
@@ -82,6 +83,63 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
     errorSpan.classList.add('hidden');
     divTables.forEach(table => table?.classList.replace('overflow-hidden', 'overflow-auto'));
     errorSpan.textContent = '';
+  };
+
+  const isFirefox = /firefox/i.test(navigator.userAgent);
+
+  const waitForNextPaint = () =>
+    new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+
+  const handleChartCaptureFireFox = async (event) => {
+    setIsDropdownOpen(false);
+
+    const trigger = event?.currentTarget;
+    if (!trigger) return;
+
+    const chartParent = trigger.closest('.shadow-component');
+    const iconNone = trigger.closest('.div-hideen');
+    const parentIconNone = iconNone?.parentElement;
+    const errorSpan = parentIconNone?.children?.[parentIconNone.children.length - 1];
+    const divTables = document.querySelectorAll('.divTable');
+
+    if (!chartParent || !iconNone || !errorSpan) return;
+
+    const now = new Date();
+    const timeStr = `Thời gian export: ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')} ${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
+
+    try {
+      iconNone.classList.add('hidden');
+      errorSpan.classList.remove('hidden');
+      errorSpan.textContent = timeStr;
+      divTables.forEach(table => table?.classList.replace('overflow-auto', 'overflow-hidden'));
+
+      await waitForNextPaint();
+
+      const canvas = await html2canvas(chartParent, {
+        scale: isFirefox ? 1.5 : 2,
+        backgroundColor: '#ffffff',
+        useCORS: true,
+        allowTaint: false,
+        logging: false
+      });
+
+      const dataUrl = canvas.toDataURL('image/png');
+      const dateStr = `${String(now.getDate()).padStart(2, '0')}-${String(now.getMonth() + 1).padStart(2, '0')}-${now.getFullYear()} ${String(now.getHours()).padStart(2, '0')}h${String(now.getMinutes()).padStart(2, '0')}m${String(now.getSeconds()).padStart(2, '0')}s`;
+
+      const link = document.createElement('a');
+      link.download = `${nameChart} ${dateStr}.png`;
+      link.href = dataUrl;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error('Lỗi export chart PNG:', error);
+    } finally {
+      iconNone.classList.remove('hidden');
+      errorSpan.classList.add('hidden');
+      errorSpan.textContent = '';
+      divTables.forEach(table => table?.classList.replace('overflow-hidden', 'overflow-auto'));
+    }
   };
 
   const handleChartExcel = async (event) => {
@@ -353,7 +411,7 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
             <div ref={dropdownRef} className={`${isDropdownOpen ? 'scale-100 opacity-100 origin-top' : 'scale-0 opacity-0 origin-top'} left-1/2 -translate-x-1/2 transition-all duration-300 absolute z-20 top-full bg-background-light dark:bg-background-dark dark:border-background-white-15 flex flex-col border border-border-black-10 rounded-xl w-28 overflow-hidden`}>
                 <div className='hover:bg-background-black-4 dark:hover:bg-background-hover-dark transition-all duration-300'>
                     <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-90'} src={iconIMG}
-                            widthImage='w-4' alt='Icon Instruct' text={'Tải Ảnh'} click={handleChartCapture} />
+                            widthImage='w-4' alt='Icon Instruct' text={'Tải Ảnh'} click={!isFirefox ? handleChartCapture : handleChartCaptureFireFox} />
                 </div>
                 <div className='hover:bg-background-black-4 dark:hover:bg-background-hover-dark transition-all duration-300'>
                     <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-90'} src={iconExcel}
@@ -370,7 +428,7 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
             <div ref={dropdownRef} className={`${isDropdownOpen ? 'scale-100 opacity-100 origin-top max-md:origin-top-right' : 'scale-0 opacity-0 origin-top max-md:origin-top-right'} left-1/2 -translate-x-1/2 max-md:left-auto max-md:translate-x-0 max-md:right-0 transition-all duration-300 absolute z-20 top-full bg-background-light dark:bg-background-dark dark:border-background-white-15 flex flex-col border border-border-black-10 rounded-xl w-28 overflow-hidden`}>
                 <div className='hover:bg-background-black-4 dark:hover:bg-background-hover-dark transition-all duration-300'>
                     <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-90'} src={iconIMG}
-                            widthImage='w-4 max-md:w-3.5' alt='Icon Instruct' text={'Tải Ảnh'} click={handleChartCapture} />
+                            widthImage='w-4 max-md:w-3.5' alt='Icon Instruct' text={'Tải Ảnh'} click={!isFirefox ? handleChartCapture : handleChartCaptureFireFox} />
                 </div>
                 <div className='hover:bg-background-black-4 dark:hover:bg-background-hover-dark transition-all duration-300'>
                     <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-90'} src={iconExcel}

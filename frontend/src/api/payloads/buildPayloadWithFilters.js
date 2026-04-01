@@ -22,7 +22,17 @@ const buildQueriesFilters = ({ column, values }) => {
 
 const appendAllFilters = (queries, filterState, disabledFilters) => {
   if (!queries || !filterState) return queries;
+  if (filterState.days.includes('InWeek')) {
+    filterState.days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'InWeek'];
+  } else if (filterState.days.includes('Weekend')) {
+    filterState.days = ['Saturday', 'Sunday', 'Weekend'];
+  }
   
+  const dayFilters = buildQueriesFilters({ 
+    column: 'day',
+    values: filterState.days
+  });
+
   const channelFilters = buildQueriesFilters({ 
     column: 'channel_name_tvd', 
     values: filterState.channels 
@@ -63,6 +73,7 @@ const appendAllFilters = (queries, filterState, disabledFilters) => {
     
     // Append tất cả filters có data → CHỈ GỌI appendFilters 1 LẦN
     let newFilters = currentFilters;
+    if (dayFilters && !disabledFilters.includes('dayFilters')) newFilters = appendFilters(newFilters, dayFilters);
     if (channelFilters && !disabledFilters.includes('channelFilters')) newFilters = appendFilters(newFilters, channelFilters);
     if (eventFilters && !disabledFilters.includes('eventFilters')) newFilters = appendFilters(newFilters, eventFilters);
     if (provinceFilters && !disabledFilters.includes('provinceFilters')) newFilters = appendFilters(newFilters, provinceFilters);

@@ -78,7 +78,7 @@ const DashboardContent = () => {
                                 <InforFilter filters={scopeFilterData} />
                                 <div className='px-6 max-md:px-4 pt-6 max-md:pt-4'>
                                   <div className='w-full grid grid-cols-2 max-md:grid-cols-1 gap-6 max-md:gap-4 pb-6 max-md:pb-4'>
-                                    <NumberWithTrendChart nameChart={METRICS['rating%'].title} description={METRICS['rating%'].description} data={!dashboard.isLoading.ratingPercentTrendNumberData ? transformNumberWithTrendData(dashboard.ratingPercentTrendNumberData?.data, dashboard.ratingPercentTrendNumberData?.colnames) : 'isLoading'} icon={METRICS.rating.icon}/>
+                                    <NumberWithTrendChart nameChart={METRICS['rating%'].title} description={METRICS['rating%'].description} data={!dashboard.isLoading.ratingPercentTrendNumberData ? transformNumberWithTrendData(dashboard.ratingPercentTrendNumberData?.data, dashboard.ratingPercentTrendNumberData?.colnames) : 'isLoading'} icon={METRICS.rating.icon} />
                                     <div className="grid grid-cols-2 gap-6 max-md:gap-4">
                                     {Object.values(METRICS).map(card => (
                                       <NumberCard
@@ -476,7 +476,7 @@ const DashboardContent = () => {
                                               />
                                             </div>
                                             <div className='w-full pb-6 max-md:pb-0'>
-                                              <TreeMapChart data={!dashboard.isLoading.aveReachPercentTreemapChannelData ? transformTreeMapData(dashboard.aveReachPercentTreemapChannelData?.data, dashboard.aveReachPercentTreemapChannelData?.colnames) : 'isLoading'}
+                                              <TreeMapChart data={!dashboard.isLoading.aveReachPercentTreemapChannelData ? transformTreeMapData(dashboard.aveReachPercentTreemapChannelData?.data, dashboard.aveReachPercentTreemapChannelData?.colnames, CUSTOM_CHART.treeMapChart.colorChannel) : 'isLoading'}
                                                             height={CUSTOM_CHART.treeMapChart.height}
                                                             fontSize={CUSTOM_CHART.treeMapChart.fontSize}
                                                             fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -648,7 +648,7 @@ const DashboardContent = () => {
                                               />
                                             </div>
                                             <div className='w-full pb-6 max-md:pb-0'>
-                                              <TreeMapChart data={!dashboard.isLoading.ratingTreemapChannelData ? transformTreeMapData(dashboard.ratingTreemapChannelData?.data, dashboard.ratingTreemapChannelData?.colnames) : 'isLoading'}
+                                              <TreeMapChart data={!dashboard.isLoading.ratingTreemapChannelData ? transformTreeMapData(dashboard.ratingTreemapChannelData?.data, dashboard.ratingTreemapChannelData?.colnames, CUSTOM_CHART.treeMapChart.colorChannel) : 'isLoading'}
                                                             height={CUSTOM_CHART.treeMapChart.height}
                                                             fontSize={CUSTOM_CHART.treeMapChart.fontSize}
                                                             fontFamily={CUSTOM_CHART.allChart.fontFamily}

@@ -22,6 +22,7 @@ import { formatNumber } from '../../utils/formatNumber';
 import Loading from '../commons/Loading';
 import { formatKMB } from '../../utils/formatNumber';
 import { useDashboardStateGlobals } from '../../context/DashboardFilterContext';
+import NoData from '../commons/NoData';
 
 
 
@@ -44,10 +45,9 @@ const TableChart = ({
   showPagination,
   displayName=true
 }) => {
-  const { labels = [], series = [] } = data;
 
   const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
-
+  
   if(data==='isLoading') {
     return (
       <div className={`${displayName ? 'p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : '' }`} style={{ fontFamily }}>
@@ -56,7 +56,17 @@ const TableChart = ({
         <Loading height={!stateGlobals.screen_md ? height : stateGlobals.currentTab == 'program' ? '300px'  : '240px'} />
       </div>
     );
+  } else if (!data) {
+    return (
+      <div className={`${displayName ? 'p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : '' }`} style={{ fontFamily }}>
+        <NameChart nameChart={nameChart} description={description} display={displayName} />
+        <div className='h-16 max-md:h-12'></div>
+        <NoData height={!stateGlobals.screen_md ? height : stateGlobals.currentTab == 'program' ? '300px'  : '240px'} />
+      </div>
+    );
   }
+
+  const { labels = [], series = [] } = data;
 
   showSTT = !stateGlobals.screen_md ? showSTT : false;
 
@@ -359,7 +369,7 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
                       return (
                         <th
                           key={header.id}
-                          className="px-2 max-md:px-1 py-3 max-md:py-2 text-center relative text-color-black-50 dark:text-color-white-50 bg-background-light dark:bg-background-chart-dark border-b border-border-black-10 dark:border-background-white-15 transition-all duration-300"
+                          className="px-2 max-md:px-1 py-3 max-md:py-2 text-center relative text-color-neotam bg-background-light dark:bg-background-chart-dark border-b border-border-black-10 dark:border-background-white-15 transition-all duration-300"
                           style={{
                             minWidth: `${header.column.getSize() - 40}px`,
                             maxWidth: `${header.column.getSize() + 100}px`,
@@ -377,7 +387,7 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
                           >
                             {flexRender(header.column.columnDef.header, header.getContext())}
                             {header.column.getIsSorted() && (
-                              <span className="text-color-black-50 dark:text-color-white-50 transition-all duration-300 text-[10px] max-md:text-[8px]">
+                              <span className="text-color-neotam transition-all duration-300 text-[10px] max-md:text-[8px]">
                                 {header.column.getIsSorted() === 'asc' ? '▲' : '▼'}
                               </span>
                             )}

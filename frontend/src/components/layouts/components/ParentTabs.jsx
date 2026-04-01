@@ -53,8 +53,8 @@ export default function ParentTabs({
   const variants = {
     default: {
       container: `relative flex border-b border-border-black-10 dark:border-transparent max-md:shadow-2xl max-md:shadow-color-black-70 max-md:dark:shadow-none max-md:border-transparent max-md:w-full transition-colors duration-300 px-6 max-md:px-4 gap-7 max-md:gap-0 h-12 max-md:h-15.5 max-md:grid ${user ? 'max-md:grid-cols-4' : 'max-md:grid-cols-3'}`,
-      button: (isActive) => `py-2 text-nowrap font-medium text-[16px] max-md:text-xs transition-colors duration-300 cursor-pointer flex gap-2 max-md:flex-col max-md:justify-center items-center ${
-        isActive ? 'text-color-primary-700' : 'text-color-black-50 dark:text-color-white-50 hover:text-gray-700 hover:text-gray-700 dark:hover:text-color-white-80'
+      button: (isActive) => `py-2 text-nowrap uppercase max-md:normal-case font-medium text-[16px] max-md:text-xs transition-colors duration-300 cursor-pointer flex gap-2 max-md:flex-col max-md:justify-center items-center ${
+        isActive ? 'text-color-primary-700 font-semibold' : 'text-color-black-50 dark:text-color-white-50 hover:text-gray-700 hover:text-gray-700 dark:hover:text-color-white-80'
       }`,
       underline: 'absolute -bottom-px max-md:-top-px block h-[3px] bg-color-primary-700 transition-all duration-400 ease-out rounded-full'
     },

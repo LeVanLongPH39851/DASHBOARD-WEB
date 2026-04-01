@@ -29,5 +29,18 @@ export const FILTER_LABEL = {
   'provinces': 'Tỉnh/TP',
   'regionals': 'Vùng',
   'keyCities': 'Thành phố lớn',
-  'timebands': 'Khung giờ'
+  'timebands': 'Khung giờ',
+  'days': 'Nhóm ngày'
+}
+
+export const VALUE_LABEL = {
+  'Monday': 'Thứ hai',
+  'Tuesday': 'Thứ ba',
+  'Wednesday': 'Thứ tư',
+  'Thursday': 'Thứ năm',
+  'Friday': 'Thứ sáu',
+  'Saturday': 'Thứ bảy',
+  'Sunday': 'Chủ nhật',
+  'InWeek': '',
+  'Weekend': ''
 }

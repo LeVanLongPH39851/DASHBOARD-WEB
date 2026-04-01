@@ -1,5 +1,6 @@
 import iconX from '../../../assets/icon_x.png';
 import iconXDark from '../../../assets/icon_x_dark.png';
+import { VALUE_LABEL } from '../../../utils/label';
 import { useDashboardFilterValues, useDashboardStateGlobals } from '../../../context/DashboardFilterContext'
 
 const ClearSet = (setFilterValues, keyFilter) => {
@@ -23,9 +24,12 @@ const InforFilterItem = ({ keyFilter='', nameFilter, valueFilters=[], space }) =
     const { filterValues, setFilterValues } = useDashboardFilterValues();
     const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
     
-    const displayValue = Array.isArray(valueFilters) 
-        ? valueFilters.join(space) 
-        : valueFilters;
+    const displayValue = Array.isArray(valueFilters)
+        ? valueFilters
+            .map(item => VALUE_LABEL[item] ?? item)
+            .filter(item => item !== '')
+            .join(space)
+        : VALUE_LABEL[valueFilters] ?? valueFilters;
     if (!displayValue) return null;
     return (
         <li id={keyFilter} className={`py-1.5 ${keyFilter=='Ngày' ? 'px-4' : 'pr-2 pl-4 filter-item'} text-sm max-md:text-xs font-medium border border-border-black-10 dark:border-border-white-20 rounded-xl text-color-black-50 dark:text-color-white-50 transition-all duration-300 flex gap-1 items-center`}>

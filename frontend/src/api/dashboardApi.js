@@ -4,9 +4,16 @@ import { buildPayloadWithFilters } from './payloads/buildPayloadWithFilters';
 
 const apiRoute = import.meta.env.VITE_API_ROUTE;
 
-const postChart = (basePayload, appliedFilters, disibledFilters = []) => {
-  const finalPayload = appliedFilters ? buildPayloadWithFilters(basePayload, appliedFilters, disibledFilters) : basePayload;
-  return axiosClient.post(apiRoute, finalPayload);
+const postChart = async (basePayload, appliedFilters, disibledFilters = []) => {
+  const finalPayload = appliedFilters
+    ? buildPayloadWithFilters(basePayload, appliedFilters, disibledFilters)
+    : basePayload;
+
+  try {
+    return await axiosClient.post(apiRoute, finalPayload);
+  } catch (error) {
+    return { data: {} };
+  }
 };
 
 // Tab Overview

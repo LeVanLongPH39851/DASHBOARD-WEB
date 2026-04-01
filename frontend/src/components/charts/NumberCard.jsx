@@ -1,12 +1,21 @@
 import Loading from '../commons/Loading';
 import NameChart from '../layouts/components/NameChart';
 import { useCallback } from 'react';
+import NoData from '../commons/NoData';
 const NumberCard = ({ title, description, value, icon=false, background, height='', widthIcon='', suffix = '' }) => {
+  
   if(value==='isLoading') {
     return (
       <div className={`p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component`} style={{ height: `${height}px` }}>
         <NameChart nameChart={title} description={description} icon={icon} width={widthIcon} backgound={background} />
         <Loading />
+      </div>
+    );
+  } else if (value === '-') {
+    return (
+      <div className={`p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component`} style={{ height: `${height}px` }}>
+        <NameChart nameChart={title} description={description} icon={icon} width={widthIcon} backgound={background} />
+        <NoData />
       </div>
     );
   }

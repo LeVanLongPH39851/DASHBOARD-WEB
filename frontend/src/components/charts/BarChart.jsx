@@ -4,6 +4,7 @@ import NameChart from '../layouts/components/NameChart';
 import Loading from '../commons/Loading';
 import { useDashboardStateGlobals } from '../../context/DashboardFilterContext';
 import { formatKMB } from '../../utils/formatNumber';
+import NoData from '../commons/NoData';
 
 
 
@@ -31,6 +32,13 @@ const BarChart = ({
       <div className={`${displayName ? 'p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : ''}`}>
         <NameChart nameChart={nameChart} description={description} display={displayName} />
         <Loading height={ !stateGlobals.screen_md ? height : 220 } />
+      </div>
+    );
+  } else if (!data) {
+    return (
+      <div className={`${displayName ? 'p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : ''}`}>
+        <NameChart nameChart={nameChart} description={description} display={displayName} />
+        <NoData height={ !stateGlobals.screen_md ? height : 220 } />
       </div>
     );
   }
@@ -289,7 +297,7 @@ const BarChart = ({
         color: !stateGlobals.darkMode ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.8)',
         fontWeight: fontWeight.axisLabel,
         rotate: 0,
-        interval: 0,
+        interval: 'auto',
         fontFamily: fontFamily
       },
       splitLine: { show: false }
@@ -342,6 +350,7 @@ const BarChart = ({
       type: 'bar',
       stack: 'total',
       barWidth: '70%',
+      barMaxWidth: 300,
       barGap: 0,
       barCategoryGap: '25%',
       itemStyle: {

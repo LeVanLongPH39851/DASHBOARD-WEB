@@ -15,7 +15,8 @@ const CheckboxMultiFilter = ({
   onChange,
   label,
   disabled = false,
-  marginBottom
+  marginBottom,
+  isSearch = true
 }) => {
 
   const [search, setSearch] = useState('');
@@ -40,15 +41,15 @@ const CheckboxMultiFilter = ({
   return (
     <div className={isOpenFilter ? marginBottom : ''}>
       {/* Label */}
-      <div className={`flex justify-between items-center h-10.5 max-md:h-8 ${isOpenFilter ? 'mb-1' : ''}`}>
-        <label className='text-[16px] max-md:text-xs text-background-black-child-tab dark:text-color-white-90 transition-all duration-300 font-medium'>{label}</label>
-        <figure onClick={() => setIsOpenFilter(prev => !prev)} className={`cursor-pointer transition-all duration-300 ${isOpenFilter ? '' : 'rotate-180'}`}><img src={!stateGlobals.darkMode ? iconArrowUpGray : iconArrowUpGrayDark} className='w-2.75 max-md:w-2' alt="Icon Arrow Up Gray" /></figure>
+      <div  onClick={() => setIsOpenFilter(prev => !prev)} className={`flex cursor-pointer group justify-between items-center h-10.5 max-md:h-8 ${isOpenFilter ? 'mb-1' : ''}`}>
+        <label className='cursor-pointer text-[16px] max-md:text-xs text-background-black-child-tab dark:text-color-white-90 transition-all duration-300 font-semibold'>{label}</label>
+        <figure className={`cursor-pointer transition-all duration-300 ${isOpenFilter ? '' : 'rotate-180'}`}><img src={!stateGlobals.darkMode ? iconArrowUpGray : iconArrowUpGrayDark} className='w-2.75 max-md:w-2' alt="Icon Arrow Up Gray" /></figure>
       </div>
 
       <div className={`transition-all duration-300 relative filter-relative overflow-hidden`} data-initial-height="match">
         <div className={`transition-all duration-300 absolute w-full left-0 filter-absolute ${isOpenFilter ? 'visible opacity-100 top-0' : 'invisible opacity-0 -top-1/2'}`}>
             {/* Search */}
-            <div className='flex items-center gap-2 px-4 max-md:px-3 py-2.5 max-md:py-1.5 mb-1.5 border border-background-line-gray rounded-xl bg-background-light dark:border-background-white-15 transition-all duration-300 dark:bg-background-white-8 max-h-10'>
+            {isSearch && (<div className='flex items-center gap-2 px-4 max-md:px-3 py-2.5 max-md:py-1.5 mb-1.5 border border-background-line-gray rounded-xl bg-background-light dark:border-background-white-15 transition-all duration-300 dark:bg-background-white-8 max-h-10'>
                 <img src={!stateGlobals.darkMode ? iconSearch : iconSearchDark} className='w-3.5 h-3.5 max-md:w-3 max-md:h-3' alt="Icon Search" />
                 <input
                 type='text'
@@ -66,7 +67,7 @@ const CheckboxMultiFilter = ({
                     <figure><img src={!stateGlobals.darkMode ? iconX : iconXDark} alt="Icon X" className='w-2.5 max-md:w-2' /></figure>
                 </button>
                 )}
-            </div>
+            </div>)}
 
             {/* Danh sách checkbox */}
             <ul className='flex flex-col gap-1'>

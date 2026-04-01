@@ -9,17 +9,18 @@ var variableCustoms = {
     metricRatingPercent: 'rating_timeband%',
     metricAveReachPercent: 'reach%_1',
     colorChannel: {
-    "VTV1": "#ca2d1e",
-    "VTV2": "#42932b",
-    "VTV3": "#000191",
-    "VTV5": "#9467bd",
-    "VTV Cần Thơ": "#6ce5e8",
-    "VTV4": "#8c564b",
-    "VTV9": "#e377c2",
-    "VTV5 Tây Nam Bộ": "#7f7f7f",
-    "VTV8": "#bcbd22",
-    "VTV7": "#2d8bba",
-    "VTV5 Tây Nguyên": "#b97286"
+    "VTV1": "rgba(217, 31, 38, 1)",
+    "VTV2": "rgba(7, 150, 71, 1)",
+    "VTV3": "rgba(43, 47, 132, 1)",
+    "VTV5": "rgba(72, 207, 175, 1)",
+    "VTV Cần Thơ": "rgba(200, 147, 253, 1)",
+    "VTV4": "rgba(255, 146, 64, 1)",
+    "VTV9": "rgba(249, 160, 178, 1)",
+    "VTV5 Tây Nam Bộ": "rgba(0, 146, 245, 1)",
+    "VTV8": "rgba(202, 100, 25, 1)",
+    "VTV7": "rgba(99, 193, 255, 1)",
+    "VTV5 Tây Nguyên": "rgba(140, 128, 226, 1)",
+    "VTV10": "rgba(200, 147, 253, 1)"
     },
     colorFirstLevel: {
     "Thời sự - Chính luận": "#6BD3B3",
@@ -34,6 +35,12 @@ var variableCustoms = {
     "Quảng bá": "#8c564a",
     "Phim truyện": "#C9BBAB",
     "Quảng cáo": "#B17BAA"
+    },
+    colorDuration: {
+    "15s": "#6BD3B3",
+    "30s": "#FCC550",
+    "5s": "#EE5960",
+    "Others": "#408184"
     }
 }
 
@@ -82,7 +89,7 @@ export const CUSTOM_CHART = {
         td: 14
     },
     fontWeight: {
-        label: 500,
+        label: 600,
         td: 500
     },
     tableChartChannel: {
@@ -280,6 +287,8 @@ export const CUSTOM_CHART = {
       }
     },
     colorFirstLevel: variableCustoms.colorFirstLevel,
+    colorChannel: variableCustoms.colorChannel,
+    colorDuration: variableCustoms.colorDuration,
     donut: true,
     innerRadius: 45
   }

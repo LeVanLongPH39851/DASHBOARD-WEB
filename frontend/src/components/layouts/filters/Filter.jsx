@@ -9,7 +9,8 @@ import iconXBlack from '../../../assets/icon_x_black.png';
 import iconXBlackDark from '../../../assets/icon_x_black_dark.png';
 import iconReset from '../../../assets/icon_reset.png';
 import iconResetDark from '../../../assets/icon_reset_dark.png';
-import { useDashboardFilters, useDashboardFilterValues, useDashboardStateGlobals } from '../../../context/DashboardFilterContext'
+import GroupFilter from './components/GroupFilter';
+import { useDashboardFilters, useDashboardFilterValues, useDashboardStateGlobals } from '../../../context/DashboardFilterContext';
 
 const ALL_CHANNELS = [
   { value: "VTV1", label: "VTV1" },
@@ -23,6 +24,18 @@ const ALL_CHANNELS = [
   { value: "VTV8", label: "VTV8" },
   { value: "VTV9", label: "VTV9" },
   { value: "VTV Cần Thơ", label: "VTV Cần Thơ" }
+];
+
+const ALL_DAYS = [
+  { value: "Weekend", label: "Cuối tuần", groupId: "week-type" },
+  { value: "InWeek", label: "Ngày thường", groupId: "week-type" },
+  { value: "Monday", label: "Thứ hai" },
+  { value: "Tuesday", label: "Thứ ba" },
+  { value: "Wednesday", label: "Thứ tư" },
+  { value: "Thursday", label: "Thứ năm" },
+  { value: "Friday", label: "Thứ sáu" },
+  { value: "Saturday", label: "Thứ bảy" },
+  { value: "Sunday", label: "Chủ nhật" }
 ];
 
 const ALL_EVENTS = [
@@ -108,6 +121,7 @@ const Filter = ({ filters, horizontalFixed=false
 
   useEffect(() => {
     const filterId = document.getElementById('filter');
+    
     if (!filterId) return;
 
     let wasSticky = false;
@@ -119,15 +133,19 @@ const Filter = ({ filters, horizontalFixed=false
       if (isSticky === wasSticky) return;
       wasSticky = isSticky;
 
-      filterId.classList.remove('top-0', 'top-15');
-      filterId.classList.add(isSticky ? 'top-0' : 'top-15');
-      filterId.classList.remove('top-0', 'max-md:top-10');
-      filterId.classList.add(isSticky ? 'top-0' : 'max-md:top-10');
+      filterId.classList.remove('top-0', 'top-15', 'max-md:top-10');
+
+      if (isSticky) {
+        filterId.classList.add('top-0');
+      } else {
+        filterId.classList.add('top-15', 'max-md:top-10');
+      }
     };
 
+    handleScroll();
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [stateGlobals.isOpen, stateGlobals.horizontal]);
 
   useEffect(() => {
     const relatives = document.querySelectorAll('.filter-relative');
@@ -175,6 +193,9 @@ const Filter = ({ filters, horizontalFixed=false
         ...prev,
         startDate: appliedFilters.startDate || getYesterday(),
         endDate:   appliedFilters.endDate   || getYesterday(),
+        days: (appliedFilters.days || [])
+          .map(val => ALL_DAYS.find(da => da.value === val))
+          .filter(Boolean),
         channels: (appliedFilters.channels || [])
           .map(val => ALL_CHANNELS.find(ch => ch.value === val))
           .filter(Boolean),
@@ -202,6 +223,32 @@ const Filter = ({ filters, horizontalFixed=false
 
   const handleDateRangeChange = ({ startDate: s, endDate: e }) => {
     setFilterValues(prev => ({...prev, startDate: s, endDate: e}));
+  };
+
+  const handleDaysChange = (selectedDays) => {
+    
+    const normalizedDays = [];
+    const groupMap = new Map();
+
+    selectedDays.forEach((day) => {
+      if (!day.groupId) {
+        normalizedDays.push(day);
+        return;
+      }
+
+      if (groupMap.has(day.groupId)) {
+        const oldIndex = groupMap.get(day.groupId);
+        normalizedDays[oldIndex] = day;
+      } else {
+        groupMap.set(day.groupId, normalizedDays.length);
+        normalizedDays.push(day);
+      }
+    });
+    
+    setFilterValues((prev) => ({
+      ...prev,
+      days: normalizedDays,
+    }));
   };
 
   const handleChannelsChange = (selectedChannels) => {
@@ -237,6 +284,7 @@ const Filter = ({ filters, horizontalFixed=false
 
     setAppliedFilters(filterValues ? {
       ...filterValues,
+      days:  (filterValues?.days  || []).map(da => da.value),
       channels:  (filterValues?.channels  || []).map(ch => ch.value),
       events:    (filterValues?.events    || []).map(ev => ev.value),
       provinces: (filterValues?.provinces || []).map(pr => pr.value),
@@ -255,7 +303,7 @@ const Filter = ({ filters, horizontalFixed=false
   return (
     <>
     <aside className={`${horizontalFixed ? 'w-full' : `${!stateGlobals.isOpen || stateGlobals.horizontal ? 'w-0' : 'w-[16%] max-md:w-0'} h-full`} transition-all duration-300`}>
-      <div id='filter' className={`${horizontalFixed ? 'w-full' : `bg-background-light dark:bg-background-dark border-r border-background-line-gray dark:border-background-white-15 w-[16%] max-md:w-[65%] max-md:z-9999 overflow-y-auto fixed left-0 ${!stateGlobals.isOpen || stateGlobals.horizontal ? '-translate-x-full' : ''} top-15 max-md:top-10 max-md:px-4 px-6 pt-4 max-md:pt-2 pb-15.5 transition-all duration-300 h-full`}`}>
+      <div id='filter' className={`${horizontalFixed ? 'w-full' : `bg-background-light dark:bg-background-dark border-r border-background-line-gray dark:border-background-white-15 w-[16%] max-md:w-[65%] max-md:z-9999 overflow-y-auto fixed left-0 ${!stateGlobals.isOpen || stateGlobals.horizontal ? '-translate-x-full' : ''} top-15 max-md:top-10 max-md:px-4 px-6 pt-4 max-md:pt-2 pb-20 transition-all duration-300 h-full`}`}>
         {!horizontalFixed && (<div className='flex justify-between items-center h-10.5 max-md:h-8 mb-2 max-md:mb-1'>
           <span className='text-background-black-child-tab dark:text-color-white-90 transition-all duration-300 text-[16px] max-md:text-xs font-semibold'>Bộ lọc</span><figure className='cursor-pointer transition-all duration-300 hover:rotate-180' onClick={() => setStateGlobals(prev => ({...prev, isOpen: !prev.isOpen}))}><img src={!stateGlobals.darkMode ? iconXBlack : iconXBlackDark} className='w-3.25 max-md:w-2.5' alt="Icon X Black" /></figure>
         </div>)}
@@ -268,6 +316,25 @@ const Filter = ({ filters, horizontalFixed=false
               horizontalFixed={horizontalFixed}
             />
           </div>
+          
+          {!stateGlobals.horizontal ?
+          (<CheckboxMultiFilter
+            label="Nhóm ngày"
+            placeholder="Chọn ngày..."
+            options={ALL_DAYS}
+            value={filterValues?.days || []}
+            onChange={handleDaysChange}
+            marginBottom="mb-4 max-md:mb-2"
+          />) :
+          (<SelectMultiFilter
+            label="Nhóm ngày"
+            placeholder="Chọn ngày..."
+            options={ALL_DAYS}
+            value={filterValues?.days || []}
+            onChange={handleDaysChange}
+            marginBottom="mb-4 max-md:mb-2"
+            horizontalFixed={horizontalFixed}
+          />)}
 
           {!stateGlobals.horizontal ?
           (<CheckboxMultiFilter
@@ -315,16 +382,33 @@ const Filter = ({ filters, horizontalFixed=false
             horizontalFixed={horizontalFixed}
           />))}
 
-          {!stateGlobals.horizontal ?
-          (<CheckboxMultiFilter
+          {!stateGlobals.horizontal && (<GroupFilter title={'Khu vực'} components={[<CheckboxMultiFilter
             label="Vùng"
             placeholder="Chọn vùng"
             options={ALL_REGIONALS}
             value={filterValues?.regionals || []}
             onChange={handleRegionalsChange}
             marginBottom="mb-4 max-md:mb-2"
-          />) :
-          (<SelectMultiFilter
+          />, <CheckboxMultiFilter
+            label="Thành phố lớn"
+            placeholder="Chọn TP lớn"
+            options={ALL_KEY_CITIES}
+            value={filterValues?.keyCities || []}
+            onChange={handleKeyCitiesChange}
+            marginBottom="mb-4 max-md:mb-2"
+            isSearch={false}
+          />, <SelectMultiFilter
+            label="Tỉnh/TP"
+            placeholder="Chọn Tỉnh/TP"
+            options={ALL_PROVINCES}
+            value={filterValues?.provinces || []}
+            onChange={handleProvincesChange}
+            marginBottom="mb-4 max-md:mb-2"
+            horizontalFixed={horizontalFixed}
+          />]} />)}
+
+          {stateGlobals.horizontal &&
+          (<><SelectMultiFilter
             label="Vùng"
             placeholder="Chọn vùng"
             options={ALL_REGIONALS}
@@ -332,18 +416,7 @@ const Filter = ({ filters, horizontalFixed=false
             onChange={handleRegionalsChange}
             marginBottom="mb-4 max-md:mb-2"
             horizontalFixed={horizontalFixed}
-          />)}
-
-          {!stateGlobals.horizontal ?
-          (<CheckboxMultiFilter
-            label="Thành phố lớn"
-            placeholder="Chọn TP lớn"
-            options={ALL_KEY_CITIES}
-            value={filterValues?.keyCities || []}
-            onChange={handleKeyCitiesChange}
-            marginBottom="mb-4 max-md:mb-2"
-          />) :
-          (<SelectMultiFilter
+          /> <SelectMultiFilter
             label="Thành phố lớn"
             placeholder="Chọn TP lớn"
             options={ALL_KEY_CITIES}
@@ -352,9 +425,6 @@ const Filter = ({ filters, horizontalFixed=false
             marginBottom="mb-4 max-md:mb-2"
             horizontalFixed={horizontalFixed}
           />
-          )
-          }
-
           <SelectMultiFilter
             label="Tỉnh/TP"
             placeholder="Chọn Tỉnh/TP"
@@ -363,7 +433,7 @@ const Filter = ({ filters, horizontalFixed=false
             onChange={handleProvincesChange}
             marginBottom="mb-4 max-md:mb-2"
             horizontalFixed={horizontalFixed}
-          />
+          /></>)}
 
           {stateGlobals.currentTab == DISABLE_TABS.program && (!stateGlobals.horizontal ? (<CheckboxMultiFilter
             label="Thể loại"

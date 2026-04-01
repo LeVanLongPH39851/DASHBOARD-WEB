@@ -96,7 +96,7 @@ const TreeMapChart = ({
     '#ec4899', '#06b6d4', '#84cc16', '#f97316', '#6366f1'
   ];
 
-  const colorPalette = colors.length > 0 ? colors : defaultColors;
+  const colorPalette = Object.keys(colors).length > 0 ? colors : defaultColors;
 
   // Transform data format
   const transformData = (inputData) => {
@@ -108,7 +108,10 @@ const TreeMapChart = ({
     if (series.length === 1) {
       return labels.map((label, index) => ({
         name: label,
-        value: series[0].data[index] || 0
+        value: series[0].data[index] || 0,
+        itemStyle: {
+          color: colorPalette[label] || defaultColors[index % defaultColors.length]
+        }
       }));
     }
 
@@ -123,6 +126,8 @@ const TreeMapChart = ({
   };
 
   const treeData = transformData(data);
+
+  console.log(treeData);
 
   const totalValue = treeData.reduce((sum, item) => {
     if (item.children) {
@@ -239,12 +244,8 @@ const TreeMapChart = ({
           {
             itemStyle: {
               borderWidth: 0,
-              gapWidth: !stateGlobals.screen_md ? 5 : 1
-            }
-          },
-          {
-            itemStyle: {
-              gapWidth: 1
+              gapWidth: !stateGlobals.screen_md ? 5 : 1,
+              borderColor: !stateGlobals.darkMode ? 'rgba(255, 255, 255, 1)' : 'rgba(28, 37, 52, 1)'
             },
             colorSaturation: colorSaturation
           }

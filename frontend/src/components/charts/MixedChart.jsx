@@ -6,6 +6,7 @@ import Loading from '../commons/Loading';
 import { formatKMB } from '../../utils/formatNumber';
 import { useDashboardStateGlobals } from '../../context/DashboardFilterContext';
 import NoData from '../commons/NoData';
+import { LABEL_METRIC } from '../../utils/label';
 
 const MixedChart = ({
   data,
@@ -193,7 +194,7 @@ const MixedChart = ({
         fontFamily: fontFamily
       },
       data: series.map(s => ({
-        name: s.name,
+        name: LABEL_METRIC[s.name] || s.name,
         icon: barSeriesKeys.includes(s.name) ? 'roundRect' : 'circle'
       }))
     },
@@ -255,7 +256,7 @@ const MixedChart = ({
       if (isBar) {
         // Bar series
         return {
-          name: s.name,
+          name: LABEL_METRIC[s.name] || s.name,
           type: 'bar',
           data: s.data.map((val, dataIdx) => ({
             value: val,
@@ -264,7 +265,7 @@ const MixedChart = ({
               borderRadius: [10, 10, 0, 0]
             },
             label: {
-              color: dataIdx === lastDataIndex || !lastDataIndexActive ? (!stateGlobals.darkMode ? 'rgba(0,0,0,0.7)' : 'rgba(255, 255, 255, 0.8)') : 'rgba(206, 206, 206, 1)'
+              color: dataIdx === lastDataIndex || !lastDataIndexActive ? (!stateGlobals.darkMode ? 'rgba(0,0,0,0.7)' : 'rgba(255, 255, 255, 0.8)') : 'rgba(180, 180, 180, 1)'
             }
           })),
           barWidth: barWidthPercent,
@@ -296,12 +297,12 @@ const MixedChart = ({
       } else {
         // Line series
         return {
-          name: s.name,
+          name: LABEL_METRIC[s.name] || s.name,
           type: 'line',
           data: s.data.map((val, dataIdx) => ({
             value: val,
             label: {
-              color: dataIdx === lastDataIndex || !lastDataIndexActive ? color : 'rgba(171, 171, 171, 1)'
+              color: dataIdx === lastDataIndex || !lastDataIndexActive ? color : 'rgba(150, 150, 150, 1)'
             }
           })),
           smooth: true,

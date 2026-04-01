@@ -5,6 +5,7 @@ import Loading from '../commons/Loading';
 import { useDashboardStateGlobals } from '../../context/DashboardFilterContext';
 import { formatKMB } from '../../utils/formatNumber';
 import NoData from '../commons/NoData';
+import { LABEL_METRIC } from '../../utils/label';
 
 
 
@@ -160,7 +161,7 @@ const BarChart = ({
               return `
                 <div style="margin: 2px 0; display: flex; align-items: center;">
                   ${p.marker}
-                  <span style="font-weight: 600; font-size: ${!stateGlobals.screen_md ? '12' : '10.5'}px; margin-right: 4px; color: rgba(0, 0, 0, 0.7);">${p.seriesName}:</span> 
+                  <span style="font-weight: 600; font-size: ${!stateGlobals.screen_md ? '12' : '10.5'}px; margin-right: 4px; color: rgba(0, 0, 0, 0.7);">${LABEL_METRIC[p.seriesName] || p.seriesName}:</span> 
                   <span style="font-size: ${!stateGlobals.screen_md ? '12' : '10.5'}px; font-weight: 500; color: rgba(0, 0, 0, 0.7);">
                     ${p.value.toLocaleString(undefined, { maximumFractionDigits: 0 })}${topSeriesIndex != 0 ? ` <span style="font-size: ${!stateGlobals.screen_md ? '11' : '10'}px;">(${percent}%)</span>` : ''}
                   </span>

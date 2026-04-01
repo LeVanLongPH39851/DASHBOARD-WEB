@@ -43,7 +43,8 @@ const TableChart = ({
   enableHeatmap = true,
   showSTT,
   showPagination,
-  displayName=true
+  displayName=true,
+  center=false
 }) => {
 
   const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
@@ -283,12 +284,12 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
               className="px-4 max-md:px-2 py-1 border border-border-black-10 dark:border-background-white-15 dark:bg-background-white-8 duration-300 rounded-xl flex items-center gap-1 transition-all h-10 max-md:h-9 cursor-pointer"
             >
               <figure><img src={!stateGlobals.darkMode ? iconShowList : iconShowListDark} alt="Icon Show List" className='w-3 max-md:w-2.5' /></figure>
-              <span className='text-sm max-md:text-xs font-medium text-background-black-90 dark:text-color-white-50 transition-all duration-300'>Columns</span>
+              <span className='text-sm max-md:text-xs font-medium text-background-black-90 dark:text-color-white-50 transition-all duration-300'>Chọn cột</span>
             </button>
             {showColumnMenu && (
               <div className="absolute left-0 top-full mt-2 max-md:mt-1 bg-background-light dark:bg-background-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-lg z-50 min-w-55 max-md:min-w-50">
                 <div className="p-3 max-md:p-2 max-h-80 max-md:max-h-70 overflow-y-auto">
-                  <div className="text-xs max-md:text-[10.5px] font-semibold text-color-black-50 dark:text-color-white-80 transition-all duration-300 uppercase mb-2 px-2 max-md:px-1">Toggle Columns</div>
+                  <div className="text-xs max-md:text-[10.5px] font-semibold text-color-black-50 dark:text-color-white-80 transition-all duration-300 uppercase mb-2 px-2 max-md:px-1">Danh sách cột</div>
                   {table.getAllLeafColumns().map((column) => (
                     <label
                       key={column.id}
@@ -380,7 +381,7 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
                           }}
                         >
                           <div
-                            className={`flex items-center gap-2 ${
+                            className={`flex items-center gap-2 ${headerGroup.headers.length - idx <= 5 || center ? 'justify-center' : ''} ${
                               header.column.getCanSort() ? 'cursor-pointer select-none' : ''
                             }`}
                             onClick={header.column.getToggleSortingHandler()}
@@ -426,8 +427,8 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
                             key={cell.id}
                             className={`border-b border-border-black-10 dark:border-background-white-15 px-2 max-md:px-1 py-3 max-md:py-2 text-color-black-100 dark:text-color-white-90 transition-all duration-300 ${
                               isNumericColumn 
-                                ? 'overflow-hidden text-ellipsis whitespace-nowrap' 
-                                : 'whitespace-normal'
+                                ? `overflow-hidden text-ellipsis whitespace-nowrap ${columnName !== 'STT' ? 'text-right' : ''}`
+                                : `whitespace-normal ${center ? 'text-center' : false}`
                             }`}
                             style={{
                               fontSize: !stateGlobals.screen_md ? fontSize.td : '10.5px',

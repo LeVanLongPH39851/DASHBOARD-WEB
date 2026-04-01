@@ -1,7 +1,7 @@
 var variableCustoms = {
     fontFamily: '"Be Vietnam Pro", sans-serif',
     colorLive: 'rgba(91, 214, 216, 1)',
-    colorTimeshift: 'rgba(72, 151, 252, 1)',
+    colorTimeshift: '#fe9273',
     colorRating: 'rgba(255, 56, 60, 1)',
     colorAveReach: 'rgba(255, 204, 0, 1)',
     metricRating: ['rating', 'rating_timeband'],
@@ -94,10 +94,11 @@ export const CUSTOM_CHART = {
     },
     tableChartChannel: {
         height: '400px',
-        name: 'Chỉ số đo lường chi tiết từng chương trình',
-        description: 'Chỉ số đo lường chi tiết từng chương trình',
+        name: 'Chỉ số đo lường kênh',
+        description: 'Chỉ số đo lường kênh',
         STT: false,
-        pagination: false
+        pagination: false,
+        center: true
     },
     tableChartArea: {
         height: '400px',

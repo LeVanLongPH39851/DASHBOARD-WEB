@@ -15,6 +15,7 @@ import InforFilterItem from './InforFilterItem';
 import { getYesterday } from '../../../helpers/helper';
 import { FILTER_LABEL } from '../../../utils/label';
 import Filter from '../filters/Filter';
+import { formatDate } from '../../../helpers/helper';
 import { useDashboardFilters, useDashboardFilterValues, useDashboardStateGlobals } from '../../../context/DashboardFilterContext';
 
 const clearSetAll = (setFilterValues) => {
@@ -99,7 +100,7 @@ const InforFilter = ({ filters }) => {
           </div>
           <div className='flex gap-4 items-center flex-wrap'>
             <ul className='flex gap-2 items-center flex-wrap'>
-              <InforFilterItem keyFilter={'Ngày'} nameFilter={'Ngày'} valueFilters={[appliedFilters?.startDate || yesterday, appliedFilters?.endDate || yesterday]} space={' - '} />
+              <InforFilterItem keyFilter={'Ngày'} nameFilter={'Ngày'} valueFilters={[formatDate(appliedFilters?.startDate || yesterday), formatDate(appliedFilters?.endDate || yesterday)]} space={' - '} />
               {appliedFilters && (
                 Object.entries(appliedFilters).filter(([, values]) => Array.isArray(values) && values.length > 0)
                   .map(([key, values]) => (

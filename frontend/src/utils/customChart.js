@@ -10,17 +10,17 @@ var variableCustoms = {
     metricAveReachPercent: 'reach%_1',
     colorChannel: {
     "VTV1": "rgba(217, 31, 38, 1)",
-    "VTV2": "rgba(7, 150, 71, 1)",
-    "VTV3": "rgba(55, 64, 255, 1)",
-    "VTV5": "rgba(72, 207, 175, 1)",
-    "VTV Cần Thơ": "rgba(200, 147, 253, 1)",
+    "VTV2": "rgba(86, 154, 255, 1)",
+    "VTV3": "rgba(128, 212, 27, 1)",
+    "VTV5": "rgba(2, 147, 113, 1)",
+    "VTV Cần Thơ": "rgba(253, 147, 242, 1)",
     "VTV4": "rgba(255, 146, 64, 1)",
-    "VTV9": "rgba(249, 160, 178, 1)",
-    "VTV5 Tây Nam Bộ": "rgba(0, 146, 245, 1)",
-    "VTV8": "rgba(202, 100, 25, 1)",
-    "VTV7": "rgba(99, 193, 255, 1)",
-    "VTV5 Tây Nguyên": "rgba(140, 128, 226, 1)",
-    "VTV10": "rgba(200, 147, 253, 1)"
+    "VTV9": "rgba(158, 121, 65, 1)",
+    "VTV5 Tây Nam Bộ": "rgba(189, 189, 189, 1)",
+    "VTV8": "rgba(174, 74, 164, 1)",
+    "VTV7": "rgba(99, 234, 255, 1)",
+    "VTV5 Tây Nguyên": "rgba(238, 245, 60, 1)",
+    "VTV10": "rgba(253, 147, 242, 1)"
     },
     colorFirstLevel: {
     "Thời sự - Chính luận": "#6BD3B3",
@@ -49,6 +49,14 @@ export const CUSTOM_CHART = {
   allChart: {
     fontFamily: variableCustoms.fontFamily
   },
+  numberWithTrendChart: {
+    fontSize: {
+        tooltip: 12
+    },
+    fontWeight: {
+        tooltip: 500
+    }
+  },
   barChart: {
     height: 332,
     fontSize: {
@@ -69,12 +77,12 @@ export const CUSTOM_CHART = {
     barChartArea: {
         aveReach: {
             color: [variableCustoms.colorAveReach],
-            name: 'Ave.REACH (000) theo thị trường',
+            name: 'Ave.Reach (000) theo thị trường',
             colorZoom: 'yellow'
         },
         rating: {
             color: [variableCustoms.colorRating],
-            name: 'RATING (000) theo thị trường',
+            name: 'Rating (000) theo thị trường',
             colorZoom: 'red'
         },
         orientation: 'horizontal'
@@ -102,13 +110,13 @@ export const CUSTOM_CHART = {
     },
     tableChartArea: {
         height: '400px',
-        name: 'Rating (%) và Reach (%) theo thị trường',
+        name: 'Rating (%) và Ave.Reach (%) theo thị trường',
         description: 'Rating (%)',
         STT: false,
         pagination: false
     },
     tableProgramChannel: {
-        height: '422px',
+        height: '550px',
         programRank: {
           name: 'XẾP HẠNG chương trình theo các chỉ số',
           description: 'XẾP HẠNG chương trình theo các chỉ số',
@@ -148,7 +156,7 @@ export const CUSTOM_CHART = {
       lastDataIndexActive: true
     },
     mixedChartPercentTimeband: {
-      name: 'Biến động RATING (%) và REACH (%) theo khung giờ',
+      name: 'Biến động Rating (%) và Ave.Reach (%) theo khung giờ',
       description: 'Biến động',
       metrics: {
         ratingPercent: [variableCustoms.metricRatingPercent],
@@ -157,10 +165,12 @@ export const CUSTOM_CHART = {
       colors: {
         'rating_timeband%': variableCustoms.colorRating,
         'reach%_1': variableCustoms.colorAveReach
-      }
+      },
+      offsetLine: -1,
+      xAxisTitle: 'Khung giờ (H)'
     },
     mixedChartTimeband: {
-      name: 'Biến động RATING và REACH theo khung giờ',
+      name: 'Biến động Rating (000) và Ave.Reach (000) theo khung giờ',
       description: 'Biến động',
       metrics: {
         rating: [variableCustoms.metricRating[1]],
@@ -169,7 +179,10 @@ export const CUSTOM_CHART = {
       colors: {
         'rating_timeband': variableCustoms.colorRating,
         'ave_reach_1': variableCustoms.colorAveReach
-      }
+      },
+      KMB: true,
+      offsetLine: -1,
+      xAxisTitle: 'Khung giờ (H)'
     },
     barMaxWidth: 100,
     barWidthPercent: '60%'
@@ -183,7 +196,7 @@ export const CUSTOM_CHART = {
       legend: 600, tooltip: 500, axisLabel: 500, dataLabel: 500
     },
     lineChartPercentTimebandChannel: {
-      name: 'Biến động RATING (%) kênh theo khung giờ',
+      name: 'Biến động Rating (%) kênh theo khung giờ',
       description: 'Biến động',
       showTopNSeries: 3
     },
@@ -193,82 +206,83 @@ export const CUSTOM_CHART = {
         description: 'Biến động'
       },
       rating: {
-        name: 'Biến động RATING (%) kênh theo ngày',
+        name: 'Biến động Rating (%) kênh theo ngày',
         description: 'Biến động'
       }
     },
     lineChartTimebandChannel: {
       aveReach: {
-        name: 'Biến động Reach kênh theo khung giờ',
+        name: 'Biến động Ave.Reach (000) kênh theo khung giờ',
         description: 'Biến động'
       },
       rating: {
-        name: 'Biến động RATING kênh theo khung giờ',
+        name: 'Biến động Rating (000) kênh theo khung giờ',
         description: 'Biến động'
       },
       showTopNSeries: 3
     },
     lineChartDateChannel: {
       aveReach: {
-        name: 'Biến động Reach kênh theo ngày',
+        name: 'Biến động Reach (000) kênh theo ngày',
         description: 'Biến động'
       },
       rating: {
-        name: 'Biến động RATING kênh theo ngày',
+        name: 'Biến động Rating (000) kênh theo ngày',
         description: 'Biến động'
       }
     },
     lineChartTimebandDay: {
       aveReach: {
-        name: 'Biến động Ave.REACH (000) ngày trong tuần theo khung giờ',
+        name: 'Biến động Ave.Reach (000) ngày trong tuần theo khung giờ',
         description: 'Biến động'
       },
       rating: {
-        name: 'Biến động RATING (000) ngày trong tuần theo khung giờ',
+        name: 'Biến động Rating (000) ngày trong tuần theo khung giờ',
         description: 'Biến động'
       },
       left: 100,
       showTopNSeries: 3,
     },
     lineChartTimebandRegional: {
-        name: 'Biến động Ave.REACH (000) vùng theo khung giờ',
+        name: 'Biến động Ave.Reach (000) vùng theo khung giờ',
         description: 'Biến động',
         showTopNSeries: 3,
         left: 260
     },
     lineChartMinuteChannel: {
-        name: 'Xu hướng Rating CÁC KÊNH',
+        name: 'Xu hướng Rating (000) CÁC KÊNH',
         description: 'Biến động',
         legendTop: true
     },
     lineChartMinuteDay: {
-        name: 'RATING KÊNH TRONG NGÀY',
+        name: 'RATING (000) KÊNH TRONG NGÀY',
         description: 'Biến động',
         legendTop: true
     },
     lineChartMinuteDays: {
-        name: 'RATING CHƯƠNG TRÌNH theo phút (nhiều ngày)',
+        name: 'RATING (000) CHƯƠNG TRÌNH theo phút (nhiều ngày)',
         description: 'Biến động',
         legendTop: true
     },
     colorChannel: variableCustoms.colorChannel,
     smooth: true,
-    symbolSize: 8,
-    lineWidth: 3,
+    symbolSize: 7,
+    lineWidth: 2,
     areaStyle: false,
     stack: false,
-    showTopNSeries: null
+    showTopNSeries: null,
+    xAxisTitle: 'Khung giờ (H)'
   },
   treeMapChart: {
     height: '350px',
     fontSize: { tooltip: 12, label: 12 },
     fontWeight: { tooltip: 500, label: 600 },
     treeMapChartPercentChannel: {
-      name: 'Thị phần kênh theo Reach (%)',
+      name: 'Thị phần kênh theo Ave.Reach (%)',
       description: 'Thị phần'
     },
     treeMapChartChannel: {
-      name: 'Thị phần kênh theo RATING',
+      name: 'Thị phần kênh theo Rating (000)',
       description: 'Thị phần'
     },
     colorChannel: variableCustoms.colorChannel

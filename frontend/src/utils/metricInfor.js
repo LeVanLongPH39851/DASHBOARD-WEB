@@ -38,7 +38,7 @@ export const METRICS = {
   'reach%': {
     name: 'aveReachPercentNumber',
     metric: 'reach%',
-    title: 'Reach (%)',
+    title: 'Ave.Reach (%)',
     description: 'tỷ lệ trung bình (%) khán giả duy nhất',
     isPercent: true,
     icon: iconUsers,

@@ -26,7 +26,7 @@ export const LABEL = {
 export const LABEL_METRIC = {
   'rating': 'Rating',
   'ave_reach': 'Ave.Reach',
-  'reach%_1': 'Reach (%)',
+  'reach%_1': 'Ave.Reach (%)',
   'rating_timeband%': 'Rating (%)',
   'ave_reach_1': 'Ave.Reach',
   'rating_timeband': 'Rating'

@@ -108,17 +108,17 @@ const Header = () => {
 
     const now = new Date();
 
-    const time = now.toLocaleTimeString('en-US', {
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: true
+    const time = now.toLocaleTimeString('vi-VN', {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: true
     });
 
-    const date = now.toLocaleDateString('en-US', {
-        month: 'long',
-        day: '2-digit',
-        year: 'numeric'
+    const date = now.toLocaleDateString('vi-VN', {
+    month: 'long',
+    day: '2-digit',
+    year: 'numeric'
     });
         
   return (

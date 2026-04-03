@@ -9,7 +9,7 @@ const formatDate = (timestamp) => {
   if (!timestamp || typeof timestamp !== 'number') return timestamp;
   
   // Kiểm tra timestamp hợp lệ (13 chữ số milliseconds)
-  if (timestamp.toString().length !== 13) return timestamp;
+  if (timestamp < 946684800000) return timestamp;
   
   const date = new Date(timestamp);
   if (isNaN(date.getTime())) return timestamp;

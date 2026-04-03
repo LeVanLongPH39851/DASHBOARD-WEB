@@ -23,7 +23,10 @@ const MixedChart = ({
   colors,
   barMaxWidth,
   barWidthPercent,
-  lastDataIndexActive=false
+  lastDataIndexActive=false,
+  KMB=false,
+  offsetLine=-8,
+  xAxisTitle=false
 }) => {
 
   const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
@@ -115,7 +118,7 @@ const MixedChart = ({
             </div>
             ${params.map(p => `
               <div style="margin: 2px 0; display: flex; align-items: center;">
-                ${p.marker} 
+                ${p.marker}
                 <span style="font-weight: 600; font-size: ${!stateGlobals.screen_md ? '12' : '10.5'}px; margin-right: 4px; color: rgba(0, 0, 0, 0.7);">${p.seriesName}:</span> 
                 <span style="font-size: ${!stateGlobals.screen_md ? '12' : '10.5'}px; font-weight: 500; color: rgba(0, 0, 0, 0.7);">${typeof p.value === 'number' ? formatNumber(p.value, { isPercent: p.seriesName.includes('%') }) : (p.value || '-')}
                 </span>
@@ -202,7 +205,7 @@ const MixedChart = ({
     grid: {
       left: '1%',
       right: '1%',
-      bottom: needsScroll ? (!stateGlobals.screen_md ? '30px' : '20px') : '1%',
+      bottom: needsScroll ? (!stateGlobals.screen_md ? (xAxisTitle ? '42px' : '30px') : (xAxisTitle ? '32px' : '20px')) : '1%',
       top: !stateGlobals.screen_md ? 45.5 : 43,
       containLabel: true
     },
@@ -210,6 +213,17 @@ const MixedChart = ({
     xAxis: {
       type: 'category',
       data: labels,
+      name: xAxisTitle,
+      nameLocation: 'middle',
+      nameGap: !stateGlobals.screen_md ? 25 : 24,
+      nameTextStyle: {
+        fontSize: !stateGlobals.screen_md ? fontSize.axisLabel : '10.5px',
+        fontWeight: fontWeight.axisLabel,
+        fontFamily: fontFamily,
+        color: !stateGlobals.darkMode
+          ? 'rgba(0, 0, 0, 0.7)'
+          : 'rgba(255, 255, 255, 0.9)'
+      },
       axisLine: { 
         show: true, 
         lineStyle: { color: !stateGlobals.darkMode ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255, 255, 255, 0.5)' }
@@ -241,7 +255,7 @@ const MixedChart = ({
         }
       },
       axisLabel: {
-        formatter: v => !stateGlobals.screen_md ? v.toLocaleString(undefined, { maximumFractionDigits: 0 }) : formatKMB(v),
+        formatter: v => !stateGlobals.screen_md && !KMB ? nameChart.includes('%') ? formatNumber(v, { isPercent: true }) : v.toLocaleString(undefined, { maximumFractionDigits: 0 }) : formatKMB(v),
         fontSize: !stateGlobals.screen_md ? fontSize.axisLabel : '10.5px',
         color: !stateGlobals.darkMode ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.9)',
         fontWeight: fontWeight.axisLabel,
@@ -286,7 +300,7 @@ const MixedChart = ({
             position: 'top',
             offset: [0, !stateGlobals.screen_md ? -8 : 0],
             formatter: (params) => {
-              return typeof params.value === 'number' ? (!stateGlobals.screen_md ? formatNumber(params.value, { isPercent: params.seriesName.includes('%') }) : (params.seriesName.includes('%') ? formatNumber(params.value, { isPercent: params.seriesName.includes('%') }) : formatKMB(params.value))) : (params.value || '-')
+              return typeof params.value === 'number' ? (!stateGlobals.screen_md && !KMB ? params.value.toLocaleString(undefined, { maximumFractionDigits: 2 }) : (params.seriesName.includes('%') ? params.value.toLocaleString(undefined, { maximumFractionDigits: 2 }) : formatKMB(params.value))) : (params.value || '-')
             },
             fontSize: !stateGlobals.screen_md ? fontSize.dataLabel : '10.5px',
             fontWeight: fontWeight.dataLabel,
@@ -325,9 +339,9 @@ const MixedChart = ({
           label: {
             show: true,
             position: 'top',
-            offset: [0, !stateGlobals.screen_md ? -8 : 0],
+            offset: [0, !stateGlobals.screen_md ? offsetLine : 0],
             formatter: (params) => {
-              return typeof params.value === 'number' ? (!stateGlobals.screen_md ? formatNumber(params.value, { isPercent: params.seriesName.includes('%') }) : (params.seriesName.includes('%') ? formatNumber(params.value, { isPercent: params.seriesName.includes('%') }) : formatKMB(params.value))) : (params.value || '-')
+              return typeof params.value === 'number' ? (!stateGlobals.screen_md && !KMB ? params.value.toLocaleString(undefined, { maximumFractionDigits: 2 }) : (params.seriesName.includes('%') ? params.value.toLocaleString(undefined, { maximumFractionDigits: 2 }) : formatKMB(params.value))) : (params.value || '-')
             },
             fontSize: !stateGlobals.screen_md ? fontSize.dataLabel : '10.5px',
             fontWeight: fontWeight.dataLabel,

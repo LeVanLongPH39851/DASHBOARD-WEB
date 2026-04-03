@@ -40,7 +40,7 @@ export const ratingLineChartTimebandDayPayload = {
           {
             "expressionType": "SQL",
             "label": "day",
-            "sqlExpression": "CASE WHEN TRIM(TO_CHAR(date, 'Day')) = 'Monday' THEN '1.Thứ Hai' WHEN TRIM(TO_CHAR(date, 'Day')) = 'Tuesday' THEN '2.Thứ Ba' WHEN TRIM(TO_CHAR(date, 'Day')) = 'Wednesday' THEN '3.Thứ Tư' WHEN TRIM(TO_CHAR(date, 'Day')) = 'Thursday' THEN '4.Thứ Năm' WHEN TRIM(TO_CHAR(date, 'Day')) = 'Friday' THEN '5.Thứ Sáu' WHEN TRIM(TO_CHAR(date, 'Day')) = 'Saturday' THEN '6.Thứ Bảy' ELSE '7.Chủ Nhật' END"
+            "sqlExpression": "CASE WHEN TRIM(TO_CHAR(date, 'Day')) = 'Monday' THEN 'Thứ Hai' WHEN TRIM(TO_CHAR(date, 'Day')) = 'Tuesday' THEN 'Thứ Ba' WHEN TRIM(TO_CHAR(date, 'Day')) = 'Wednesday' THEN 'Thứ Tư' WHEN TRIM(TO_CHAR(date, 'Day')) = 'Thursday' THEN 'Thứ Năm' WHEN TRIM(TO_CHAR(date, 'Day')) = 'Friday' THEN 'Thứ Sáu' WHEN TRIM(TO_CHAR(date, 'Day')) = 'Saturday' THEN 'Thứ Bảy' ELSE 'Chủ Nhật' END"
           }
         ],
         "metrics": [
@@ -58,7 +58,7 @@ export const ratingLineChartTimebandDayPayload = {
           {
             "expressionType": "SQL",
             "label": "day",
-            "sqlExpression": "CASE WHEN TRIM(TO_CHAR(date, 'Day')) = 'Monday' THEN '1.Thứ Hai' WHEN TRIM(TO_CHAR(date, 'Day')) = 'Tuesday' THEN '2.Thứ Ba' WHEN TRIM(TO_CHAR(date, 'Day')) = 'Wednesday' THEN '3.Thứ Tư' WHEN TRIM(TO_CHAR(date, 'Day')) = 'Thursday' THEN '4.Thứ Năm' WHEN TRIM(TO_CHAR(date, 'Day')) = 'Friday' THEN '5.Thứ Sáu' WHEN TRIM(TO_CHAR(date, 'Day')) = 'Saturday' THEN '6.Thứ Bảy' ELSE '7.Chủ Nhật' END"
+            "sqlExpression": "CASE WHEN TRIM(TO_CHAR(date, 'Day')) = 'Monday' THEN 'Thứ Hai' WHEN TRIM(TO_CHAR(date, 'Day')) = 'Tuesday' THEN 'Thứ Ba' WHEN TRIM(TO_CHAR(date, 'Day')) = 'Wednesday' THEN 'Thứ Tư' WHEN TRIM(TO_CHAR(date, 'Day')) = 'Thursday' THEN 'Thứ Năm' WHEN TRIM(TO_CHAR(date, 'Day')) = 'Friday' THEN 'Thứ Sáu' WHEN TRIM(TO_CHAR(date, 'Day')) = 'Saturday' THEN 'Thứ Bảy' ELSE 'Chủ Nhật' END"
           }
         ],
         "series_limit": 0,
@@ -122,7 +122,7 @@ export const ratingLineChartTimebandDayPayload = {
         {
           "expressionType": "SQL",
           "label": "day",
-          "sqlExpression": "CASE WHEN TRIM(TO_CHAR(date, 'Day')) = 'Monday' THEN '1.Thứ Hai' WHEN TRIM(TO_CHAR(date, 'Day')) = 'Tuesday' THEN '2.Thứ Ba' WHEN TRIM(TO_CHAR(date, 'Day')) = 'Wednesday' THEN '3.Thứ Tư' WHEN TRIM(TO_CHAR(date, 'Day')) = 'Thursday' THEN '4.Thứ Năm' WHEN TRIM(TO_CHAR(date, 'Day')) = 'Friday' THEN '5.Thứ Sáu' WHEN TRIM(TO_CHAR(date, 'Day')) = 'Saturday' THEN '6.Thứ Bảy' ELSE '7.Chủ Nhật' END"
+          "sqlExpression": "CASE WHEN TRIM(TO_CHAR(date, 'Day')) = 'Monday' THEN 'Thứ Hai' WHEN TRIM(TO_CHAR(date, 'Day')) = 'Tuesday' THEN 'Thứ Ba' WHEN TRIM(TO_CHAR(date, 'Day')) = 'Wednesday' THEN 'Thứ Tư' WHEN TRIM(TO_CHAR(date, 'Day')) = 'Thursday' THEN 'Thứ Năm' WHEN TRIM(TO_CHAR(date, 'Day')) = 'Friday' THEN 'Thứ Sáu' WHEN TRIM(TO_CHAR(date, 'Day')) = 'Saturday' THEN 'Thứ Bảy' ELSE 'Chủ Nhật' END"
         }
       ],
       "adhoc_filters": [
@@ -236,16 +236,16 @@ export const ratingLineChartTimebandDayPayload = {
         "Quảng bá": "#8c564a",
         "Phim truyện": "#C9BBAB",
         "Quảng cáo": "#B17BAA",
-        "1.Thứ Hai": "#1FA8C9",
-        "2.Thứ Ba": "#454E7C",
-        "3.Thứ Tư": "#5AC189",
-        "4.Thứ Năm": "#FF7F44",
-        "5.Thứ Sáu": "#666666",
-        "6.Thứ Bảy": "#E04355",
-        "7.Chủ Nhật": "#FCC700"
+        "Thứ Hai": "#1FA8C9",
+        "Thứ Ba": "#454E7C",
+        "Thứ Tư": "#5AC189",
+        "Thứ Năm": "#FF7F44",
+        "Thứ Sáu": "#666666",
+        "Thứ Bảy": "#E04355",
+        "Chủ Nhật": "#FCC700"
       },
       "shared_label_colors": [
-        "7.Chủ Nhật",
+        "Chủ Nhật",
         "Dành cho trẻ em",
         "Giáo dục - Đào tạo",
         "Giải trí",

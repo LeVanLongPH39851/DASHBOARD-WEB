@@ -26,7 +26,9 @@ const LineChart = ({
   labelOffset = 0,
   showTopNSeries,
   left=145,
-  legendTop=false
+  legendTop=false,
+  KMB=true,
+  xAxisTitle=false
 }) => {
 
   const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
@@ -290,6 +292,23 @@ const LineChart = ({
         letterSpacing: '0.1px',
         fontFamily: fontFamily
       },
+      selector: [
+        { type: 'all', title: 'All' },
+        { type: 'inverse', title: 'Inv' }
+      ],
+      selectorPosition: !legendTop ? 'start' : 'end',
+      selectorItemGap: 5,
+      selectorButtonGap: 8,
+      selectorLabel: {
+        show: true,
+        padding: [3, 8],
+        borderRadius: 10,
+        borderColor: !stateGlobals.darkMode ? 'rgba(229, 229, 239, 1)' : 'rgba(255, 255, 255, 0.2)',
+        color: !stateGlobals.darkMode ? 'rgba(30, 27, 57, 1)' : 'rgba(255, 255, 255, 0.8)',
+        fontWeight: fontWeight.legend,
+        fontFamily: fontFamily,
+        fontSize: !stateGlobals.screen_md ? fontSize.legend : '10.5px'
+      },
       data: legendData.map(name => ({
         name,
         itemStyle: {
@@ -302,7 +321,7 @@ const LineChart = ({
     grid: {
       left: !legendTop && !stateGlobals.screen_md ? left : '1%',
       right: '1%',
-      bottom: needsScroll ? (!stateGlobals.screen_md ? '30px' : '10px') : '1%',
+      bottom: needsScroll ? (!stateGlobals.screen_md ? (xAxisTitle ? '42px' : '30px') : (xAxisTitle ? '32px' : '20px')) : '1%',
       top: !legendTop && !stateGlobals.screen_md ? '5%' : 40,
       containLabel: true
     },
@@ -310,6 +329,17 @@ const LineChart = ({
     xAxis: {
       type: 'category',
       data: labels,
+      name: xAxisTitle,
+      nameLocation: 'middle',
+      nameGap: !stateGlobals.screen_md ? 25 : 24,
+      nameTextStyle: {
+        fontSize: !stateGlobals.screen_md ? fontSize.axisLabel : '10.5px',
+        fontWeight: fontWeight.axisLabel,
+        fontFamily: fontFamily,
+        color: !stateGlobals.darkMode
+          ? 'rgba(0, 0, 0, 0.7)'
+          : 'rgba(255, 255, 255, 0.9)'
+      },
       axisLine: { show: !stateGlobals.darkMode ? true : false, lineStyle: { color: 'rgba(229, 229, 239, 1)' } },
       axisTick: { show: false },
       axisLabel: { 
@@ -339,7 +369,7 @@ const LineChart = ({
         }
       },
       axisLabel: {
-        formatter: v => !stateGlobals.screen_md ? v.toLocaleString(undefined, { maximumFractionDigits: 0 }) : formatKMB(v),
+        formatter: v => !stateGlobals.screen_md && !KMB ? v.toLocaleString(undefined, { maximumFractionDigits: 0 }) : formatKMB(v),
         fontSize: !stateGlobals.screen_md ? fontSize.axisLabel : '10.5px',
         color: !stateGlobals.darkMode ? 'rgba(97, 94, 131, 1)' : 'rgba(255, 255, 255, 0.9)',
         fontWeight: fontWeight.axisLabel,
@@ -402,7 +432,7 @@ const LineChart = ({
             show: true,
             position: 'top',
             offset: [0, labelOffset],
-            formatter: (params) => params.value ? nameChart.includes('%') ? params.value.toLocaleString(undefined, { maximumFractionDigits: (nameChart.includes('%') ? 2 : 0) }) : !stateGlobals.screen_md ? params.value.toLocaleString(undefined, { maximumFractionDigits: (nameChart.includes('%') ? 2 : 0) }) : formatKMB(params.value) : '',
+            formatter: (params) => params.value ? nameChart.includes('%') ? params.value.toLocaleString(undefined, { maximumFractionDigits: (nameChart.includes('%') ? 2 : 0) }) : !stateGlobals.screen_md && !KMB ? params.value.toLocaleString(undefined, { maximumFractionDigits: (nameChart.includes('%') ? 2 : 0) }) : formatKMB(params.value) : '',
             fontSize: !stateGlobals.screen_md ? fontSize.dataLabel : '10.5px',
             fontWeight: fontWeight.dataLabel,
             fontFamily: fontFamily,
@@ -418,7 +448,7 @@ const LineChart = ({
           show: showLabel && isTopSeries,  // ✅ Logic hoàn chỉnh
           position: 'top',
           offset: [0, labelOffset],
-          formatter: (params) => params.value ? nameChart.includes('%') ? params.value.toLocaleString(undefined, { maximumFractionDigits: (nameChart.includes('%') ? 2 : 0) }) : !stateGlobals.screen_md ? params.value.toLocaleString(undefined, { maximumFractionDigits: (nameChart.includes('%') ? 2 : 0) }) : formatKMB(params.value) : '',
+          formatter: (params) => params.value ? nameChart.includes('%') ? params.value.toLocaleString(undefined, { maximumFractionDigits: (nameChart.includes('%') ? 2 : 0) }) : !stateGlobals.screen_md && !KMB ? params.value.toLocaleString(undefined, { maximumFractionDigits: (nameChart.includes('%') ? 2 : 0) }) : formatKMB(params.value) : '',
           fontSize: fontSize.dataLabel,
           fontWeight: fontWeight.dataLabel,
           fontFamily: fontFamily,

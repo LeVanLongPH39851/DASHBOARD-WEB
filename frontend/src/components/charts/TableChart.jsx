@@ -53,7 +53,7 @@ const TableChart = ({
     return (
       <div className={`${displayName ? 'p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : '' }`} style={{ fontFamily }}>
         <NameChart nameChart={nameChart} description={description} display={displayName} />
-        <div className='h-16 max-md:h-12'></div>
+        <div className='h-13 max-md:h-9.25'></div>
         <Loading height={!stateGlobals.screen_md ? height : stateGlobals.currentTab == 'program' ? '300px'  : '240px'} />
       </div>
     );
@@ -61,7 +61,7 @@ const TableChart = ({
     return (
       <div className={`${displayName ? 'p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : '' }`} style={{ fontFamily }}>
         <NameChart nameChart={nameChart} description={description} display={displayName} />
-        <div className='h-16 max-md:h-12'></div>
+        <div className='h-13 max-md:h-9.25'></div>
         <NoData height={!stateGlobals.screen_md ? height : stateGlobals.currentTab == 'program' ? '300px'  : '240px'} />
       </div>
     );
@@ -276,15 +276,15 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
   return (
     <div className={`${displayName ? 'p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : '' }`} style={{ fontFamily }}>
       <NameChart nameChart={nameChart} description={description} display={displayName} getChartData={getEChartsData} table={true} />
-      <div className="flex justify-between items-center mb-6 max-md:mb-3">
+      <div className="flex justify-between items-center mb-3 max-md:mb-1">
         <div className='flex items-center gap-2 max-md:gap-1'>
           <div className={`relative`}>
             <button
               onClick={() => setShowColumnMenu(!showColumnMenu)}
-              className="px-4 max-md:px-2 py-1 border border-border-black-10 dark:border-background-white-15 dark:bg-background-white-8 duration-300 rounded-xl flex items-center gap-1 transition-all h-10 max-md:h-9 cursor-pointer"
+              className="px-4 max-md:px-2 py-1 border border-border-black-10 dark:border-background-white-15 dark:bg-background-white-8 duration-300 rounded-xl flex items-center gap-1 transition-all h-10 max-md:h-8 cursor-pointer"
             >
               <figure><img src={!stateGlobals.darkMode ? iconShowList : iconShowListDark} alt="Icon Show List" className='w-3 max-md:w-2.5' /></figure>
-              <span className='text-sm max-md:text-xs font-medium text-background-black-90 dark:text-color-white-50 transition-all duration-300'>Chọn cột</span>
+              <span className='text-sm max-md:text-[10.5px] font-medium text-background-black-90 dark:text-color-white-50 transition-all duration-300'>Chọn cột</span>
             </button>
             {showColumnMenu && (
               <div className="absolute left-0 top-full mt-2 max-md:mt-1 bg-background-light dark:bg-background-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-lg z-50 min-w-55 max-md:min-w-50">
@@ -313,15 +313,15 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
               <select
                 value={table.getState().pagination.pageSize}
                 onChange={(e) => table.setPageSize(Number(e.target.value))}
-                className="pl-7 pr-6 py-1 border border-border-black-10 dark:border-background-white-15 text-background-black-90 dark:bg-background-white-8 dark:text-color-white-50 duration-300 cursor-pointer rounded-xl text-sm max-md:text-xs appearance-none transition-all flex items-center h-10 max-md:h-9 outline-none"
+                className="pl-7 pr-6 py-1 border border-border-black-10 dark:border-background-white-15 text-background-black-90 dark:bg-background-white-8 dark:text-color-white-50 duration-300 cursor-pointer rounded-xl text-sm max-md:text-[10.5px] appearance-none transition-all flex items-center h-10 max-md:h-8 outline-none"
               >
                 {[10, 20, 50, 100, 200].map((pageSize) => (
-                  <option className='text-sm max-md:text-xs font-medium text-background-black-90 dark:text-color-white-80 dark:bg-background-dark transition-all duration-300' key={pageSize} value={pageSize}>
+                  <option className='text-sm max-md:text-[10.5px] font-medium text-background-black-90 dark:text-color-white-80 dark:bg-background-dark transition-all duration-300' key={pageSize} value={pageSize}>
                     {pageSize}
                   </option>
                 ))}
               </select>
-              <figure className='absolute top-1/2 -translate-y-1/2 left-3'><img src={!stateGlobals.darkMode ? iconShowList : iconShowListDark} alt="Icon Show List" className='w-3 max-md:w-2.5' /></figure>
+              <figure className='absolute top-1/2 -translate-y-1/2 left-3 rotate-90'><img src={!stateGlobals.darkMode ? iconShowList : iconShowListDark} alt="Icon Show List" className='w-3 max-md:w-2.5' /></figure>
               <figure className='absolute top-1/2 -translate-y-1/2 right-3'><img src={!stateGlobals.darkMode ? iconArrowDown : iconArrowDownDark} alt="Icon Arrow Down" className='w-2 max-md:w-1.75' /></figure>
             </div>
           )}
@@ -332,7 +332,7 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
             value={globalFilter ?? ''}
             onChange={(e) => setGlobalFilter(e.target.value)}
             placeholder="Tìm kiếm"
-            className="pl-4 pr-11 max-md:pr-10 py-2.25 border border-border-black-10 dark:border-background-white-15 rounded-2xl outline-none bg-background-search dark:bg-background-white-8 transition-all duration-300 text-sm max-md:text-xs font-medium text-color-black-50 placeholder-color-black-50 dark:text-color-white-50 dark:placeholder-color-white-50 w-70 max-md:w-35"
+            className="pl-4 pr-11 max-md:pr-10 py-2.25 max-md:py-2 border border-border-black-10 dark:border-background-white-15 rounded-2xl outline-none bg-background-search dark:bg-background-white-8 transition-all duration-300 text-sm max-md:text-[10.5px] font-medium text-color-black-50 placeholder-color-black-50 dark:text-color-white-50 dark:placeholder-color-white-50 w-70 max-md:w-35"
           />
           <figure className='absolute top-1/2 -translate-y-1/2 right-4 cursor-pointer'><img src={!stateGlobals.darkMode ? iconSearch : iconSearchDark} alt="Icon Search" className='w-3.75 max-md:w-3' /></figure>
         </div>
@@ -370,10 +370,10 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
                       return (
                         <th
                           key={header.id}
-                          className="px-2 max-md:px-1 py-3 max-md:py-2 text-center relative text-color-neotam bg-background-light dark:bg-background-chart-dark border-b border-border-black-10 dark:border-background-white-15 transition-all duration-300"
+                          className="px-2 max-md:px-1 py-3 max-md:py-2 text-center relative text-color-neotam dark:text-background-primary bg-background-light dark:bg-background-chart-dark border-b border-border-black-10 dark:border-background-white-15 transition-all duration-300"
                           style={{
                             minWidth: `${header.column.getSize() - 40}px`,
-                            maxWidth: `${header.column.getSize() + 100}px`,
+                            maxWidth: `${header.id === 'KÊNH' ? header.column.getSize() + 70 : header.column.getSize() + 100}px`,
                             fontSize: !stateGlobals.screen_md ? fontSize.label : '10.5px',
                             fontWeight: fontWeight.label,
                             whiteSpace: 'pre-line',
@@ -381,7 +381,7 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
                           }}
                         >
                           <div
-                            className={`flex items-center gap-2 ${headerGroup.headers.length - idx <= 5 || center ? 'justify-center' : ''} ${
+                            className={`flex items-center gap-2 ${idx === 0 && header.id !== 'STT' ? 'justify-center' : headerGroup.headers.length - idx <= 5 ? 'justify-end' : ''} ${
                               header.column.getCanSort() ? 'cursor-pointer select-none' : ''
                             }`}
                             onClick={header.column.getToggleSortingHandler()}
@@ -396,8 +396,8 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
                           <div
                             onMouseDown={header.getResizeHandler()}
                             onTouchStart={header.getResizeHandler()}
-                            className={`absolute right-0 top-0 h-full w-0.5 rounded-2xl cursor-col-resize hover:bg-color-black-50 dark:hover:bg-color-white-50 transition-colors duration-300 ${
-                              header.column.getIsResizing() ? 'bg-color-black-70 dark:bg-color-black-50' : 'bg-transparent'
+                            className={`absolute right-0 top-0 h-full w-0.5 rounded-2xl cursor-col-resize text-color-neotam dark:text-background-primary transition-colors duration-300 ${
+                              header.column.getIsResizing() ? 'text-color-neotam dark:text-background-primary' : 'bg-transparent'
                             }`}
                             style={{ userSelect: 'none', touchAction: 'none' }}
                           />
@@ -432,9 +432,9 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
                             }`}
                             style={{
                               fontSize: !stateGlobals.screen_md ? fontSize.td : '10.5px',
-                              fontWeight: columnName === 'STT' ? 700 : fontWeight.td,
+                              fontWeight: ['CHƯƠNG TRÌNH'].includes(columnName) ? 700 : fontWeight.td,
                               minWidth: `${cell.column.getSize() - 40}px`,
-                              maxWidth: `${cell.column.getSize() + 100}px`,
+                              maxWidth: `${columnName === 'KÊNH' ? cell.column.getSize() + 70 : cell.column.getSize() + 100}px`,
                               // backgroundColor: bgColor,
                               wordWrap: isNumericColumn ? 'normal' : 'break-word'
                             }}

@@ -3,7 +3,7 @@ import React, { memo, useRef, useCallback } from 'react';
 import ReactECharts from 'echarts-for-react';
 import NameChart from '../layouts/components/NameChart';
 import Loading from '../commons/Loading';
-import { formatKMB } from '../../utils/formatNumber';
+import { formatKMB, formatNumber } from '../../utils/formatNumber';
 import NoData from '../commons/NoData';
 import { useDashboardStateGlobals } from '../../context/DashboardFilterContext';
 
@@ -204,7 +204,7 @@ const TreeMapChart = ({
           color: 'rgba(255, 255, 255, 1)',
           formatter: (params) => {
             const { name, value } = params;
-            return `{name|${name}}:\n{value|${nameChart.includes('%') ? value?.toLocaleString(undefined, { maximumFractionDigits: (nameChart.includes('%') ? 2 : 0) }) : !stateGlobals.screen_md ? value?.toLocaleString(undefined, { maximumFractionDigits: (nameChart.includes('%') ? 2 : 0) }) : formatKMB(params.value) || 0}}`;
+            return `{name|${name}}\n{value|${nameChart.includes('%') ? formatNumber(value, {isPercent: true}) : !stateGlobals.screen_md ? value?.toLocaleString(undefined, { maximumFractionDigits: (nameChart.includes('%') ? 2 : 0) }) : formatKMB(params.value) || 0}}`;
           },
           rich: {
             name: {

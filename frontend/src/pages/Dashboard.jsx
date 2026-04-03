@@ -78,7 +78,8 @@ const DashboardContent = () => {
                                 <InforFilter filters={scopeFilterData} />
                                 <div className='px-6 max-md:px-4 pt-6 max-md:pt-4'>
                                   <div className='w-full grid grid-cols-2 max-md:grid-cols-1 gap-6 max-md:gap-4 pb-6 max-md:pb-4'>
-                                    <NumberWithTrendChart nameChart={METRICS['rating%'].title} description={METRICS['rating%'].description} data={!dashboard.isLoading.ratingPercentTrendNumberData ? transformNumberWithTrendData(dashboard.ratingPercentTrendNumberData?.data, dashboard.ratingPercentTrendNumberData?.colnames) : 'isLoading'} icon={METRICS.rating.icon} />
+                                    <NumberWithTrendChart nameChart={METRICS['rating%'].title} description={METRICS['rating%'].description} fontFamily={CUSTOM_CHART.allChart.fontFamily} fontSize={CUSTOM_CHART.numberWithTrendChart.fontSize} fontWeight={CUSTOM_CHART.numberWithTrendChart.fontWeight}
+                                                          data={!dashboard.isLoading.ratingPercentTrendNumberData ? transformNumberWithTrendData(dashboard.ratingPercentTrendNumberData?.data, dashboard.ratingPercentTrendNumberData?.colnames) : 'isLoading'} icon={METRICS.rating.icon} />
                                     <div className="grid grid-cols-2 gap-6 max-md:gap-4">
                                     {Object.values(METRICS).map(card => (
                                       <NumberCard
@@ -424,6 +425,8 @@ const DashboardContent = () => {
                                                           colors={CUSTOM_CHART.mixedChart.mixedChartPercentTimeband.colors}
                                                           barMaxWidth={CUSTOM_CHART.mixedChart.barMaxWidth}
                                                           barWidthPercent={CUSTOM_CHART.mixedChart.barWidthPercent}
+                                                          offsetLine={CUSTOM_CHART.mixedChart.mixedChartPercentTimeband.offsetLine}
+                                                          xAxisTitle={CUSTOM_CHART.mixedChart.mixedChartPercentTimeband.xAxisTitle}
                                               />
                                             </div>
                                             <div className='w-full pb-6 max-md:pb-4'>
@@ -441,6 +444,7 @@ const DashboardContent = () => {
                                                         areaStyle={CUSTOM_CHART.lineChart.areaStyle}
                                                         stack={CUSTOM_CHART.lineChart.stack}
                                                         showTopNSeries={CUSTOM_CHART.lineChart.lineChartPercentTimebandChannel.showTopNSeries}
+                                                        xAxisTitle={CUSTOM_CHART.lineChart.xAxisTitle}
                                               />
                                             </div>
                                             <div className='w-full pb-6 max-md:pb-4'>
@@ -508,6 +512,9 @@ const DashboardContent = () => {
                                                           colors={CUSTOM_CHART.mixedChart.mixedChartTimeband.colors}
                                                           barMaxWidth={CUSTOM_CHART.mixedChart.barMaxWidth}
                                                           barWidthPercent={CUSTOM_CHART.mixedChart.barWidthPercent}
+                                                          KMB={CUSTOM_CHART.mixedChart.mixedChartTimeband.KMB}
+                                                          offsetLine={CUSTOM_CHART.mixedChart.mixedChartTimeband.offsetLine}
+                                                          xAxisTitle={CUSTOM_CHART.mixedChart.mixedChartTimeband.xAxisTitle}
                                               />
                                             </div>
                                             <div className='w-full pb-6 max-md:pb-4'>
@@ -525,6 +532,7 @@ const DashboardContent = () => {
                                                         areaStyle={CUSTOM_CHART.lineChart.areaStyle}
                                                         stack={CUSTOM_CHART.lineChart.stack}
                                                         showTopNSeries={CUSTOM_CHART.lineChart.lineChartTimebandChannel.showTopNSeries}
+                                                        xAxisTitle={CUSTOM_CHART.lineChart.xAxisTitle}
                                               />
                                             </div>
                                             <div className='w-full pb-6 max-md:pb-4'>
@@ -542,23 +550,7 @@ const DashboardContent = () => {
                                                         areaStyle={CUSTOM_CHART.lineChart.areaStyle}
                                                         stack={CUSTOM_CHART.lineChart.stack}
                                                         showTopNSeries={CUSTOM_CHART.lineChart.lineChartTimebandChannel.showTopNSeries}
-                                              />
-                                            </div>
-                                            <div className='w-full pb-6 max-md:pb-4'>
-                                              <LineChart data={!dashboard.isLoading.ratingLineDateChannelData ? transformMixedChartData(dashboard.ratingLineDateChannelData?.data, 'date', dashboard.ratingLineDateChannelData?.colnames) : 'isLoading'}
-                                                        height={CUSTOM_CHART.lineChart.height}
-                                                        fontSize={CUSTOM_CHART.lineChart.fontSize}
-                                                        fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                        fontWeight={CUSTOM_CHART.lineChart.fontWeight}
-                                                        nameChart={CUSTOM_CHART.lineChart.lineChartDateChannel.aveReach.name}
-                                                        description={CUSTOM_CHART.lineChart.lineChartDateChannel.aveReach.description}
-                                                        colors={CUSTOM_CHART.lineChart.colorChannel}
-                                                        smooth={CUSTOM_CHART.lineChart.smooth}
-                                                        symbolSize={CUSTOM_CHART.lineChart.symbolSize}
-                                                        lineWidth={CUSTOM_CHART.lineChart.lineWidth}
-                                                        areaStyle={CUSTOM_CHART.lineChart.areaStyle}
-                                                        stack={CUSTOM_CHART.lineChart.stack}
-                                                        showTopNSeries={CUSTOM_CHART.lineChart.showTopNSeries}
+                                                        xAxisTitle={CUSTOM_CHART.lineChart.xAxisTitle}
                                               />
                                             </div>
                                             <div className='w-full pb-6 max-md:pb-4'>
@@ -611,6 +603,7 @@ const DashboardContent = () => {
                                                         stack={CUSTOM_CHART.lineChart.stack}
                                                         showTopNSeries={CUSTOM_CHART.lineChart.lineChartTimebandDay.showTopNSeries}
                                                         left={CUSTOM_CHART.lineChart.lineChartTimebandDay.left}
+                                                        xAxisTitle={CUSTOM_CHART.lineChart.xAxisTitle}
                                               />
                                             </div>
                                             <div className='w-full pb-6 max-md:pb-4'>
@@ -629,6 +622,7 @@ const DashboardContent = () => {
                                                         stack={CUSTOM_CHART.lineChart.stack}
                                                         showTopNSeries={CUSTOM_CHART.lineChart.lineChartTimebandDay.showTopNSeries}
                                                         left={CUSTOM_CHART.lineChart.lineChartTimebandDay.left}
+                                                        xAxisTitle={CUSTOM_CHART.lineChart.xAxisTitle}
                                               />
                                             </div>
                                             <div className='w-full pb-6 max-md:pb-4'>
@@ -647,6 +641,7 @@ const DashboardContent = () => {
                                                         stack={CUSTOM_CHART.lineChart.stack}
                                                         showTopNSeries={CUSTOM_CHART.lineChart.lineChartTimebandRegional.showTopNSeries}
                                                         left={CUSTOM_CHART.lineChart.lineChartTimebandRegional.left}
+                                                        xAxisTitle={CUSTOM_CHART.lineChart.xAxisTitle}
                                               />
                                             </div>
                                             <div className='w-full pb-6 max-md:pb-0'>

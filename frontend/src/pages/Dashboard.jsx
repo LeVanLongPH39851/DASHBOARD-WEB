@@ -696,7 +696,7 @@ const DashboardContent = () => {
                                     />
                                   </div>
                                   <div className='w-full pb-6 max-md:pb-4'>
-                                    <TableChart data={!dashboard.isLoading.allTableRankData ? transformTableChartData(dashboard.allTableRankData?.data, dashboard.allTableRankData?.colnames) : 'isLoading'}
+                                    <TableChart data={!dashboard.isLoading.allTableRankData ? transformTableChartData(dashboard.allTableRankData?.data, dashboard.allTableRankData?.colnames, CUSTOM_CHART.tableChart.tableProgramChannel.programRank.columnSort) : 'isLoading'}
                                                 height={CUSTOM_CHART.tableChart.tableProgramChannel.height}
                                                 fontSize={CUSTOM_CHART.tableChart.fontSize}
                                                 fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -707,7 +707,7 @@ const DashboardContent = () => {
                                                 showPagination={CUSTOM_CHART.tableChart.tableProgramChannel.pagination} />
                                   </div>
                                   <div className='w-full pb-6 max-md:pb-4'>
-                                    <TableChart data={!dashboard.isLoading.allTableDetailData ? transformTableChartData(dashboard.allTableDetailData?.data, dashboard.allTableDetailData?.colnames) : 'isLoading'}
+                                    <TableChart data={!dashboard.isLoading.allTableDetailData ? transformTableChartData(dashboard.allTableDetailData?.data, dashboard.allTableDetailData?.colnames, CUSTOM_CHART.tableChart.tableProgramChannel.programDetail.columnSort) : 'isLoading'}
                                                 height={CUSTOM_CHART.tableChart.tableProgramChannel.height}
                                                 fontSize={CUSTOM_CHART.tableChart.fontSize}
                                                 fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -718,7 +718,7 @@ const DashboardContent = () => {
                                                 showPagination={CUSTOM_CHART.tableChart.tableProgramChannel.pagination} />
                                   </div>
                                   <div className='w-full pb-6 max-md:pb-4'>
-                                    <TableChart data={!dashboard.isLoading.allTableEventData ? transformTableChartData(dashboard.allTableEventData?.data, dashboard.allTableEventData?.colnames) : 'isLoading'}
+                                    <TableChart data={!dashboard.isLoading.allTableEventData ? transformTableChartData(dashboard.allTableEventData?.data, dashboard.allTableEventData?.colnames, CUSTOM_CHART.tableChart.tableProgramChannel.programEvent.columnSort) : 'isLoading'}
                                                 height={CUSTOM_CHART.tableChart.tableProgramChannel.height}
                                                 fontSize={CUSTOM_CHART.tableChart.fontSize}
                                                 fontFamily={CUSTOM_CHART.allChart.fontFamily}

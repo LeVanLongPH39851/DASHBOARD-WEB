@@ -374,7 +374,7 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
                           className="px-2 max-md:px-1 py-3 max-md:py-2 text-center relative text-color-neotam dark:text-background-primary bg-background-light dark:bg-background-chart-dark border-b border-border-black-10 dark:border-background-white-15 transition-all duration-300"
                           style={{
                             minWidth: `${header.column.getSize() - 40}px`,
-                            maxWidth: `${header.id === 'KÊNH' ? header.column.getSize() + 70 : header.column.getSize() + 100}px`,
+                            maxWidth: `${header.id === 'KÊNH' ? header.column.getSize() + 30 : header.id === 'CHƯƠNG TRÌNH' ? header.column.getSize() + 180 : header.column.getSize() + 100}px`,
                             fontSize: !stateGlobals.screen_md ? fontSize.label : '10.5px',
                             fontWeight: fontWeight.label,
                             whiteSpace: 'pre-line',
@@ -435,7 +435,7 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
                               fontSize: !stateGlobals.screen_md ? fontSize.td : '10.5px',
                               fontWeight: ['CHƯƠNG TRÌNH'].includes(columnName) ? 700 : fontWeight.td,
                               minWidth: `${cell.column.getSize() - 40}px`,
-                              maxWidth: `${columnName === 'KÊNH' ? cell.column.getSize() + 70 : cell.column.getSize() + 100}px`,
+                              maxWidth: `${columnName === 'KÊNH' ? cell.column.getSize() + 30 : columnName === 'CHƯƠNG TRÌNH' ? cell.column.getSize() + 180 : cell.column.getSize() + 100}px`,
                               // backgroundColor: bgColor,
                               wordWrap: isNumericColumn ? 'normal' : 'break-word'
                             }}

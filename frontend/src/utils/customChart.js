@@ -124,14 +124,17 @@ export const CUSTOM_CHART = {
         programRank: {
           name: 'XẾP HẠNG chương trình theo các chỉ số',
           description: false,
+          columnSort: ['program_name', 'channel_name_tvd', 'firstlevel_vn', 'name_vn', 'rating', 'rating%', 'ave_reach', 'reach%', 'minute_user_program']
         },
         programDetail: {
           name: 'Chỉ số đo lường chi tiết từng chương trình',
           description: false,
+          columnSort: ['program_name', 'description', 'NGÀY PHÁT', 'start_time', 'end_time', 'channel_name_tvd', 'rating', 'rating%', 'ave_reach', 'reach%', 'minute_user_program']
         },
         programEvent: {
           name: 'Chỉ số đo lường chương trình theo Live/TimeShift',
           description: false,
+          columnSort: ['program_name', 'channel_name_tvd', 'event_category_name', 'rating', 'rating%', 'ave_reach', 'reach%', 'minute_user_program']
         },
         STT: true,
         pagination: true

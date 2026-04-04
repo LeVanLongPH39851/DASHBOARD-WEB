@@ -300,7 +300,7 @@ const MixedChart = ({
             position: 'top',
             offset: [0, !stateGlobals.screen_md ? -8 : 0],
             formatter: (params) => {
-              return typeof params.value === 'number' ? (!stateGlobals.screen_md && !KMB ? params.value.toLocaleString(undefined, { maximumFractionDigits: 2 }) : (params.seriesName.includes('%') ? params.value.toLocaleString(undefined, { maximumFractionDigits: 2 }) : formatKMB(params.value))) : (params.value || '-')
+              return typeof params.value === 'number' ? params.seriesName.includes('%') ? params.value.toLocaleString(undefined, { maximumFractionDigits: 2 }) : (!stateGlobals.screen_md && !KMB ? params.value.toLocaleString(undefined, { maximumFractionDigits: 0 }) : formatKMB(params.value)) : (params.value || '-')
             },
             fontSize: !stateGlobals.screen_md ? fontSize.dataLabel : '10.5px',
             fontWeight: fontWeight.dataLabel,
@@ -341,7 +341,7 @@ const MixedChart = ({
             position: 'top',
             offset: [0, !stateGlobals.screen_md ? offsetLine : 0],
             formatter: (params) => {
-              return typeof params.value === 'number' ? (!stateGlobals.screen_md && !KMB ? params.value.toLocaleString(undefined, { maximumFractionDigits: 2 }) : (params.seriesName.includes('%') ? params.value.toLocaleString(undefined, { maximumFractionDigits: 2 }) : formatKMB(params.value))) : (params.value || '-')
+              return typeof params.value === 'number' ? params.seriesName.includes('%') ? params.value.toLocaleString(undefined, { maximumFractionDigits: 2 }) : (!stateGlobals.screen_md && !KMB ? params.value.toLocaleString(undefined, { maximumFractionDigits: 0 }) : formatKMB(params.value)) : (params.value || '-')
             },
             fontSize: !stateGlobals.screen_md ? fontSize.dataLabel : '10.5px',
             fontWeight: fontWeight.dataLabel,

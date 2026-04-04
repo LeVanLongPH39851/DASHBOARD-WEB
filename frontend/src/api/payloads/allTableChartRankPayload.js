@@ -1,8 +1,8 @@
 export const allTableChartRankPayload = {
-  url: 'https://ratings.vtv.vn/api/v1/chart/data?form_data=%7B%22slice_id%22%3A410%7D&dashboard_id=45',
+  url: `${import.meta.env.VITE_API_DOMAIN}/api/v1/chart/data?form_data=%7B%22slice_id%22%3A643%7D&dashboard_id=50`,
   payload: {
     "datasource": {
-      "id": 152,
+      "id": 209,
       "type": "table"
     },
     "force": false,
@@ -10,6 +10,20 @@ export const allTableChartRankPayload = {
       {
         "time_range": "DATEADD(DATETIME(\"today\"),-1, DAY) : DATEADD(DATETIME(\"today\"),-1, SECOND)",
         "filters": [
+          {
+            "col": "firstlevel_vn",
+            "op": "NOT IN",
+            "val": [
+              "active"
+            ]
+          },
+          {
+            "col": "name_vn",
+            "op": "NOT IN",
+            "val": [
+              "active"
+            ]
+          },
           {
             "col": "date",
             "op": "TEMPORAL_RANGE",
@@ -28,51 +42,15 @@ export const allTableChartRankPayload = {
           "name_vn"
         ],
         "metrics": [
-          {
-            "aggregate": null,
-            "column": null,
-            "datasourceWarning": false,
-            "expressionType": "SQL",
-            "hasCustomLabel": true,
-            "label": "RATING (người/phút)",
-            "optionName": "metric_by9mr2su5b_6s9fwcapl2c",
-            "sqlExpression": "CASE WHEN SUM(CASE WHEN number = 1 THEN event_duration ELSE 0 END) = 0 THEN 0\nELSE CASE WHEN (SUM(duration_view_program*1.9)/60)/(SUM(CASE WHEN number = 1 THEN event_duration ELSE 0 END)/60) <= SUM(distinct_user_by_day*CASE WHEN date <> '2025-09-02' THEN 1.5 ELSE 1.2 END*event_duration)/SUM(CASE WHEN number = 1 THEN event_duration ELSE 0 END)*0.90 THEN (SUM(duration_view_program*1.9*\n{% if filter_values('province')|length > 0 or filter_values('key_city')|length > 0 %}\nweight_province\n{% elif filter_values('regional_name')|length > 0 %}\nweight_region\n{% else %}\nweight_national\n{% endif %})/60)/(SUM(CASE WHEN number = 1 THEN event_duration ELSE 0 END)/60) ELSE SUM(distinct_user_by_day*CASE WHEN date <> '2025-09-02' THEN 1.5 ELSE 1.2 END*\n{% if filter_values('province')|length > 0 or filter_values('key_city')|length > 0 %}\nweight_province\n{% elif filter_values('regional_name')|length > 0 %}\nweight_region\n{% else %}\nweight_national\n{% endif %}*event_duration)/SUM(CASE WHEN number = 1 THEN event_duration ELSE 0 END)*0.90 END END"
-          },
-          {
-            "aggregate": null,
-            "column": null,
-            "datasourceWarning": false,
-            "expressionType": "SQL",
-            "hasCustomLabel": true,
-            "label": "RATING (%)",
-            "optionName": "metric_zra7k91u6hh_j0jpujxz5a",
-            "sqlExpression": "CASE WHEN SUM(CASE WHEN number = 1 THEN event_duration ELSE 0 END) = 0 THEN 0\nELSE CASE WHEN (SUM(duration_view_program*1.9)/60)/(SUM(CASE WHEN number = 1 THEN event_duration ELSE 0 END)/60) <= SUM(distinct_user_by_day*CASE WHEN date <> '2025-09-02' THEN 1.5 ELSE 1.2 END*event_duration)/SUM(CASE WHEN number = 1 THEN event_duration ELSE 0 END)*0.90 THEN (SUM(duration_view_program*1.9*\n{% if filter_values('province')|length > 0 or filter_values('key_city')|length > 0 %}\nweight_province\n{% elif filter_values('regional_name')|length > 0 %}\nweight_region\n{% else %}\nweight_national\n{% endif %})/60)/(SUM(CASE WHEN number = 1 THEN event_duration ELSE 0 END)/60) ELSE SUM(distinct_user_by_day*CASE WHEN date <> '2025-09-02' THEN 1.5 ELSE 1.2 END*\n{% if filter_values('province')|length > 0 or filter_values('key_city')|length > 0 %}\nweight_province\n{% elif filter_values('regional_name')|length > 0 %}\nweight_region\n{% else %}\nweight_national\n{% endif %}*event_duration)/SUM(CASE WHEN number = 1 THEN event_duration ELSE 0 END)*0.90 END*100/{% if filter_values('province')|length > 0 or filter_values('key_city')|length > 0 or filter_values('regional_name')|length > 0 %}SUM(DISTINCT total){% else %}70859907{% endif %} END"
-          },
-          "ave_reach_1",
-          "reach%_1",
-          {
-            "aggregate": null,
-            "column": null,
-            "datasourceWarning": false,
-            "expressionType": "SQL",
-            "hasCustomLabel": true,
-            "label": "Phút/người/ lượt phát",
-            "optionName": "metric_3ivibmazibm_pkah15njqxo",
-            "sqlExpression": "CASE WHEN SUM(CASE WHEN number = 1 THEN event_duration ELSE 0 END) = 0 THEN 0\nELSE CASE WHEN (SUM(duration_view_program*1.9)/60)/(SUM(CASE WHEN number = 1 THEN event_duration ELSE 0 END)/60) <= SUM(distinct_user_by_day*CASE WHEN date <> '2025-09-02' THEN 1.5 ELSE 1.2 END*event_duration)/SUM(CASE WHEN number = 1 THEN event_duration ELSE 0 END)*0.90 THEN SUM(duration_view_program*1.9*\n{% if filter_values('province')|length > 0 or filter_values('key_city')|length > 0 %}\nweight_province\n{% elif filter_values('regional_name')|length > 0 %}\nweight_region\n{% else %}\nweight_national\n{% endif %})/60/\n(COALESCE(SUM(distinct_user_by_day*CASE WHEN date <> '2025-09-02' THEN 1.5 ELSE 1.2 END*\n{% if filter_values('province')|length > 0 or filter_values('key_city')|length > 0 %}\nweight_province\n{% elif filter_values('regional_name')|length > 0 %}\nweight_region\n{% else %}\nweight_national\n{% endif %}*event_duration)/ NULLIF(SUM(CASE WHEN number = 1 THEN event_duration ELSE 0 END), 0), 0)*COUNT(DISTINCT count_start_time)) ELSE SUM(duration_view_program*\n{% if filter_values('province')|length > 0 or filter_values('key_city')|length > 0 %}\nweight_province\n{% elif filter_values('regional_name')|length > 0 %}\nweight_region\n{% else %}\nweight_national\n{% endif %})*(SUM(distinct_user_by_day*CASE WHEN date <> '2025-09-02' THEN 1.5 ELSE 1.2 END*event_duration)/SUM(CASE WHEN number = 1 THEN event_duration ELSE 0 END)*0.90/((SUM(duration_view_program)/60)/(SUM(CASE WHEN number = 1 THEN event_duration ELSE 0 END)/60)))/60/\n(COALESCE(SUM(distinct_user_by_day*CASE WHEN date <> '2025-09-02' THEN 1.5 ELSE 1.2 END*\n{% if filter_values('province')|length > 0 or filter_values('key_city')|length > 0 %}\nweight_province\n{% elif filter_values('regional_name')|length > 0 %}\nweight_region\n{% else %}\nweight_national\n{% endif %}*event_duration)/ NULLIF(SUM(CASE WHEN number = 1 THEN event_duration ELSE 0 END), 0), 0)*COUNT(DISTINCT count_start_time)) END END"
-          }
+          "rating",
+          "rating%",
+          "ave_reach",
+          "reach%",
+          "minute_user_program"
         ],
         "orderby": [
           [
-            {
-              "aggregate": null,
-              "column": null,
-              "datasourceWarning": false,
-              "expressionType": "SQL",
-              "hasCustomLabel": true,
-              "label": "RATING (người/phút)",
-              "optionName": "metric_by9mr2su5b_6s9fwcapl2c",
-              "sqlExpression": "CASE WHEN SUM(CASE WHEN number = 1 THEN event_duration ELSE 0 END) = 0 THEN 0\nELSE CASE WHEN (SUM(duration_view_program*1.9)/60)/(SUM(CASE WHEN number = 1 THEN event_duration ELSE 0 END)/60) <= SUM(distinct_user_by_day*CASE WHEN date <> '2025-09-02' THEN 1.5 ELSE 1.2 END*event_duration)/SUM(CASE WHEN number = 1 THEN event_duration ELSE 0 END)*0.90 THEN (SUM(duration_view_program*1.9*\n{% if filter_values('province')|length > 0 or filter_values('key_city')|length > 0 %}\nweight_province\n{% elif filter_values('regional_name')|length > 0 %}\nweight_region\n{% else %}\nweight_national\n{% endif %})/60)/(SUM(CASE WHEN number = 1 THEN event_duration ELSE 0 END)/60) ELSE SUM(distinct_user_by_day*CASE WHEN date <> '2025-09-02' THEN 1.5 ELSE 1.2 END*\n{% if filter_values('province')|length > 0 or filter_values('key_city')|length > 0 %}\nweight_province\n{% elif filter_values('regional_name')|length > 0 %}\nweight_region\n{% else %}\nweight_national\n{% endif %}*event_duration)/SUM(CASE WHEN number = 1 THEN event_duration ELSE 0 END)*0.90 END END"
-            },
+            "rating",
             false
           ]
         ],
@@ -88,9 +66,9 @@ export const allTableChartRankPayload = {
       }
     ],
     "form_data": {
-      "datasource": "152__table",
+      "datasource": "209__table",
       "viz_type": "table",
-      "slice_id": 410,
+      "slice_id": 643,
       "url_params": {},
       "query_mode": "aggregate",
       "groupby": [
@@ -103,47 +81,55 @@ export const allTableChartRankPayload = {
         "date": true
       },
       "metrics": [
-        {
-          "aggregate": null,
-          "column": null,
-          "datasourceWarning": false,
-          "expressionType": "SQL",
-          "hasCustomLabel": true,
-          "label": "RATING (người/phút)",
-          "optionName": "metric_by9mr2su5b_6s9fwcapl2c",
-          "sqlExpression": "CASE WHEN SUM(CASE WHEN number = 1 THEN event_duration ELSE 0 END) = 0 THEN 0\nELSE CASE WHEN (SUM(duration_view_program*1.9)/60)/(SUM(CASE WHEN number = 1 THEN event_duration ELSE 0 END)/60) <= SUM(distinct_user_by_day*CASE WHEN date <> '2025-09-02' THEN 1.5 ELSE 1.2 END*event_duration)/SUM(CASE WHEN number = 1 THEN event_duration ELSE 0 END)*0.90 THEN (SUM(duration_view_program*1.9*\n{% if filter_values('province')|length > 0 or filter_values('key_city')|length > 0 %}\nweight_province\n{% elif filter_values('regional_name')|length > 0 %}\nweight_region\n{% else %}\nweight_national\n{% endif %})/60)/(SUM(CASE WHEN number = 1 THEN event_duration ELSE 0 END)/60) ELSE SUM(distinct_user_by_day*CASE WHEN date <> '2025-09-02' THEN 1.5 ELSE 1.2 END*\n{% if filter_values('province')|length > 0 or filter_values('key_city')|length > 0 %}\nweight_province\n{% elif filter_values('regional_name')|length > 0 %}\nweight_region\n{% else %}\nweight_national\n{% endif %}*event_duration)/SUM(CASE WHEN number = 1 THEN event_duration ELSE 0 END)*0.90 END END"
-        },
-        {
-          "aggregate": null,
-          "column": null,
-          "datasourceWarning": false,
-          "expressionType": "SQL",
-          "hasCustomLabel": true,
-          "label": "RATING (%)",
-          "optionName": "metric_zra7k91u6hh_j0jpujxz5a",
-          "sqlExpression": "CASE WHEN SUM(CASE WHEN number = 1 THEN event_duration ELSE 0 END) = 0 THEN 0\nELSE CASE WHEN (SUM(duration_view_program*1.9)/60)/(SUM(CASE WHEN number = 1 THEN event_duration ELSE 0 END)/60) <= SUM(distinct_user_by_day*CASE WHEN date <> '2025-09-02' THEN 1.5 ELSE 1.2 END*event_duration)/SUM(CASE WHEN number = 1 THEN event_duration ELSE 0 END)*0.90 THEN (SUM(duration_view_program*1.9*\n{% if filter_values('province')|length > 0 or filter_values('key_city')|length > 0 %}\nweight_province\n{% elif filter_values('regional_name')|length > 0 %}\nweight_region\n{% else %}\nweight_national\n{% endif %})/60)/(SUM(CASE WHEN number = 1 THEN event_duration ELSE 0 END)/60) ELSE SUM(distinct_user_by_day*CASE WHEN date <> '2025-09-02' THEN 1.5 ELSE 1.2 END*\n{% if filter_values('province')|length > 0 or filter_values('key_city')|length > 0 %}\nweight_province\n{% elif filter_values('regional_name')|length > 0 %}\nweight_region\n{% else %}\nweight_national\n{% endif %}*event_duration)/SUM(CASE WHEN number = 1 THEN event_duration ELSE 0 END)*0.90 END*100/{% if filter_values('province')|length > 0 or filter_values('key_city')|length > 0 or filter_values('regional_name')|length > 0 %}SUM(DISTINCT total){% else %}70859907{% endif %} END"
-        },
-        "ave_reach_1",
-        "reach%_1",
-        {
-          "aggregate": null,
-          "column": null,
-          "datasourceWarning": false,
-          "expressionType": "SQL",
-          "hasCustomLabel": true,
-          "label": "Phút/người/ lượt phát",
-          "optionName": "metric_3ivibmazibm_pkah15njqxo",
-          "sqlExpression": "CASE WHEN SUM(CASE WHEN number = 1 THEN event_duration ELSE 0 END) = 0 THEN 0\nELSE CASE WHEN (SUM(duration_view_program*1.9)/60)/(SUM(CASE WHEN number = 1 THEN event_duration ELSE 0 END)/60) <= SUM(distinct_user_by_day*CASE WHEN date <> '2025-09-02' THEN 1.5 ELSE 1.2 END*event_duration)/SUM(CASE WHEN number = 1 THEN event_duration ELSE 0 END)*0.90 THEN SUM(duration_view_program*1.9*\n{% if filter_values('province')|length > 0 or filter_values('key_city')|length > 0 %}\nweight_province\n{% elif filter_values('regional_name')|length > 0 %}\nweight_region\n{% else %}\nweight_national\n{% endif %})/60/\n(COALESCE(SUM(distinct_user_by_day*CASE WHEN date <> '2025-09-02' THEN 1.5 ELSE 1.2 END*\n{% if filter_values('province')|length > 0 or filter_values('key_city')|length > 0 %}\nweight_province\n{% elif filter_values('regional_name')|length > 0 %}\nweight_region\n{% else %}\nweight_national\n{% endif %}*event_duration)/ NULLIF(SUM(CASE WHEN number = 1 THEN event_duration ELSE 0 END), 0), 0)*COUNT(DISTINCT count_start_time)) ELSE SUM(duration_view_program*\n{% if filter_values('province')|length > 0 or filter_values('key_city')|length > 0 %}\nweight_province\n{% elif filter_values('regional_name')|length > 0 %}\nweight_region\n{% else %}\nweight_national\n{% endif %})*(SUM(distinct_user_by_day*CASE WHEN date <> '2025-09-02' THEN 1.5 ELSE 1.2 END*event_duration)/SUM(CASE WHEN number = 1 THEN event_duration ELSE 0 END)*0.90/((SUM(duration_view_program)/60)/(SUM(CASE WHEN number = 1 THEN event_duration ELSE 0 END)/60)))/60/\n(COALESCE(SUM(distinct_user_by_day*CASE WHEN date <> '2025-09-02' THEN 1.5 ELSE 1.2 END*\n{% if filter_values('province')|length > 0 or filter_values('key_city')|length > 0 %}\nweight_province\n{% elif filter_values('regional_name')|length > 0 %}\nweight_region\n{% else %}\nweight_national\n{% endif %}*event_duration)/ NULLIF(SUM(CASE WHEN number = 1 THEN event_duration ELSE 0 END), 0), 0)*COUNT(DISTINCT count_start_time)) END END"
-        }
+        "rating",
+        "rating%",
+        "ave_reach",
+        "reach%",
+        "minute_user_program"
       ],
       "all_columns": [],
       "percent_metrics": [],
       "adhoc_filters": [
         {
           "clause": "WHERE",
-          "comparator": "No filter",
+          "comparator": [
+            "active"
+          ],
+          "datasourceWarning": false,
           "expressionType": "SIMPLE",
+          "filterOptionName": "filter_8i1ycln0m1a_d5kl1bi4fov",
+          "isExtra": false,
+          "isNew": false,
+          "operator": "NOT IN",
+          "operatorId": "NOT_IN",
+          "sqlExpression": null,
+          "subject": "firstlevel_vn"
+        },
+        {
+          "clause": "WHERE",
+          "comparator": [
+            "active"
+          ],
+          "datasourceWarning": false,
+          "expressionType": "SIMPLE",
+          "filterOptionName": "filter_zxxwk59gu9k_kvh4eqldbrp",
+          "isExtra": false,
+          "isNew": false,
+          "operator": "NOT IN",
+          "operatorId": "NOT_IN",
+          "sqlExpression": null,
+          "subject": "name_vn"
+        },
+        {
+          "clause": "WHERE",
+          "comparator": "No filter",
+          "datasourceWarning": false,
+          "expressionType": "SIMPLE",
+          "filterOptionName": "filter_855yep6hfiq_b88gfxcd2mr",
+          "isExtra": true,
+          "isNew": false,
           "operator": "TEMPORAL_RANGE",
+          "sqlExpression": null,
           "subject": "date"
         }
       ],
@@ -155,22 +141,19 @@ export const allTableChartRankPayload = {
       "include_search": true,
       "allow_render_html": true,
       "column_config": {
-        "Phút/người/ lượt phát": {
+        "ave_reach": {
+          "d3NumberFormat": ",d"
+        },
+        "minute_user_program": {
           "d3NumberFormat": ",.2f"
         },
-        "RATING (%)": {
+        "rating": {
+          "d3NumberFormat": ",d"
+        },
+        "rating%": {
           "d3NumberFormat": ",.2f"
         },
-        "RATING (người/phút)": {
-          "d3NumberFormat": ",d"
-        },
-        "Thời lượng xem (giờ)": {
-          "d3NumberFormat": ",d"
-        },
-        "ave_reach_1": {
-          "d3NumberFormat": ",d"
-        },
-        "reach%_1": {
+        "reach%": {
           "d3NumberFormat": ",.2f"
         }
       },
@@ -180,43 +163,43 @@ export const allTableChartRankPayload = {
       "conditional_formatting": [
         {
           "colorScheme": "#ACE1C4",
-          "column": "RATING (người/phút)",
+          "column": "rating",
           "operator": "None"
         },
         {
           "colorScheme": "#ACE1C4",
-          "column": "RATING (%)",
+          "column": "rating%",
           "operator": "None"
         },
         {
           "colorScheme": "#ACE1C4",
-          "column": "ave_reach_1",
+          "column": "ave_reach",
           "operator": "None"
         },
         {
           "colorScheme": "#ACE1C4",
-          "column": "reach%_1",
+          "column": "reach%",
           "operator": "None"
         },
         {
           "colorScheme": "#ACE1C4",
-          "column": "Phút/người/ lượt phát",
+          "column": "minute_user_program",
           "operator": "None"
         }
       ],
       "comparison_type": "values",
+      "annotation_layers": [],
       "dashboards": [
-        45,
-        39
+        87
       ],
       "extra_form_data": {
         "time_range": "DATEADD(DATETIME(\"today\"),-1, DAY) : DATEADD(DATETIME(\"today\"),-1, SECOND)"
       },
-      "chart_id": 410,
+      "chart_id": 643,
       "label_colors": {
         "ave_reach": "#ffd04c",
-        "ave_reach_1": "#ffd04c",
-        "reach%_1": "#ffd04c",
+        "ave_reach_timeband": "#ffd04c",
+        "reach_timeband%": "#ffd04c",
         "rating": "#ff5757",
         "Live": "#6ce5e8",
         "TSV": "#fe9273",
@@ -240,41 +223,42 @@ export const allTableChartRankPayload = {
         "Workweek": "#fe9273",
         "Weekend": "#6ce5e8",
         "Thời sự - Chính luận": "#6BD3B3",
+        "Sự kiện - Đặc biệt": "#7A378B",
         "Phim dài tập": "#FCC550",
         "Đời sống": "#EE5960",
         "Tài liệu - Phóng sự": "#408184",
-        "Giải trí": "#66CBE2",
+        "Giải trí": "#BFEFFF",
         "Giáo dục - Đào tạo": "#5470C6",
         "Dành cho trẻ em": "#ffb2f3",
         "Thể thao": "#FF874E",
         "Sự kiện": "#03748E",
         "Quảng bá": "#8c564a",
         "Phim truyện": "#C9BBAB",
+        "Phim điện ảnh": "#C3BBAB",
         "Quảng cáo": "#B17BAA",
-        "1.Thứ Hai": "#1FA8C9",
-        "2.Thứ Ba": "#454E7C",
-        "3.Thứ Tư": "#5AC189",
-        "4.Thứ Năm": "#FF7F44",
-        "5.Thứ Sáu": "#666666",
-        "6.Thứ Bảy": "#E04355",
-        "7.Chủ Nhật": "#FCC700"
+        "Thứ Hai": "#1FA8C9",
+        "Thứ Ba": "#454E7C",
+        "Thứ Tư": "#5AC189",
+        "Thứ Năm": "#FF7F44",
+        "Thứ Sáu": "#666666",
+        "Thứ Bảy": "#E04355",
+        "Chủ Nhật": "#FCC700"
       },
       "shared_label_colors": [
-        "7.Chủ Nhật",
         "Dành cho trẻ em",
         "Giáo dục - Đào tạo",
         "Giải trí",
         "Live",
         "Phim dài tập",
-        "Phim truyện",
-        "Quảng bá",
-        "Sự kiện",
+        "Phim điện ảnh",
+        "Sự kiện - Đặc biệt",
         "TSV",
         "Thể thao",
         "Thời sự - Chính luận",
+        "Thứ Sáu",
         "Tài liệu - Phóng sự",
-        "VTV Cần Thơ",
         "VTV1",
+        "VTV10",
         "VTV2",
         "VTV3",
         "VTV4",
@@ -285,9 +269,7 @@ export const allTableChartRankPayload = {
         "VTV8",
         "VTV9",
         "ave_reach",
-        "ave_reach_1",
         "rating",
-        "rating_timeband",
         "Đời sống"
       ],
       "map_label_colors": {},

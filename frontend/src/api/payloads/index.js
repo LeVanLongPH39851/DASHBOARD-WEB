@@ -43,3 +43,4 @@ export { ratingLineChartMinuteChannelPayload } from './ratingLineChartMinuteChan
 export { ratingLineChartMinuteChannelOneDatePayload } from './ratingLineChartMinuteChannelOneDatePayload';
 export { ratingLineChartMinuteChannelDatesPayload } from './ratingLineChartMinuteChannelDatesPayload';
 export { filterProvincePayload } from './filterProvincePayload';
+export { filterProgramPayload } from './filterProgramPayload';

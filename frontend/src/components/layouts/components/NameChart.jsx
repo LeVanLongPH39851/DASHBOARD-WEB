@@ -403,7 +403,7 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
         <div className='flex items-center gap-2 max-md:gap-1'>
           {icon && <div className={`w-8 h-8 max-md:w-7 max-md:h-7 max-md:hidden flex justify-center items-center rounded-lg ${backgound} transition-all duration-300`}><figure><img src={icon} className={`${width+' '+height+' '+backgound}`} /></figure></div>}
           <span>{nameChart}</span>
-          <IconInfor description={description} />
+          {description && <IconInfor description={description} />}
         </div>
         <div className='flex gap-1 div-hideen max-md:hidden'>
           <figure ref={buttonRef} className='p-2 cursor-pointer relative' onClick={handleToggle}>

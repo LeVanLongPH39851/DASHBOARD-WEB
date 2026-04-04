@@ -11,7 +11,9 @@ export const LABEL = {
   'reach%_1': 'REACH\n(%)',
   'REACH (%)': 'REACH\n(%)',
   'minute/user/day': 'Phút/người/ngày',
+  'minute_user_day': 'Phút/người/ngày',
   'Phút/người/ lượt phát': 'Phút/người/\nlượt phát',
+  'minute_user_program': 'Phút/người/\nlượt phát',
   'regional_name': 'VÙNG',
   'event_category_name': 'Live/TSV',
   'province': 'TỈNH/TP',
@@ -27,8 +29,10 @@ export const LABEL_METRIC = {
   'rating': 'Rating',
   'ave_reach': 'Ave.Reach',
   'reach%_1': 'Ave.Reach (%)',
+  'reach_timeband%': 'Ave.Reach (%)',
   'rating_timeband%': 'Rating (%)',
   'ave_reach_1': 'Ave.Reach',
+  'ave_reach_timeband': 'Ave.Reach',
   'rating_timeband': 'Rating'
 } 
 
@@ -39,7 +43,8 @@ export const FILTER_LABEL = {
   'regionals': 'Vùng',
   'keyCities': 'Thành phố lớn',
   'timebands': 'Khung giờ',
-  'days': 'Nhóm ngày'
+  'days': 'Nhóm ngày',
+  'programs': 'Chương trình'
 }
 
 export const VALUE_LABEL = {

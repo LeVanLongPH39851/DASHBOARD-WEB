@@ -1,8 +1,8 @@
 export const aveReachLineChartTimebandRegionalPayload = {
-  url: 'https://ratings.vtv.vn/api/v1/chart/data?form_data=%7B%22slice_id%22%3A437%7D&dashboard_id=45',
+  url: `${import.meta.env.VITE_API_DOMAIN}/api/v1/chart/data?form_data=%7B%22slice_id%22%3A664%7D&dashboard_id=50`,
   payload: {
     "datasource": {
-      "id": 148,
+      "id": 210,
       "type": "table"
     },
     "force": false,
@@ -14,14 +14,14 @@ export const aveReachLineChartTimebandRegionalPayload = {
             "col": "time_band",
             "op": "NOT IN",
             "val": [
-              null
+              "active"
             ]
           },
           {
             "col": "regional_name",
             "op": "NOT IN",
             "val": [
-              null
+              "active"
             ]
           },
           {
@@ -41,17 +41,17 @@ export const aveReachLineChartTimebandRegionalPayload = {
             "timeGrain": "P1D",
             "columnType": "BASE_AXIS",
             "expressionType": "SQL",
-            "label": "time_band",
-            "sqlExpression": "CASE \r\n  WHEN time_band = '0h - 1h' THEN '00-01'\r\n  WHEN time_band = '1h - 2h' THEN '01-02'\r\n  WHEN time_band = '2h - 3h' THEN '02-03'\r\n  WHEN time_band = '3h - 4h' THEN '03-04'\r\n  WHEN time_band = '4h - 5h' THEN '04-05'\r\n  WHEN time_band = '5h - 6h' THEN '05-06'\r\n  WHEN time_band = '6h - 7h' THEN '06-07'\r\n  WHEN time_band = '7h - 8h' THEN '07-08'\r\n  WHEN time_band = '8h - 9h' THEN '08-09'\r\n  WHEN time_band = '9h - 10h' THEN '09-10'\r\n  WHEN time_band = '10h - 11h' THEN '10-11'\r\n  WHEN time_band = '11h - 12h' THEN '11-12'\r\n  WHEN time_band = '12h - 13h' THEN '12-13'\r\n  WHEN time_band = '13h - 14h' THEN '13-14'\r\n  WHEN time_band = '14h - 15h' THEN '14-15'\r\n  WHEN time_band = '15h - 16h' THEN '15-16'\r\n  WHEN time_band = '16h - 17h' THEN '16-17'\r\n  WHEN time_band = '17h - 18h' THEN '17-18'\r\n  WHEN time_band = '18h - 19h' THEN '18-19'\r\n  WHEN time_band = '19h - 20h' THEN '19-20'\r\n  WHEN time_band = '20h - 21h' THEN '20-21'\r\n  WHEN time_band = '21h - 22h' THEN '21-22'\r\n  WHEN time_band = '22h - 23h' THEN '22-23'\r\n  WHEN time_band = '23h - 24h' THEN '23-24'\r\nEND"
+            "label": "Khung giờ",
+            "sqlExpression": "CASE \r\n  WHEN time_band = '00h - 01h' THEN '00-01'\r\n  WHEN time_band = '01h - 02h' THEN '01-02'\r\n  WHEN time_band = '02h - 03h' THEN '02-03'\r\n  WHEN time_band = '03h - 04h' THEN '03-04'\r\n  WHEN time_band = '04h - 05h' THEN '04-05'\r\n  WHEN time_band = '05h - 06h' THEN '05-06'\r\n  WHEN time_band = '06h - 07h' THEN '06-07'\r\n  WHEN time_band = '07h - 08h' THEN '07-08'\r\n  WHEN time_band = '08h - 09h' THEN '08-09'\r\n  WHEN time_band = '09h - 10h' THEN '09-10'\r\n  WHEN time_band = '10h - 11h' THEN '10-11'\r\n  WHEN time_band = '11h - 12h' THEN '11-12'\r\n  WHEN time_band = '12h - 13h' THEN '12-13'\r\n  WHEN time_band = '13h - 14h' THEN '13-14'\r\n  WHEN time_band = '14h - 15h' THEN '14-15'\r\n  WHEN time_band = '15h - 16h' THEN '15-16'\r\n  WHEN time_band = '16h - 17h' THEN '16-17'\r\n  WHEN time_band = '17h - 18h' THEN '17-18'\r\n  WHEN time_band = '18h - 19h' THEN '18-19'\r\n  WHEN time_band = '19h - 20h' THEN '19-20'\r\n  WHEN time_band = '20h - 21h' THEN '20-21'\r\n  WHEN time_band = '21h - 22h' THEN '21-22'\r\n  WHEN time_band = '22h - 23h' THEN '22-23'\r\n  WHEN time_band = '23h - 24h' THEN '23-24'\r\nEND"
           },
           "regional_name"
         ],
         "metrics": [
-          "ave_reach_1"
+          "ave_reach_timeband"
         ],
         "orderby": [
           [
-            "ave_reach_1",
+            "ave_reach_timeband",
             false
           ]
         ],
@@ -71,13 +71,13 @@ export const aveReachLineChartTimebandRegionalPayload = {
             "operation": "pivot",
             "options": {
               "index": [
-                "time_band"
+                "Khung giờ"
               ],
               "columns": [
                 "regional_name"
               ],
               "aggregates": {
-                "ave_reach_1": {
+                "ave_reach_timeband": {
                   "operator": "mean"
                 }
               },
@@ -88,7 +88,7 @@ export const aveReachLineChartTimebandRegionalPayload = {
             "operation": "rename",
             "options": {
               "columns": {
-                "ave_reach_1": null
+                "ave_reach_timeband": null
               },
               "level": 0,
               "inplace": true
@@ -101,21 +101,21 @@ export const aveReachLineChartTimebandRegionalPayload = {
       }
     ],
     "form_data": {
-      "datasource": "148__table",
+      "datasource": "210__table",
       "viz_type": "echarts_timeseries_line",
-      "slice_id": 437,
+      "slice_id": 664,
       "url_params": {},
       "x_axis": {
         "expressionType": "SQL",
-        "label": "time_band",
-        "sqlExpression": "CASE \r\n  WHEN time_band = '0h - 1h' THEN '00-01'\r\n  WHEN time_band = '1h - 2h' THEN '01-02'\r\n  WHEN time_band = '2h - 3h' THEN '02-03'\r\n  WHEN time_band = '3h - 4h' THEN '03-04'\r\n  WHEN time_band = '4h - 5h' THEN '04-05'\r\n  WHEN time_band = '5h - 6h' THEN '05-06'\r\n  WHEN time_band = '6h - 7h' THEN '06-07'\r\n  WHEN time_band = '7h - 8h' THEN '07-08'\r\n  WHEN time_band = '8h - 9h' THEN '08-09'\r\n  WHEN time_band = '9h - 10h' THEN '09-10'\r\n  WHEN time_band = '10h - 11h' THEN '10-11'\r\n  WHEN time_band = '11h - 12h' THEN '11-12'\r\n  WHEN time_band = '12h - 13h' THEN '12-13'\r\n  WHEN time_band = '13h - 14h' THEN '13-14'\r\n  WHEN time_band = '14h - 15h' THEN '14-15'\r\n  WHEN time_band = '15h - 16h' THEN '15-16'\r\n  WHEN time_band = '16h - 17h' THEN '16-17'\r\n  WHEN time_band = '17h - 18h' THEN '17-18'\r\n  WHEN time_band = '18h - 19h' THEN '18-19'\r\n  WHEN time_band = '19h - 20h' THEN '19-20'\r\n  WHEN time_band = '20h - 21h' THEN '20-21'\r\n  WHEN time_band = '21h - 22h' THEN '21-22'\r\n  WHEN time_band = '22h - 23h' THEN '22-23'\r\n  WHEN time_band = '23h - 24h' THEN '23-24'\r\nEND"
+        "label": "Khung giờ",
+        "sqlExpression": "CASE \r\n  WHEN time_band = '00h - 01h' THEN '00-01'\r\n  WHEN time_band = '01h - 02h' THEN '01-02'\r\n  WHEN time_band = '02h - 03h' THEN '02-03'\r\n  WHEN time_band = '03h - 04h' THEN '03-04'\r\n  WHEN time_band = '04h - 05h' THEN '04-05'\r\n  WHEN time_band = '05h - 06h' THEN '05-06'\r\n  WHEN time_band = '06h - 07h' THEN '06-07'\r\n  WHEN time_band = '07h - 08h' THEN '07-08'\r\n  WHEN time_band = '08h - 09h' THEN '08-09'\r\n  WHEN time_band = '09h - 10h' THEN '09-10'\r\n  WHEN time_band = '10h - 11h' THEN '10-11'\r\n  WHEN time_band = '11h - 12h' THEN '11-12'\r\n  WHEN time_band = '12h - 13h' THEN '12-13'\r\n  WHEN time_band = '13h - 14h' THEN '13-14'\r\n  WHEN time_band = '14h - 15h' THEN '14-15'\r\n  WHEN time_band = '15h - 16h' THEN '15-16'\r\n  WHEN time_band = '16h - 17h' THEN '16-17'\r\n  WHEN time_band = '17h - 18h' THEN '17-18'\r\n  WHEN time_band = '18h - 19h' THEN '18-19'\r\n  WHEN time_band = '19h - 20h' THEN '19-20'\r\n  WHEN time_band = '20h - 21h' THEN '20-21'\r\n  WHEN time_band = '21h - 22h' THEN '21-22'\r\n  WHEN time_band = '22h - 23h' THEN '22-23'\r\n  WHEN time_band = '23h - 24h' THEN '23-24'\r\nEND"
       },
       "time_grain_sqla": "P1D",
       "x_axis_sort_asc": true,
       "x_axis_sort_series": "name",
       "x_axis_sort_series_ascending": true,
       "metrics": [
-        "ave_reach_1"
+        "ave_reach_timeband"
       ],
       "groupby": [
         "regional_name"
@@ -124,7 +124,7 @@ export const aveReachLineChartTimebandRegionalPayload = {
         {
           "clause": "WHERE",
           "comparator": [
-            null
+            "active"
           ],
           "datasourceWarning": false,
           "expressionType": "SIMPLE",
@@ -139,7 +139,7 @@ export const aveReachLineChartTimebandRegionalPayload = {
         {
           "clause": "WHERE",
           "comparator": [
-            null
+            "active"
           ],
           "datasourceWarning": false,
           "expressionType": "SIMPLE",
@@ -174,7 +174,7 @@ export const aveReachLineChartTimebandRegionalPayload = {
       "forecastInterval": 0.8,
       "x_axis_title": "Timeband (H)",
       "x_axis_title_margin": "40",
-      "y_axis_title_margin": "0",
+      "y_axis_title_margin": 15,
       "y_axis_title_position": "Left",
       "sort_series_type": "sum",
       "color_scheme": "supersetColors",
@@ -202,17 +202,16 @@ export const aveReachLineChartTimebandRegionalPayload = {
         null
       ],
       "dashboards": [
-        45,
-        39
+        87
       ],
       "extra_form_data": {
         "time_range": "DATEADD(DATETIME(\"today\"),-1, DAY) : DATEADD(DATETIME(\"today\"),-1, SECOND)"
       },
-      "chart_id": 437,
+      "chart_id": 664,
       "label_colors": {
         "ave_reach": "#ffd04c",
-        "ave_reach_1": "#ffd04c",
-        "reach%_1": "#ffd04c",
+        "ave_reach_timeband": "#ffd04c",
+        "reach_timeband%": "#ffd04c",
         "rating": "#ff5757",
         "Live": "#6ce5e8",
         "TSV": "#fe9273",
@@ -236,41 +235,42 @@ export const aveReachLineChartTimebandRegionalPayload = {
         "Workweek": "#fe9273",
         "Weekend": "#6ce5e8",
         "Thời sự - Chính luận": "#6BD3B3",
+        "Sự kiện - Đặc biệt": "#7A378B",
         "Phim dài tập": "#FCC550",
         "Đời sống": "#EE5960",
         "Tài liệu - Phóng sự": "#408184",
-        "Giải trí": "#66CBE2",
+        "Giải trí": "#BFEFFF",
         "Giáo dục - Đào tạo": "#5470C6",
         "Dành cho trẻ em": "#ffb2f3",
         "Thể thao": "#FF874E",
         "Sự kiện": "#03748E",
         "Quảng bá": "#8c564a",
         "Phim truyện": "#C9BBAB",
+        "Phim điện ảnh": "#C3BBAB",
         "Quảng cáo": "#B17BAA",
-        "1.Thứ Hai": "#1FA8C9",
-        "2.Thứ Ba": "#454E7C",
-        "3.Thứ Tư": "#5AC189",
-        "4.Thứ Năm": "#FF7F44",
-        "5.Thứ Sáu": "#666666",
-        "6.Thứ Bảy": "#E04355",
-        "7.Chủ Nhật": "#FCC700"
+        "Thứ Hai": "#1FA8C9",
+        "Thứ Ba": "#454E7C",
+        "Thứ Tư": "#5AC189",
+        "Thứ Năm": "#FF7F44",
+        "Thứ Sáu": "#666666",
+        "Thứ Bảy": "#E04355",
+        "Chủ Nhật": "#FCC700"
       },
       "shared_label_colors": [
-        "7.Chủ Nhật",
         "Dành cho trẻ em",
         "Giáo dục - Đào tạo",
         "Giải trí",
         "Live",
         "Phim dài tập",
-        "Phim truyện",
-        "Quảng bá",
-        "Sự kiện",
+        "Phim điện ảnh",
+        "Sự kiện - Đặc biệt",
         "TSV",
         "Thể thao",
         "Thời sự - Chính luận",
+        "Thứ Sáu",
         "Tài liệu - Phóng sự",
-        "VTV Cần Thơ",
         "VTV1",
+        "VTV10",
         "VTV2",
         "VTV3",
         "VTV4",
@@ -281,9 +281,7 @@ export const aveReachLineChartTimebandRegionalPayload = {
         "VTV8",
         "VTV9",
         "ave_reach",
-        "ave_reach_1",
         "rating",
-        "rating_timeband",
         "Đời sống"
       ],
       "map_label_colors": {},

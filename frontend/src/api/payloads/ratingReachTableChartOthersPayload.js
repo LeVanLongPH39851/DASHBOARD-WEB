@@ -1,5 +1,5 @@
 export const ratingReachTableChartOthersPayload = {
-  url: 'https://ratings.vtv.vn/api/v1/chart/data?form_data=%7B%22slice_id%22%3A469%7D&dashboard_id=45',
+  url: `${import.meta.env.VITE_API_DOMAIN}/api/v1/chart/data?form_data=%7B%22slice_id%22%3A469%7D&dashboard_id=45`,
   payload: {
     "datasource": {
       "id": 164,

@@ -1,5 +1,5 @@
 export const filterProvincePayload = {
-  url: 'https://ratings.vtv.vn/api/v1/chart/data',
+  url: `${import.meta.env.VITE_API_DOMAIN}/api/v1/chart/data`,
   payload: {
     "datasource": {
       "id": 158,

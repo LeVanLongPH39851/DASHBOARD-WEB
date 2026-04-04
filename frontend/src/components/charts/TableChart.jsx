@@ -176,7 +176,8 @@ const TableChart = ({
           const columnId = info.column.id;
           if (typeof value === 'number' && !isNaN(value)) {
             const isPercent = columnId.includes('%');
-            return  isPercent || !stateGlobals.screen_md ? formatNumber(value, { isPercent }) : formatKMB(value);
+            const isMinuteUserProgram = columnId.includes('lượt phát');
+            return  isMinuteUserProgram ? value.toLocaleString(undefined, { maximumFractionDigits: 2 }) :  isPercent || !stateGlobals.screen_md ? formatNumber(value, { isPercent }) : formatKMB(value);
           }
           return value || '';
         },

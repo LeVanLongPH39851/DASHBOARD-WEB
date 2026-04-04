@@ -1,8 +1,8 @@
 export const aveReachBarChartRegionalPayload = {
-  url: 'https://ratings.vtv.vn/api/v1/chart/data?form_data=%7B%22slice_id%22%3A423%7D&dashboard_id=45',
+  url: `${import.meta.env.VITE_API_DOMAIN}/api/v1/chart/data?form_data=%7B%22slice_id%22%3A650%7D&dashboard_id=50`,
   payload: {
     "datasource": {
-      "id": 148,
+      "id": 210,
       "type": "table"
     },
     "force": false,
@@ -14,7 +14,7 @@ export const aveReachBarChartRegionalPayload = {
             "col": "regional_name",
             "op": "NOT IN",
             "val": [
-              "NULL"
+              "active"
             ]
           },
           {
@@ -35,7 +35,7 @@ export const aveReachBarChartRegionalPayload = {
             "columnType": "BASE_AXIS",
             "expressionType": "SQL",
             "label": "Vùng",
-            "sqlExpression": "CASE WHEN regional_name = 'Đồng bằng sông Hồng' THEN 'Đồng bằng' || CHR(10) || 'sông Hồng' WHEN regional_name = 'Bắc Trung Bộ và Duyên hải miền Trung' THEN 'Bắc Trung Bộ và' || CHR(10) || 'Duyên hải miền Trung' WHEN regional_name = 'Trung du và miền núi phía Bắc' THEN 'Trung du và' || CHR(10) || 'miền núi phía Bắc' WHEN regional_name = 'Đồng bằng sông Cửu Long' THEN 'Đồng bằng' || CHR(10) || 'sông Cửu Long' ELSE regional_name END"
+            "sqlExpression": "CASE\r\n  WHEN regional_name = 'Đồng bằng sông Hồng'\r\n    THEN concat('Đồng bằng', '\\n', 'sông Hồng')\r\n  WHEN regional_name = 'Nam Trung Bộ và Tây Nguyên'\r\n    THEN concat('Nam Trung Bộ', '\\n', 'và Tây Nguyên')\r\n  WHEN regional_name = 'Trung du và miền núi phía Bắc'\r\n    THEN concat('Trung du và', '\\n', 'miền núi phía Bắc')\r\n  WHEN regional_name = 'Đồng bằng sông Cửu Long'\r\n    THEN concat('Đồng bằng', '\\n', 'sông Cửu Long')\r\n  ELSE regional_name\r\nEND"
           }
         ],
         "metrics": [
@@ -86,17 +86,16 @@ export const aveReachBarChartRegionalPayload = {
       }
     ],
     "form_data": {
-      "datasource": "148__table",
+      "datasource": "210__table",
       "viz_type": "echarts_timeseries_bar",
-      "slice_id": 423,
+      "slice_id": 650,
       "url_params": {},
       "x_axis": {
         "expressionType": "SQL",
         "label": "Vùng",
-        "sqlExpression": "CASE WHEN regional_name = 'Đồng bằng sông Hồng' THEN 'Đồng bằng' || CHR(10) || 'sông Hồng' WHEN regional_name = 'Bắc Trung Bộ và Duyên hải miền Trung' THEN 'Bắc Trung Bộ và' || CHR(10) || 'Duyên hải miền Trung' WHEN regional_name = 'Trung du và miền núi phía Bắc' THEN 'Trung du và' || CHR(10) || 'miền núi phía Bắc' WHEN regional_name = 'Đồng bằng sông Cửu Long' THEN 'Đồng bằng' || CHR(10) || 'sông Cửu Long' ELSE regional_name END"
+        "sqlExpression": "CASE\r\n  WHEN regional_name = 'Đồng bằng sông Hồng'\r\n    THEN concat('Đồng bằng', '\\n', 'sông Hồng')\r\n  WHEN regional_name = 'Nam Trung Bộ và Tây Nguyên'\r\n    THEN concat('Nam Trung Bộ', '\\n', 'và Tây Nguyên')\r\n  WHEN regional_name = 'Trung du và miền núi phía Bắc'\r\n    THEN concat('Trung du và', '\\n', 'miền núi phía Bắc')\r\n  WHEN regional_name = 'Đồng bằng sông Cửu Long'\r\n    THEN concat('Đồng bằng', '\\n', 'sông Cửu Long')\r\n  ELSE regional_name\r\nEND"
       },
       "time_grain_sqla": "P1D",
-      "xAxisForceCategorical": true,
       "x_axis_sort": "ave_reach",
       "x_axis_sort_asc": true,
       "x_axis_sort_series": "name",
@@ -109,7 +108,7 @@ export const aveReachBarChartRegionalPayload = {
         {
           "clause": "WHERE",
           "comparator": [
-            "NULL"
+            "active"
           ],
           "datasourceWarning": false,
           "expressionType": "SIMPLE",
@@ -167,16 +166,16 @@ export const aveReachBarChartRegionalPayload = {
       "showTooltipPercentage": true,
       "tooltipTimeFormat": "smart_date",
       "dashboards": [
-        39
+        87
       ],
       "extra_form_data": {
         "time_range": "DATEADD(DATETIME(\"today\"),-1, DAY) : DATEADD(DATETIME(\"today\"),-1, SECOND)"
       },
-      "chart_id": 423,
+      "chart_id": 650,
       "label_colors": {
         "ave_reach": "#ffd04c",
-        "ave_reach_1": "#ffd04c",
-        "reach%_1": "#ffd04c",
+        "ave_reach_timeband": "#ffd04c",
+        "reach_timeband%": "#ffd04c",
         "rating": "#ff5757",
         "Live": "#6ce5e8",
         "TSV": "#fe9273",
@@ -200,41 +199,42 @@ export const aveReachBarChartRegionalPayload = {
         "Workweek": "#fe9273",
         "Weekend": "#6ce5e8",
         "Thời sự - Chính luận": "#6BD3B3",
+        "Sự kiện - Đặc biệt": "#7A378B",
         "Phim dài tập": "#FCC550",
         "Đời sống": "#EE5960",
         "Tài liệu - Phóng sự": "#408184",
-        "Giải trí": "#66CBE2",
+        "Giải trí": "#BFEFFF",
         "Giáo dục - Đào tạo": "#5470C6",
         "Dành cho trẻ em": "#ffb2f3",
         "Thể thao": "#FF874E",
         "Sự kiện": "#03748E",
         "Quảng bá": "#8c564a",
         "Phim truyện": "#C9BBAB",
+        "Phim điện ảnh": "#C3BBAB",
         "Quảng cáo": "#B17BAA",
-        "1.Thứ Hai": "#1FA8C9",
-        "2.Thứ Ba": "#454E7C",
-        "3.Thứ Tư": "#5AC189",
-        "4.Thứ Năm": "#FF7F44",
-        "5.Thứ Sáu": "#666666",
-        "6.Thứ Bảy": "#E04355",
-        "7.Chủ Nhật": "#FCC700"
+        "Thứ Hai": "#1FA8C9",
+        "Thứ Ba": "#454E7C",
+        "Thứ Tư": "#5AC189",
+        "Thứ Năm": "#FF7F44",
+        "Thứ Sáu": "#666666",
+        "Thứ Bảy": "#E04355",
+        "Chủ Nhật": "#FCC700"
       },
       "shared_label_colors": [
-        "7.Chủ Nhật",
         "Dành cho trẻ em",
         "Giáo dục - Đào tạo",
         "Giải trí",
         "Live",
         "Phim dài tập",
-        "Phim truyện",
-        "Quảng bá",
-        "Sự kiện",
+        "Phim điện ảnh",
+        "Sự kiện - Đặc biệt",
         "TSV",
         "Thể thao",
         "Thời sự - Chính luận",
+        "Thứ Sáu",
         "Tài liệu - Phóng sự",
-        "VTV Cần Thơ",
         "VTV1",
+        "VTV10",
         "VTV2",
         "VTV3",
         "VTV4",
@@ -245,9 +245,7 @@ export const aveReachBarChartRegionalPayload = {
         "VTV8",
         "VTV9",
         "ave_reach",
-        "ave_reach_1",
         "rating",
-        "rating_timeband",
         "Đời sống"
       ],
       "map_label_colors": {},

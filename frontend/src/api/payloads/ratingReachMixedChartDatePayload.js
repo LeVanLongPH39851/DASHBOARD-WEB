@@ -1,8 +1,8 @@
 export const ratingReachMixedChartDatePayload = {
-  url: 'https://ratings.vtv.vn/api/v1/chart/data?form_data=%7B%22slice_id%22%3A470%7D&dashboard_id=45',
+  url: `${import.meta.env.VITE_API_DOMAIN}/api/v1/chart/data?form_data=%7B%22slice_id%22%3A673%7D&dashboard_id=50`,
   payload: {
     "datasource": {
-      "id": 148,
+      "id": 210,
       "type": "table"
     },
     "force": false,
@@ -11,7 +11,7 @@ export const ratingReachMixedChartDatePayload = {
         "time_range": "DATEADD(DATETIME(\"today\"),-1, DAY) : DATEADD(DATETIME(\"today\"),-1, SECOND)",
         "filters": [
           {
-            "col": "day",
+            "col": "days_of_week",
             "op": "NOT IN",
             "val": [
               "7 days"
@@ -80,11 +80,9 @@ export const ratingReachMixedChartDatePayload = {
         "time_range": "DATEADD(DATETIME(\"today\"),-1, DAY) : DATEADD(DATETIME(\"today\"),-1, SECOND)",
         "filters": [
           {
-            "col": "day",
-            "op": "NOT IN",
-            "val": [
-              "7 days"
-            ]
+            "col": "date",
+            "op": "TEMPORAL_RANGE",
+            "val": "No filter"
           },
           {
             "col": "date",
@@ -147,9 +145,9 @@ export const ratingReachMixedChartDatePayload = {
       }
     ],
     "form_data": {
-      "datasource": "148__table",
+      "datasource": "210__table",
       "viz_type": "mixed_timeseries",
-      "slice_id": 470,
+      "slice_id": 673,
       "url_params": {},
       "x_axis": "date",
       "time_grain_sqla": "P1D",
@@ -160,11 +158,26 @@ export const ratingReachMixedChartDatePayload = {
       "adhoc_filters": [
         {
           "clause": "WHERE",
+          "comparator": [
+            "7 days"
+          ],
+          "datasourceWarning": false,
+          "expressionType": "SIMPLE",
+          "filterOptionName": "filter_5361tah117y_ff2kgbem2k6",
+          "isExtra": false,
+          "isNew": false,
+          "operator": "NOT IN",
+          "operatorId": "NOT_IN",
+          "sqlExpression": null,
+          "subject": "days_of_week"
+        },
+        {
+          "clause": "WHERE",
           "comparator": "No filter",
           "datasourceWarning": false,
           "expressionType": "SIMPLE",
           "filterOptionName": "filter_7lvs4l6vbva_6itypvumq4",
-          "isExtra": false,
+          "isExtra": true,
           "isNew": false,
           "operator": "TEMPORAL_RANGE",
           "sqlExpression": null,
@@ -177,7 +190,7 @@ export const ratingReachMixedChartDatePayload = {
       "comparison_type": "values",
       "annotation_layers": [],
       "x_axis_title_margin": 15,
-      "y_axis_title_margin": "0",
+      "y_axis_title_margin": 15,
       "y_axis_title_position": "Left",
       "color_scheme": "supersetColors",
       "time_shift_color": true,
@@ -214,25 +227,16 @@ export const ratingReachMixedChartDatePayload = {
       ],
       "y_axis_format_secondary": "SMART_NUMBER",
       "dashboards": [
-        39
+        87
       ],
       "extra_form_data": {
-        "filters" : [
-          {
-            "col": "day",
-            "op": "NOT IN",
-            "val": [
-              "7 days"
-            ]
-          }
-        ],
         "time_range": "DATEADD(DATETIME(\"today\"),-1, DAY) : DATEADD(DATETIME(\"today\"),-1, SECOND)"
       },
-      "chart_id": 470,
+      "chart_id": 673,
       "label_colors": {
         "ave_reach": "#ffd04c",
-        "ave_reach_1": "#ffd04c",
-        "reach%_1": "#ffd04c",
+        "ave_reach_timeband": "#ffd04c",
+        "reach_timeband%": "#ffd04c",
         "rating": "#ff5757",
         "Live": "#6ce5e8",
         "TSV": "#fe9273",
@@ -256,41 +260,42 @@ export const ratingReachMixedChartDatePayload = {
         "Workweek": "#fe9273",
         "Weekend": "#6ce5e8",
         "Thời sự - Chính luận": "#6BD3B3",
+        "Sự kiện - Đặc biệt": "#7A378B",
         "Phim dài tập": "#FCC550",
         "Đời sống": "#EE5960",
         "Tài liệu - Phóng sự": "#408184",
-        "Giải trí": "#66CBE2",
+        "Giải trí": "#BFEFFF",
         "Giáo dục - Đào tạo": "#5470C6",
         "Dành cho trẻ em": "#ffb2f3",
         "Thể thao": "#FF874E",
         "Sự kiện": "#03748E",
         "Quảng bá": "#8c564a",
         "Phim truyện": "#C9BBAB",
+        "Phim điện ảnh": "#C3BBAB",
         "Quảng cáo": "#B17BAA",
-        "1.Thứ Hai": "#1FA8C9",
-        "2.Thứ Ba": "#454E7C",
-        "3.Thứ Tư": "#5AC189",
-        "4.Thứ Năm": "#FF7F44",
-        "5.Thứ Sáu": "#666666",
-        "6.Thứ Bảy": "#E04355",
-        "7.Chủ Nhật": "#FCC700"
+        "Thứ Hai": "#1FA8C9",
+        "Thứ Ba": "#454E7C",
+        "Thứ Tư": "#5AC189",
+        "Thứ Năm": "#FF7F44",
+        "Thứ Sáu": "#666666",
+        "Thứ Bảy": "#E04355",
+        "Chủ Nhật": "#FCC700"
       },
       "shared_label_colors": [
-        "7.Chủ Nhật",
         "Dành cho trẻ em",
         "Giáo dục - Đào tạo",
         "Giải trí",
         "Live",
         "Phim dài tập",
-        "Phim truyện",
-        "Quảng bá",
-        "Sự kiện",
+        "Phim điện ảnh",
+        "Sự kiện - Đặc biệt",
         "TSV",
         "Thể thao",
         "Thời sự - Chính luận",
+        "Thứ Sáu",
         "Tài liệu - Phóng sự",
-        "VTV Cần Thơ",
         "VTV1",
+        "VTV10",
         "VTV2",
         "VTV3",
         "VTV4",
@@ -301,9 +306,7 @@ export const ratingReachMixedChartDatePayload = {
         "VTV8",
         "VTV9",
         "ave_reach",
-        "ave_reach_1",
         "rating",
-        "rating_timeband",
         "Đời sống"
       ],
       "map_label_colors": {},

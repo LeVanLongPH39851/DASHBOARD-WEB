@@ -17,6 +17,7 @@ const ClearSet = (setFilterValues, keyFilter) => {
         case 'keyCities': setFilterValues(prev => ({...prev, keyCities: []})); break;
         case 'timebands': setFilterValues(prev => ({...prev, timebands: []})); break;
         case 'firstLevels': setFilterValues(prev => ({...prev, firstLevels: []})); break;
+        case 'programs': setFilterValues(prev => ({...prev, programs: []})); break;
     }
 };
 

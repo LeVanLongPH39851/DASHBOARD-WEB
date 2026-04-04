@@ -1,8 +1,8 @@
 export const totalViewDurationPieChartFirstLevelPayload = {
-  url: 'https://ratings.vtv.vn/api/v1/chart/data?form_data=%7B%22slice_id%22%3A403%7D&dashboard_id=45',
+  url: `${import.meta.env.VITE_API_DOMAIN}/api/v1/chart/data?form_data=%7B%22slice_id%22%3A637%7D&dashboard_id=50`,
   payload: {
     "datasource": {
-      "id": 150,
+      "id": 209,
       "type": "table"
     },
     "force": false,
@@ -10,6 +10,13 @@ export const totalViewDurationPieChartFirstLevelPayload = {
       {
         "time_range": "DATEADD(DATETIME(\"today\"),-1, DAY) : DATEADD(DATETIME(\"today\"),-1, SECOND)",
         "filters": [
+          {
+            "col": "firstlevel_vn",
+            "op": "NOT IN",
+            "val": [
+              "active"
+            ]
+          },
           {
             "col": "date",
             "op": "TEMPORAL_RANGE",
@@ -43,9 +50,9 @@ export const totalViewDurationPieChartFirstLevelPayload = {
       }
     ],
     "form_data": {
-      "datasource": "150__table",
+      "datasource": "209__table",
       "viz_type": "pie",
-      "slice_id": 403,
+      "slice_id": 637,
       "url_params": {},
       "groupby": [
         "firstlevel_vn"
@@ -54,9 +61,29 @@ export const totalViewDurationPieChartFirstLevelPayload = {
       "adhoc_filters": [
         {
           "clause": "WHERE",
-          "comparator": "No filter",
+          "comparator": [
+            "active"
+          ],
+          "datasourceWarning": false,
           "expressionType": "SIMPLE",
+          "filterOptionName": "filter_g7aiw93q6hw_g5j5tdlj52l",
+          "isExtra": false,
+          "isNew": false,
+          "operator": "NOT IN",
+          "operatorId": "NOT_IN",
+          "sqlExpression": null,
+          "subject": "firstlevel_vn"
+        },
+        {
+          "clause": "WHERE",
+          "comparator": "No filter",
+          "datasourceWarning": false,
+          "expressionType": "SIMPLE",
+          "filterOptionName": "filter_a4sz3qcrbz5_pg2nh65b12p",
+          "isExtra": true,
+          "isNew": false,
           "operator": "TEMPORAL_RANGE",
+          "sqlExpression": null,
           "subject": "date"
         }
       ],
@@ -76,15 +103,18 @@ export const totalViewDurationPieChartFirstLevelPayload = {
       "outerRadius": 64,
       "donut": true,
       "innerRadius": 36,
-      "dashboards": [],
+      "annotation_layers": [],
+      "dashboards": [
+        87
+      ],
       "extra_form_data": {
         "time_range": "DATEADD(DATETIME(\"today\"),-1, DAY) : DATEADD(DATETIME(\"today\"),-1, SECOND)"
       },
-      "chart_id": 403,
+      "chart_id": 637,
       "label_colors": {
         "ave_reach": "#ffd04c",
-        "ave_reach_1": "#ffd04c",
-        "reach%_1": "#ffd04c",
+        "ave_reach_timeband": "#ffd04c",
+        "reach_timeband%": "#ffd04c",
         "rating": "#ff5757",
         "Live": "#6ce5e8",
         "TSV": "#fe9273",
@@ -108,41 +138,42 @@ export const totalViewDurationPieChartFirstLevelPayload = {
         "Workweek": "#fe9273",
         "Weekend": "#6ce5e8",
         "Thời sự - Chính luận": "#6BD3B3",
+        "Sự kiện - Đặc biệt": "#7A378B",
         "Phim dài tập": "#FCC550",
         "Đời sống": "#EE5960",
         "Tài liệu - Phóng sự": "#408184",
-        "Giải trí": "#66CBE2",
+        "Giải trí": "#BFEFFF",
         "Giáo dục - Đào tạo": "#5470C6",
         "Dành cho trẻ em": "#ffb2f3",
         "Thể thao": "#FF874E",
         "Sự kiện": "#03748E",
         "Quảng bá": "#8c564a",
         "Phim truyện": "#C9BBAB",
+        "Phim điện ảnh": "#C3BBAB",
         "Quảng cáo": "#B17BAA",
-        "1.Thứ Hai": "#1FA8C9",
-        "2.Thứ Ba": "#454E7C",
-        "3.Thứ Tư": "#5AC189",
-        "4.Thứ Năm": "#FF7F44",
-        "5.Thứ Sáu": "#666666",
-        "6.Thứ Bảy": "#E04355",
-        "7.Chủ Nhật": "#FCC700"
+        "Thứ Hai": "#1FA8C9",
+        "Thứ Ba": "#454E7C",
+        "Thứ Tư": "#5AC189",
+        "Thứ Năm": "#FF7F44",
+        "Thứ Sáu": "#666666",
+        "Thứ Bảy": "#E04355",
+        "Chủ Nhật": "#FCC700"
       },
       "shared_label_colors": [
-        "7.Chủ Nhật",
         "Dành cho trẻ em",
         "Giáo dục - Đào tạo",
         "Giải trí",
         "Live",
         "Phim dài tập",
-        "Phim truyện",
-        "Quảng bá",
-        "Sự kiện",
+        "Phim điện ảnh",
+        "Sự kiện - Đặc biệt",
         "TSV",
         "Thể thao",
         "Thời sự - Chính luận",
+        "Thứ Sáu",
         "Tài liệu - Phóng sự",
-        "VTV Cần Thơ",
         "VTV1",
+        "VTV10",
         "VTV2",
         "VTV3",
         "VTV4",
@@ -153,9 +184,7 @@ export const totalViewDurationPieChartFirstLevelPayload = {
         "VTV8",
         "VTV9",
         "ave_reach",
-        "ave_reach_1",
         "rating",
-        "rating_timeband",
         "Đời sống"
       ],
       "map_label_colors": {},

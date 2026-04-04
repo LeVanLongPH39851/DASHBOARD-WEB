@@ -23,7 +23,7 @@ const ALL_CHANNELS = [
   { value: "VTV7", label: "VTV7" },
   { value: "VTV8", label: "VTV8" },
   { value: "VTV9", label: "VTV9" },
-  { value: "VTV Cần Thơ", label: "VTV Cần Thơ" }
+  { value: "VTV10", label: "VTV10" }
 ];
 
 const ALL_DAYS = [
@@ -44,11 +44,11 @@ const ALL_EVENTS = [
 ];
 
 const ALL_REGIONALS = [
-  { value: "Bắc Trung Bộ và Duyên hải miền Trung", label: "Bắc Trung Bộ và Duyên hải miền Trung" },
+  { value: "Bắc Trung Bộ", label: "Bắc Trung Bộ" },
   { value: "Đồng bằng sông Cửu Long", label: "Đồng bằng sông Cửu Long" },
   { value: "Đồng bằng sông Hồng", label: "Đồng bằng sông Hồng" },
   { value: "Đông Nam Bộ", label: "Đông Nam Bộ" },
-  { value: "Tây Nguyên", label: "Tây Nguyên" },
+  { value: "Nam Trung Bộ và Tây Nguyên", label: "Nam Trung Bộ và Tây Nguyên" },
   { value: "Trung du và miền núi phía Bắc", label: "Trung du và miền núi phía Bắc" }
 ];
 
@@ -88,11 +88,6 @@ const ALL_FIRST_LEVELS = [
   { value: "Giáo dục - Đào tạo", label: "Giáo dục - Đào tạo" },
   { value: "Giải trí", label: "Giải trí" },
   { value: "Phim dài tập", label: "Phim dài tập" },
-  { value: "Phim truyện", label: "Phim truyện" },
-  { value: "Phim điện ảnh", label: "Phim điện ảnh" },
-  { value: "Quảng bá", label: "Quảng bá" },
-  { value: "Quảng cáo", label: "Quảng cáo" },
-  { value: "Sự kiện", label: "Sự kiện" },
   { value: "Sự kiện - Đặc biệt", label: "Sự kiện - Đặc biệt" },
   { value: "Thể thao", label: "Thể thao" },
   { value: "Thời sự - Chính luận", label: "Thời sự - Chính luận" },
@@ -113,6 +108,11 @@ const Filter = ({ filters, horizontalFixed=false
   const ALL_PROVINCES = filters.filterProvince.map(item => ({
     value: item.province,
     label: item.province
+  }));
+
+  const ALL_PROGRAMS = filters.filterProgram.map(item => ({
+    value: item.program_name,
+    label: item.program_name
   }));
 
   const { appliedFilters, setAppliedFilters} = useDashboardFilters();
@@ -216,6 +216,9 @@ const Filter = ({ filters, horizontalFixed=false
         .filter(Boolean),
         firstLevels: (appliedFilters.firstLevels || [])
         .map(val => ALL_FIRST_LEVELS.find(fl => fl.value === val))
+        .filter(Boolean),
+        programs: (appliedFilters.programs || [])
+        .map(val => ALL_PROGRAMS.find(pr => pr.value === val))
         .filter(Boolean)
       }));
     }
@@ -279,6 +282,10 @@ const Filter = ({ filters, horizontalFixed=false
     setFilterValues(prev => ({...prev, firstLevels: selectedFirstLevels}));
   };
 
+  const handleProgramsChange = (selectedPrograms) => {
+    setFilterValues(prev => ({...prev, programs: selectedPrograms}));
+  };
+
   const onSubmit = (e) => {
     e.preventDefault();
 
@@ -291,7 +298,8 @@ const Filter = ({ filters, horizontalFixed=false
       regionals: (filterValues?.regionals || []).map(re => re.value),
       keyCities: (filterValues?.keyCities || []).map(ke => ke.value),
       timebands: (filterValues?.timebands || []).map(tb => tb.value),
-      firstLevels: (filterValues?.firstLevels || []).map(fl => fl.value)
+      firstLevels: (filterValues?.firstLevels || []).map(fl => fl.value),
+      programs: (filterValues?.programs || []).map(pr => pr.value)
     } : null);
   };
 
@@ -452,6 +460,15 @@ const Filter = ({ filters, horizontalFixed=false
             marginBottom="mb-4 max-md:mb-2"
             horizontalFixed={horizontalFixed}
           />))}
+
+          {[DISABLE_TABS.program, DISABLE_TABS.rating_by_minute].includes(stateGlobals.currentTab) && (<SelectMultiFilter
+            label="Chương trình"
+            placeholder="Chọn chương trình"
+            options={ALL_PROGRAMS}
+            value={filterValues?.programs || []}
+            onChange={handleProgramsChange}
+            marginBottom="mb-4 max-md:mb-2"
+            horizontalFixed={horizontalFixed} />)}
 
           <div className={`flex justify-center items-center transition-all duration-700 bg-background-light ${!horizontalFixed ? `dark:bg-background-dark fixed bottom-0 left-0 w-[16%] max-md:w-[65%] border-r border-background-line-gray dark:border-background-white-15 ${!stateGlobals.isOpen || stateGlobals.horizontal ? '-translate-x-full' : ''} shadow-2xl shadow-color-black-50 dark:shadow-color-white-90 py-3 gap-4` : 'gap-1 dark:bg-background-chart-dark max-md:justify-start max-md:col-span-2'}`}>
             <ButtonFilter text={'Áp dụng bộ lọc'} background={'bg-background-black-90 dark:bg-background-primary'} color={'text-color-white-90 dark:text-background-check-box'} type={'submit'} />

@@ -57,9 +57,10 @@ const DashboardContent = () => {
   }
 
   const scopeFilterData = {
-    filterProvince: dashboard.isLoading.filterProvinceData ? [{'Loading': 'Loading'}] : dashboard.filterProvinceData?.data
+    filterProvince: dashboard.isLoading.filterProvinceData ? [{'Loading': 'Loading'}] : dashboard.filterProvinceData?.data,
+    filterProgram: dashboard.isLoading.filterProgramData ? [{'Loading': 'Loading'}] : dashboard.filterProgramData?.data
   }
-  
+
   return (
     <main className='font-family-be-vietnam-pro w-full h-full tracking-[0.1px] overflow-x-clip'>
       <Header />
@@ -109,7 +110,7 @@ const DashboardContent = () => {
                                               colors={CUSTOM_CHART.barChart.barChartChannelEvent.colors}
                                               fontWeight={CUSTOM_CHART.barChart.fontWeight}
                                               nameChart={CUSTOM_CHART.barChart.barChartChannelEvent.ratingNameChart}
-                                              description={METRICS.rating.description}
+                                              description={CUSTOM_CHART.barChart.barChartChannelEvent.description}
                                               orientation={CUSTOM_CHART.barChart.barChartChannelEvent.orientation}
                                               displayName={false}
                                             />
@@ -124,7 +125,7 @@ const DashboardContent = () => {
                                                 colors={CUSTOM_CHART.barChart.barChartChannelEvent.colors}
                                                 fontWeight={CUSTOM_CHART.barChart.fontWeight}
                                                 nameChart={CUSTOM_CHART.barChart.barChartChannelEvent.aveReachNameChart}
-                                                description={METRICS.ave_reach.description}
+                                                description={CUSTOM_CHART.barChart.barChartChannelEvent.description}
                                                 orientation={CUSTOM_CHART.barChart.barChartChannelEvent.orientation}
                                                 displayName={false}
                                               />
@@ -146,7 +147,7 @@ const DashboardContent = () => {
                                               colors={CUSTOM_CHART.barChart.barChartDayEvent.colors}
                                               fontWeight={CUSTOM_CHART.barChart.fontWeight}
                                               nameChart={CUSTOM_CHART.barChart.barChartDayEvent.ratingNameChart}
-                                              description={METRICS.rating.description}
+                                              description={CUSTOM_CHART.barChart.barChartDayEvent.description}
                                               orientation={CUSTOM_CHART.barChart.barChartDayEvent.orientation}
                                               displayName={false}
                                             />
@@ -161,7 +162,7 @@ const DashboardContent = () => {
                                                 colors={CUSTOM_CHART.barChart.barChartDayEvent.colors}
                                                 fontWeight={CUSTOM_CHART.barChart.fontWeight}
                                                 nameChart={CUSTOM_CHART.barChart.barChartDayEvent.aveReachNameChart}
-                                                description={METRICS.ave_reach.description}
+                                                description={CUSTOM_CHART.barChart.barChartDayEvent.description}
                                                 orientation={CUSTOM_CHART.barChart.barChartDayEvent.orientation}
                                                 displayName={false}
                                               />
@@ -254,7 +255,7 @@ const DashboardContent = () => {
                                               colors={CUSTOM_CHART.barChart.barChartArea.rating.color}
                                               fontWeight={CUSTOM_CHART.barChart.fontWeight}
                                               nameChart={CUSTOM_CHART.barChart.barChartArea.rating.name}
-                                              description={METRICS.rating.description}
+                                              description={CUSTOM_CHART.barChart.barChartArea.rating.description}
                                               orientation={CUSTOM_CHART.barChart.barChartArea.orientation}
                                               displayName={false}
                                               colorZoom={CUSTOM_CHART.barChart.barChartArea.rating.colorZoom}
@@ -270,7 +271,7 @@ const DashboardContent = () => {
                                               colors={CUSTOM_CHART.barChart.barChartArea.rating.color}
                                               fontWeight={CUSTOM_CHART.barChart.fontWeight}
                                               nameChart={CUSTOM_CHART.barChart.barChartArea.rating.name}
-                                              description={METRICS.rating.description}
+                                              description={CUSTOM_CHART.barChart.barChartArea.rating.description}
                                               orientation={CUSTOM_CHART.barChart.barChartArea.orientation}
                                               displayName={false}
                                               colorZoom={CUSTOM_CHART.barChart.barChartArea.rating.colorZoom}
@@ -286,7 +287,7 @@ const DashboardContent = () => {
                                               colors={CUSTOM_CHART.barChart.barChartArea.rating.color}
                                               fontWeight={CUSTOM_CHART.barChart.fontWeight}
                                               nameChart={CUSTOM_CHART.barChart.barChartArea.rating.name}
-                                              description={METRICS.rating.description}
+                                              description={CUSTOM_CHART.barChart.barChartArea.rating.description}
                                               orientation={CUSTOM_CHART.barChart.barChartArea.orientation}
                                               displayName={false}
                                               colorZoom={CUSTOM_CHART.barChart.barChartArea.rating.colorZoom}
@@ -302,7 +303,7 @@ const DashboardContent = () => {
                                               colors={CUSTOM_CHART.barChart.barChartArea.rating.color}
                                               fontWeight={CUSTOM_CHART.barChart.fontWeight}
                                               nameChart={CUSTOM_CHART.barChart.barChartArea.rating.name}
-                                              description={METRICS.rating.description}
+                                              description={CUSTOM_CHART.barChart.barChartArea.rating.description}
                                               orientation={CUSTOM_CHART.barChart.barChartArea.orientation}
                                               displayName={false}
                                               colorZoom={CUSTOM_CHART.barChart.barChartArea.rating.colorZoom}
@@ -323,7 +324,7 @@ const DashboardContent = () => {
                                               colors={CUSTOM_CHART.barChart.barChartArea.aveReach.color}
                                               fontWeight={CUSTOM_CHART.barChart.fontWeight}
                                               nameChart={CUSTOM_CHART.barChart.barChartArea.aveReach.name}
-                                              description={METRICS.ave_reach.description}
+                                              description={CUSTOM_CHART.barChart.barChartArea.aveReach.description}
                                               orientation={CUSTOM_CHART.barChart.barChartArea.orientation}
                                               displayName={false}
                                               colorZoom={CUSTOM_CHART.barChart.barChartArea.aveReach.colorZoom}
@@ -339,7 +340,7 @@ const DashboardContent = () => {
                                               colors={CUSTOM_CHART.barChart.barChartArea.aveReach.color}
                                               fontWeight={CUSTOM_CHART.barChart.fontWeight}
                                               nameChart={CUSTOM_CHART.barChart.barChartArea.aveReach.name}
-                                              description={METRICS.ave_reach.description}
+                                              description={CUSTOM_CHART.barChart.barChartArea.aveReach.description}
                                               orientation={CUSTOM_CHART.barChart.barChartArea.orientation}
                                               displayName={false}
                                               colorZoom={CUSTOM_CHART.barChart.barChartArea.aveReach.colorZoom}
@@ -355,7 +356,7 @@ const DashboardContent = () => {
                                               colors={CUSTOM_CHART.barChart.barChartArea.aveReach.color}
                                               fontWeight={CUSTOM_CHART.barChart.fontWeight}
                                               nameChart={CUSTOM_CHART.barChart.barChartArea.aveReach.name}
-                                              description={METRICS.ave_reach.description}
+                                              description={CUSTOM_CHART.barChart.barChartArea.aveReach.description}
                                               orientation={CUSTOM_CHART.barChart.barChartArea.orientation}
                                               displayName={false}
                                               colorZoom={CUSTOM_CHART.barChart.barChartArea.aveReach.colorZoom}
@@ -371,7 +372,7 @@ const DashboardContent = () => {
                                               colors={CUSTOM_CHART.barChart.barChartArea.aveReach.color}
                                               fontWeight={CUSTOM_CHART.barChart.fontWeight}
                                               nameChart={CUSTOM_CHART.barChart.barChartArea.aveReach.name}
-                                              description={METRICS.ave_reach.description}
+                                              description={CUSTOM_CHART.barChart.barChartArea.aveReach.description}
                                               orientation={CUSTOM_CHART.barChart.barChartArea.orientation}
                                               displayName={false}
                                               colorZoom={CUSTOM_CHART.barChart.barChartArea.aveReach.colorZoom}
@@ -412,7 +413,7 @@ const DashboardContent = () => {
                                         content: (
                                           <>
                                             <div className='w-full pb-6 max-md:pb-4'>
-                                              <MixedChart data={!dashboard.isLoading.ratingReachPercentMixedTimebandData ? transformMixedChartData(dashboard.ratingReachPercentMixedTimebandData?.data, 'time_band', dashboard.ratingReachPercentMixedTimebandData?.colnames) : 'isLoading'}
+                                              <MixedChart data={!dashboard.isLoading.ratingReachPercentMixedTimebandData ? transformMixedChartData(dashboard.ratingReachPercentMixedTimebandData?.data, 'Khung giờ', dashboard.ratingReachPercentMixedTimebandData?.colnames) : 'isLoading'}
                                                           height={CUSTOM_CHART.mixedChart.height}
                                                           fontSize={CUSTOM_CHART.mixedChart.fontSize}
                                                           fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -430,7 +431,7 @@ const DashboardContent = () => {
                                               />
                                             </div>
                                             <div className='w-full pb-6 max-md:pb-4'>
-                                              <LineChart data={!dashboard.isLoading.ratingPercentLineTimebandChannelData ? transformMixedChartData(dashboard.ratingPercentLineTimebandChannelData?.data, 'time_band', dashboard.ratingPercentLineTimebandChannelData?.colnames) : 'isLoading'}
+                                              <LineChart data={!dashboard.isLoading.ratingPercentLineTimebandChannelData ? transformMixedChartData(dashboard.ratingPercentLineTimebandChannelData?.data, 'Khung giờ', dashboard.ratingPercentLineTimebandChannelData?.colnames) : 'isLoading'}
                                                         height={CUSTOM_CHART.lineChart.height}
                                                         fontSize={CUSTOM_CHART.lineChart.fontSize}
                                                         fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -499,7 +500,7 @@ const DashboardContent = () => {
                                         content: (
                                           <>
                                             <div className='w-full pb-6 max-md:pb-4'>
-                                              <MixedChart data={!dashboard.isLoading.ratingReachMixedTimebandData ? transformMixedChartData(dashboard.ratingReachMixedTimebandData?.data, 'time_band', dashboard.ratingReachMixedTimebandData?.colnames) : 'isLoading'}
+                                              <MixedChart data={!dashboard.isLoading.ratingReachMixedTimebandData ? transformMixedChartData(dashboard.ratingReachMixedTimebandData?.data, 'Khung giờ', dashboard.ratingReachMixedTimebandData?.colnames) : 'isLoading'}
                                                           height={CUSTOM_CHART.mixedChart.height}
                                                           fontSize={CUSTOM_CHART.mixedChart.fontSize}
                                                           fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -518,7 +519,7 @@ const DashboardContent = () => {
                                               />
                                             </div>
                                             <div className='w-full pb-6 max-md:pb-4'>
-                                              <LineChart data={!dashboard.isLoading.ratingLineTimebandChannelData ? transformMixedChartData(dashboard.ratingLineTimebandChannelData?.data, 'time_band', dashboard.ratingLineTimebandChannelData?.colnames) : 'isLoading'}
+                                              <LineChart data={!dashboard.isLoading.ratingLineTimebandChannelData ? transformMixedChartData(dashboard.ratingLineTimebandChannelData?.data, 'Khung giờ', dashboard.ratingLineTimebandChannelData?.colnames) : 'isLoading'}
                                                         height={CUSTOM_CHART.lineChart.height}
                                                         fontSize={CUSTOM_CHART.lineChart.fontSize}
                                                         fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -536,7 +537,7 @@ const DashboardContent = () => {
                                               />
                                             </div>
                                             <div className='w-full pb-6 max-md:pb-4'>
-                                              <LineChart data={!dashboard.isLoading.aveReachLineTimebandChannelData ? transformMixedChartData(dashboard.aveReachLineTimebandChannelData?.data, 'time_band', dashboard.aveReachLineTimebandChannelData?.colnames) : 'isLoading'}
+                                              <LineChart data={!dashboard.isLoading.aveReachLineTimebandChannelData ? transformMixedChartData(dashboard.aveReachLineTimebandChannelData?.data, 'Khung giờ', dashboard.aveReachLineTimebandChannelData?.colnames) : 'isLoading'}
                                                         height={CUSTOM_CHART.lineChart.height}
                                                         fontSize={CUSTOM_CHART.lineChart.fontSize}
                                                         fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -588,7 +589,7 @@ const DashboardContent = () => {
                                               />
                                             </div>
                                             <div className='w-full pb-6 max-md:pb-4'>
-                                              <LineChart data={!dashboard.isLoading.ratingLineTimebandDayData ? transformMixedChartData(dashboard.ratingLineTimebandDayData?.data, 'time_band', dashboard.ratingLineTimebandDayData?.colnames) : 'isLoading'}
+                                              <LineChart data={!dashboard.isLoading.ratingLineTimebandDayData ? transformMixedChartData(dashboard.ratingLineTimebandDayData?.data, 'Khung giờ', dashboard.ratingLineTimebandDayData?.colnames) : 'isLoading'}
                                                         height={CUSTOM_CHART.lineChart.height}
                                                         fontSize={CUSTOM_CHART.lineChart.fontSize}
                                                         fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -607,7 +608,7 @@ const DashboardContent = () => {
                                               />
                                             </div>
                                             <div className='w-full pb-6 max-md:pb-4'>
-                                              <LineChart data={!dashboard.isLoading.aveReachLineTimebandDayData ? transformMixedChartData(dashboard.aveReachLineTimebandDayData?.data, 'time_band', dashboard.aveReachLineTimebandDayData?.colnames) : 'isLoading'}
+                                              <LineChart data={!dashboard.isLoading.aveReachLineTimebandDayData ? transformMixedChartData(dashboard.aveReachLineTimebandDayData?.data, 'Khung giờ', dashboard.aveReachLineTimebandDayData?.colnames) : 'isLoading'}
                                                         height={CUSTOM_CHART.lineChart.height}
                                                         fontSize={CUSTOM_CHART.lineChart.fontSize}
                                                         fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -626,7 +627,7 @@ const DashboardContent = () => {
                                               />
                                             </div>
                                             <div className='w-full pb-6 max-md:pb-4'>
-                                              <LineChart data={!dashboard.isLoading.aveReachLineTimebandRegionalData ? transformMixedChartData(dashboard.aveReachLineTimebandRegionalData?.data, 'time_band', dashboard.aveReachLineTimebandRegionalData?.colnames) : 'isLoading'}
+                                              <LineChart data={!dashboard.isLoading.aveReachLineTimebandRegionalData ? transformMixedChartData(dashboard.aveReachLineTimebandRegionalData?.data, 'Khung giờ', dashboard.aveReachLineTimebandRegionalData?.colnames) : 'isLoading'}
                                                         height={CUSTOM_CHART.lineChart.height}
                                                         fontSize={CUSTOM_CHART.lineChart.fontSize}
                                                         fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -738,7 +739,7 @@ const DashboardContent = () => {
                                 <InforFilter filters={scopeFilterData} />
                                 <div className='px-6 max-md:px-4'>
                                   <div className='w-full py-6 max-md:pb-4'>
-                                    <LineChart data={!dashboard.isLoading.ratingLineMinuteChannelData ? transformMixedChartData(dashboard.ratingLineMinuteChannelData?.data, 'event_start_time_split_m', dashboard.ratingLineMinuteChannelData?.colnames) : 'isLoading'}
+                                    <LineChart data={!dashboard.isLoading.ratingLineMinuteChannelData ? transformMixedChartData(dashboard.ratingLineMinuteChannelData?.data, 'event_hour_minute', dashboard.ratingLineMinuteChannelData?.colnames) : 'isLoading'}
                                               height={CUSTOM_CHART.lineChart.height}
                                               fontSize={CUSTOM_CHART.lineChart.fontSize}
                                               fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -753,10 +754,11 @@ const DashboardContent = () => {
                                               stack={CUSTOM_CHART.lineChart.stack}
                                               showTopNSeries={0}
                                               legendTop={CUSTOM_CHART.lineChart.lineChartMinuteChannel.legendTop}
+                                              xAxisTitle={CUSTOM_CHART.lineChart.xAxisTitleMinute}
                                     />
                                   </div>
                                   <div className='w-full pb-6 max-md:pb-4'>
-                                    <LineChart data={!dashboard.isLoading.ratingLineMinuteChannelOneDateData ? transformMixedChartData(dashboard.ratingLineMinuteChannelOneDateData?.data, 'event_start_time_split_m', dashboard.ratingLineMinuteChannelOneDateData?.colnames) : 'isLoading'}
+                                    <LineChart data={!dashboard.isLoading.ratingLineMinuteChannelOneDateData ? transformMixedChartData(dashboard.ratingLineMinuteChannelOneDateData?.data, 'event_hour_minute', dashboard.ratingLineMinuteChannelOneDateData?.colnames) : 'isLoading'}
                                               height={CUSTOM_CHART.lineChart.height}
                                               fontSize={CUSTOM_CHART.lineChart.fontSize}
                                               fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -771,10 +773,11 @@ const DashboardContent = () => {
                                               stack={CUSTOM_CHART.lineChart.stack}
                                               showTopNSeries={0}
                                               legendTop={CUSTOM_CHART.lineChart.lineChartMinuteChannel.legendTop}
+                                              xAxisTitle={CUSTOM_CHART.lineChart.xAxisTitleMinute}
                                     />
                                   </div>
                                   <div className='w-full pb-6 max-md:pb-4'>
-                                    <LineChart data={!dashboard.isLoading.ratingLineMinuteChannelDatesData ? transformMixedChartData(dashboard.ratingLineMinuteChannelDatesData?.data, 'event_start_time_split_m', dashboard.ratingLineMinuteChannelDatesData?.colnames) : 'isLoading'}
+                                    <LineChart data={!dashboard.isLoading.ratingLineMinuteChannelDatesData ? transformMixedChartData(dashboard.ratingLineMinuteChannelDatesData?.data, 'event_hour_minute', dashboard.ratingLineMinuteChannelDatesData?.colnames) : 'isLoading'}
                                               height={CUSTOM_CHART.lineChart.height}
                                               fontSize={CUSTOM_CHART.lineChart.fontSize}
                                               fontFamily={CUSTOM_CHART.allChart.fontFamily}

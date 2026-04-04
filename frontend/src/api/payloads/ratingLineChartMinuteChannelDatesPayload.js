@@ -1,8 +1,8 @@
 export const ratingLineChartMinuteChannelDatesPayload = {
-  url: 'https://ratings.vtv.vn/api/v1/chart/data?form_data=%7B%22slice_id%22%3A526%7D&dashboard_id=45',
+  url: `${import.meta.env.VITE_API_DOMAIN}/api/v1/chart/data?form_data=%7B%22slice_id%22%3A681%7D&dashboard_id=50`,
   payload: {
     "datasource": {
-      "id": 172,
+      "id": 214,
       "type": "table"
     },
     "force": false,
@@ -31,8 +31,8 @@ export const ratingLineChartMinuteChannelDatesPayload = {
         "columns": [
           {
             "columnType": "BASE_AXIS",
-            "sqlExpression": "event_start_time_split_m",
-            "label": "event_start_time_split_m",
+            "sqlExpression": "event_hour_minute",
+            "label": "event_hour_minute",
             "expressionType": "SQL"
           },
           "date",
@@ -64,7 +64,7 @@ export const ratingLineChartMinuteChannelDatesPayload = {
             "operation": "pivot",
             "options": {
               "index": [
-                "event_start_time_split_m"
+                "event_hour_minute"
               ],
               "columns": [
                 "date",
@@ -95,11 +95,11 @@ export const ratingLineChartMinuteChannelDatesPayload = {
       }
     ],
     "form_data": {
-      "datasource": "172__table",
+      "datasource": "214__table",
       "viz_type": "echarts_timeseries_smooth",
-      "slice_id": 526,
+      "slice_id": 681,
       "url_params": {},
-      "x_axis": "event_start_time_split_m",
+      "x_axis": "event_hour_minute",
       "x_axis_sort_asc": true,
       "x_axis_sort_series": "name",
       "x_axis_sort_series_ascending": true,
@@ -158,7 +158,7 @@ export const ratingLineChartMinuteChannelDatesPayload = {
         null
       ],
       "dashboards": [
-        45
+        87
       ],
       "extra_form_data": {
         "filters": [
@@ -172,11 +172,11 @@ export const ratingLineChartMinuteChannelDatesPayload = {
         ],
         "time_range": "DATEADD(DATETIME(\"today\"),-1, DAY) : DATEADD(DATETIME(\"today\"),-1, SECOND)"
       },
-      "chart_id": 526,
+      "chart_id": 681,
       "label_colors": {
         "ave_reach": "#ffd04c",
-        "ave_reach_1": "#ffd04c",
-        "reach%_1": "#ffd04c",
+        "ave_reach_timeband": "#ffd04c",
+        "reach_timeband%": "#ffd04c",
         "rating": "#ff5757",
         "Live": "#6ce5e8",
         "TSV": "#fe9273",
@@ -200,41 +200,42 @@ export const ratingLineChartMinuteChannelDatesPayload = {
         "Workweek": "#fe9273",
         "Weekend": "#6ce5e8",
         "Thời sự - Chính luận": "#6BD3B3",
+        "Sự kiện - Đặc biệt": "#7A378B",
         "Phim dài tập": "#FCC550",
         "Đời sống": "#EE5960",
         "Tài liệu - Phóng sự": "#408184",
-        "Giải trí": "#66CBE2",
+        "Giải trí": "#BFEFFF",
         "Giáo dục - Đào tạo": "#5470C6",
         "Dành cho trẻ em": "#ffb2f3",
         "Thể thao": "#FF874E",
         "Sự kiện": "#03748E",
         "Quảng bá": "#8c564a",
         "Phim truyện": "#C9BBAB",
+        "Phim điện ảnh": "#C3BBAB",
         "Quảng cáo": "#B17BAA",
-        "1.Thứ Hai": "#1FA8C9",
-        "2.Thứ Ba": "#454E7C",
-        "3.Thứ Tư": "#5AC189",
-        "4.Thứ Năm": "#FF7F44",
-        "5.Thứ Sáu": "#666666",
-        "6.Thứ Bảy": "#E04355",
-        "7.Chủ Nhật": "#FCC700"
+        "Thứ Hai": "#1FA8C9",
+        "Thứ Ba": "#454E7C",
+        "Thứ Tư": "#5AC189",
+        "Thứ Năm": "#FF7F44",
+        "Thứ Sáu": "#666666",
+        "Thứ Bảy": "#E04355",
+        "Chủ Nhật": "#FCC700"
       },
       "shared_label_colors": [
-        "7.Chủ Nhật",
         "Dành cho trẻ em",
         "Giáo dục - Đào tạo",
         "Giải trí",
         "Live",
         "Phim dài tập",
-        "Phim truyện",
-        "Quảng bá",
-        "Sự kiện",
+        "Phim điện ảnh",
+        "Sự kiện - Đặc biệt",
         "TSV",
         "Thể thao",
         "Thời sự - Chính luận",
+        "Thứ Sáu",
         "Tài liệu - Phóng sự",
-        "VTV Cần Thơ",
         "VTV1",
+        "VTV10",
         "VTV2",
         "VTV3",
         "VTV4",
@@ -245,9 +246,7 @@ export const ratingLineChartMinuteChannelDatesPayload = {
         "VTV8",
         "VTV9",
         "ave_reach",
-        "ave_reach_1",
         "rating",
-        "rating_timeband",
         "Đời sống"
       ],
       "map_label_colors": {},

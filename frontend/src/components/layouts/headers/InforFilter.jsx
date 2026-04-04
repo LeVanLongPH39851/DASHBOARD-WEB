@@ -19,7 +19,7 @@ import { formatDate } from '../../../helpers/helper';
 import { useDashboardFilters, useDashboardFilterValues, useDashboardStateGlobals } from '../../../context/DashboardFilterContext';
 
 const clearSetAll = (setFilterValues) => {
-  setFilterValues(prev => ({...prev, channels: [], events: [], provinces: [], regionals: [], keyCities: [], timebanbs: [], firstLevels: []}))
+  setFilterValues(prev => ({...prev, channels: [], events: [], provinces: [], regionals: [], keyCities: [], timebanbs: [], firstLevels: [], programs: []}))
   const element = document.getElementsByClassName('filter-item');
   if (element){
     Array.from(element).forEach(el => el.style.display = 'none');

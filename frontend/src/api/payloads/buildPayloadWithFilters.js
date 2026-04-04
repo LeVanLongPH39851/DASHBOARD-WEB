@@ -67,6 +67,11 @@ const appendAllFilters = (queries, filterState, disabledFilters) => {
     column: 'firstlevel_vn', 
     values: filterState.firstLevels 
   });
+
+  const programFilters = buildQueriesFilters({ 
+    column: 'program_name', 
+    values: filterState.programs 
+  });
   
   return queries.map((q) => {
     const currentFilters = q.filters || [];
@@ -81,6 +86,7 @@ const appendAllFilters = (queries, filterState, disabledFilters) => {
     if (keyCitieFilters && !disabledFilters.includes('keyCitieFilters')) newFilters = appendFilters(newFilters, keyCitieFilters);
     if (timebandFilters && !disabledFilters.includes('timebandFilters')) newFilters = appendFilters(newFilters, timebandFilters);
     if (firstLevelFilters && !disabledFilters.includes('firstLevelFilters')) newFilters = appendFilters(newFilters, firstLevelFilters);
+    if (programFilters && !disabledFilters.includes('programFilters')) newFilters = appendFilters(newFilters, programFilters);
     
     return {
       ...q,

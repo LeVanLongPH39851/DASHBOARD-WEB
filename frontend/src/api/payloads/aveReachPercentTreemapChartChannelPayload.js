@@ -1,8 +1,8 @@
 export const aveReachPercentTreemapChartChannelPayload = {
-  url: 'https://ratings.vtv.vn/api/v1/chart/data?form_data=%7B%22slice_id%22%3A395%7D&dashboard_id=45',
+  url: `${import.meta.env.VITE_API_DOMAIN}/api/v1/chart/data?form_data=%7B%22slice_id%22%3A632%7D&dashboard_id=50`,
   payload: {
     "datasource": {
-      "id": 148,
+      "id": 210,
       "type": "table"
     },
     "force": false,
@@ -14,7 +14,7 @@ export const aveReachPercentTreemapChartChannelPayload = {
             "col": "channel_name_tvd",
             "op": "NOT IN",
             "val": [
-              null
+              "active"
             ]
           },
           {
@@ -32,16 +32,7 @@ export const aveReachPercentTreemapChartChannelPayload = {
           "channel_name_tvd"
         ],
         "metrics": [
-          {
-            "aggregate": null,
-            "column": null,
-            "datasourceWarning": false,
-            "expressionType": "SQL",
-            "hasCustomLabel": true,
-            "label": "reach%",
-            "optionName": "metric_b034eeadd6_8og7xcwyl34",
-            "sqlExpression": "SUM(distinct_user_by_day*1.5*\n{% if filter_values('time_band')|length > 0 %}1.5*{% endif %}\n{% if filter_values('province')|length > 0 or filter_values('key_city')|length > 0 %}\nweight_province\n{% elif filter_values('regional_name')|length > 0 %}\nweight_region\n{% else %}\nweight_national\n{% endif %})/1.5/COUNT(DISTINCT date)*100/{% if filter_values('province')|length > 0 or filter_values('key_city')|length > 0 or filter_values('regional_name')|length > 0 %}SUM(DISTINCT total){% else %}70859907{% endif %}"
-          }
+          "reach_date%"
         ],
         "annotation_layers": [],
         "row_limit": 50000,
@@ -53,29 +44,20 @@ export const aveReachPercentTreemapChartChannelPayload = {
       }
     ],
     "form_data": {
-      "datasource": "148__table",
+      "datasource": "210__table",
       "viz_type": "treemap_v2",
-      "slice_id": 395,
+      "slice_id": 632,
       "url_params": {},
       "groupby": [
         "channel_name_tvd"
       ],
-      "metric": {
-        "aggregate": null,
-        "column": null,
-        "datasourceWarning": false,
-        "expressionType": "SQL",
-        "hasCustomLabel": true,
-        "label": "reach%",
-        "optionName": "metric_b034eeadd6_8og7xcwyl34",
-        "sqlExpression": "SUM(distinct_user_by_day*1.5*\n{% if filter_values('time_band')|length > 0 %}1.5*{% endif %}\n{% if filter_values('province')|length > 0 or filter_values('key_city')|length > 0 %}\nweight_province\n{% elif filter_values('regional_name')|length > 0 %}\nweight_region\n{% else %}\nweight_national\n{% endif %})/1.5/COUNT(DISTINCT date)*100/{% if filter_values('province')|length > 0 or filter_values('key_city')|length > 0 or filter_values('regional_name')|length > 0 %}SUM(DISTINCT total){% else %}70859907{% endif %}"
-      },
+      "metric": "reach_date%",
       "row_limit": 50000,
       "adhoc_filters": [
         {
           "clause": "WHERE",
           "comparator": [
-            null
+            "active"
           ],
           "datasourceWarning": false,
           "expressionType": "SIMPLE",
@@ -106,18 +88,18 @@ export const aveReachPercentTreemapChartChannelPayload = {
       "label_type": "key_value",
       "number_format": ",.2f",
       "date_format": "smart_date",
+      "annotation_layers": [],
       "dashboards": [
-        45,
-        39
+        87
       ],
       "extra_form_data": {
         "time_range": "DATEADD(DATETIME(\"today\"),-1, DAY) : DATEADD(DATETIME(\"today\"),-1, SECOND)"
       },
-      "chart_id": 395,
+      "chart_id": 632,
       "label_colors": {
         "ave_reach": "#ffd04c",
-        "ave_reach_1": "#ffd04c",
-        "reach%_1": "#ffd04c",
+        "ave_reach_timeband": "#ffd04c",
+        "reach_timeband%": "#ffd04c",
         "rating": "#ff5757",
         "Live": "#6ce5e8",
         "TSV": "#fe9273",
@@ -141,41 +123,42 @@ export const aveReachPercentTreemapChartChannelPayload = {
         "Workweek": "#fe9273",
         "Weekend": "#6ce5e8",
         "Thời sự - Chính luận": "#6BD3B3",
+        "Sự kiện - Đặc biệt": "#7A378B",
         "Phim dài tập": "#FCC550",
         "Đời sống": "#EE5960",
         "Tài liệu - Phóng sự": "#408184",
-        "Giải trí": "#66CBE2",
+        "Giải trí": "#BFEFFF",
         "Giáo dục - Đào tạo": "#5470C6",
         "Dành cho trẻ em": "#ffb2f3",
         "Thể thao": "#FF874E",
         "Sự kiện": "#03748E",
         "Quảng bá": "#8c564a",
         "Phim truyện": "#C9BBAB",
+        "Phim điện ảnh": "#C3BBAB",
         "Quảng cáo": "#B17BAA",
-        "1.Thứ Hai": "#1FA8C9",
-        "2.Thứ Ba": "#454E7C",
-        "3.Thứ Tư": "#5AC189",
-        "4.Thứ Năm": "#FF7F44",
-        "5.Thứ Sáu": "#666666",
-        "6.Thứ Bảy": "#E04355",
-        "7.Chủ Nhật": "#FCC700"
+        "Thứ Hai": "#1FA8C9",
+        "Thứ Ba": "#454E7C",
+        "Thứ Tư": "#5AC189",
+        "Thứ Năm": "#FF7F44",
+        "Thứ Sáu": "#666666",
+        "Thứ Bảy": "#E04355",
+        "Chủ Nhật": "#FCC700"
       },
       "shared_label_colors": [
-        "7.Chủ Nhật",
         "Dành cho trẻ em",
         "Giáo dục - Đào tạo",
         "Giải trí",
         "Live",
         "Phim dài tập",
-        "Phim truyện",
-        "Quảng bá",
-        "Sự kiện",
+        "Phim điện ảnh",
+        "Sự kiện - Đặc biệt",
         "TSV",
         "Thể thao",
         "Thời sự - Chính luận",
+        "Thứ Sáu",
         "Tài liệu - Phóng sự",
-        "VTV Cần Thơ",
         "VTV1",
+        "VTV10",
         "VTV2",
         "VTV3",
         "VTV4",
@@ -186,9 +169,7 @@ export const aveReachPercentTreemapChartChannelPayload = {
         "VTV8",
         "VTV9",
         "ave_reach",
-        "ave_reach_1",
         "rating",
-        "rating_timeband",
         "Đời sống"
       ],
       "map_label_colors": {},

@@ -399,7 +399,7 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
   const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
 
   return (
-      <div className={`${opacity ? 'opacity-0 invisible' : ''} pb-6 max-md:pb-4 text-[16px] max-md:text-xs text-nowrap font-semibold text-color-black-100 dark:text-color-white-90 transition-all duration-300 flex justify-between ${!display ? 'absolute top-0 left-0 p-6 w-full max-md:p-4' : ''}`}>
+      <div className={`${opacity ? 'opacity-0 invisible' : ''} pb-6 max-md:pb-4 text-[16px] max-md:text-xs text-nowrap overflow-hidden font-semibold text-color-black-100 dark:text-color-white-90 transition-all duration-300 flex justify-between ${!display ? 'absolute top-0 left-0 p-6 w-full max-md:p-4' : ''}`}>
         <div className='flex items-center gap-2 max-md:gap-1'>
           {icon && <div className={`w-8 h-8 max-md:w-7 max-md:h-7 max-md:hidden flex justify-center items-center rounded-lg ${backgound} transition-all duration-300`}><figure><img src={icon} className={`${width+' '+height+' '+backgound}`} /></figure></div>}
           <span>{nameChart}</span>

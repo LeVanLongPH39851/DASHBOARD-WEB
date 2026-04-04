@@ -82,7 +82,7 @@ const LineChart = ({
     let topSeriesNames = null;
     if (showTopNSeries===null) {
       showTopNSeries = labels.length > 1 ? 3 : showTopNSeries;
-    } else if (stateGlobals.screen_md) {
+    } else if (stateGlobals.screen_md && showTopNSeries !== 0) {
       showTopNSeries = 1;
     }
     if (showTopNSeries === 0) {

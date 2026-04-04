@@ -71,8 +71,8 @@ const Header = () => {
             
             // ✅ Debounce manual 150ms
             timeoutId = setTimeout(() => {
-            const isMobile = window.innerWidth < 1000;
-            setStateGlobals(prev => ({ ...prev, screen_md: isMobile }));
+            const isMobile = window.innerWidth < 1025;
+            setStateGlobals(prev => ({ ...prev, isOpen: !isMobile, screen_md: isMobile }));
             }, 150);
         };
 

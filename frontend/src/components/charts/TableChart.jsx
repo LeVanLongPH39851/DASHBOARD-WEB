@@ -176,8 +176,8 @@ const TableChart = ({
           const columnId = info.column.id;
           if (typeof value === 'number' && !isNaN(value)) {
             const isPercent = columnId.includes('%');
-            const isMinuteUserProgram = columnId.includes('lượt phát');
-            return  isMinuteUserProgram ? value.toLocaleString(undefined, { maximumFractionDigits: 2 }) :  isPercent || !stateGlobals.screen_md ? formatNumber(value, { isPercent }) : formatKMB(value);
+            const isMinuteUserProgram = columnId.includes('Phút/người/\nlượt phát');
+            return  isMinuteUserProgram ? value.toLocaleString(undefined, { maximumFractionDigits: 2 }) : formatNumber(value, { isPercent });
           }
           return value || '';
         },
@@ -373,7 +373,7 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
                           key={header.id}
                           className="px-2 max-md:px-1 py-3 max-md:py-2 text-center relative text-color-neotam dark:text-background-primary bg-background-light dark:bg-background-chart-dark border-b border-border-black-10 dark:border-background-white-15 transition-all duration-300"
                           style={{
-                            minWidth: `${header.column.getSize() - 40}px`,
+                            minWidth: `${stateGlobals.screen_md ? header.id === 'MÔ TẢ' ? header.column.getSize() + 50 : header.id === 'KÊNH' ? header.column.getSize() + 0 : header.id === 'CHƯƠNG TRÌNH' ? header.column.getSize() + 70 : header.id.includes('\n') ? header.column.getSize() + 20 : header.column.getSize() + 30 : header.column.getSize() - 40}px`,
                             maxWidth: `${header.id === 'KÊNH' ? header.column.getSize() + 30 : header.id === 'CHƯƠNG TRÌNH' ? header.column.getSize() + 180 : header.column.getSize() + 100}px`,
                             fontSize: !stateGlobals.screen_md ? fontSize.label : '10.5px',
                             fontWeight: fontWeight.label,
@@ -434,7 +434,7 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
                             style={{
                               fontSize: !stateGlobals.screen_md ? fontSize.td : '10.5px',
                               fontWeight: ['CHƯƠNG TRÌNH'].includes(columnName) ? 700 : fontWeight.td,
-                              minWidth: `${cell.column.getSize() - 40}px`,
+                              minWidth: `${stateGlobals.screen_md ? columnName === 'MÔ TẢ' ? cell.column.getSize() + 50 : columnName === 'KÊNH' ? cell.column.getSize() + 0 : columnName === 'CHƯƠNG TRÌNH' ? cell.column.getSize() + 70 : isNumericColumn ? cell.column.getSize() + 20 : cell.column.getSize() + 30 : cell.column.getSize() - 40}px`,
                               maxWidth: `${columnName === 'KÊNH' ? cell.column.getSize() + 30 : columnName === 'CHƯƠNG TRÌNH' ? cell.column.getSize() + 180 : cell.column.getSize() + 100}px`,
                               // backgroundColor: bgColor,
                               wordWrap: isNumericColumn ? 'normal' : 'break-word'

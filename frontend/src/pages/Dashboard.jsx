@@ -732,7 +732,7 @@ const DashboardContent = () => {
                               </section>
                             )
                           },
-                          ((!userLoading && user?.username !== 'vtvguest') ? {id: 'rating_by_minute', label: 'Rating theo phút', icon: !stateGlobals.darkMode ? iconRatingByMinute : iconRatingByMinuteDark, iconActive: iconRatingByMinuteActive,
+                          ((!userLoading && user?.username !== 'vtvguest') ? {id: 'rating_by_minute', label: !stateGlobals.screen_md ? 'Rating theo phút' : 'Rating phút', icon: !stateGlobals.darkMode ? iconRatingByMinute : iconRatingByMinuteDark, iconActive: iconRatingByMinuteActive,
                             content: (
                               <section className='bg-background-dashboard dark:bg-background-dashboard-dark transiton-all duration-300' id="target_capture_rating_by_minute">
                                 <InforTab inforTab={"Rating theo phút - P4+ toàn quốc"} />

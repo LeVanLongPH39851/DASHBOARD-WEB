@@ -98,7 +98,7 @@ const InforFilter = ({ filters }) => {
                   filters={filters} horizontalFixed={true} />}
               </div>
           </div>
-          <div className='flex gap-4 items-center flex-wrap'>
+          <div className='flex gap-4 max-md:gap-2 items-center flex-wrap'>
             <ul className='flex gap-2 items-center flex-wrap'>
               <InforFilterItem keyFilter={'Ngày'} nameFilter={'Ngày'} valueFilters={[formatDate(appliedFilters?.startDate || yesterday), formatDate(appliedFilters?.endDate || yesterday)]} space={' - '} />
               {appliedFilters && (

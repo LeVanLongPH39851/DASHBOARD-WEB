@@ -196,6 +196,7 @@ export const CUSTOM_CHART = {
   },
   lineChart: {
     height: '399px',
+    heightMinute: '420px',
     fontSize: {
       legend: 12, tooltip: 12, axisLabel: 12, dataLabel: 12
     },

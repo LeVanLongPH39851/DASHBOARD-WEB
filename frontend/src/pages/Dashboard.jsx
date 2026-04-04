@@ -740,7 +740,7 @@ const DashboardContent = () => {
                                 <div className='px-6 max-md:px-4'>
                                   <div className='w-full py-6 max-md:pb-4'>
                                     <LineChart data={!dashboard.isLoading.ratingLineMinuteChannelData ? transformMixedChartData(dashboard.ratingLineMinuteChannelData?.data, 'event_hour_minute', dashboard.ratingLineMinuteChannelData?.colnames) : 'isLoading'}
-                                              height={CUSTOM_CHART.lineChart.height}
+                                              height={CUSTOM_CHART.lineChart.heightMinute}
                                               fontSize={CUSTOM_CHART.lineChart.fontSize}
                                               fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                               fontWeight={CUSTOM_CHART.lineChart.fontWeight}
@@ -759,7 +759,7 @@ const DashboardContent = () => {
                                   </div>
                                   <div className='w-full pb-6 max-md:pb-4'>
                                     <LineChart data={!dashboard.isLoading.ratingLineMinuteChannelOneDateData ? transformMixedChartData(dashboard.ratingLineMinuteChannelOneDateData?.data, 'event_hour_minute', dashboard.ratingLineMinuteChannelOneDateData?.colnames) : 'isLoading'}
-                                              height={CUSTOM_CHART.lineChart.height}
+                                              height={CUSTOM_CHART.lineChart.heightMinute}
                                               fontSize={CUSTOM_CHART.lineChart.fontSize}
                                               fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                               fontWeight={CUSTOM_CHART.lineChart.fontWeight}
@@ -778,7 +778,7 @@ const DashboardContent = () => {
                                   </div>
                                   <div className='w-full pb-6 max-md:pb-4'>
                                     <LineChart data={!dashboard.isLoading.ratingLineMinuteChannelDatesData ? transformMixedChartData(dashboard.ratingLineMinuteChannelDatesData?.data, 'event_hour_minute', dashboard.ratingLineMinuteChannelDatesData?.colnames) : 'isLoading'}
-                                              height={CUSTOM_CHART.lineChart.height}
+                                              height={CUSTOM_CHART.lineChart.heightMinute}
                                               fontSize={CUSTOM_CHART.lineChart.fontSize}
                                               fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                               fontWeight={CUSTOM_CHART.lineChart.fontWeight}

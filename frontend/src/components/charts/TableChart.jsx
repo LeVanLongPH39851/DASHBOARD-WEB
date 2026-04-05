@@ -371,7 +371,7 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
                       return (
                         <th
                           key={header.id}
-                          className="px-2 max-md:px-1 py-3 max-md:py-2 text-center relative text-color-neotam dark:text-background-primary bg-background-light dark:bg-background-chart-dark border-b border-border-black-10 dark:border-background-white-15 transition-all duration-300"
+                          className={`px-2 max-md:px-1 py-3 max-md:py-2 text-center relative text-color-neotam dark:text-background-primary bg-background-light dark:bg-background-chart-dark border-b border-border-black-10 dark:border-background-white-15 transition-all duration-300 ${header.id === 'CHƯƠNG TRÌNH' ? 'max-md:sticky max-md:left-0 max-md:z-10' : ''}`}
                           style={{
                             minWidth: `${stateGlobals.screen_md ? header.id === 'MÔ TẢ' ? header.column.getSize() + 50 : header.id === 'KÊNH' ? header.column.getSize() + 0 : header.id === 'CHƯƠNG TRÌNH' ? header.column.getSize() + 70 : header.id.includes('\n') ? header.column.getSize() + 20 : header.column.getSize() + 30 : header.column.getSize() - 40}px`,
                             maxWidth: `${header.id === 'KÊNH' ? header.column.getSize() + 30 : header.id === 'CHƯƠNG TRÌNH' ? header.column.getSize() + 180 : header.column.getSize() + 100}px`,
@@ -426,7 +426,7 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
                         return (
                           <td
                             key={cell.id}
-                            className={`border-b border-border-black-10 dark:border-background-white-15 px-2 max-md:px-1 py-3 max-md:py-2 text-color-black-100 dark:text-color-white-90 transition-all duration-300 ${
+                            className={`border-b ${columnName === 'CHƯƠNG TRÌNH' ? 'max-md:border-r' : ''} border-border-black-10 dark:border-background-white-15 px-2 max-md:px-1 py-3 max-md:py-2 text-color-black-100 dark:text-color-white-90 transition-all duration-300 ${columnName === 'CHƯƠNG TRÌNH' ? `max-md:sticky max-md:left-0 max-md:z-1 max-md:bg-background-light max-md:dark:bg-background-chart-dark max-md:before:content-[''] max-md:before:inset-0 max-md:before:absolute max-md:before:-z-2 ${idx%2===0 ? 'max-md:before:bg-background-black-4 max-md:dark:before:bg-background-white-8' : 'max-md:before:bg-background-light max-md:dark:before:bg-background-chart-dark'}` : ''} ${
                               isNumericColumn 
                                 ? `overflow-hidden text-ellipsis whitespace-nowrap ${columnName !== 'STT' ? 'text-right' : ''}`
                                 : `whitespace-normal ${center ? 'text-center' : false}`

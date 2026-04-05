@@ -79,7 +79,7 @@ const CheckboxMultiFilter = ({
                     className={`
                         flex items-center gap-2 px-3 max-md:px-2 py-1.25 max-md:py-1 rounded-xl cursor-pointer text-sm max-md:text-xs font-medium transition-all duration-300
                         ${isChecked(opt.value)
-                        ? 'bg-[#e8f7fb] text-[#20A7C9]'
+                        ? 'bg-[#e8f7fb] text-color-neotam dark:bg-background-succes-type-2-dark'
                         : 'text-color-check-box dark:text-color-white-90 dark:hover:bg-background-hover-dark hover:bg-background-black-4'}
                         ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
                     `}
@@ -89,7 +89,7 @@ const CheckboxMultiFilter = ({
                         w-4 max-md:w-3 h-4 max-md:h-3 shrink-0 rounded-sm border-2 transition-all duration-300
                         flex items-center justify-center
                         ${isChecked(opt.value)
-                            ? 'bg-[#20A7C9] border-[#20A7C9]'
+                            ? 'bg-color-neotam border-color-neotam'
                             : 'bg-background-light dark:border-background-white-15 border-border-black-20 dark:bg-background-white-15'}
                         `}
                     >

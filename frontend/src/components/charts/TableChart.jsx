@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useRef, useEffect } from 'react';
 import {
   useReactTable,
   getCoreRowModel,
@@ -273,6 +273,32 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
       series: series   // ✅ Raw series từ data gốc (bao gồm filter, sort, pagination states)
     };
   }, [labels, series]);
+
+  const tableScrollRef = useRef(null);
+
+  useEffect(() => {
+    const el = tableScrollRef.current;
+    if (!el) return;
+
+    const handleScroll = () => {
+      const stickyCells = el.querySelectorAll('.program-border-right');
+      if (!stickyCells.length) return;
+      stickyCells.forEach((cell) => {
+        if (el.scrollLeft > 0) {
+          cell.classList.add('border-r');
+        } else {
+          cell.classList.remove('border-r');
+        }
+      });
+    };
+
+    handleScroll();
+    el.addEventListener('scroll', handleScroll, { passive: true });
+
+    return () => {
+      el.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
   
   return (
     <div className={`${displayName ? 'p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : '' }`} style={{ fontFamily }}>
@@ -349,6 +375,7 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
       <div>
         <div className="overflow-hidden">
           <div
+            ref={tableScrollRef}
             className="overflow-auto divTable"
             style={{ height: !stateGlobals.screen_md ? height : stateGlobals.currentTab == 'program' ? '300px'  : '240px' }}
             onClick={() => setShowColumnMenu(false)}
@@ -426,7 +453,7 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
                         return (
                           <td
                             key={cell.id}
-                            className={`border-b ${columnName === 'CHƯƠNG TRÌNH' ? 'max-md:border-r' : ''} border-border-black-10 dark:border-background-white-15 px-2 max-md:px-1 py-3 max-md:py-2 text-color-black-100 dark:text-color-white-90 transition-all duration-300 ${columnName === 'CHƯƠNG TRÌNH' ? `max-md:sticky max-md:left-0 max-md:z-1 max-md:bg-background-light max-md:dark:bg-background-chart-dark max-md:before:content-[''] max-md:before:inset-0 max-md:before:absolute max-md:before:-z-2 ${idx%2===0 ? 'max-md:before:bg-background-black-4 max-md:dark:before:bg-background-white-8' : 'max-md:before:bg-background-light max-md:dark:before:bg-background-chart-dark'}` : ''} ${
+                            className={`border-b ${columnName === 'CHƯƠNG TRÌNH' && stateGlobals.screen_md ? 'program-border-right' : ''} border-border-black-10 dark:border-background-white-15 px-2 max-md:px-1 py-3 max-md:py-2 text-color-black-100 dark:text-color-white-90 transition-all duration-300 ${columnName === 'CHƯƠNG TRÌNH' ? `max-md:sticky max-md:left-0 max-md:z-1 max-md:bg-background-light max-md:dark:bg-background-chart-dark max-md:before:content-[''] max-md:before:inset-0 max-md:before:absolute max-md:before:-z-2 ${idx%2===0 ? 'max-md:before:bg-background-black-4 max-md:dark:before:bg-background-white-8' : 'max-md:before:bg-background-light max-md:dark:before:bg-background-chart-dark'}` : ''} ${
                               isNumericColumn 
                                 ? `overflow-hidden text-ellipsis whitespace-nowrap ${columnName !== 'STT' ? 'text-right' : ''}`
                                 : `whitespace-normal ${center ? 'text-center' : false}`

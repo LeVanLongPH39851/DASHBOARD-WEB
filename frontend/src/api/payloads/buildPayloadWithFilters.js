@@ -29,7 +29,7 @@ const appendAllFilters = (queries, filterState, disabledFilters) => {
   }
   
   const dayFilters = buildQueriesFilters({ 
-    column: 'day',
+    column: 'days_of_week',
     values: filterState.days
   });
 

@@ -301,11 +301,19 @@ const Filter = ({ filters, horizontalFixed=false
       firstLevels: (filterValues?.firstLevels || []).map(fl => fl.value),
       programs: (filterValues?.programs || []).map(pr => pr.value)
     } : null);
+
+    if(stateGlobals.screen_md) {
+      setStateGlobals(prev => ({...prev, isOpen: !prev.isOpen}))
+    }
   };
 
   const onReset = () => {
     setAppliedFilters(null);
     setFilterValues(null);
+
+    if(stateGlobals.screen_md) {
+      setStateGlobals(prev => ({...prev, isOpen: !prev.isOpen}))
+    }
   };
 
   return (

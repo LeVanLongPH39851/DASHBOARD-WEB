@@ -301,39 +301,39 @@ const BreadCrumb = () => {
     };
 
     return (
-    <nav className='px-6 max-md:px-4 bg-background-light dark:bg-background-dark border-b border-border-black-10 dark:border-transparent transition-all duration-300 pt-2 pb-1 sticky top-0' style={{zIndex: 300}}>
-        <div className='flex items-center gap-2 max-md:hidden'>
-            <figure><img src={!stateGlobals.darkMode ? iconHome : iconHomeDark} className='w-3 h-3' alt="Icon Home" /></figure>
-            <span className='text-sm font-medium text-color-black-50 dark:text-color-white-50 transition-all duration-300'>Bảng điều khiển</span>
-            <figure><img src={iconArrowRight} className='h-2.75' alt="Icon Arrow Right" /></figure>
-            <span className='text-sm font-medium text-color-black-100 dark:text-color-white-90 transition-all duration-300'>Kênh truyền hình</span>
+    <nav className='px-6 max-lg:px-5 max-md:px-4 bg-background-light dark:bg-background-dark border-b border-border-black-10 dark:border-transparent transition-all duration-300 pt-2 pb-1 sticky top-0' style={{zIndex: 300}}>
+        <div className='flex items-center gap-2 max-lg:gap-1 max-md:hidden'>
+            <figure><img src={!stateGlobals.darkMode ? iconHome : iconHomeDark} className='w-3 max-lg:w-2.5 h-3 max-lg:h-2.5' alt="Icon Home" /></figure>
+            <span className='text-sm max-lg:text-[13px] font-medium text-color-black-50 dark:text-color-white-50 transition-all duration-300'>Bảng điều khiển</span>
+            <figure><img src={iconArrowRight} className='h-2.75 max-lg:h-2.5' alt="Icon Arrow Right" /></figure>
+            <span className='text-sm max-lg:text-[13px] font-medium text-color-black-100 dark:text-color-white-90 transition-all duration-300'>Kênh truyền hình</span>
         </div>
         <div className='pt-2 flex justify-between items-center'>
             <div className='flex items-center'>
                 <a href={`${CUSTOM_CHART.domain}/superset/welcome/`}><figure className='cursor-pointer p-2 pl-0 mr-2 hidden max-md:block'><img src={!stateGlobals.darkMode ? iconArrowLeft2 : iconArrowLeft2Dark} className='w-3.5' alt="Icon Arrow Left 2" /></figure></a>
-                <h1 className='text-[32px] max-md:text-lg font-semibold text-color-black-100 dark:text-color-white-90 transition-all duration-300'>Kênh truyền hình VTV</h1>
+                <h1 className='text-[32px] max-lg:text-2xl max-md:text-lg font-semibold text-color-black-100 dark:text-color-white-90 transition-all duration-300'>Kênh truyền hình VTV</h1>
             </div>
             <div className='flex items-center gap-4 max-md:hidden'>
                 {/* <Button background={'bg-background-black-4 dark:bg-background-white-15'} color={'text-color-black-100 dark:text-color-white-80'} src={!stateGlobals.darkMode ? iconDisplay : iconDisplayDark}
                             widthImage='w-3.75' heightImage='h-3.75' alt='Icon Display' text={'Quản lý hiển thị'} /> */}
                 <a href="https://ratings.vtv.vn/huongdan/" target='_blank'>
                     <Button background={'bg-background-black-4 dark:bg-background-white-15'} color={'text-color-black-100 dark:text-color-white-80'} src={!stateGlobals.darkMode ? iconInstruct : iconInstructDark}
-                            widthImage='w-4' heightImage='h-4' alt='Icon Instruct' text={'Hướng dẫn'} src2={iconSucces}
-                            widthImage2='w-3.5' alt2='Icon Succes' />
+                            widthImage='w-4 max-lg:w-3.5' heightImage='h-4 max-lg:h-3.5' alt='Icon Instruct' text={'Hướng dẫn'} src2={iconSucces}
+                            widthImage2='w-3.5 max-lg:w-3' alt2='Icon Succes' />
                 </a>
                 <div className='relative'>
                     <div ref={buttonRef}>
                         <Button background={'bg-color-black-100 dark:bg-background-primary'} color={'text-color-white-90 dark:text-color-black-100'} src={!stateGlobals.darkMode ? iconDownload : iconDownloadDark}
-                            widthImage='w-3.5' heightImage='h-3.5' alt='Icon Download' text={'Tải xuống'} click={handleToggle}/>
+                            widthImage='w-3.5 max-lg:w-3' heightImage='h-3.5 max-lg:h-3' alt='Icon Download' text={'Tải xuống'} click={handleToggle}/>
                     </div>
                     <div ref={dropdownRef} className={`${isDropdownOpen ? 'scale-100 opacity-100 origin-top' : 'scale-0 opacity-0 origin-top'} transition-all duration-300 absolute top-full left-0 bg-background-light dark:bg-background-dark flex flex-col border border-border-black-10 dark:border-background-white-15 rounded-xl w-full overflow-hidden`}>
                             <div className='hover:bg-background-black-4 dark:hover:bg-color-black-70 transition-all duration-300'>
                                 <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-80'} src={iconIMG}
-                                        widthImage='w-4' alt='Icon Instruct' text={'Tải Ảnh'} click={!isFirefox ? handleCapture : handleCaptureFireFox} />
+                                        widthImage='w-4 max-lg:w-3.75' alt='Icon Instruct' text={'Tải Ảnh'} click={!isFirefox ? handleCapture : handleCaptureFireFox} />
                             </div>
                             <div className='hover:bg-background-black-4 dark:hover:bg-color-black-70 transition-all duration-300'>
                                 <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-80'} src={iconPDF}
-                                widthImage='w-4' alt='Icon Instruct' text={'Tải PDF'} click={!isFirefox ? handlePDF : handlePDFFireFox} />
+                                widthImage='w-4 max-lg:w-3.75' alt='Icon Instruct' text={'Tải PDF'} click={!isFirefox ? handlePDF : handlePDFFireFox} />
                             </div>
                     </div>
                 </div>

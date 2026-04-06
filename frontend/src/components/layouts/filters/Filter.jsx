@@ -104,16 +104,24 @@ const DISABLE_TABS = {
 
 const Filter = ({ filters, horizontalFixed=false
                }) => {
-  
-  const ALL_PROVINCES = filters.filterProvince.map(item => ({
-    value: item.province,
-    label: item.province
-  }));
 
-  const ALL_PROGRAMS = filters.filterProgram.map(item => ({
-    value: item.program_name,
-    label: item.program_name
-  }));
+  var ALL_PROVINCES = [];
+
+  if (filters.filterProvince) {
+    ALL_PROVINCES = filters.filterProvince.map(item => ({
+      value: item.province,
+      label: item.province
+    }));
+  }
+
+  var ALL_PROGRAMS = [];
+
+  if (filters.filterProgram) {
+    ALL_PROGRAMS = filters.filterProgram.map(item => ({
+      value: item.program_name,
+      label: item.program_name
+    }));
+  }
 
   const { appliedFilters, setAppliedFilters} = useDashboardFilters();
   const { filterValues, setFilterValues } = useDashboardFilterValues();

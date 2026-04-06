@@ -122,31 +122,31 @@ const Header = () => {
     });
         
   return (
-    <header className="h-15 max-md:h-10 bg-background-light dark:bg-background-dark transition-all duration-300 px-6 max-md:px-4 py-px flex justify-between items-center border-b border-border-black-10 dark:border-background-white-15">
+    <header className="h-15 max-lg:h-13 max-md:h-10 bg-background-light dark:bg-background-dark transition-all duration-300 px-6 max-lg:px-5 max-md:px-4 py-px flex justify-between items-center border-b border-border-black-10 dark:border-background-white-15">
         <a href={`${CUSTOM_CHART.domain}/superset/welcome/`}>
             <figure>
-                <img src={!stateGlobals.darkMode ? logoVTVRatings : logoVTVRatingsDark} className='h-14.5 max-md:h-9.5' alt="Logo VTVRatings" />
+                <img src={!stateGlobals.darkMode ? logoVTVRatings : logoVTVRatingsDark} className='h-14.5 max-lg:h-12.5 max-md:h-9.5' alt="Logo VTVRatings" />
             </figure>
         </a>
         <div className='flex items-center'>
-            <div className='flex items-center gap-2 max-md:gap-1'>
-                <div className='flex items-center gap-2 py-2 px-4 max-md:px-2'>
-                    <figure><img src={!stateGlobals.darkMode ? iconLanguge : iconLanguageDark} className='w-4 max-md:w-3 h-4 max-md:h-3' alt="Icon Language" /></figure>
-                    <span className='text-[16px] max-md:text-xs font-medium text-color-black-100 dark:text-color-white-90 transition-all duration-300'>English</span>
+            <div className='flex items-center gap-2 max-lg:gap-1.5 max-md:gap-1'>
+                <div className='flex items-center gap-2 py-2 px-4 max-lg:px-3 max-md:px-2'>
+                    <figure><img src={!stateGlobals.darkMode ? iconLanguge : iconLanguageDark} className='w-4 max-lg:w-3.5 max-md:w-3 h-4 max-lg:h-3.5 max-md:h-3' alt="Icon Language" /></figure>
+                    <span className='text-base max-lg:text-sm max-md:text-xs font-medium text-color-black-100 dark:text-color-white-90 transition-all duration-300'>English</span>
                     <figure><img src={!stateGlobals.darkMode ? iconArrowDown : iconArrowDownDark} className='w-2.25' alt="Icon Arrow Down" /></figure>
                 </div>
                 <figure className='p-2 max-md:pr-0 cursor-pointer' onClick={toggleDarkMode} title={stateGlobals.darkMode ? 'Chế độ sáng' : 'Chế độ tối'}>
-                    <img src={!stateGlobals.darkMode ? iconDarkMode : iconDarkModeDark} className='w-4.5 max-md:w-3.5 h-4.5 max-md:h-3.5' alt="Icon Dark Mode" />
+                    <img src={!stateGlobals.darkMode ? iconDarkMode : iconDarkModeDark} className='w-4.5 max-lg:w-4 max-md:w-3.5 h-4.5 max-lg:h-4 max-md:h-3.5' alt="Icon Dark Mode" />
                 </figure>
             </div>
             <div className='w-px h-6 rounded-full bg-background-line-gray mx-2 max-md:hidden'></div>
             <div className='relative z-500 max-md:hidden'>
                 <div ref={buttonRef} className='flex items-center gap-2 cursor-pointer' onClick={handleToggle}>
                     <figure>
-                        <img src={imageUser} className='w-10 h-10' alt="Image User" />
+                        <img src={imageUser} className='w-10 max-lg:w-8 h-10 max-lg:h-8' alt="Image User" />
                     </figure>
                     <div className='flex flex-col justify-between'>
-                        <span className='text-[16px] font-medium text-color-gray-800 dark:text-color-white-90 transition-all duration-300'>{time}</span>
+                        <span className='text-base max-lg:text-sm font-medium text-color-gray-800 dark:text-color-white-90 transition-all duration-300'>{time}</span>
                         <span className='text-xs font-medium text-color-gray-600 dark:text-color-white-50 transition-all duration-300'>{date}</span>
                     </div>
                     <figure><img src={!stateGlobals.darkMode ? iconArrowDown : iconArrowDownDark} className={`w-2.25 transition-all duration-300 ${!isDropdownOpen ? '' : 'rotate-180'}`} alt="Icon Arrow Down" /></figure>
@@ -154,11 +154,11 @@ const Header = () => {
                 <div ref={dropdownRef} className={`${isDropdownOpen ? 'scale-100 opacity-100 origin-top' : 'scale-0 opacity-0 origin-top'} transition-all duration-300 absolute top-full left-0 bg-background-light dark:bg-background-dark flex flex-col border border-border-black-10 dark:border-background-white-15 rounded-xl w-full overflow-hidden`}>
                         <div className='hover:bg-background-black-4 dark:hover:bg-color-black-70 transition-all duration-300'>
                             <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-80'} src={!stateGlobals.darkMode ? iconUserInfor : iconUserInforDark}
-                                        widthImage='w-4.5 max-md:w-4' alt='Icon User' text={'vtvguest'} />
+                                        widthImage='w-4.5 max-lg:w-4.25 max-md:w-4' alt='Icon User' text={'vtvguest'} />
                         </div>
                         <div className='hover:bg-background-black-4 dark:hover:bg-color-black-70 transition-all duration-300'>
                             <Button background={'bg-transparent'} color={'text-color-error'} src={iconLogout}
-                                        widthImage='w-4.5 max-md:w-4' alt='Icon Logout' text={'Đăng xuất'} click={handleLogout} />
+                                        widthImage='w-4.5 max-lg:w-4.25 max-md:w-4' alt='Icon Logout' text={'Đăng xuất'} click={handleLogout} />
                         </div>
                 </div>
             </div>

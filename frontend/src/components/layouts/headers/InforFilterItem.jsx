@@ -33,9 +33,9 @@ const InforFilterItem = ({ keyFilter='', nameFilter, valueFilters=[], space }) =
         : VALUE_LABEL[valueFilters] ?? valueFilters;
     if (!displayValue) return null;
     return (
-        <li id={keyFilter} className={`py-1.5 ${keyFilter=='Ngày' ? 'px-4' : 'pr-2 pl-4 filter-item'} text-sm max-md:text-xs font-medium border border-border-black-10 dark:border-border-white-20 rounded-xl text-color-black-50 dark:text-color-white-50 transition-all duration-300 flex gap-1 items-center`}>
+        <li id={keyFilter} className={`py-1.5 ${keyFilter=='Ngày' ? 'px-4 max-lg:px-3' : 'pr-2 pl-4 max-lg:pl-3 filter-item'} text-sm max-lg:text-[13px] max-md:text-xs font-medium border border-border-black-10 dark:border-border-white-20 rounded-xl text-color-black-50 dark:text-color-white-50 transition-all duration-300 flex gap-1 items-center`}>
             {nameFilter}:<span className='text-color-black-100 dark:text-color-white-90 transition-all duration-300'>{displayValue}</span>
-            {keyFilter!='Ngày' && (<figure onClick={() => ClearSet(setFilterValues, keyFilter)} className='cursor-pointer'><img src={!stateGlobals.darkMode ? iconX : iconXDark} className='w-2.5 h-2.5' alt="Icon X" /></figure>)}
+            {keyFilter!='Ngày' && (<figure onClick={() => ClearSet(setFilterValues, keyFilter)} className='cursor-pointer'><img src={!stateGlobals.darkMode ? iconX : iconXDark} className='w-2.5 max-lg:w-2 h-2.5 max-lg:h-2' alt="Icon X" /></figure>)}
         </li>
     );
 };

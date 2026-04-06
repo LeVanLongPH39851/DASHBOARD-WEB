@@ -12,7 +12,7 @@ const DateRangeFilter = ({ startDate, endDate, onChange, horizontalFixed=false }
 
   const getMinStartDate = (endDateStr) => {
     const endDate = new Date(endDateStr);
-    endDate.setDate(endDate.getDate() - 60);
+    endDate.setDate(endDate.getDate() - 365);
     return endDate.toISOString().split('T')[0];
   };
 
@@ -42,7 +42,6 @@ const DateRangeFilter = ({ startDate, endDate, onChange, horizontalFixed=false }
 
   const handleEndChange = (e) => {
     const value = e.target.value;
-    if (value > localEnd) return; // Prevent if > endDate
     if (value > yesterday) return; // Prevent if > yesterday
     setLocalEnd(value);
     onChange?.({ startDate: localStart, endDate: value });

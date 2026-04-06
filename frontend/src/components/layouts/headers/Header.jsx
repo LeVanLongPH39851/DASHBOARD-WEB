@@ -103,7 +103,7 @@ const Header = () => {
     };
 
     const handleLogout = () => {
-        window.location.href = CUSTOM_CHART.domain + '/logout';
+        window.location.href = CUSTOM_CHART.domain + '/logout/';
     };
 
     const now = new Date();

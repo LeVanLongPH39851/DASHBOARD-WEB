@@ -151,10 +151,10 @@ export const getRatingLineChartMinuteChannel = (appliedFilters) =>
   postChart(payloads.ratingLineChartMinuteChannelPayload, appliedFilters, ['eventFilters', 'timebandFilters', 'firstLevelFilters', 'startHourFilters', 'startMinuteFilters'])
 
 export const getRatingLineChartMinuteChannelOneDate = (appliedFilters) =>
-  postChart(payloads.ratingLineChartMinuteChannelOneDatePayload, appliedFilters, ['eventFilters', 'timebandFilters', 'firstLevelFilters', 'startHourFilters', 'startMinuteFilters'])
+  postChart(payloads.ratingLineChartMinuteChannelOneDatePayload, appliedFilters, ['eventFilters', 'timebandFilters', 'firstLevelFilters', 'startHourFilters', 'startMinuteFilters', 'overwriteChannelFilters'])
 
 export const getRatingLineChartMinuteChannelDates = (appliedFilters) =>
-  postChart(payloads.ratingLineChartMinuteChannelDatesPayload, appliedFilters, ['eventFilters', 'timebandFilters', 'firstLevelFilters', 'startHourFilters', 'startMinuteFilters'])
+  postChart(payloads.ratingLineChartMinuteChannelDatesPayload, appliedFilters, ['eventFilters', 'timebandFilters', 'firstLevelFilters', 'startHourFilters', 'startMinuteFilters', 'overwriteChannelFilters'])
 
 export const getFilterProvince = () =>
   axiosClient.post(apiRoute, payloads.filterProvincePayload)

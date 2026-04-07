@@ -133,7 +133,12 @@ const appendFilters = (existingFilters, newFilters) => {
 };
 
 export const buildPayloadWithFilters = (basePayload, filterState, enabledFilters = []) => {
+
   const next = structuredClone(basePayload);
+
+  if (enabledFilters.includes('overwriteChannelFilters') && filterState?.channels && filterState?.channels?.length > 0) {
+    delete next.payload.queries[0].filters;
+  }
 
   const timeRange = toTimeRangeString(filterState?.startDate, filterState?.endDate);
 

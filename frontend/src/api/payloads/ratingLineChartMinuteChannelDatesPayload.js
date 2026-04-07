@@ -161,15 +161,6 @@ export const ratingLineChartMinuteChannelDatesPayload = {
         87
       ],
       "extra_form_data": {
-        "filters": [
-          {
-            "col": "channel_name_tvd",
-            "op": "IN",
-            "val": [
-              "VTV1"
-            ]
-          }
-        ],
         "time_range": "DATEADD(DATETIME(\"today\"),-1, DAY) : DATEADD(DATETIME(\"today\"),-1, SECOND)"
       },
       "chart_id": 681,

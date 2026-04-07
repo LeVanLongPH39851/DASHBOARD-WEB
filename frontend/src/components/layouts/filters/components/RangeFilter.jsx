@@ -15,20 +15,43 @@ const RangeFilter = ({
   marginBottom,
   horizontalFixed=false,
   formatValue = (v) => v?.toLocaleString?.() ?? v,
+  minGap = 0
 }) => {
   const { stateGlobals } = useDashboardStateGlobals();
   const [isOpenFilter, setIsOpenFilter] = useState(true);
+
+  const normalizeInt = (val, fallback) => {
+    if (val === '') return '';
+    const parsed = parseInt(val, 10);
+    return Number.isNaN(parsed) ? fallback : parsed;
+  };
+
+  const clamp = (val, minVal, maxVal) => Math.min(Math.max(val, minVal), maxVal);
 
   const [localMin, setLocalMin] = useState(value?.min ?? min);
   const [localMax, setLocalMax] = useState(value?.max ?? max);
 
   useEffect(() => {
-    setLocalMin(value?.min ?? min);
-    setLocalMax(value?.max ?? max);
+    const nextMinRaw = normalizeInt(value?.min, min);
+    const nextMaxRaw = normalizeInt(value?.max, max);
+
+    let nextMin = clamp(nextMinRaw, min, max - minGap);
+    let nextMax = clamp(nextMaxRaw, min + minGap, max);
+
+    if (nextMin >= nextMax) {
+      if (nextMin + minGap <= max) {
+        nextMax = nextMin + minGap;
+      } else {
+        nextMin = nextMax - minGap;
+      }
+    }
+
+    setLocalMin(nextMin);
+    setLocalMax(nextMax);
   }, [value, min, max]);
 
-  const safeMin = Number(localMin);
-  const safeMax = Number(localMax);
+  const safeMin = normalizeInt(localMin, min);
+  const safeMax = normalizeInt(localMax, max);
 
   const minPercent = useMemo(
     () => ((safeMin - min) / (max - min)) * 100,
@@ -42,14 +65,28 @@ const RangeFilter = ({
 
   const handleMinInput = (newMin) => {
     if (disabled) return;
-    const nextMin = Math.min(Number(newMin), safeMax);
+
+    if (newMin === '') {
+      setLocalMin('');
+      return;
+    }
+
+    const parsedMin = parseInt(newMin, 10);
+    const nextMin = Math.min(parsedMin, safeMax - minGap);
     setLocalMin(nextMin);
     onChange?.({ min: nextMin, max: safeMax });
   };
 
   const handleMaxInput = (newMax) => {
     if (disabled) return;
-    const nextMax = Math.max(Number(newMax), safeMin);
+
+    if (newMax === '') {
+      setLocalMax('');
+      return;
+    }
+
+    const parsedMax = parseInt(newMax, 10);
+    const nextMax = Math.max(parsedMax, safeMin + minGap);
     setLocalMax(nextMax);
     onChange?.({ min: safeMin, max: nextMax });
   };
@@ -65,9 +102,10 @@ const RangeFilter = ({
           {!horizontalFixed && (<div className='flex items-center gap-2 mb-1'>
                                     <input
                                     type='number'
-                                    value={localMin}
+                                    value={localMin === '' ? '' : localMin}
                                     min={min}
-                                    max={safeMax}
+                                    max={safeMax - minGap}
+                                    required
                                     step={step}
                                     disabled={disabled}
                                     onChange={(e) => handleMinInput(e.target.value)}
@@ -75,9 +113,10 @@ const RangeFilter = ({
                                     />
                                     <input
                                     type='number'
-                                    value={localMax}
-                                    min={safeMin}
+                                    value={localMax === '' ? '' : localMax}
+                                    min={safeMin + minGap}
                                     max={max}
+                                    required
                                     step={step}
                                     disabled={disabled}
                                     onChange={(e) => handleMaxInput(e.target.value)}

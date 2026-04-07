@@ -481,6 +481,7 @@ const Filter = ({ filters, horizontalFixed=false
             onChange={handleStartHoursChange}
             marginBottom={"mb-4 max-md:mb-2"}
             horizontalFixed={horizontalFixed}
+            minGap={1}
           />}
 
           {stateGlobals.currentTab == DISABLE_TABS.program && <RangeFilter

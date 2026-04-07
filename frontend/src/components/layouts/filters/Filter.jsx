@@ -229,7 +229,8 @@ const Filter = ({ filters, horizontalFixed=false
         programs: (appliedFilters.programs || [])
         .map(val => ALL_PROGRAMS.find(pr => pr.value === val))
         .filter(Boolean),
-        startHours: appliedFilters.startHours || { min: 0, max: 24 }
+        startHours: appliedFilters.startHours || { min: 0, max: 24 },
+        startMinutes: appliedFilters.startMinutes || { min: 0, max: 59 }
       }));
     }
   }, [appliedFilters]);
@@ -300,6 +301,10 @@ const Filter = ({ filters, horizontalFixed=false
     setFilterValues(prev => ({...prev, startHours: selectedStartHours}));
   };
 
+  const handleStartMinutesChange = (selectedStartMinutes) => {
+    setFilterValues(prev => ({...prev, startMinutes: selectedStartMinutes}));
+  };
+
   const onSubmit = (e) => {
     e.preventDefault();
 
@@ -315,6 +320,7 @@ const Filter = ({ filters, horizontalFixed=false
       firstLevels: (filterValues?.firstLevels || []).map(fl => fl.value),
       programs: (filterValues?.programs || []).map(pr => pr.value),
       startHours: filterValues?.startHours || { min: 0, max: 24 },
+      startMinutes: filterValues?.startMinutes || { min: 0, max: 59 }
     } : null);
 
     if(stateGlobals.screen_md) {
@@ -473,6 +479,17 @@ const Filter = ({ filters, horizontalFixed=false
             step={1}
             value={filterValues?.startHours || { min: 0, max: 24 }}
             onChange={handleStartHoursChange}
+            marginBottom={"mb-4 max-md:mb-2"}
+            horizontalFixed={horizontalFixed}
+          />}
+
+          {stateGlobals.currentTab == DISABLE_TABS.program && <RangeFilter
+            label="Phút bắt đầu"
+            min={0}
+            max={59}
+            step={1}
+            value={filterValues?.startMinutes || { min: 0, max: 59 }}
+            onChange={handleStartMinutesChange}
             marginBottom={"mb-4 max-md:mb-2"}
             horizontalFixed={horizontalFixed}
           />}

@@ -20,7 +20,7 @@ const buildQueriesFilters = ({ column, values }) => {
   }];
 };
 
-const buildQueriesRangeFilters = ({ column, values }) => {
+const buildQueriesRangeFilters = ({ column, values, op='<=' }) => {
   if (!values || Object.keys(values).length === 0) return null;
   return [{
     col: column,
@@ -29,7 +29,7 @@ const buildQueriesRangeFilters = ({ column, values }) => {
   },
   {
     col: column,
-    op: '<',
+    op: op,
     val: values?.max
   }];
 };
@@ -89,7 +89,13 @@ const appendAllFilters = (queries, filterState, disabledFilters) => {
 
   const startHourFilters = buildQueriesRangeFilters({ 
     column: 'start_hour', 
-    values: filterState.startHours 
+    values: filterState.startHours,
+    op: '<'
+  });
+
+  const startMinutesFilters = buildQueriesRangeFilters({ 
+    column: 'start_minute', 
+    values: filterState.startMinutes
   });
   
   return queries.map((q) => {
@@ -107,6 +113,7 @@ const appendAllFilters = (queries, filterState, disabledFilters) => {
     if (firstLevelFilters && !disabledFilters.includes('firstLevelFilters') && !disabledFilters.includes('allFilters')) newFilters = appendFilters(newFilters, firstLevelFilters);
     if (programFilters && !disabledFilters.includes('programFilters') && !disabledFilters.includes('allFilters')) newFilters = appendFilters(newFilters, programFilters);
     if (startHourFilters && (startHourFilters?.min !== 0 && startHourFilters?.max !== 24) && !disabledFilters.includes('startHourFilters') && !disabledFilters.includes('allFilters')) newFilters = appendFilters(newFilters, startHourFilters);
+    if (startMinutesFilters && (startMinutesFilters?.min !== 0 && startMinutesFilters?.max !== 59) && !disabledFilters.includes('startMinutesFilters') && !disabledFilters.includes('allFilters')) newFilters = appendFilters(newFilters, startMinutesFilters);
     
     return {
       ...q,

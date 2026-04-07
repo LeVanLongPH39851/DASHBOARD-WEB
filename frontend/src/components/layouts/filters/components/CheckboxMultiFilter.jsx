@@ -79,7 +79,7 @@ const CheckboxMultiFilter = ({
                     className={`
                         flex items-center gap-2 px-3 max-md:px-2 py-1.25 max-md:py-1 rounded-xl cursor-pointer text-sm max-md:text-xs font-medium transition-all duration-300
                         ${isChecked(opt.value)
-                        ? 'bg-[#e8f7fb] text-color-neotam dark:bg-background-succes-type-2-dark'
+                        ? 'bg-background-checked text-color-neotam dark:bg-background-succes-type-2-dark'
                         : 'text-color-check-box dark:text-color-white-90 dark:hover:bg-background-hover-dark hover:bg-background-black-4'}
                         ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
                     `}

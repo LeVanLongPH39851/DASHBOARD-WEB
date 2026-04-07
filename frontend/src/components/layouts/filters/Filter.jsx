@@ -10,6 +10,7 @@ import iconXBlackDark from '../../../assets/icon_x_black_dark.png';
 import iconReset from '../../../assets/icon_reset.png';
 import iconResetDark from '../../../assets/icon_reset_dark.png';
 import GroupFilter from './components/GroupFilter';
+import RangeFilter from './components/RangeFilter';
 import { useDashboardFilters, useDashboardFilterValues, useDashboardStateGlobals } from '../../../context/DashboardFilterContext';
 
 const ALL_CHANNELS = [
@@ -227,7 +228,8 @@ const Filter = ({ filters, horizontalFixed=false
         .filter(Boolean),
         programs: (appliedFilters.programs || [])
         .map(val => ALL_PROGRAMS.find(pr => pr.value === val))
-        .filter(Boolean)
+        .filter(Boolean),
+        startHours: appliedFilters.startHours || { min: 0, max: 24 }
       }));
     }
   }, [appliedFilters]);
@@ -294,6 +296,10 @@ const Filter = ({ filters, horizontalFixed=false
     setFilterValues(prev => ({...prev, programs: selectedPrograms}));
   };
 
+  const handleStartHoursChange = (selectedStartHours) => {
+    setFilterValues(prev => ({...prev, startHours: selectedStartHours}));
+  };
+
   const onSubmit = (e) => {
     e.preventDefault();
 
@@ -307,7 +313,8 @@ const Filter = ({ filters, horizontalFixed=false
       keyCities: (filterValues?.keyCities || []).map(ke => ke.value),
       timebands: (filterValues?.timebands || []).map(tb => tb.value),
       firstLevels: (filterValues?.firstLevels || []).map(fl => fl.value),
-      programs: (filterValues?.programs || []).map(pr => pr.value)
+      programs: (filterValues?.programs || []).map(pr => pr.value),
+      startHours: filterValues?.startHours || { min: 0, max: 24 },
     } : null);
 
     if(stateGlobals.screen_md) {
@@ -327,8 +334,8 @@ const Filter = ({ filters, horizontalFixed=false
   return (
     <>
     <aside className={`${horizontalFixed ? 'w-full' : `${!stateGlobals.isOpen || stateGlobals.horizontal ? 'w-0' : 'w-[16%] max-md:w-0'} h-full`} transition-all duration-300`}>
-      <div id='filter' className={`${horizontalFixed ? 'w-full' : `bg-background-light dark:bg-background-dark border-r border-background-line-gray dark:border-background-white-15 w-[16%] max-md:w-[65%] max-md:z-9999 overflow-y-auto fixed left-0 ${!stateGlobals.isOpen || stateGlobals.horizontal ? '-translate-x-full' : ''} top-15 max-md:top-10 max-md:px-4 px-6 pt-4 max-md:pt-2 pb-20 transition-all duration-300 h-full`}`}>
-        {!horizontalFixed && (<div className='flex justify-between items-center h-10.5 max-md:h-8 mb-2 max-md:mb-1'>
+      <div id='filter' className={`${horizontalFixed ? 'w-full' : `bg-background-light dark:bg-background-dark border-r border-background-line-gray dark:border-background-white-15 w-[16%] max-md:w-[65%] max-md:z-9999 overflow-y-auto fixed left-0 ${!stateGlobals.isOpen || stateGlobals.horizontal ? '-translate-x-full' : ''} top-15 max-lg:top-13 max-md:top-10 max-md:px-4 max-lg:px-5 px-6 pt-4 max-lg:pt-3 max-md:pt-2 pb-20 transition-all duration-300 h-full`}`}>
+        {!horizontalFixed && (<div className='flex justify-between items-center h-10.5 max-lg:h-9 max-md:h-8 mb-2 max-lg:mb-1.5 max-md:mb-1'>
           <span className='text-background-black-child-tab dark:text-color-white-90 transition-all duration-300 text-[16px] max-md:text-xs font-semibold'>Bộ lọc</span><figure className='cursor-pointer transition-all duration-300 hover:rotate-180' onClick={() => setStateGlobals(prev => ({...prev, isOpen: !prev.isOpen}))}><img src={!stateGlobals.darkMode ? iconXBlack : iconXBlackDark} className='w-3.25 max-md:w-2.5' alt="Icon X Black" /></figure>
         </div>)}
         <form className={`${horizontalFixed ? 'flex flex-wrap gap-2 max-md:gap-1.5 max-md:grid max-md:grid-cols-2 items-center' : ''}`} onSubmit={onSubmit} onReset={onReset}>
@@ -458,6 +465,17 @@ const Filter = ({ filters, horizontalFixed=false
             marginBottom="mb-4 max-md:mb-2"
             horizontalFixed={horizontalFixed}
           /></>)}
+          
+          {stateGlobals.currentTab == DISABLE_TABS.program && <RangeFilter
+            label="Giờ bắt đầu"
+            min={0}
+            max={24}
+            step={1}
+            value={filterValues?.startHours || { min: 0, max: 24 }}
+            onChange={handleStartHoursChange}
+            marginBottom={"mb-4 max-md:mb-2"}
+            horizontalFixed={horizontalFixed}
+          />}
 
           {stateGlobals.currentTab == DISABLE_TABS.program && (!stateGlobals.horizontal ? (<CheckboxMultiFilter
             label="Thể loại"

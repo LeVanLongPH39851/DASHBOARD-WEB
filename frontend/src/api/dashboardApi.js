@@ -19,114 +19,114 @@ const postChart = async (basePayload, appliedFilters, disibledFilters = []) => {
 // Tab Overview
 
 export const getRatingPercentTrendNumberChart = (appliedFilters) =>
-  postChart(payloads.ratingPercentTrendNumberChartPayload, appliedFilters, ['timebandFilters', 'firstLevelFilters', 'programFilters', 'startHourFilters'])
+  postChart(payloads.ratingPercentTrendNumberChartPayload, appliedFilters, ['timebandFilters', 'firstLevelFilters', 'programFilters', 'startHourFilters', 'startMinuteFilters'])
 
 export const getRatingNumberChart = (appliedFilters) =>
-  postChart(payloads.ratingNumberChartPayload, appliedFilters, ['timebandFilters', 'firstLevelFilters', 'programFilters', 'startHourFilters'])
+  postChart(payloads.ratingNumberChartPayload, appliedFilters, ['timebandFilters', 'firstLevelFilters', 'programFilters', 'startHourFilters', 'startMinuteFilters'])
 
 export const getAveReachNumberChart = (appliedFilters) =>
-  postChart(payloads.aveReachNumberChartPayload, appliedFilters, ['timebandFilters', 'firstLevelFilters', 'programFilters', 'startHourFilters'])
+  postChart(payloads.aveReachNumberChartPayload, appliedFilters, ['timebandFilters', 'firstLevelFilters', 'programFilters', 'startHourFilters', 'startMinuteFilters'])
 
 export const getRatingPercentNumberChart = (appliedFilters) =>
-  postChart(payloads.ratingPercentNumberChartPayload, appliedFilters, ['timebandFilters', 'firstLevelFilters', 'programFilters', 'startHourFilters'])
+  postChart(payloads.ratingPercentNumberChartPayload, appliedFilters, ['timebandFilters', 'firstLevelFilters', 'programFilters', 'startHourFilters', 'startMinuteFilters'])
 
 export const getAveReachPercentNumberChart = (appliedFilters) =>
-  postChart(payloads.aveReachPercentNumberChartPayload, appliedFilters, ['timebandFilters', 'firstLevelFilters', 'programFilters', 'startHourFilters'])
+  postChart(payloads.aveReachPercentNumberChartPayload, appliedFilters, ['timebandFilters', 'firstLevelFilters', 'programFilters', 'startHourFilters', 'startMinuteFilters'])
 
 export const getRatingBarChartChannelEvent = (appliedFilters) =>
-  postChart(payloads.ratingBarChartChannelEventPayload, appliedFilters, ['timebandFilters', 'firstLevelFilters', 'programFilters', 'startHourFilters'])
+  postChart(payloads.ratingBarChartChannelEventPayload, appliedFilters, ['timebandFilters', 'firstLevelFilters', 'programFilters', 'startHourFilters', 'startMinuteFilters'])
 
 export const getAveReachBarChartChannelEvent = (appliedFilters) =>
-  postChart(payloads.aveReachBarChartChannelEventPayload, appliedFilters, ['timebandFilters', 'firstLevelFilters', 'programFilters', 'startHourFilters'])
+  postChart(payloads.aveReachBarChartChannelEventPayload, appliedFilters, ['timebandFilters', 'firstLevelFilters', 'programFilters', 'startHourFilters', 'startMinuteFilters'])
 
 export const getRatingBarChartDayEvent = (appliedFilters) =>
-  postChart(payloads.ratingBarChartDayEventPayload, appliedFilters, ['timebandFilters', 'firstLevelFilters', 'programFilters', 'startHourFilters'])
+  postChart(payloads.ratingBarChartDayEventPayload, appliedFilters, ['timebandFilters', 'firstLevelFilters', 'programFilters', 'startHourFilters', 'startMinuteFilters'])
 
 export const getAveReachBarChartDayEvent = (appliedFilters) =>
-  postChart(payloads.aveReachBarChartDayEventPayload, appliedFilters, ['timebandFilters', 'firstLevelFilters', 'programFilters', 'startHourFilters'])
+  postChart(payloads.aveReachBarChartDayEventPayload, appliedFilters, ['timebandFilters', 'firstLevelFilters', 'programFilters', 'startHourFilters', 'startMinuteFilters'])
 
 export const getAllTableChartChannel = (appliedFilters) =>
-  postChart(payloads.allTableChartChannelPayload, appliedFilters, ['timebandFilters', 'firstLevelFilters', 'programFilters', 'startHourFilters'])
+  postChart(payloads.allTableChartChannelPayload, appliedFilters, ['timebandFilters', 'firstLevelFilters', 'programFilters', 'startHourFilters', 'startMinuteFilters'])
 
 export const getAllTableChartChannelEvent = (appliedFilters) =>
-  postChart(payloads.allTableChartChannelEventPayload, appliedFilters, ['timebandFilters', 'firstLevelFilters', 'programFilters', 'startHourFilters'])
+  postChart(payloads.allTableChartChannelEventPayload, appliedFilters, ['timebandFilters', 'firstLevelFilters', 'programFilters', 'startHourFilters', 'startMinuteFilters'])
 
 export const getRatingReachPercentTableChartRegional = (appliedFilters) =>
-  postChart(payloads.ratingReachPercentTableChartRegionalPayload, appliedFilters, ['timebandFilters', 'firstLevelFilters', 'programFilters', 'startHourFilters'])
+  postChart(payloads.ratingReachPercentTableChartRegionalPayload, appliedFilters, ['timebandFilters', 'firstLevelFilters', 'programFilters', 'startHourFilters', 'startMinuteFilters'])
 
 export const getRatingReachPercentTableChartProvince = (appliedFilters) =>
-  postChart(payloads.ratingReachPercentTableChartProvincePayload, appliedFilters, ['timebandFilters', 'firstLevelFilters', 'programFilters', 'startHourFilters'])
+  postChart(payloads.ratingReachPercentTableChartProvincePayload, appliedFilters, ['timebandFilters', 'firstLevelFilters', 'programFilters', 'startHourFilters', 'startMinuteFilters'])
 
 export const getRatingBarChartRegional = (appliedFilters) =>
-  postChart(payloads.ratingBarChartRegionalPayload, appliedFilters, ['timebandFilters', 'firstLevelFilters', 'programFilters', 'startHourFilters'])
+  postChart(payloads.ratingBarChartRegionalPayload, appliedFilters, ['timebandFilters', 'firstLevelFilters', 'programFilters', 'startHourFilters', 'startMinuteFilters'])
 
 export const getRatingBarChartKeyCity = (appliedFilters) =>
-  postChart(payloads.ratingBarChartKeyCityPayload, appliedFilters, ['timebandFilters', 'firstLevelFilters', 'programFilters', 'startHourFilters'])
+  postChart(payloads.ratingBarChartKeyCityPayload, appliedFilters, ['timebandFilters', 'firstLevelFilters', 'programFilters', 'startHourFilters', 'startMinuteFilters'])
 
 export const getRatingBarChartProvince = (appliedFilters) =>
-  postChart(payloads.ratingBarChartProvincePayload, appliedFilters, ['timebandFilters', 'firstLevelFilters', 'programFilters', 'startHourFilters'])
+  postChart(payloads.ratingBarChartProvincePayload, appliedFilters, ['timebandFilters', 'firstLevelFilters', 'programFilters', 'startHourFilters', 'startMinuteFilters'])
 
 export const getRatingBarChartOthers = (appliedFilters) =>
-  postChart(payloads.ratingBarChartOthersPayload, appliedFilters, ['timebandFilters', 'firstLevelFilters', 'programFilters', 'startHourFilters'])
+  postChart(payloads.ratingBarChartOthersPayload, appliedFilters, ['timebandFilters', 'firstLevelFilters', 'programFilters', 'startHourFilters', 'startMinuteFilters'])
 
 export const getAveReachBarChartRegional = (appliedFilters) =>
-  postChart(payloads.aveReachBarChartRegionalPayload, appliedFilters, ['timebandFilters', 'firstLevelFilters', 'programFilters', 'startHourFilters'])
+  postChart(payloads.aveReachBarChartRegionalPayload, appliedFilters, ['timebandFilters', 'firstLevelFilters', 'programFilters', 'startHourFilters', 'startMinuteFilters'])
 
 export const getAveReachBarChartKeyCity = (appliedFilters) =>
-  postChart(payloads.aveReachBarChartKeyCityPayload, appliedFilters, ['timebandFilters', 'firstLevelFilters', 'programFilters', 'startHourFilters'])
+  postChart(payloads.aveReachBarChartKeyCityPayload, appliedFilters, ['timebandFilters', 'firstLevelFilters', 'programFilters', 'startHourFilters', 'startMinuteFilters'])
 
 export const getAveReachBarChartProvince = (appliedFilters) =>
-  postChart(payloads.aveReachBarChartProvincePayload, appliedFilters, ['timebandFilters', 'firstLevelFilters', 'programFilters', 'startHourFilters'])
+  postChart(payloads.aveReachBarChartProvincePayload, appliedFilters, ['timebandFilters', 'firstLevelFilters', 'programFilters', 'startHourFilters', 'startMinuteFilters'])
 
 export const getAveReachBarChartOthers = (appliedFilters) =>
-  postChart(payloads.aveReachBarChartOthersPayload, appliedFilters, ['timebandFilters', 'firstLevelFilters', 'programFilters', 'startHourFilters'])
+  postChart(payloads.aveReachBarChartOthersPayload, appliedFilters, ['timebandFilters', 'firstLevelFilters', 'programFilters', 'startHourFilters', 'startMinuteFilters'])
 
 export const getRatingReachMixedChartDate = (appliedFilters) =>
-  postChart(payloads.ratingReachMixedChartDatePayload, appliedFilters, ['timebandFilters', 'firstLevelFilters', 'programFilters', 'startHourFilters'])
+  postChart(payloads.ratingReachMixedChartDatePayload, appliedFilters, ['timebandFilters', 'firstLevelFilters', 'programFilters', 'startHourFilters', 'startMinuteFilters'])
 
 // Tab Channel
 
 export const getRatingReachPercentMixedChartTimeband = (appliedFilters) =>
-  postChart(payloads.ratingReachPercentMixedChartTimebandPayload, appliedFilters, ['firstLevelFilters', 'programFilters', 'startHourFilters'])
+  postChart(payloads.ratingReachPercentMixedChartTimebandPayload, appliedFilters, ['firstLevelFilters', 'programFilters', 'startHourFilters', 'startMinuteFilters'])
 
 export const getRatingPercentLineChartTimebandChannel = (appliedFilters) =>
-  postChart(payloads.ratingPercentLineChartTimebandChannelPayload, appliedFilters, ['firstLevelFilters', 'programFilters', 'startHourFilters'])
+  postChart(payloads.ratingPercentLineChartTimebandChannelPayload, appliedFilters, ['firstLevelFilters', 'programFilters', 'startHourFilters', 'startMinuteFilters'])
 
 export const getAveReachPercentLineChartDateChannel = (appliedFilters) =>
-  postChart(payloads.aveReachPercentLineChartDateChannelPayload, appliedFilters, ['firstLevelFilters', 'programFilters', 'startHourFilters'])
+  postChart(payloads.aveReachPercentLineChartDateChannelPayload, appliedFilters, ['firstLevelFilters', 'programFilters', 'startHourFilters', 'startMinuteFilters'])
 
 export const getRatingPercentLineChartDateChannel = (appliedFilters) =>
-  postChart(payloads.ratingPercentLineChartDateChannelPayload, appliedFilters, ['firstLevelFilters', 'programFilters', 'startHourFilters'])
+  postChart(payloads.ratingPercentLineChartDateChannelPayload, appliedFilters, ['firstLevelFilters', 'programFilters', 'startHourFilters', 'startMinuteFilters'])
 
 export const getAveReachPercentTreemapChartChannel = (appliedFilters) =>
-  postChart(payloads.aveReachPercentTreemapChartChannelPayload, appliedFilters, ['firstLevelFilters', 'programFilters', 'startHourFilters'])
+  postChart(payloads.aveReachPercentTreemapChartChannelPayload, appliedFilters, ['firstLevelFilters', 'programFilters', 'startHourFilters', 'startMinuteFilters'])
 
 export const getRatingReachMixedChartTimeband = (appliedFilters) =>
-  postChart(payloads.ratingReachMixedChartTimebandPayload, appliedFilters, ['firstLevelFilters', 'programFilters', 'startHourFilters'])
+  postChart(payloads.ratingReachMixedChartTimebandPayload, appliedFilters, ['firstLevelFilters', 'programFilters', 'startHourFilters', 'startMinuteFilters'])
 
 export const getRatingLineChartTimebandChannel = (appliedFilters) =>
-  postChart(payloads.ratingLineChartTimebandChannelPayload, appliedFilters, ['firstLevelFilters', 'programFilters', 'startHourFilters'])
+  postChart(payloads.ratingLineChartTimebandChannelPayload, appliedFilters, ['firstLevelFilters', 'programFilters', 'startHourFilters', 'startMinuteFilters'])
 
 export const getAveReachLineChartTimebandChannel = (appliedFilters) =>
-  postChart(payloads.aveReachLineChartTimebandChannelPayload, appliedFilters, ['firstLevelFilters', 'programFilters', 'startHourFilters'])
+  postChart(payloads.aveReachLineChartTimebandChannelPayload, appliedFilters, ['firstLevelFilters', 'programFilters', 'startHourFilters', 'startMinuteFilters'])
 
 export const getRatingLineChartDateChannel = (appliedFilters) =>
-  postChart(payloads.ratingLineChartDateChannelPayload, appliedFilters, ['firstLevelFilters', 'programFilters', 'startHourFilters'])
+  postChart(payloads.ratingLineChartDateChannelPayload, appliedFilters, ['firstLevelFilters', 'programFilters', 'startHourFilters', 'startMinuteFilters'])
 
 export const getAveReachLineChartDateChannel = (appliedFilters) =>
-  postChart(payloads.aveReachLineChartDateChannelPayload, appliedFilters, ['firstLevelFilters', 'programFilters', 'startHourFilters'])
+  postChart(payloads.aveReachLineChartDateChannelPayload, appliedFilters, ['firstLevelFilters', 'programFilters', 'startHourFilters', 'startMinuteFilters'])
 
 export const getRatingLineChartTimebandDay = (appliedFilters) =>
-  postChart(payloads.ratingLineChartTimebandDayPayload, appliedFilters, ['firstLevelFilters', 'programFilters', 'startHourFilters'])
+  postChart(payloads.ratingLineChartTimebandDayPayload, appliedFilters, ['firstLevelFilters', 'programFilters', 'startHourFilters', 'startMinuteFilters'])
 
 export const getAveReachLineChartTimebandDay = (appliedFilters) =>
-  postChart(payloads.aveReachLineChartTimebandDayPayload, appliedFilters, ['firstLevelFilters', 'programFilters', 'startHourFilters'])
+  postChart(payloads.aveReachLineChartTimebandDayPayload, appliedFilters, ['firstLevelFilters', 'programFilters', 'startHourFilters', 'startMinuteFilters'])
 
 export const getAveReachLineChartTimebandRegional = (appliedFilters) =>
-  postChart(payloads.aveReachLineChartTimebandRegionalPayload, appliedFilters, ['firstLevelFilters', 'programFilters', 'startHourFilters'])
+  postChart(payloads.aveReachLineChartTimebandRegionalPayload, appliedFilters, ['firstLevelFilters', 'programFilters', 'startHourFilters', 'startMinuteFilters'])
 
 export const getRatingTreemapChartChannel = (appliedFilters) =>
-  postChart(payloads.ratingTreemapChartChannelPayload, appliedFilters, ['firstLevelFilters', 'programFilters', 'startHourFilters'])
+  postChart(payloads.ratingTreemapChartChannelPayload, appliedFilters, ['firstLevelFilters', 'programFilters', 'startHourFilters', 'startMinuteFilters'])
 
 // Tab Program
 
@@ -148,13 +148,13 @@ export const getAllTableChartEvent = (appliedFilters) =>
 // Tab Rating By Minute
 
 export const getRatingLineChartMinuteChannel = (appliedFilters) =>
-  postChart(payloads.ratingLineChartMinuteChannelPayload, appliedFilters, ['eventFilters', 'timebandFilters', 'firstLevelFilters', 'startHourFilters'])
+  postChart(payloads.ratingLineChartMinuteChannelPayload, appliedFilters, ['eventFilters', 'timebandFilters', 'firstLevelFilters', 'startHourFilters', 'startMinuteFilters'])
 
 export const getRatingLineChartMinuteChannelOneDate = (appliedFilters) =>
-  postChart(payloads.ratingLineChartMinuteChannelOneDatePayload, appliedFilters, ['eventFilters', 'timebandFilters', 'firstLevelFilters', 'startHourFilters'])
+  postChart(payloads.ratingLineChartMinuteChannelOneDatePayload, appliedFilters, ['eventFilters', 'timebandFilters', 'firstLevelFilters', 'startHourFilters', 'startMinuteFilters'])
 
 export const getRatingLineChartMinuteChannelDates = (appliedFilters) =>
-  postChart(payloads.ratingLineChartMinuteChannelDatesPayload, appliedFilters, ['eventFilters', 'timebandFilters', 'firstLevelFilters', 'startHourFilters'])
+  postChart(payloads.ratingLineChartMinuteChannelDatesPayload, appliedFilters, ['eventFilters', 'timebandFilters', 'firstLevelFilters', 'startHourFilters', 'startMinuteFilters'])
 
 export const getFilterProvince = () =>
   axiosClient.post(apiRoute, payloads.filterProvincePayload)

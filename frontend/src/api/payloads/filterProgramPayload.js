@@ -2,14 +2,14 @@ export const filterProgramPayload = {
   url: `${import.meta.env.VITE_API_DOMAIN}/api/v1/chart/data`,
   payload: {
     "datasource": {
-      "id": 209,
+      "id": 179,
       "type": "table"
     },
     "force": false,
     "queries": [
       {
         "time_range": "DATEADD(DATETIME(\"today\"),-1, DAY) : DATEADD(DATETIME(\"today\"),-1, SECOND)",
-        "granularity": null,
+        "granularity": "date",
         "filters": [],
         "extras": {
           "having": "",
@@ -31,7 +31,7 @@ export const filterProgramPayload = {
         "series_limit": 0,
         "order_desc": true,
         "url_params": {
-          "native_filters_key": "mhYHCn6O3klpsNj0643X7yzbYeOZDPGhxN_2rnCLo87IqAoFoF4THwAiE-7TofL3"
+          "native_filters_key": "Nbns9NZoEsWSQA8OYmECuS__bJl7FRxp289AAglj_u6P2L0GcuwD7T_jjcmDsWl5"
         },
         "custom_params": {},
         "custom_form_data": {}
@@ -43,7 +43,7 @@ export const filterProgramPayload = {
       "multiSelect": true,
       "searchAllOptions": true,
       "inverseSelection": false,
-      "datasource": "209__table",
+      "datasource": "179__table",
       "groupby": [
         "program_name"
       ],
@@ -52,19 +52,19 @@ export const filterProgramPayload = {
       "extra_form_data": {
         "time_range": "DATEADD(DATETIME(\"today\"),-1, DAY) : DATEADD(DATETIME(\"today\"),-1, SECOND)"
       },
-      "granularity_sqla": null,
+      "granularity_sqla": "date",
       "metrics": [
         "count"
       ],
       "row_limit": 1000,
       "showSearch": true,
       "url_params": {
-        "native_filters_key": "mhYHCn6O3klpsNj0643X7yzbYeOZDPGhxN_2rnCLo87IqAoFoF4THwAiE-7TofL3"
+        "native_filters_key": "Nbns9NZoEsWSQA8OYmECuS__bJl7FRxp289AAglj_u6P2L0GcuwD7T_jjcmDsWl5"
       },
       "inView": true,
       "viz_type": "filter_select",
       "type": "NATIVE_FILTER",
-      "dashboardId": 50,
+      "dashboardId": 45,
       "native_filter_id": "NATIVE_FILTER-MIW4xkBpy_bNzfc7-RcmF",
       "force": false,
       "result_format": "json",

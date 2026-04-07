@@ -20,6 +20,20 @@ const buildQueriesFilters = ({ column, values }) => {
   }];
 };
 
+const buildQueriesRangeFilters = ({ column, values }) => {
+  if (!values || Object.keys(values).length === 0) return null;
+  return [{
+    col: column,
+    op: '>=',
+    val: values?.min
+  },
+  {
+    col: column,
+    op: '<',
+    val: values?.max
+  }];
+};
+
 const appendAllFilters = (queries, filterState, disabledFilters) => {
   if (!queries || !filterState) return queries;
   if (filterState.days.includes('InWeek')) {
@@ -72,21 +86,27 @@ const appendAllFilters = (queries, filterState, disabledFilters) => {
     column: 'program_name', 
     values: filterState.programs 
   });
+
+  const startHourFilters = buildQueriesRangeFilters({ 
+    column: 'start_hour', 
+    values: filterState.startHours 
+  });
   
   return queries.map((q) => {
     const currentFilters = q.filters || [];
     
     // Append tất cả filters có data → CHỈ GỌI appendFilters 1 LẦN
     let newFilters = currentFilters;
-    if (dayFilters && !disabledFilters.includes('dayFilters')) newFilters = appendFilters(newFilters, dayFilters);
-    if (channelFilters && !disabledFilters.includes('channelFilters')) newFilters = appendFilters(newFilters, channelFilters);
-    if (eventFilters && !disabledFilters.includes('eventFilters')) newFilters = appendFilters(newFilters, eventFilters);
-    if (provinceFilters && !disabledFilters.includes('provinceFilters')) newFilters = appendFilters(newFilters, provinceFilters);
-    if (regionalFilters && !disabledFilters.includes('regionalFilters')) newFilters = appendFilters(newFilters, regionalFilters);
-    if (keyCitieFilters && !disabledFilters.includes('keyCitieFilters')) newFilters = appendFilters(newFilters, keyCitieFilters);
-    if (timebandFilters && !disabledFilters.includes('timebandFilters')) newFilters = appendFilters(newFilters, timebandFilters);
-    if (firstLevelFilters && !disabledFilters.includes('firstLevelFilters')) newFilters = appendFilters(newFilters, firstLevelFilters);
-    if (programFilters && !disabledFilters.includes('programFilters')) newFilters = appendFilters(newFilters, programFilters);
+    if (dayFilters && !disabledFilters.includes('dayFilters') && !disabledFilters.includes('allFilters')) newFilters = appendFilters(newFilters, dayFilters);
+    if (channelFilters && !disabledFilters.includes('channelFilters') && !disabledFilters.includes('allFilters')) newFilters = appendFilters(newFilters, channelFilters);
+    if (eventFilters && !disabledFilters.includes('eventFilters') && !disabledFilters.includes('allFilters')) newFilters = appendFilters(newFilters, eventFilters);
+    if (provinceFilters && !disabledFilters.includes('provinceFilters') && !disabledFilters.includes('allFilters')) newFilters = appendFilters(newFilters, provinceFilters);
+    if (regionalFilters && !disabledFilters.includes('regionalFilters') && !disabledFilters.includes('allFilters')) newFilters = appendFilters(newFilters, regionalFilters);
+    if (keyCitieFilters && !disabledFilters.includes('keyCitieFilters') && !disabledFilters.includes('allFilters')) newFilters = appendFilters(newFilters, keyCitieFilters);
+    if (timebandFilters && !disabledFilters.includes('timebandFilters') && !disabledFilters.includes('allFilters')) newFilters = appendFilters(newFilters, timebandFilters);
+    if (firstLevelFilters && !disabledFilters.includes('firstLevelFilters') && !disabledFilters.includes('allFilters')) newFilters = appendFilters(newFilters, firstLevelFilters);
+    if (programFilters && !disabledFilters.includes('programFilters') && !disabledFilters.includes('allFilters')) newFilters = appendFilters(newFilters, programFilters);
+    if (startHourFilters && (startHourFilters?.min !== 0 && startHourFilters?.max !== 24) && !disabledFilters.includes('startHourFilters') && !disabledFilters.includes('allFilters')) newFilters = appendFilters(newFilters, startHourFilters);
     
     return {
       ...q,
@@ -97,7 +117,7 @@ const appendAllFilters = (queries, filterState, disabledFilters) => {
 
 // Helper: append new filter vào existing filters (không ghi đè)
 const appendFilters = (existingFilters, newFilters) => {
-  if (!existingFilters || !Array.isArray(existingFilters)) {
+  if (!existingFilters || (!Array.isArray(existingFilters) && typeof existingFilters !== 'object')) {
     return newFilters;
   }
   
@@ -123,6 +143,6 @@ export const buildPayloadWithFilters = (basePayload, filterState, enabledFilters
   }
   
   next.payload.queries = appendAllFilters(next.payload.queries, filterState, enabledFilters);
-
+  
   return next;
 };

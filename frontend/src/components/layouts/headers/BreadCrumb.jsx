@@ -20,9 +20,11 @@ import iconArrowLeft2 from '../../../assets/icon_arrow_left_2.png';
 import iconListDark from '../../../assets/icon_list_dark.png';
 import iconArrowLeft2Dark from '../../../assets/icon_arrow_left_2_dark.png';
 import { CUSTOM_CHART } from '../../../utils/customChart';
+import { useCurrentUser } from '../../../hooks/useCurrentUser';
 
 const BreadCrumb = () => {
     const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
+    const { user, userLoading } = useCurrentUser();
     const LABEL_TABS = {
         overview: 'Tổng quan',
         channel: 'Kênh',
@@ -333,7 +335,8 @@ const BreadCrumb = () => {
                             widthImage='w-4 max-lg:w-3.5' heightImage='h-4 max-lg:h-3.5' alt='Icon Instruct' text={'Hướng dẫn'} src2={iconSucces}
                             widthImage2='w-3.5 max-lg:w-3' alt2='Icon Succes' />
                 </a>
-                <div className='relative'>
+                {(!userLoading && user?.username !== 'vtvguest') &&
+                (<div className='relative'>
                     <div ref={buttonRef}>
                         <Button background={'bg-color-black-100 dark:bg-background-primary'} color={'text-color-white-90 dark:text-color-black-100'} src={!stateGlobals.darkMode ? iconDownload : iconDownloadDark}
                             widthImage='w-3.5 max-lg:w-3' heightImage='h-3.5 max-lg:h-3' alt='Icon Download' text={'Tải xuống'} click={handleToggle}/>
@@ -348,7 +351,7 @@ const BreadCrumb = () => {
                                 widthImage='w-4 max-lg:w-3.75' alt='Icon Instruct' text={'Tải PDF'} click={!isFirefox ? handlePDF : handlePDFFireFox} />
                             </div>
                     </div>
-                </div>
+                </div>)}
             </div>
             <div className='hidden max-md:block relative'>
                 <figure ref={buttonRef} className='cursor-pointer p-2' onClick={handleToggle}>
@@ -359,17 +362,19 @@ const BreadCrumb = () => {
                             <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-80'} src={!stateGlobals.darkMode ? iconDisplay : iconDisplayDark}
                             widthImage='w-3.75 max-md:w-3' heightImage='h-3.75 max-md:h-3' alt='Icon Display' text={'Quản lý hiển thị'} />
                         </div> */}
-                        <div className='hover:bg-background-black-4 dark:hover:bg-color-black-70 transition-all duration-300'>
+                        {(!userLoading && user?.username !== 'vtvguest') &&
+                        (<div className='hover:bg-background-black-4 dark:hover:bg-color-black-70 transition-all duration-300'>
                             <a href="https://ratings.vtv.vn/huongdan/" target='_blank'>
                                 <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-80'} src={!stateGlobals.darkMode ? iconInstruct : iconInstructDark}
                                         widthImage='w-4 max-md:w-3' heightImage='h-4 max-md:h-3' alt='Icon Instruct' text={'Hướng dẫn'} src2={iconSucces}
                                         widthImage2='w-3.5 max-md:w-2.5' alt2='Icon Succes' />
                             </a>
-                        </div>
-                        <div className='hover:bg-background-black-4 dark:hover:bg-color-black-70 transition-all duration-300'>
+                        </div>)}
+                        {(!userLoading && user?.username !== 'vtvguest') &&
+                        (<div className='hover:bg-background-black-4 dark:hover:bg-color-black-70 transition-all duration-300'>
                             <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-80'} src={iconIMG}
                                         widthImage='w-4 max-md:w-3.5' alt='Icon Instruct' text={'Tải Ảnh'} click={!isFirefox ? handleCapture : handleCaptureFireFox} />
-                        </div>
+                        </div>)}
                         <div className='hover:bg-background-black-4 dark:hover:bg-color-black-70 transition-all duration-300'>
                             <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-80'} src={iconPDF}
                                 widthImage='w-4 max-md:w-3.5' alt='Icon Instruct' text={'Tải PDF'} click={!isFirefox ? handlePDF : handlePDFFireFox} />

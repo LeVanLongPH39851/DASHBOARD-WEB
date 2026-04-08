@@ -93,7 +93,7 @@ const appendAllFilters = (queries, filterState, disabledFilters) => {
     op: '<'
   });
 
-  const startMinutesFilters = buildQueriesRangeFilters({ 
+  const startMinuteFilters = buildQueriesRangeFilters({ 
     column: 'start_minute', 
     values: filterState.startMinutes
   });
@@ -113,7 +113,7 @@ const appendAllFilters = (queries, filterState, disabledFilters) => {
     if (firstLevelFilters && !disabledFilters.includes('firstLevelFilters') && !disabledFilters.includes('allFilters')) newFilters = appendFilters(newFilters, firstLevelFilters);
     if (programFilters && !disabledFilters.includes('programFilters') && !disabledFilters.includes('allFilters')) newFilters = appendFilters(newFilters, programFilters);
     if (startHourFilters && (startHourFilters?.min !== 0 && startHourFilters?.max !== 24) && !disabledFilters.includes('startHourFilters') && !disabledFilters.includes('allFilters')) newFilters = appendFilters(newFilters, startHourFilters);
-    if (startMinutesFilters && (startMinutesFilters?.min !== 0 && startMinutesFilters?.max !== 59) && !disabledFilters.includes('startMinutesFilters') && !disabledFilters.includes('allFilters')) newFilters = appendFilters(newFilters, startMinutesFilters);
+    if (startMinuteFilters && (startMinuteFilters?.min !== 0 && startMinuteFilters?.max !== 59) && !disabledFilters.includes('startMinuteFilters') && !disabledFilters.includes('allFilters')) newFilters = appendFilters(newFilters, startMinuteFilters);
     
     return {
       ...q,
@@ -137,7 +137,11 @@ export const buildPayloadWithFilters = (basePayload, filterState, enabledFilters
   const next = structuredClone(basePayload);
 
   if (enabledFilters.includes('overwriteChannelFilters') && filterState?.channels && filterState?.channels?.length > 0) {
-    delete next.payload.queries[0].filters;
+    if (!enabledFilters.includes('oneDateFilters')) {
+      next.payload.queries[0].filters = [{ col: 'date', op: 'TEMPORAL_RANGE', val: 'No filter' }];
+    } else {
+      next.payload.queries[0].filters = [{ col: 'date', op: 'TEMPORAL_RANGE', val: 'No filter' }, { "col": "event_hour_minute", "op": "NOT IN", "val": ["active"] }];
+    }
   }
 
   const timeRange = toTimeRangeString(filterState?.startDate, filterState?.endDate);

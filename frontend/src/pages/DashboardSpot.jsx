@@ -57,7 +57,7 @@ const DashboardContent = () => {
       <Header />
       <div className='flex w-full h-full bg-background-light dark:bg-background-dark transition-all duration-300'>
         <Filter filters={scopeFilterData} />
-        <div className={`pb-6 max-md:pb-4 ${stateGlobals.isOpen && !stateGlobals.horizontal ? 'w-[84%] max-md:w-full' : 'w-full'} transition-all duration-300 bg-background-dashboard dark:bg-background-dashboard-dark`}>
+        <div className={`pb-6 max-lg:pb-5 max-md:pb-4 ${stateGlobals.isOpen && !stateGlobals.horizontal ? 'w-[84%] max-md:w-full' : 'w-full'} transition-all duration-300 bg-background-dashboard dark:bg-background-dashboard-dark`}>
           <BreadCrumb/>
           <div className='bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300'>
             <ParentTabs uniqueId='dashboard'
@@ -68,11 +68,15 @@ const DashboardContent = () => {
                               <section className='bg-background-dashboard dark:bg-background-dashboard-dark transiton-all duration-300' id="target_capture_overview">
                                 <InforTab inforTab={"Tổng quan"} />
                                 <InforFilter filters={scopeFilterData} />
-                                <div className='px-6 max-md:px-4 pt-6 max-md:pt-4'>
-                                    <div className='w-full grid grid-cols-3 gap-6 pb-6'>
-                                        <NumberWithTrendChart nameChart={'Chi phí (Triệu VND)'} description={'Chi phí (Triệu VND)'} data={!dashboard.isLoading.spendVNDNumberData ? transformNumberWithTrendData(dashboard.spendVNDNumberData?.data, dashboard.spendVNDNumberData?.colnames) : 'isLoading'} icon={METRICS.rating.icon} />
-                                        <NumberWithTrendChart nameChart={'Chi phí (Triệu USD)'} description={'Chi phí (Triệu USD)'} data={!dashboard.isLoading.spendUSDNumberData ? transformNumberWithTrendData(dashboard.spendUSDNumberData?.data, dashboard.spendUSDNumberData?.colnames) : 'isLoading'} icon={METRICS.rating.icon} />
-                                        <div className='grid grid-cols-1 gap-6'>
+                                <div className='px-6 max-lg:px-5 max-md:px-4 pt-6 max-lg:pt-5 max-md:pt-4'>
+                                    <div className='w-full grid grid-cols-5 gap-6 pb-6'>
+                                      <div className='col-span-2'>
+                                        <NumberWithTrendChart nameChart={'Chi phí (VND)'} description={'Chi phí (VND)'} data={!dashboard.isLoading.spendVNDNumberData ? transformNumberWithTrendData(dashboard.spendVNDNumberData?.data, dashboard.spendVNDNumberData?.colnames) : 'isLoading'} fontFamily={CUSTOM_CHART.allChart.fontFamily} fontSize={CUSTOM_CHART.numberWithTrendChart.fontSize} fontWeight={CUSTOM_CHART.numberWithTrendChart.fontWeight} icon={METRICS.rating.icon} suffix='tr VND' />
+                                      </div>
+                                      <div className='col-span-2'>
+                                        <NumberWithTrendChart nameChart={'Chi phí (USD)'} description={'Chi phí (USD)'} data={!dashboard.isLoading.spendUSDNumberData ? transformNumberWithTrendData(dashboard.spendUSDNumberData?.data, dashboard.spendUSDNumberData?.colnames) : 'isLoading'} fontFamily={CUSTOM_CHART.allChart.fontFamily} fontSize={CUSTOM_CHART.numberWithTrendChart.fontSize} fontWeight={CUSTOM_CHART.numberWithTrendChart.fontWeight} icon={METRICS.rating.icon} suffix='$' />
+                                      </div>
+                                        <div className='col-span-1 grid grid-cols-1 gap-6'>
                                             <NumberCard
                                                 title={'Số lượng Spot'}
                                                 description={'Số lượng Spot'}
@@ -82,53 +86,56 @@ const DashboardContent = () => {
                                                 widthIcon={METRICS.ave_reach.widthIcon}
                                             />
                                             <NumberCard
-                                                title={'Số lượng Spot'}
-                                                description={'Số lượng Spot'}
+                                                title={'Thời lượng Spot'}
+                                                description={'Thời lượng Spot'}
                                                 value={!dashboard.isLoading.durationNumberData ? formatNumber(dashboard.durationNumberData?.data[0].total_duration, { isPercent: false }) : 'isLoading'}
                                                 icon={METRICS.ave_reach.icon}
                                                 background={METRICS.ave_reach.background}
                                                 widthIcon={METRICS.ave_reach.widthIcon}
+                                                suffix='phút'
                                             />
                                         </div>
                                     </div>
                                     <div className='w-full pb-6'>
-                                        <div className={`p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
-                                            <NameChart nameChart={'Xu hướng quảng cáo THEO NGÀY'} description={'Xu hướng quảng cáo THEO NGÀY'} opacity={true} />
-                                            <ChildTabs tabs={[
-                                            {id: 'vnd', label: 'Million VND',
-                                            content: (
-                                                <BarChart 
-                                                    data={!dashboard.isLoading.spendVNDBarDateData ? transformBarChartData(dashboard.spendVNDBarDateData?.data, dashboard.spendVNDBarDateData?.colnames) : 'isLoading'}
-                                                    height={CUSTOM_CHART.barChart.height}
-                                                    fontSize={CUSTOM_CHART.barChart.fontSize}
-                                                    fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                    colors={['rgba(255, 56, 60, 1)']}
-                                                    fontWeight={CUSTOM_CHART.barChart.fontWeight}
-                                                    nameChart={'Xu hướng quảng cáo THEO NGÀY'}
-                                                    description={'Xu hướng quảng cáo THEO NGÀY'}
-                                                    orientation={''}
-                                                    displayName={false}
-                                                    colorZoom='red'
-                                                />
-                                            )},
-                                            {id: 'usd', label: 'US$',
-                                            content: (
-                                                <BarChart 
-                                                    data={!dashboard.isLoading.spendUSDBarDateData ? transformBarChartData(dashboard.spendUSDBarDateData?.data, dashboard.spendUSDBarDateData?.colnames) : 'isLoading'}
-                                                    height={CUSTOM_CHART.barChart.height}
-                                                    fontSize={CUSTOM_CHART.barChart.fontSize}
-                                                    fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                    colors={['rgba(255, 56, 60, 1)']}
-                                                    fontWeight={CUSTOM_CHART.barChart.fontWeight}
-                                                    nameChart={'Xu hướng quảng cáo THEO NGÀY'}
-                                                    description={'Xu hướng quảng cáo THEO NGÀY'}
-                                                    orientation={''}
-                                                    displayName={false}
-                                                    colorZoom='red'
-                                                />
-                                            )}
-                                            ]} />
-                                        </div>
+                                      <div className={`p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
+                                          <NameChart nameChart={'Xu hướng quảng cáo THEO NGÀY'} description={'Xu hướng quảng cáo THEO NGÀY'} opacity={true} />
+                                          <ChildTabs tabs={[
+                                          {id: 'vnd', label: 'VND',
+                                          content: (
+                                              <BarChart 
+                                                  data={!dashboard.isLoading.spendVNDBarDateData ? transformBarChartData(dashboard.spendVNDBarDateData?.data, dashboard.spendVNDBarDateData?.colnames) : 'isLoading'}
+                                                  height={CUSTOM_CHART.barChart.height}
+                                                  fontSize={CUSTOM_CHART.barChart.fontSize}
+                                                  fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                                  colors={['rgba(255, 56, 60, 1)']}
+                                                  fontWeight={CUSTOM_CHART.barChart.fontWeight}
+                                                  nameChart={'Xu hướng quảng cáo THEO NGÀY'}
+                                                  description={'Xu hướng quảng cáo THEO NGÀY'}
+                                                  orientation={''}
+                                                  displayName={false}
+                                                  colorZoom='red'
+                                                  suffix='tr'
+                                              />
+                                          )},
+                                          {id: 'usd', label: 'USD',
+                                          content: (
+                                              <BarChart 
+                                                  data={!dashboard.isLoading.spendUSDBarDateData ? transformBarChartData(dashboard.spendUSDBarDateData?.data, dashboard.spendUSDBarDateData?.colnames) : 'isLoading'}
+                                                  height={CUSTOM_CHART.barChart.height}
+                                                  fontSize={CUSTOM_CHART.barChart.fontSize}
+                                                  fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                                  colors={['rgba(255, 56, 60, 1)']}
+                                                  fontWeight={CUSTOM_CHART.barChart.fontWeight}
+                                                  nameChart={'Xu hướng quảng cáo THEO NGÀY'}
+                                                  description={'Xu hướng quảng cáo THEO NGÀY'}
+                                                  orientation={''}
+                                                  displayName={false}
+                                                  colorZoom='red'
+                                                  suffix={'$'}
+                                              />
+                                          )}
+                                          ]} />
+                                      </div>
                                     </div>
                                     <div className='w-full pb-6'>
                                         <ChildTabs tabs={[
@@ -145,6 +152,7 @@ const DashboardContent = () => {
                                                           colors={CUSTOM_CHART.pieChart.colorChannel}
                                                           donut={CUSTOM_CHART.pieChart.donut}
                                                           innerRadius={CUSTOM_CHART.pieChart.innerRadius}
+                                                          suffix='tr'
                                                 />
                                                 <PieChart data={!dashboard.isLoading.spendVNDPieFirstLevelData ? transformPieChartData(dashboard.spendVNDPieFirstLevelData?.data, dashboard.spendVNDPieFirstLevelData?.colnames) : 'isLoading'}
                                                           height={CUSTOM_CHART.pieChart.height}
@@ -156,6 +164,7 @@ const DashboardContent = () => {
                                                           colors={CUSTOM_CHART.pieChart.colorFirstLevel}
                                                           donut={CUSTOM_CHART.pieChart.donut}
                                                           innerRadius={CUSTOM_CHART.pieChart.innerRadius}
+                                                          suffix='tr'
                                                 />
                                             </div>
                                         )},
@@ -194,22 +203,24 @@ const DashboardContent = () => {
                                                           fontSize={CUSTOM_CHART.pieChart.fontSize}
                                                           fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                           fontWeight={CUSTOM_CHART.pieChart.fontWeight}
-                                                          nameChart={'Phân bổ số lượng quảng cáo theo kênh'}
-                                                          description={'Phân bổ số lượng quảng cáo theo kênh'}
+                                                          nameChart={'Phân bổ thời lượng quảng cáo theo kênh'}
+                                                          description={'Phân bổ thời lượng quảng cáo theo kênh'}
                                                           colors={CUSTOM_CHART.pieChart.colorChannel}
                                                           donut={CUSTOM_CHART.pieChart.donut}
                                                           innerRadius={CUSTOM_CHART.pieChart.innerRadius}
+                                                          suffix='phút'
                                                 />
                                                 <PieChart data={!dashboard.isLoading.durationPieFirstLevelData ? transformPieChartData(dashboard.durationPieFirstLevelData?.data, dashboard.durationPieFirstLevelData?.colnames) : 'isLoading'}
                                                           height={CUSTOM_CHART.pieChart.height}
                                                           fontSize={CUSTOM_CHART.pieChart.fontSize}
                                                           fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                           fontWeight={CUSTOM_CHART.pieChart.fontWeight}
-                                                          nameChart={'Phân bổ số lượng quảng cáo theo thể loại nội dung'}
-                                                          description={'Phân bổ số lượng quảng cáo theo thể loại nội dung'}
+                                                          nameChart={'Phân bổ thời lượng quảng cáo theo thể loại nội dung'}
+                                                          description={'Phân bổ thời lượng quảng cáo theo thể loại nội dung'}
                                                           colors={CUSTOM_CHART.pieChart.colorFirstLevel}
                                                           donut={CUSTOM_CHART.pieChart.donut}
                                                           innerRadius={CUSTOM_CHART.pieChart.innerRadius}
+                                                          suffix='phút'
                                                 />
                                             </div>
                                         )},
@@ -237,8 +248,178 @@ const DashboardContent = () => {
                                                           colors={CUSTOM_CHART.pieChart.colorChannel}
                                                           donut={CUSTOM_CHART.pieChart.donut}
                                                           innerRadius={CUSTOM_CHART.pieChart.innerRadius}
+                                                          formatterValue={2}
                                                 />
                                             </div>
+                                        )}
+                                        ]} />
+                                    </div>
+                                    <div className='w-full pb-6'>
+                                      <div className={`p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
+                                          <NameChart nameChart={'Top 20 nhà quảng cáo'} description={'Top 20 nhà quảng cáo'} opacity={true} />
+                                          <ChildTabs tabs={[
+                                          {id: 'vnd', label: 'VND',
+                                          content: (
+                                              <BarChart 
+                                                  data={!dashboard.isLoading.spendVNDBarAdvertiserData ? transformBarChartData(dashboard.spendVNDBarAdvertiserData?.data, dashboard.spendVNDBarAdvertiserData?.colnames) : 'isLoading'}
+                                                  height={CUSTOM_CHART.barChart.height + 35}
+                                                  fontSize={CUSTOM_CHART.barChart.fontSize}
+                                                  fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                                  colors={['rgba(255, 56, 60, 1)']}
+                                                  fontWeight={CUSTOM_CHART.barChart.fontWeight}
+                                                  nameChart={'Top 20 nhà quảng cáo'}
+                                                  description={'Top 20 nhà quảng cáo'}
+                                                  orientation={'horizontal'}
+                                                  displayName={false}
+                                                  colorZoom='red'
+                                                  suffix='tr'
+                                              />
+                                          )},
+                                          {id: 'usd', label: 'USD',
+                                          content: (
+                                              <BarChart 
+                                                  data={!dashboard.isLoading.spendUSDBarAdvertiserData ? transformBarChartData(dashboard.spendUSDBarAdvertiserData?.data, dashboard.spendUSDBarAdvertiserData?.colnames) : 'isLoading'}
+                                                  height={CUSTOM_CHART.barChart.height + 35}
+                                                  fontSize={CUSTOM_CHART.barChart.fontSize}
+                                                  fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                                  colors={['rgba(255, 56, 60, 1)']}
+                                                  fontWeight={CUSTOM_CHART.barChart.fontWeight}
+                                                  nameChart={'Top 20 nhà quảng cáo'}
+                                                  description={'Top 20 nhà quảng cáo'}
+                                                  orientation={'horizontal'}
+                                                  displayName={false}
+                                                  colorZoom='red'
+                                                  suffix={'$'}
+                                              />
+                                          )},
+                                          {id: 'spot', label: 'SPOT',
+                                          content: (
+                                              <BarChart 
+                                                  data={!dashboard.isLoading.countBarAdvertiserData ? transformBarChartData(dashboard.countBarAdvertiserData?.data, dashboard.countBarAdvertiserData?.colnames) : 'isLoading'}
+                                                  height={CUSTOM_CHART.barChart.height + 35}
+                                                  fontSize={CUSTOM_CHART.barChart.fontSize}
+                                                  fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                                  colors={['rgba(255, 56, 60, 1)']}
+                                                  fontWeight={CUSTOM_CHART.barChart.fontWeight}
+                                                  nameChart={'Top 20 nhà quảng cáo'}
+                                                  description={'Top 20 nhà quảng cáo'}
+                                                  orientation={'horizontal'}
+                                                  displayName={false}
+                                                  colorZoom='red'
+                                              />
+                                          )}
+                                          ]} />
+                                      </div>
+                                    </div>
+                                    <div className='w-full pb-6'>
+                                      <div className={`p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
+                                          <NameChart nameChart={'Top 20 nhà quảng cáo'} description={'Top 20 nhà quảng cáo'} opacity={true} />
+                                          <ChildTabs tabs={[
+                                          {id: 'vnd', label: 'VND',
+                                          content: (
+                                              <BarChart 
+                                                  data={!dashboard.isLoading.spendVNDBarAdvertiserChannelData ? transformBarChartData(dashboard.spendVNDBarAdvertiserChannelData?.data, dashboard.spendVNDBarAdvertiserChannelData?.colnames) : 'isLoading'}
+                                                  height={CUSTOM_CHART.barChart.height + 50}
+                                                  fontSize={CUSTOM_CHART.barChart.fontSize}
+                                                  fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                                  colors={CUSTOM_CHART.barChart.colorChannel}
+                                                  fontWeight={CUSTOM_CHART.barChart.fontWeight}
+                                                  nameChart={'Top 20 nhà quảng cáo'}
+                                                  description={'Top 20 nhà quảng cáo'}
+                                                  orientation={'horizontal'}
+                                                  displayName={false}
+                                                  colorZoom='yellow'
+                                                  suffix='tr'
+                                              />
+                                          )},
+                                          {id: 'usd', label: 'USD',
+                                          content: (
+                                              <BarChart 
+                                                  data={!dashboard.isLoading.spendUSDBarAdvertiserChannelData ? transformBarChartData(dashboard.spendUSDBarAdvertiserChannelData?.data, dashboard.spendUSDBarAdvertiserChannelData?.colnames) : 'isLoading'}
+                                                  height={CUSTOM_CHART.barChart.height + 50}
+                                                  fontSize={CUSTOM_CHART.barChart.fontSize}
+                                                  fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                                  colors={CUSTOM_CHART.barChart.colorChannel}
+                                                  fontWeight={CUSTOM_CHART.barChart.fontWeight}
+                                                  nameChart={'Top 20 nhà quảng cáo'}
+                                                  description={'Top 20 nhà quảng cáo'}
+                                                  orientation={'horizontal'}
+                                                  displayName={false}
+                                                  colorZoom='yellow'
+                                                  suffix={'$'}
+                                              />
+                                          )},
+                                          {id: 'spot', label: 'SPOT',
+                                          content: (
+                                              <BarChart 
+                                                  data={!dashboard.isLoading.countBarAdvertiserChannelData ? transformBarChartData(dashboard.countBarAdvertiserChannelData?.data, dashboard.countBarAdvertiserChannelData?.colnames) : 'isLoading'}
+                                                  height={CUSTOM_CHART.barChart.height + 50}
+                                                  fontSize={CUSTOM_CHART.barChart.fontSize}
+                                                  fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                                  colors={CUSTOM_CHART.barChart.colorChannel}
+                                                  fontWeight={CUSTOM_CHART.barChart.fontWeight}
+                                                  nameChart={'Top 20 nhà quảng cáo'}
+                                                  description={'Top 20 nhà quảng cáo'}
+                                                  orientation={'horizontal'}
+                                                  displayName={false}
+                                                  colorZoom='yellow'
+                                              />
+                                          )}
+                                          ]} />
+                                      </div>
+                                    </div>
+                                    <div className='w-full pb-6'>
+                                        <ChildTabs tabs={[
+                                        {id: 'brand', label: 'Top 10 nhãn',
+                                        content: (
+                                          <div className={`p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
+                                            <NameChart nameChart={'Top 10 dòng sản phẩm'} description={'Top 10 dòng sản phẩm'} opacity={true} />
+                                            <TableChart data={!dashboard.isLoading.top10BrandData ? transformTableChartData(dashboard.top10BrandData?.data, dashboard.top10BrandData?.colnames, null, ['percent_price', 'percent_count', 'percent_duration', 'percent_grp']) : 'isLoading'}
+                                                  height={CUSTOM_CHART.tableChart.tableChartChannel.height}
+                                                  fontSize={CUSTOM_CHART.tableChart.fontSize}
+                                                  fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                                  fontWeight={CUSTOM_CHART.tableChart.fontWeight}
+                                                  nameChart={'Top 10 nhãn'}
+                                                  description={'Top 10 nhãn'}
+                                                  showSTT={false}
+                                                  showPagination={false}
+                                                  displayName={false}
+                                                  center={true} />
+                                          </div>
+                                        )},
+                                        {id: 'product', label: 'Top 10 dòng sản phẩm',
+                                        content: (
+                                          <div className={`p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
+                                            <NameChart nameChart={'Top 10 dòng sản phẩm'} description={'Top 10 dòng sản phẩm'} opacity={true} />
+                                            <TableChart data={!dashboard.isLoading.top10ProductData ? transformTableChartData(dashboard.top10ProductData?.data, dashboard.top10ProductData?.colnames, null, ['percent_price', 'percent_count', 'percent_duration', 'percent_grp']) : 'isLoading'}
+                                                  height={CUSTOM_CHART.tableChart.tableChartChannel.height}
+                                                  fontSize={CUSTOM_CHART.tableChart.fontSize}
+                                                  fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                                  fontWeight={CUSTOM_CHART.tableChart.fontWeight}
+                                                  nameChart={'Top 10 dòng sản phẩm'}
+                                                  description={'Top 10 dòng sản phẩm'}
+                                                  showSTT={false}
+                                                  showPagination={false}
+                                                  displayName={false}
+                                                  center={true} />
+                                          </div>
+                                        )},
+                                        {id: 'campaign', label: 'Top 10 Chiến dịch',
+                                        content: (
+                                          <div className={`p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
+                                            <NameChart nameChart={'Top 10 Chiến dịch'} description={'Top 10 Chiến dịch'} opacity={true} />
+                                            <TableChart data={!dashboard.isLoading.top10CampaignData ? transformTableChartData(dashboard.top10CampaignData?.data, dashboard.top10CampaignData?.colnames, null, ['percent_price', 'percent_count', 'percent_duration', 'percent_grp']) : 'isLoading'}
+                                              height={CUSTOM_CHART.tableChart.tableChartChannel.height}
+                                              fontSize={CUSTOM_CHART.tableChart.fontSize}
+                                              fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                              fontWeight={CUSTOM_CHART.tableChart.fontWeight}
+                                              nameChart={'Top 10 chiến dịch'}
+                                              description={'Top 10 chiến dịch'}
+                                              showSTT={false}
+                                              showPagination={false}
+                                              displayName={false}
+                                              center={true} />
+                                          </div>
                                         )}
                                         ]} />
                                     </div>
@@ -251,7 +432,7 @@ const DashboardContent = () => {
                               <section className='bg-background-dashboard dark:bg-background-dashboard-dark transiton-all duration-300' id="target_capture_channel">
                                 <InforTab inforTab={"Doanh thu"} />
                                 <InforFilter filters={scopeFilterData} />
-                                <div className='px-6 max-md:px-4 py-6 max-md:py-4'>
+                                <div className='px-6 max-lg:px-5 max-md:px-4 py-6 max-lg:py-5 max-md:py-4'>
                                   
                                 </div>
                               </section>
@@ -262,7 +443,7 @@ const DashboardContent = () => {
                               <section className='bg-background-dashboard dark:bg-background-dashboard-dark transiton-all duration-300' id="target_capture_program">
                                 <InforTab inforTab={"Hiệu quả"} />
                                 <InforFilter filters={scopeFilterData} />
-                                <div className='px-6 max-md:px-4'>
+                                <div className='px-6 max-lg:px-5 max-md:px-4'>
                                   
                                 </div>
                               </section>
@@ -273,7 +454,7 @@ const DashboardContent = () => {
                               <section className='bg-background-dashboard dark:bg-background-dashboard-dark transiton-all duration-300' id="target_capture_rating_by_minute">
                                 <InforTab inforTab={"Rating theo phút - P4+ toàn quốc"} />
                                 <InforFilter filters={scopeFilterData} />
-                                <div className='px-6 max-md:px-4'>
+                                <div className='px-6 max-lg:px-5 max-md:px-4'>
                                   
                                 </div>
                               </section>
@@ -282,7 +463,7 @@ const DashboardContent = () => {
                         ]}
             />
           </div>
-          <div className='px-6 max-md:px-4 max-md:pb-15 bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300'>
+          <div className='px-6 max-lg:px-5 max-md:px-4 max-md:pb-15 bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300'>
             <Footer color='text-color-black-100 dark:text-color-white-90' />
           </div>
         </div>

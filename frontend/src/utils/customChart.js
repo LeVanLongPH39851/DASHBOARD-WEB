@@ -91,6 +91,7 @@ export const CUSTOM_CHART = {
         },
         orientation: 'horizontal'
     },
+    colorChannel: variableCustoms.colorChannel,
     fontWeight: {
         legend: 600, tooltip: 500, axisLabel: 500, dataLabel: 500
     }

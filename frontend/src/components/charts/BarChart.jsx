@@ -23,7 +23,8 @@ const BarChart = ({
   displayName=true,
   enableZoom = true, // Option bật/tắt zoom
   maxVisibleItems = 12,
-  colorZoom = 'yellow'
+  colorZoom = 'yellow',
+  suffix = ''
 }) => {
   
   const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
@@ -52,19 +53,37 @@ const BarChart = ({
   const isHorizontal = orientation === 'horizontal';
 
 
+  const parseDate = (dateStr) => {
+    if (!dateStr || typeof dateStr !== 'string') return new Date(0);
+    
+    // Split dd/mm/yyyy
+    const [day, month, year] = dateStr.split('/').map(Number);
+    return new Date(year, month - 1, day); // month 0-indexed
+  };
 
+  // Detect ngày từ labels
+  const hasDates = labels.some(label => 
+    /^\d{2}\/\d{2}\/\d{4}$/.test(label)
+  );
 
-  // SORT BY TOTAL
   const sorted = React.useMemo(() => {
-    return labels
-      .map((label, index) => {
-        const total = series.reduce(
-          (sum, s) => sum + (s.data?.[index] || 0),
-          0
-        );
-        return { label, index, total };
-      })
-      .sort((a, b) => b.total - a.total);
+    if (hasDates) {
+      // Sort theo ngày tăng dần
+      return labels
+        .map((label, index) => {
+          const total = series.reduce((sum, s) => sum + (s.data?.[index] || 0), 0);
+          return { label, index, total, date: parseDate(label) };
+        })
+        .sort((a, b) => a.date - b.date); // ✅ Ngày tăng dần
+    } else {
+      // Sort by total như cũ
+      return labels
+        .map((label, index) => {
+          const total = series.reduce((sum, s) => sum + (s.data?.[index] || 0), 0);
+          return { label, index, total };
+        })
+        .sort((a, b) => b.total - a.total);
+    }
   }, [labels, series]);
 
 
@@ -126,6 +145,18 @@ const BarChart = ({
     return { labels: sortedLabels, series: sortedSeries };
   }, [sortedLabels, sortedSeries, needsScroll]);
 
+  const getSeriesColor = (seriesItem, idx) => {
+    if (Array.isArray(colors)) {
+      return colors[idx];
+    }
+
+    if (colors && typeof colors === 'object') {
+      return colors[seriesItem.name] || colors[seriesItem.label] || '#5470c6';
+    }
+
+    return '#5470c6';
+  };
+
 
 
 
@@ -163,7 +194,7 @@ const BarChart = ({
                   ${p.marker}
                   <span style="font-weight: 600; font-size: ${!stateGlobals.screen_md ? '12' : '10.5'}px; margin-right: 4px; color: rgba(0, 0, 0, 0.7);">${LABEL_METRIC[p.seriesName] || p.seriesName}:</span> 
                   <span style="font-size: ${!stateGlobals.screen_md ? '12' : '10.5'}px; font-weight: 500; color: rgba(0, 0, 0, 0.7);">
-                    ${p.value.toLocaleString(undefined, { maximumFractionDigits: 0 })}${topSeriesIndex != 0 ? ` <span style="font-size: ${!stateGlobals.screen_md ? '11' : '10'}px;">(${percent}%)</span>` : ''}
+                    ${p.value.toLocaleString(undefined, { maximumFractionDigits: 0 })} ${suffix} ${topSeriesIndex != 0 ? ` <span style="font-size: ${!stateGlobals.screen_md ? '11' : '10'}px;">(${percent}%)</span>` : ''}
                   </span>
                 </div>
               `;
@@ -171,7 +202,7 @@ const BarChart = ({
             ${topSeriesIndex != 0 ? `
               <hr style="margin: ${!stateGlobals.screen_md ? '5' : '4'}px 0; border: none; height: 1px; background: rgba(0, 0, 0, 0.1);">
               <div style="font-weight: 700; color: #059669; font-size: ${!stateGlobals.screen_md ? '12' : '10.5'}px;">
-                <span>Tổng:</span> <span>${total.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
+                <span>Tổng:</span> <span>${total.toLocaleString(undefined, { maximumFractionDigits: 0 })} ${suffix}</span>
               </div>
             ` : ''}
           </div>
@@ -282,7 +313,7 @@ const BarChart = ({
         }
       },
       axisLabel: {
-        formatter: v => !stateGlobals.screen_md ? v.toLocaleString(undefined, { maximumFractionDigits: 0 }) : formatKMB(v),
+        formatter: v => (!stateGlobals.screen_md ? v.toLocaleString(undefined, { maximumFractionDigits: 0 }) : formatKMB(v)) + ' ' + suffix,
         fontSize: !stateGlobals.screen_md ? fontSize.axisLabel : '10.5px',
         color: !stateGlobals.darkMode ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.8)',
         fontWeight: fontWeight.axisLabel,
@@ -335,7 +366,7 @@ const BarChart = ({
         }
       },
       axisLabel: {
-        formatter: v => !stateGlobals.screen_md ? v.toLocaleString(undefined, { maximumFractionDigits: 0 }) : formatKMB(v),
+        formatter: v => (!stateGlobals.screen_md ? v.toLocaleString(undefined, { maximumFractionDigits: 0 }) : formatKMB(v)) + ' ' + suffix,
         fontSize: !stateGlobals.screen_md ? fontSize.axisLabel : '10.5px',
         color: !stateGlobals.darkMode ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.8)',
         fontWeight: fontWeight.axisLabel,
@@ -355,7 +386,7 @@ const BarChart = ({
       barGap: 0,
       barCategoryGap: '25%',
       itemStyle: {
-        color: colors[idx],
+        color: getSeriesColor(s, idx),
         barBorderRadius: isHorizontal ? idx === 0 ? (topSeriesIndex===0 ? [8, 8, 8, 8] : [8, 0, 0, 8]) : (idx === topSeriesIndex ? [0, 8, 8, 0] : 0)
                                       : idx === 0 ? (topSeriesIndex===0 ? [8, 8, 0, 0] : 0) : (idx === topSeriesIndex ? [8, 8, 0, 0] : 0)
       },
@@ -406,7 +437,7 @@ const BarChart = ({
           
           // Chỉ hiện label nếu đây là series cao nhất đang visible
           if (seriesIndex === highestVisibleIndex && total > 0) {
-            return !stateGlobals.screen_md ? total.toLocaleString(undefined, { maximumFractionDigits: 0 }) : formatKMB(total);
+            return (!stateGlobals.screen_md ? total.toLocaleString(undefined, { maximumFractionDigits: 0 }) : formatKMB(total)) + ' ' + suffix;
           }
           return '';
         },

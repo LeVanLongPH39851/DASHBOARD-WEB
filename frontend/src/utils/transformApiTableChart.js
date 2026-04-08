@@ -34,7 +34,7 @@ const mapLabel = (key) => LABEL[key] || key;
  * @param {Array} colnames - Column names array (optional)
  * @returns {Object} - { labels, series }
  */
-export const transformTableChartData = (apiData, colnames = null, columnSort = null) => {
+export const transformTableChartData = (apiData, colnames = null, columnSort = null, hiddenLabels = []) => {
   if (!apiData || !Array.isArray(apiData) || apiData.length === 0) {
     return null;
   }
@@ -57,11 +57,18 @@ export const transformTableChartData = (apiData, colnames = null, columnSort = n
     });
   }
 
+  const hiddenSet = new Set(hiddenLabels);
+
+  const visibleColnames = sortedColnames.filter((colName) => {
+    const mappedLabel = mapLabel(colName);
+    return !hiddenSet.has(colName) && !hiddenSet.has(mappedLabel);
+  });
+
   // Use row indices as labels (dummy labels for table)
   const labels = apiData.map((_, index) => index);
 
   // ALL columns become series (columns in table) with mapped labels + date format
-  const series = sortedColnames.map(colName => ({
+  const series = visibleColnames.map(colName => ({
     name: mapLabel(colName), // Mapping label ở đây
     data: apiData.map(item => formatDate(item[colName] ?? ''))
   }));

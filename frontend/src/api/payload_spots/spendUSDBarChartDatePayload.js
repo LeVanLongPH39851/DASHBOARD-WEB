@@ -1,5 +1,5 @@
 export const spendUSDBarChartDatePayload = {
-  url: 'https://ratings.vtv.vn/api/v1/chart/data?form_data=%7B%22slice_id%22%3A560%7D&dashboard_id=49',
+  url: 'https://ratings.vtv.vn/api/v1/chart/data?form_data=%7B%22slice_id%22%3A600%7D&dashboard_id=49',
   payload: {
     "datasource": {
       "id": 195,
@@ -32,11 +32,11 @@ export const spendUSDBarChartDatePayload = {
           }
         ],
         "metrics": [
-          "price"
+          "price_usd"
         ],
         "orderby": [
           [
-            "price",
+            "price_usd",
             false
           ]
         ],
@@ -58,7 +58,7 @@ export const spendUSDBarChartDatePayload = {
               ],
               "columns": [],
               "aggregates": {
-                "price": {
+                "price_usd": {
                   "operator": "mean"
                 }
               },
@@ -74,7 +74,7 @@ export const spendUSDBarChartDatePayload = {
     "form_data": {
       "datasource": "195__table",
       "viz_type": "echarts_timeseries_bar",
-      "slice_id": 560,
+      "slice_id": 600,
       "url_params": {},
       "x_axis": "date",
       "time_grain_sqla": "P1D",
@@ -82,7 +82,7 @@ export const spendUSDBarChartDatePayload = {
       "x_axis_sort_series": "name",
       "x_axis_sort_series_ascending": true,
       "metrics": [
-        "price"
+        "price_usd"
       ],
       "groupby": [],
       "adhoc_filters": [
@@ -105,8 +105,8 @@ export const spendUSDBarChartDatePayload = {
       "orientation": "vertical",
       "x_axis_title": "",
       "x_axis_title_margin": 15,
-      "y_axis_title": "Chi phí (Triệu VND)",
-      "y_axis_title_margin": "65",
+      "y_axis_title": "Chi phí (US$)",
+      "y_axis_title_margin": "85",
       "y_axis_title_position": "Left",
       "sort_series_type": "sum",
       "color_scheme": "supersetColors",
@@ -119,7 +119,9 @@ export const spendUSDBarChartDatePayload = {
       "legendOrientation": "top",
       "x_axis_time_format": "%d/%m/%Y",
       "y_axis_format": ",.2f",
-      "currency_format": {},
+      "currency_format": {
+        "symbol": "USD"
+      },
       "y_axis_bounds": [
         null,
         null
@@ -135,7 +137,7 @@ export const spendUSDBarChartDatePayload = {
       "extra_form_data": {
         "time_range": "DATEADD(DATETIME(\"today\"),-2, DAY) : DATEADD(DATETIME(\"today\"),-1, SECOND)"
       },
-      "chart_id": 560,
+      "chart_id": 600,
       "label_colors": {
         "price": "#ffd04c",
         "price_usd": "#ffd04c",

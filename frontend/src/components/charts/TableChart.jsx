@@ -44,7 +44,8 @@ const TableChart = ({
   showSTT,
   showPagination,
   displayName=true,
-  center=false
+  center=false,
+  fullScreen=false
 }) => {
 
   const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
@@ -52,7 +53,7 @@ const TableChart = ({
   if(data==='isLoading') {
     return (
       <div className={`${displayName ? 'p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : '' }`} style={{ fontFamily }}>
-        <NameChart nameChart={nameChart} description={description} display={displayName} />
+        <NameChart nameChart={nameChart} description={description} display={displayName} fullScreen={fullScreen} />
         <div className='h-13 max-md:h-9.25'></div>
         <Loading height={!stateGlobals.screen_md ? height : stateGlobals.currentTab == 'program' ? '300px'  : '240px'} />
       </div>
@@ -60,7 +61,7 @@ const TableChart = ({
   } else if (!data) {
     return (
       <div className={`${displayName ? 'p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : '' }`} style={{ fontFamily }}>
-        <NameChart nameChart={nameChart} description={description} display={displayName} />
+        <NameChart nameChart={nameChart} description={description} display={displayName} fullScreen={fullScreen} />
         <div className='h-13 max-md:h-9.25'></div>
         <NoData height={!stateGlobals.screen_md ? height : stateGlobals.currentTab == 'program' ? '300px'  : '240px'} />
       </div>
@@ -299,10 +300,10 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
       el.removeEventListener('scroll', handleScroll);
     };
   }, []);
-  
+
   return (
-    <div className={`${displayName ? 'p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : '' }`} style={{ fontFamily }}>
-      <NameChart nameChart={nameChart} description={description} display={displayName} getChartData={getEChartsData} table={true} />
+    <div className={`${displayName ? `p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component` : '' }`} style={{ fontFamily }}>
+      <NameChart nameChart={nameChart} description={description} display={displayName} getChartData={getEChartsData} table={true} fullScreen={fullScreen} />
       <div className="flex justify-between items-center mb-3 max-md:mb-1">
         <div className='flex items-center gap-2 max-md:gap-1'>
           <div className={`relative`}>
@@ -372,7 +373,7 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
 
 
       {/* Table Container */}
-      <div>
+      <div className='table-container'>
         <div className="overflow-hidden">
           <div
             ref={tableScrollRef}

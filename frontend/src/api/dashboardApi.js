@@ -151,7 +151,7 @@ export const getRatingLineChartMinuteChannel = (appliedFilters) =>
   postChart(payloads.ratingLineChartMinuteChannelPayload, appliedFilters, ['eventFilters', 'timebandFilters', 'firstLevelFilters', 'startHourFilters', 'startMinuteFilters'])
 
 export const getRatingLineChartMinuteChannelOneDate = (appliedFilters) =>
-  postChart(payloads.ratingLineChartMinuteChannelOneDatePayload, appliedFilters, ['eventFilters', 'timebandFilters', 'firstLevelFilters', 'startHourFilters', 'startMinuteFilters', 'overwriteChannelFilters'])
+  postChart(payloads.ratingLineChartMinuteChannelOneDatePayload, appliedFilters, ['eventFilters', 'timebandFilters', 'firstLevelFilters', 'startHourFilters', 'startMinuteFilters', 'overwriteChannelFilters', 'oneDateFilters'])
 
 export const getRatingLineChartMinuteChannelDates = (appliedFilters) =>
   postChart(payloads.ratingLineChartMinuteChannelDatesPayload, appliedFilters, ['eventFilters', 'timebandFilters', 'firstLevelFilters', 'startHourFilters', 'startMinuteFilters', 'overwriteChannelFilters'])

@@ -32,7 +32,7 @@ export const LABEL = {
   '%percent_price': '%Share of spend',
   '%percent_count': '%Share of spot',
   '%percent_duration': '%Share of airtime',
-  '%percent_grp': '%Share of voice',
+  '%percent_grp': '%Share of voice'
 };
 
 export const LABEL_METRIC = {

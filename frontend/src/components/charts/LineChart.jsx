@@ -1,7 +1,7 @@
 // LineChart.jsx - showTopNSeries = 0: ẩn value, null: hiện hết
 import React, { memo, useRef, useMemo, useState, useEffect, useCallback } from 'react';
 import ReactECharts from 'echarts-for-react';
-import NumberChart from '../layouts/components/NameChart';
+import NameChart from '../layouts/components/NameChart';
 import Loading from '../commons/Loading';
 import { formatKMB } from '../../utils/formatNumber';
 import { useDashboardStateGlobals } from '../../context/DashboardFilterContext';
@@ -28,7 +28,8 @@ const LineChart = ({
   left=145,
   legendTop=false,
   KMB=true,
-  xAxisTitle=false
+  xAxisTitle=false,
+  fullScreen=false
 }) => {
 
   const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
@@ -36,14 +37,14 @@ const LineChart = ({
   if(data==='isLoading') {
     return (
       <div className='p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
-        <NumberChart nameChart={nameChart} description={description}/>
+        <NameChart nameChart={nameChart} description={description} fullScreen={fullScreen} />
         <Loading height={!stateGlobals.screen_md ? height : 240} />
       </div>
     );
   } else if (!data.labels.length > 0) {
     return (
       <div className='p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
-        <NumberChart nameChart={nameChart} description={description}/>
+        <NameChart nameChart={nameChart} description={description} fullScreen={fullScreen} />
         <NoData height={!stateGlobals.screen_md ? height : 240} />
       </div>
     );
@@ -463,7 +464,7 @@ const LineChart = ({
 
   return (
     <div className='p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
-      <NumberChart nameChart={nameChart} description={description} getChartData={getEChartsData}/>
+      <NameChart nameChart={nameChart} description={description} getChartData={getEChartsData} fullScreen={fullScreen} />
         <ReactECharts 
           ref={chartRef}
           option={option} 

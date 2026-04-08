@@ -13,9 +13,10 @@ import iconList from '../../../assets/icon_list.png';
 import iconListDark from '../../../assets/icon_list_dark.png';
 import { useDashboardStateGlobals } from '../../../context/DashboardFilterContext';
 import { useCurrentUser } from '../../../hooks/useCurrentUser';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faExpand } from '@fortawesome/free-solid-svg-icons';
 
-
-const NameChart = ({ nameChart, description, icon=false, width='', height='', backgound='', display=true, opacity=false, getChartData=null, table=false }) => {
+const NameChart = ({ nameChart, description, icon=false, width='', height='', backgound='', display=true, opacity=false, getChartData=null, table=false, fullScreen=false }) => {
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { user, userLoading } = useCurrentUser();
@@ -53,6 +54,23 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
     if (!event.currentTarget) return;
     const chartParent = event.currentTarget.closest('.shadow-component');
     chartParent.classList.add('hidden');
+  };
+
+  const handlefullScreen = (event) => {
+    if (!event.currentTarget) return;
+    const chartParent = event.currentTarget.closest('.shadow-component');
+    chartParent.classList.toggle('fixed');
+    chartParent.classList.toggle('z-9999999');
+    chartParent.classList.toggle('inset-0');
+    const tableContainer = chartParent.querySelector('.table-container');
+    if (tableContainer) {
+      const heightTable = tableContainer.firstElementChild.firstElementChild;
+      heightTable.classList.toggle('fullscreen-table');
+    } else {
+      chartParent.lastElementChild.classList.toggle('fullscreen-canvas');
+      chartParent.lastElementChild.firstElementChild.classList.toggle('fullscreen-canvas');
+      chartParent.lastElementChild.firstElementChild.firstElementChild.classList.toggle('fullscreen-canvas');
+    }
   };
 
   const handleChartCapture = async (event) => {
@@ -412,7 +430,14 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
           <span>{nameChart}</span>
           {description && <IconInfor description={description} />}
         </div>
-        <div className='flex gap-1 div-hideen max-md:hidden'>
+        <div className='flex gap-1 items-center div-hideen max-md:hidden'>
+          {(!userLoading && user?.username !== 'vtvguest' && fullScreen) &&
+            (
+              <figure className='p-2 cursor-pointer' onClick={handlefullScreen}>
+                <FontAwesomeIcon icon={faExpand} fontSize={15} color={!stateGlobals.darkMode ? 'rgba(31, 31, 31, 1)' : 'rgba(255, 255, 255, 0.8)'} />
+              </figure>
+            )
+          }
           {(!userLoading && user?.username !== 'vtvguest') &&
           (<figure ref={!stateGlobals.screen_md ? buttonRef : undefined} className='p-2 cursor-pointer relative' onClick={handleToggle}>
             <img src={!stateGlobals.darkMode ? iconDownloadDark : iconDownloadDarkDark} alt="Icon Download" className='w-3.25' />

@@ -24,6 +24,7 @@ var variableCustoms = {
     },
     colorFirstLevel: {
     "Thời sự - Chính luận": "#6BD3B3",
+    "Phim điện ảnh": "#FCC550",
     "Phim dài tập": "#FCC550",
     "Đời sống": "#EE5960",
     "Tài liệu - Phóng sự": "#408184",
@@ -32,6 +33,7 @@ var variableCustoms = {
     "Dành cho trẻ em": "#ffb2f3",
     "Thể thao": "#FF874E",
     "Sự kiện": "#03748E",
+    "Sự kiện - Đặc biệt": "#03748E",
     "Quảng bá": "#8c564a",
     "Phim truyện": "#C9BBAB",
     "Quảng cáo": "#B17BAA"
@@ -197,7 +199,7 @@ export const CUSTOM_CHART = {
   },
   lineChart: {
     height: '399px',
-    heightMinute: '420px',
+    heightMinute: '430px',
     fontSize: {
       legend: 12, tooltip: 12, axisLabel: 12, dataLabel: 12
     },

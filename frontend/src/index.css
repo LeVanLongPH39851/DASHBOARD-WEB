@@ -172,3 +172,11 @@ html.dark body::-webkit-scrollbar-thumb, html.dark #filter::-webkit-scrollbar-th
 .slick-dots {
   bottom: -30px !important;
 }
+
+.fullscreen-table {
+  height: 1000px !important;
+}
+
+.fullscreen-canvas {
+  height: calc(100vh - 102px) !important;
+}

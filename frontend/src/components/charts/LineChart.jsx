@@ -154,6 +154,12 @@ const LineChart = ({
     if (!chart) return;
 
     const handleLegendSelectChanged = (params) => {
+      chart.setOption({
+        legend: {
+          selected: params.selected
+        }
+      }, { notMerge: false });
+
       setSelectedSeries(params.selected);
     };
 
@@ -163,6 +169,20 @@ const LineChart = ({
       chart.off('legendselectchanged', handleLegendSelectChanged);
     };
   }, []);
+
+  useEffect(() => {
+    const chart = chartRef.current?.getEchartsInstance();
+    if (chart && Object.keys(selectedSeries).length > 0) {
+      chart.setOption(
+        {
+          legend: {
+            selected: selectedSeries
+          }
+        },
+        { notMerge: false }
+      );
+    }
+  }, [selectedSeries]);
 
   const option = {
     color: legendData.map(name => {
@@ -284,6 +304,7 @@ const LineChart = ({
       left: 0,                  // ✅ Canh trái (theo padding X của grid)
       right: 0,                 // Giữ khoảng cách bên phải giống grid
       align: 'left',
+      selected: selectedSeries,
       itemWidth: !stateGlobals.screen_md ? 14 : 10,
       itemHeight: 10,
       icon: 'circle',

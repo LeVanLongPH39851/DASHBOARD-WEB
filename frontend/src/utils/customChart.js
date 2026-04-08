@@ -121,7 +121,7 @@ export const CUSTOM_CHART = {
         pagination: false
     },
     tableProgramChannel: {
-        height: '550px',
+        height: '580px',
         programRank: {
           name: 'XẾP HẠNG chương trình theo các chỉ số',
           description: false,

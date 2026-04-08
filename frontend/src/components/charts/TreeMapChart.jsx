@@ -127,8 +127,6 @@ const TreeMapChart = ({
 
   const treeData = transformData(data);
 
-  console.log(treeData);
-
   const totalValue = treeData.reduce((sum, item) => {
     if (item.children) {
       return sum + item.children.reduce((s, c) => s + (c.value || 0), 0);

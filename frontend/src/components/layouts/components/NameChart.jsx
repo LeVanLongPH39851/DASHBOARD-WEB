@@ -420,9 +420,9 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
                     <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-90'} src={iconIMG}
                             widthImage='w-4' alt='Icon Instruct' text={'Tải Ảnh'} click={!isFirefox ? handleChartCapture : handleChartCaptureFireFox} />
                 </div>
-                <div className='hover:bg-background-black-4 dark:hover:bg-background-hover-dark transition-all duration-300'>
+                <div onClick={table ? handleChartExcelTable : handleChartExcel} className='hover:bg-background-black-4 dark:hover:bg-background-hover-dark transition-all duration-300'>
                     <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-90'} src={iconExcel}
-                    widthImage='w-4' alt='Icon Instruct' text={'Tải Excel'} click={table ? handleChartExcelTable : handleChartExcel} />
+                    widthImage='w-4' alt='Icon Instruct' text={'Tải Excel'} />
                 </div>
             </div>
           </figure>)}
@@ -439,9 +439,9 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
                             widthImage='w-4 max-md:w-3.5' alt='Icon Instruct' text={'Tải Ảnh'} click={!isFirefox ? handleChartCapture : handleChartCaptureFireFox} />
                 </div>)}
                 {(!userLoading && user?.username !== 'vtvguest') &&
-                (<div className='hover:bg-background-black-4 dark:hover:bg-background-hover-dark transition-all duration-300'>
+                (<div onClick={table ? handleChartExcelTable : handleChartExcel} className='hover:bg-background-black-4 dark:hover:bg-background-hover-dark transition-all duration-300'>
                     <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-90'} src={iconExcel}
-                    widthImage='w-4 max-md:w-3.5' alt='Icon Instruct' text={'Tải Excel'} click={table ? handleChartExcelTable : handleChartExcel} />
+                    widthImage='w-4 max-md:w-3.5' alt='Icon Instruct' text={'Tải Excel'} />
                 </div>)}
                 <div className='hover:bg-background-black-4 dark:hover:bg-background-hover-dark transition-all duration-300'>
                     <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-90'} src={!stateGlobals.darkMode ? iconEyeHidden : iconEyeHiddenDark}

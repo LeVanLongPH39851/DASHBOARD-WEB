@@ -85,6 +85,7 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
     errorSpan.classList.add('hidden');
     divTables.forEach(table => table?.classList.replace('overflow-hidden', 'overflow-auto'));
     errorSpan.textContent = '';
+    setIsDropdownOpen(false);
   };
 
   const isFirefox = /firefox/i.test(navigator.userAgent);
@@ -141,6 +142,7 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
       errorSpan.classList.add('hidden');
       errorSpan.textContent = '';
       divTables.forEach(table => table?.classList.replace('overflow-hidden', 'overflow-auto'));
+      setIsDropdownOpen(false);
     }
   };
 
@@ -292,7 +294,6 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
 
     } catch (error) {
       console.error('Excel export error:', error);
-      errorSpan.textContent = 'Export lỗi!';
     } finally {
         setIsDropdownOpen(false);
     }
@@ -396,7 +397,7 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
 
     } catch (error) {
         console.error('Excel export error:', error);
-        errorSpan.textContent = 'Export lỗi!';
+
     } finally {
         setIsDropdownOpen(false);
     }
@@ -413,12 +414,12 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
         </div>
         <div className='flex gap-1 div-hideen max-md:hidden'>
           {(!userLoading && user?.username !== 'vtvguest') &&
-          (<figure ref={buttonRef} className='p-2 cursor-pointer relative' onClick={handleToggle}>
+          (<figure ref={!stateGlobals.screen_md ? buttonRef : undefined} className='p-2 cursor-pointer relative' onClick={handleToggle}>
             <img src={!stateGlobals.darkMode ? iconDownloadDark : iconDownloadDarkDark} alt="Icon Download" className='w-3.25' />
-            <div ref={dropdownRef} className={`${isDropdownOpen ? 'scale-100 opacity-100 origin-top' : 'scale-0 opacity-0 origin-top'} left-1/2 -translate-x-1/2 transition-all duration-300 absolute z-20 top-full bg-background-light dark:bg-background-dark dark:border-background-white-15 flex flex-col border border-border-black-10 rounded-xl w-28 overflow-hidden`}>
-                <div className='hover:bg-background-black-4 dark:hover:bg-background-hover-dark transition-all duration-300'>
+            <div ref={!stateGlobals.screen_md ? dropdownRef : undefined} className={`${isDropdownOpen ? 'scale-100 opacity-100 origin-top' : 'scale-0 opacity-0 origin-top'} left-1/2 -translate-x-1/2 transition-all duration-300 absolute z-20 top-full bg-background-light dark:bg-background-dark dark:border-background-white-15 flex flex-col border border-border-black-10 rounded-xl w-28 overflow-hidden`}>
+                <div onClick={!isFirefox ? handleChartCapture : handleChartCaptureFireFox} className='hover:bg-background-black-4 dark:hover:bg-background-hover-dark transition-all duration-300'>
                     <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-90'} src={iconIMG}
-                            widthImage='w-4' alt='Icon Instruct' text={'Tải Ảnh'} click={!isFirefox ? handleChartCapture : handleChartCaptureFireFox} />
+                            widthImage='w-4' alt='Icon Instruct' text={'Tải Ảnh'} />
                 </div>
                 <div onClick={table ? handleChartExcelTable : handleChartExcel} className='hover:bg-background-black-4 dark:hover:bg-background-hover-dark transition-all duration-300'>
                     <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-90'} src={iconExcel}
@@ -430,13 +431,13 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
           </figure>
         </div>
         <div className='hidden div-hideen max-md:block'>
-          <figure ref={buttonRef} className='p-2 max-md:px-0 cursor-pointer relative' onClick={handleToggle}>
+          <figure ref={stateGlobals.screen_md ? buttonRef : undefined} className='p-2 max-md:px-0 cursor-pointer relative' onClick={handleToggle}>
             <img src={!stateGlobals.darkMode ? iconList : iconListDark} alt="Icon List" className='w-2.75' />
-            <div ref={dropdownRef} className={`${isDropdownOpen ? 'scale-100 opacity-100 origin-top max-md:origin-top-right' : 'scale-0 opacity-0 origin-top max-md:origin-top-right'} left-1/2 -translate-x-1/2 max-md:left-auto max-md:translate-x-0 max-md:right-0 transition-all duration-300 absolute z-20 top-full bg-background-light dark:bg-background-dark dark:border-background-white-15 flex flex-col border border-border-black-10 rounded-xl w-28 overflow-hidden`}>
+            <div ref={stateGlobals.screen_md ? dropdownRef : undefined} className={`${isDropdownOpen ? 'scale-100 opacity-100 origin-top max-md:origin-top-right' : 'scale-0 opacity-0 origin-top max-md:origin-top-right'} left-1/2 -translate-x-1/2 max-md:left-auto max-md:translate-x-0 max-md:right-0 transition-all duration-300 absolute z-20 top-full bg-background-light dark:bg-background-dark dark:border-background-white-15 flex flex-col border border-border-black-10 rounded-xl w-28 overflow-hidden`}>
                 {(!userLoading && user?.username !== 'vtvguest') &&
-                (<div className='hover:bg-background-black-4 dark:hover:bg-background-hover-dark transition-all duration-300'>
+                (<div onClick={!isFirefox ? handleChartCapture : handleChartCaptureFireFox} className='hover:bg-background-black-4 dark:hover:bg-background-hover-dark transition-all duration-300'>
                     <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-90'} src={iconIMG}
-                            widthImage='w-4 max-md:w-3.5' alt='Icon Instruct' text={'Tải Ảnh'} click={!isFirefox ? handleChartCapture : handleChartCaptureFireFox} />
+                            widthImage='w-4 max-md:w-3.5' alt='Icon Instruct' text={'Tải Ảnh'} />
                 </div>)}
                 {(!userLoading && user?.username !== 'vtvguest') &&
                 (<div onClick={table ? handleChartExcelTable : handleChartExcel} className='hover:bg-background-black-4 dark:hover:bg-background-hover-dark transition-all duration-300'>

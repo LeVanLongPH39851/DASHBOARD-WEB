@@ -337,27 +337,27 @@ const BreadCrumb = () => {
                 </a>
                 {(!userLoading && user?.username !== 'vtvguest') &&
                 (<div className='relative'>
-                    <div ref={buttonRef}>
+                    <div ref={!stateGlobals.screen_md ? buttonRef : undefined}>
                         <Button background={'bg-color-black-100 dark:bg-background-primary'} color={'text-color-white-90 dark:text-color-black-100'} src={!stateGlobals.darkMode ? iconDownload : iconDownloadDark}
                             widthImage='w-3.5 max-lg:w-3' heightImage='h-3.5 max-lg:h-3' alt='Icon Download' text={'Tải xuống'} click={handleToggle}/>
                     </div>
-                    <div ref={dropdownRef} className={`${isDropdownOpen ? 'scale-100 opacity-100 origin-top' : 'scale-0 opacity-0 origin-top'} transition-all duration-300 absolute top-full left-0 bg-background-light dark:bg-background-dark flex flex-col border border-border-black-10 dark:border-background-white-15 rounded-xl w-full overflow-hidden`}>
-                            <div className='hover:bg-background-black-4 dark:hover:bg-color-black-70 transition-all duration-300'>
+                    <div ref={!stateGlobals.screen_md ? dropdownRef : undefined} className={`${isDropdownOpen ? 'scale-100 opacity-100 origin-top' : 'scale-0 opacity-0 origin-top'} transition-all duration-300 absolute top-full left-0 bg-background-light dark:bg-background-dark flex flex-col border border-border-black-10 dark:border-background-white-15 rounded-xl w-full overflow-hidden`}>
+                            <div onClick={!isFirefox ? handleCapture : handleCaptureFireFox} className='hover:bg-background-black-4 dark:hover:bg-color-black-70 transition-all duration-300'>
                                 <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-80'} src={iconIMG}
-                                        widthImage='w-4 max-lg:w-3.75' alt='Icon Instruct' text={'Tải Ảnh'} click={!isFirefox ? handleCapture : handleCaptureFireFox} />
+                                        widthImage='w-4 max-lg:w-3.75' alt='Icon Instruct' text={'Tải Ảnh'} />
                             </div>
-                            <div className='hover:bg-background-black-4 dark:hover:bg-color-black-70 transition-all duration-300'>
+                            <div onClick={!isFirefox ? handlePDF : handlePDFFireFox} className='hover:bg-background-black-4 dark:hover:bg-color-black-70 transition-all duration-300'>
                                 <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-80'} src={iconPDF}
-                                widthImage='w-4 max-lg:w-3.75' alt='Icon Instruct' text={'Tải PDF'} click={!isFirefox ? handlePDF : handlePDFFireFox} />
+                                widthImage='w-4 max-lg:w-3.75' alt='Icon Instruct' text={'Tải PDF'} />
                             </div>
                     </div>
                 </div>)}
             </div>
             <div className='hidden max-md:block relative'>
-                <figure ref={buttonRef} className='cursor-pointer p-2' onClick={handleToggle}>
+                <figure ref={stateGlobals.screen_md ? buttonRef : undefined} className='cursor-pointer p-2' onClick={handleToggle}>
                     <img src={!stateGlobals.darkMode ? iconList : iconListDark} className='w-3.5' alt="Icon List" />
                 </figure>
-                <div ref={dropdownRef} className={`${isDropdownOpen ? 'scale-100 opacity-100 origin-top-right' : 'scale-0 opacity-0 origin-top-right'} transition-all duration-300 absolute top-full right-0 bg-background-light dark:bg-background-dark flex flex-col border border-border-black-10 dark:border-background-white-15 rounded-xl w-33.75 overflow-hidden`}>
+                <div ref={stateGlobals.screen_md ? dropdownRef : undefined} className={`${isDropdownOpen ? 'scale-100 opacity-100 origin-top-right' : 'scale-0 opacity-0 origin-top-right'} transition-all duration-300 absolute top-full right-0 bg-background-light dark:bg-background-dark flex flex-col border border-border-black-10 dark:border-background-white-15 rounded-xl w-33.75 overflow-hidden`}>
                         {/* <div className='hover:bg-background-black-4 dark:hover:bg-color-black-70 transition-all duration-300'>
                             <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-80'} src={!stateGlobals.darkMode ? iconDisplay : iconDisplayDark}
                             widthImage='w-3.75 max-md:w-3' heightImage='h-3.75 max-md:h-3' alt='Icon Display' text={'Quản lý hiển thị'} />
@@ -371,11 +371,11 @@ const BreadCrumb = () => {
                             </a>
                         </div>)}
                         {(!userLoading && user?.username !== 'vtvguest') &&
-                        (<div className='hover:bg-background-black-4 dark:hover:bg-color-black-70 transition-all duration-300'>
+                        (<div onClick={!isFirefox ? handleCapture : handleCaptureFireFox} className='hover:bg-background-black-4 dark:hover:bg-color-black-70 transition-all duration-300'>
                             <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-80'} src={iconIMG}
-                                        widthImage='w-4 max-md:w-3.5' alt='Icon Instruct' text={'Tải Ảnh'} click={!isFirefox ? handleCapture : handleCaptureFireFox} />
+                                        widthImage='w-4 max-md:w-3.5' alt='Icon Instruct' text={'Tải Ảnh'} />
                         </div>)}
-                        <div className='hover:bg-background-black-4 dark:hover:bg-color-black-70 transition-all duration-300'>
+                        <div onClick={!isFirefox ? handlePDF : handlePDFFireFox} className='hover:bg-background-black-4 dark:hover:bg-color-black-70 transition-all duration-300'>
                             <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-80'} src={iconPDF}
                                 widthImage='w-4 max-md:w-3.5' alt='Icon Instruct' text={'Tải PDF'} click={!isFirefox ? handlePDF : handlePDFFireFox} />
                         </div>

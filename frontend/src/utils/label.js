@@ -22,7 +22,17 @@ export const LABEL = {
   'name_vn': 'MÔ TẢ',
   'description': 'TÊN/TẬP',
   'start_time': 'THỜI GIAN\nBẮT ĐẦU',
-  'end_time': 'THỜI GIAN\nKẾT THÚC'
+  'end_time': 'THỜI GIAN\nKẾT THÚC',
+  'brand': 'Nhãn',
+  'product': 'Sản phẩm',
+  'campaign_name': 'Chiến dịch',
+  'price': 'Chi phí (VND)',
+  'price_usd': 'Chi phí (USD)',
+  'count': 'Số lượng',
+  '%percent_price': '%Share of spend',
+  '%percent_count': '%Share of spot',
+  '%percent_duration': '%Share of airtime',
+  '%percent_grp': '%Share of voice',
 };
 
 export const LABEL_METRIC = {

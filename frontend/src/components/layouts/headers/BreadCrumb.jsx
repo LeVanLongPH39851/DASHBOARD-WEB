@@ -43,8 +43,10 @@ const BreadCrumb = () => {
     inforTabSticky?.classList.replace('duration-300', 'duration-delete');
     inforFilterSticky?.classList.replace('duration-300', 'duration-delete');
     inforTabSticky?.classList.replace('top-34', 'top-0');
+    inforTabSticky.classList.replace('max-lg:top-[111.93px]', 'max-lg:top-0');
     inforTabSticky?.classList.replace('max-md:top-18', 'max-md:top-0');
     inforFilterSticky?.classList.replace('top-46', 'top-12');
+    inforFilterSticky.classList.replace('max-lg:top-[155.93px]', 'max-lg:top-11');
     inforFilterSticky?.classList.replace('max-md:top-28', 'max-md:top-10');
     divTables.forEach(table => table?.classList.replace('overflow-auto', 'overflow-hidden'));
 
@@ -61,8 +63,10 @@ const BreadCrumb = () => {
     inforTabSticky?.classList.replace('duration-delete', 'duration-300');
     inforFilterSticky?.classList.replace('duration-delete', 'duration-300');
     inforTabSticky?.classList.replace('top-0', 'top-34');
+    inforTabSticky.classList.replace('max-lg:top-0', 'max-lg:top-[111.93px]');
     inforTabSticky?.classList.replace('max-md:top-0', 'max-md:top-18');
     inforFilterSticky?.classList.replace('top-12', 'top-46');
+    inforFilterSticky.classList.replace('max-lg:top-11', 'max-lg:top-[155.93px]');
     inforFilterSticky?.classList.replace('max-md:top-10', 'max-md:top-28');
     divTables?.forEach(table => table?.classList.replace('overflow-hidden', 'overflow-auto'));
     if (exportTime) exportTime.textContent = '';
@@ -86,8 +90,10 @@ const BreadCrumb = () => {
         inforTabSticky.classList.replace('duration-300', 'duration-delete');
         inforFilterSticky.classList.replace('duration-300', 'duration-delete');
         inforTabSticky.classList.replace('top-34', 'top-0');
+        inforTabSticky.classList.replace('max-lg:top-[111.93px]', 'max-lg:top-0');
         inforTabSticky.classList.replace('max-md:top-18', 'max-md:top-0');
         inforFilterSticky.classList.replace('top-46', 'top-12');
+        inforFilterSticky.classList.replace('max-lg:top-[155.93px]', 'max-lg:top-11');
         inforFilterSticky.classList.replace('max-md:top-28', 'max-md:top-10');
         divTables.forEach(table => table?.classList.replace('overflow-auto', 'overflow-hidden'));
         const now = new Date();
@@ -112,8 +118,10 @@ const BreadCrumb = () => {
         inforTabSticky.classList.replace('duration-delete', 'duration-300');
         inforFilterSticky.classList.replace('duration-delete', 'duration-300');
         inforTabSticky.classList.replace('top-0', 'top-34');
+        inforTabSticky.classList.replace('max-lg:top-0', 'max-lg:top-[111.93px]');
         inforTabSticky.classList.replace('max-md:top-0', 'max-md:top-18');
         inforFilterSticky.classList.replace('top-12', 'top-46');
+        inforFilterSticky.classList.replace('max-lg:top-11', 'max-lg:top-[155.93px]');
         inforFilterSticky.classList.replace('max-md:top-10', 'max-md:top-28');
         divTables.forEach(table => table?.classList.replace('overflow-hidden', 'overflow-auto'));
         exportTime.textContent = '';
@@ -137,8 +145,10 @@ const BreadCrumb = () => {
         inforTabSticky.classList.replace('duration-300', 'duration-delete');
         inforFilterSticky.classList.replace('duration-300', 'duration-delete');
         inforTabSticky.classList.replace('top-34', 'top-0');
+        inforTabSticky.classList.replace('max-lg:top-[111.93px]', 'max-lg:top-0');
         inforTabSticky.classList.replace('max-md:top-18', 'max-md:top-0');
         inforFilterSticky.classList.replace('top-46', 'top-12');
+        inforFilterSticky.classList.replace('max-lg:top-[155.93px]', 'max-lg:top-11');
         inforFilterSticky.classList.replace('max-md:top-28', 'max-md:top-10');
         divTables.forEach(table => table?.classList.replace('overflow-auto', 'overflow-hidden'));
         const now = new Date();
@@ -186,8 +196,10 @@ const BreadCrumb = () => {
             inforTabSticky.classList.replace('duration-delete', 'duration-300');
             inforFilterSticky.classList.replace('duration-delete', 'duration-300');
             inforTabSticky.classList.replace('top-0', 'top-34');
+            inforTabSticky.classList.replace('max-lg:top-0', 'max-lg:top-[111.93px]');
             inforTabSticky.classList.replace('max-md:top-0', 'max-md:top-18');
             inforFilterSticky.classList.replace('top-12', 'top-46');
+            inforFilterSticky.classList.replace('max-lg:top-11', 'max-lg:top-[155.93px]');
             inforFilterSticky.classList.replace('max-md:top-10', 'max-md:top-28');
             divTables.forEach(table => table?.classList.replace('overflow-hidden', 'overflow-auto'));
             exportTime.textContent = '';

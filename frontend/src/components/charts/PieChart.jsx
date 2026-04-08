@@ -18,6 +18,8 @@ const PieChart = ({
   donut, // true = donut chart, false = pie chart
   innerRadius, // % cho donut
   labelDisplay = 'percent', // NEW: 'percent', 'label', 'label-percent', 'percent-label'
+  formatterValue = 0,
+  suffix=''
 }) => {
 
   const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
@@ -125,7 +127,7 @@ const PieChart = ({
               ${params.marker} ${params.name}
             </div>
             <div style="font-weight: 700; color: #059669; font-size: ${!stateGlobals.screen_md ? '12' : '10.5'}px;">
-              ${params.value.toLocaleString(undefined, { maximumFractionDigits: (nameChart.includes('%') ? 2 : 0) })} <span style="font-size: 11px">(${(percent || 0).toFixed(2)}%)</span>
+              ${params.value.toLocaleString(undefined, { maximumFractionDigits: (nameChart.includes('%') || formatterValue > 0 ? 2 : 0) })} ${suffix} <span style="font-size: 11px">(${(percent || 0).toFixed(2)}%)</span>
             </div>
           </div>
         `;

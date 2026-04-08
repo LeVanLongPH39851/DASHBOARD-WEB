@@ -82,7 +82,7 @@ const InforFilter = ({ filters }) => {
   }, []);
   
   return (
-    <section id='inforFilterSticky' className='mx-6 max-lg:mx-5 max-md:mx-4 bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300 sticky top-46 max-lg:top-[157.93px] max-md:top-28 rounded-b-2xl' style={{zIndex: 100}}>
+    <section id='inforFilterSticky' className='mx-6 max-lg:mx-5 max-md:mx-4 bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300 sticky top-46 max-lg:top-[155.93px] max-md:top-28 rounded-b-2xl' style={{zIndex: 100}}>
       <div id='inforFilterRelative' className='transition-all duration-300 w-full'>
         <div id='inforFilter' className={`px-6 max-lg:px-5 max-md:px-4 py-4 max-lg:py-3 max-md:py-2.5 bg-background-light dark:bg-background-chart-dark w-full border transition-all duration-300 absolute left-0 border-border-black-10 dark:border-background-white-15 rounded-2xl ${stateGlobals.isInfor ? 'visible opacity-100 top-0' : 'invisible opacity-0 -top-1/2'}`}>
           <div className='flex gap-2 mb-2.5 max-lg:mb-2 max-md:mb-1.5'>

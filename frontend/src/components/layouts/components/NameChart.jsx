@@ -143,7 +143,6 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
   };
 
   const handleChartExcel = async (event) => {
-    setIsDropdownOpen(false);
     if (!event.currentTarget) return;
 
     const chartData = getChartData();
@@ -291,11 +290,12 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
     } catch (error) {
       console.error('Excel export error:', error);
       errorSpan.textContent = 'Export lỗi!';
+    } finally {
+        setIsDropdownOpen(false);
     }
   };
 
   const handleChartExcelTable = async (event) => {
-    setIsDropdownOpen(false);
     if (!event.currentTarget) return;
 
     try {
@@ -393,8 +393,10 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
     } catch (error) {
         console.error('Excel export error:', error);
         errorSpan.textContent = 'Export lỗi!';
+    } finally {
+        setIsDropdownOpen(false);
     }
-};
+  };
 
   const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
 

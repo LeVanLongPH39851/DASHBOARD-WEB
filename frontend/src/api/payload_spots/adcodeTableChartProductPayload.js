@@ -1,5 +1,5 @@
-export const spendUSDNumberChartPayload = {
-  url: `${import.meta.env.VITE_API_DOMAIN}/api/v1/chart/data?form_data=%7B%22slice_id%22%3A599%7D&dashboard_id=49`,
+export const adcodeTableChartProductPayload = {
+  url: `${import.meta.env.VITE_API_DOMAIN}/api/v1/chart/data?form_data=%7B%22slice_id%22%3A591%7D&dashboard_id=49`,
   payload: {
     "datasource": {
       "id": 195,
@@ -17,59 +17,78 @@ export const spendUSDNumberChartPayload = {
           }
         ],
         "extras": {
-          "time_grain_sqla": "P1D",
           "having": "",
           "where": ""
         },
         "applied_time_extras": {},
         "columns": [
-          {
-            "timeGrain": "P1D",
-            "columnType": "BASE_AXIS",
-            "sqlExpression": "date",
-            "label": "date",
-            "expressionType": "SQL"
-          }
+          "product"
         ],
         "metrics": [
-          "price_usd"
+          "price"
+        ],
+        "orderby": [
+          [
+            "price",
+            false
+          ]
         ],
         "annotation_layers": [],
+        "row_limit": 50000,
         "series_limit": 0,
         "order_desc": true,
         "url_params": {},
         "custom_params": {},
         "custom_form_data": {},
-        "post_processing": [
+        "post_processing": [],
+        "time_offsets": []
+      },
+      {
+        "time_range": "DATEADD(DATETIME(\"today\"),-2, DAY) : DATEADD(DATETIME(\"today\"),-1, SECOND)",
+        "filters": [
           {
-            "operation": "pivot",
-            "options": {
-              "index": [
-                "date"
-              ],
-              "columns": [],
-              "aggregates": {
-                "price_usd": {
-                  "operator": "mean"
-                }
-              },
-              "drop_missing_columns": true
-            }
-          },
-          {
-            "operation": "flatten"
+            "col": "date",
+            "op": "TEMPORAL_RANGE",
+            "val": "No filter"
           }
-        ]
+        ],
+        "extras": {
+          "having": "",
+          "where": ""
+        },
+        "applied_time_extras": {},
+        "columns": [],
+        "metrics": [
+          "price"
+        ],
+        "annotation_layers": [],
+        "row_limit": 0,
+        "row_offset": 0,
+        "series_limit": 0,
+        "url_params": {},
+        "custom_params": {},
+        "custom_form_data": {},
+        "post_processing": [],
+        "time_offsets": []
       }
     ],
     "form_data": {
       "datasource": "195__table",
-      "viz_type": "big_number",
-      "slice_id": 599,
+      "viz_type": "table",
+      "slice_id": 591,
       "url_params": {},
-      "x_axis": "date",
-      "time_grain_sqla": "P1D",
-      "metric": "price_usd",
+      "query_mode": "aggregate",
+      "groupby": [
+        "product"
+      ],
+      "temporal_columns_lookup": {
+        "date": true
+      },
+      "metrics": [
+        "price"
+      ],
+      "all_columns": [],
+      "percent_metrics": [],
       "adhoc_filters": [
         {
           "clause": "WHERE",
@@ -79,34 +98,31 @@ export const spendUSDNumberChartPayload = {
           "subject": "date"
         }
       ],
-      "compare_lag": 1,
-      "compare_suffix": "So với ngày hôm trước",
-      "show_timestamp": true,
-      "show_trend_line": true,
-      "start_y_axis_at_zero": true,
-      "color_picker": {
-        "a": 1,
-        "b": 137,
-        "g": 193,
-        "r": 90
+      "order_by_cols": [],
+      "row_limit": 50000,
+      "server_page_length": 10,
+      "order_desc": true,
+      "show_totals": true,
+      "table_timestamp_format": "smart_date",
+      "include_search": true,
+      "allow_render_html": true,
+      "column_config": {
+        "count": {
+          "d3NumberFormat": ",d"
+        }
       },
-      "header_font_size": 0.4,
-      "subheader_font_size": 0.15,
-      "y_axis_format": ",.2f",
-      "currency_format": {
-        "symbol": "USD",
-        "symbolPosition": "prefix"
-      },
-      "time_format": "%d/%m/%Y",
-      "rolling_type": "None",
-      "annotation_layers": [],
+      "show_cell_bars": true,
+      "color_pn": true,
+      "comparison_color_scheme": "Green",
+      "conditional_formatting": [],
+      "comparison_type": "values",
       "dashboards": [
-        80
+        49
       ],
       "extra_form_data": {
         "time_range": "DATEADD(DATETIME(\"today\"),-2, DAY) : DATEADD(DATETIME(\"today\"),-1, SECOND)"
       },
-      "chart_id": 599,
+      "chart_id": 591,
       "label_colors": {
         "price": "#ffd04c",
         "price_usd": "#ffd04c",
@@ -135,7 +151,25 @@ export const spendUSDNumberChartPayload = {
         "Quảng cáo": "#B17BAA"
       },
       "shared_label_colors": [
-        "price"
+        "Dành cho trẻ em",
+        "Giáo dục - Đào tạo",
+        "Giải trí",
+        "Phim dài tập",
+        "Quảng bá",
+        "Quảng cáo",
+        "Thể thao",
+        "Thời sự - Chính luận",
+        "Tài liệu - Phóng sự",
+        "VTV Cần Thơ",
+        "VTV1",
+        "VTV2",
+        "VTV3",
+        "VTV4",
+        "VTV8",
+        "VTV9",
+        "price",
+        "price_usd",
+        "Đời sống"
       ],
       "map_label_colors": {},
       "extra_filters": [],

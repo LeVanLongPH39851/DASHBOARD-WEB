@@ -1,5 +1,5 @@
 export const top10AllTableChartProductPayload = {
-  url: 'https://ratings.vtv.vn/api/v1/chart/data?form_data=%7B%22slice_id%22%3A594%7D&dashboard_id=49',
+  url: `${import.meta.env.VITE_API_DOMAIN}/api/v1/chart/data?form_data=%7B%22slice_id%22%3A594%7D&dashboard_id=49`,
   payload: {
     "datasource": {
       "id": 199,

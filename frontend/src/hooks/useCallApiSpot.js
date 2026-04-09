@@ -82,6 +82,33 @@ export const useCountSpotBarChartAdvertiserReturnApi = () =>
 export const useCountSpotBarChartAdvertiserChannelReturnApi = () =>
   createChartHook(getChart.getCountSpotBarChartAdvertiserChannel)();
 
+export const useAdcodeTableChartProductReturnApi = () =>
+  createChartHook(getChart.getAdcodeTableChartProduct)();
+
+export const useAdcodeTableChartProgramReturnApi = () =>
+  createChartHook(getChart.getAdcodeTableChartProgram)();
+
+export const useCountPieChartTimebandReturnApi = () =>
+  createChartHook(getChart.getCountPieChartTimeband)();
+
+export const useSpendVNDBarChartChannelReturnApi = () =>
+  createChartHook(getChart.getSpendVNDBarChartChannel)();
+
+export const useSpendVNDBarChartProgramReturnApi = () =>
+  createChartHook(getChart.getSpendVNDBarChartProgram)();
+
+export const useSpendVNDBarChartTimebandReturnApi = () =>
+  createChartHook(getChart.getSpendVNDBarChartTimeband)();
+
+export const useSpendVNDPivotTableChartChannelFirstLevelReturnApi = () =>
+  createChartHook(getChart.getSpendVNDPivotTableChartChannelFirstLevel)();
+
+export const useSpendVNDPivotTableChartChannelTimebandReturnApi = () =>
+  createChartHook(getChart.getSpendVNDPivotTableChartChannelTimeband)();
+
+export const useSpendVNDTableChartAdvertiserReturnApi = () =>
+  createChartHook(getChart.getSpendVNDTableChartAdvertiser)();
+
 export const useFilterProvinceReturnApi = () => {
   return useApi(getChart.getFilterProvince);
 };

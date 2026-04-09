@@ -1,5 +1,5 @@
-export const spendUSDNumberChartPayload = {
-  url: `${import.meta.env.VITE_API_DOMAIN}/api/v1/chart/data?form_data=%7B%22slice_id%22%3A599%7D&dashboard_id=49`,
+export const spendVNDPivotTableChartChannelTimebandPayload = {
+  url: `${import.meta.env.VITE_API_DOMAIN}/api/v1/chart/data?form_data=%7B%22slice_id%22%3A580%7D&dashboard_id=49`,
   payload: {
     "datasource": {
       "id": 195,
@@ -17,59 +17,50 @@ export const spendUSDNumberChartPayload = {
           }
         ],
         "extras": {
-          "time_grain_sqla": "P1D",
           "having": "",
           "where": ""
         },
         "applied_time_extras": {},
         "columns": [
-          {
-            "timeGrain": "P1D",
-            "columnType": "BASE_AXIS",
-            "sqlExpression": "date",
-            "label": "date",
-            "expressionType": "SQL"
-          }
+          "time_band",
+          "channel_name_tvd"
         ],
         "metrics": [
-          "price_usd"
+          "price"
+        ],
+        "orderby": [
+          [
+            "price",
+            false
+          ]
         ],
         "annotation_layers": [],
+        "row_limit": 50000,
         "series_limit": 0,
         "order_desc": true,
         "url_params": {},
         "custom_params": {},
-        "custom_form_data": {},
-        "post_processing": [
-          {
-            "operation": "pivot",
-            "options": {
-              "index": [
-                "date"
-              ],
-              "columns": [],
-              "aggregates": {
-                "price_usd": {
-                  "operator": "mean"
-                }
-              },
-              "drop_missing_columns": true
-            }
-          },
-          {
-            "operation": "flatten"
-          }
-        ]
+        "custom_form_data": {}
       }
     ],
     "form_data": {
       "datasource": "195__table",
-      "viz_type": "big_number",
-      "slice_id": 599,
+      "viz_type": "pivot_table_v2",
+      "slice_id": 580,
       "url_params": {},
-      "x_axis": "date",
-      "time_grain_sqla": "P1D",
-      "metric": "price_usd",
+      "groupbyColumns": [
+        "time_band"
+      ],
+      "groupbyRows": [
+        "channel_name_tvd"
+      ],
+      "temporal_columns_lookup": {
+        "date": true
+      },
+      "metrics": [
+        "price"
+      ],
+      "metricsLayout": "COLUMNS",
       "adhoc_filters": [
         {
           "clause": "WHERE",
@@ -79,26 +70,22 @@ export const spendUSDNumberChartPayload = {
           "subject": "date"
         }
       ],
-      "compare_lag": 1,
-      "compare_suffix": "So với ngày hôm trước",
-      "show_timestamp": true,
-      "show_trend_line": true,
-      "start_y_axis_at_zero": true,
-      "color_picker": {
-        "a": 1,
-        "b": 137,
-        "g": 193,
-        "r": 90
-      },
-      "header_font_size": 0.4,
-      "subheader_font_size": 0.15,
-      "y_axis_format": ",.2f",
-      "currency_format": {
-        "symbol": "USD",
-        "symbolPosition": "prefix"
-      },
-      "time_format": "%d/%m/%Y",
-      "rolling_type": "None",
+      "row_limit": 50000,
+      "order_desc": true,
+      "aggregateFunction": "Sum",
+      "colTotals": true,
+      "valueFormat": ",.2f",
+      "date_format": "smart_date",
+      "rowOrder": "key_a_to_z",
+      "colOrder": "key_a_to_z",
+      "conditional_formatting": [
+        {
+          "colorScheme": "#ACE1C4",
+          "column": "price",
+          "operator": "None"
+        }
+      ],
+      "allow_render_html": true,
       "annotation_layers": [],
       "dashboards": [
         80
@@ -106,7 +93,7 @@ export const spendUSDNumberChartPayload = {
       "extra_form_data": {
         "time_range": "DATEADD(DATETIME(\"today\"),-2, DAY) : DATEADD(DATETIME(\"today\"),-1, SECOND)"
       },
-      "chart_id": 599,
+      "chart_id": 580,
       "label_colors": {
         "price": "#ffd04c",
         "price_usd": "#ffd04c",
@@ -135,7 +122,25 @@ export const spendUSDNumberChartPayload = {
         "Quảng cáo": "#B17BAA"
       },
       "shared_label_colors": [
-        "price"
+        "Dành cho trẻ em",
+        "Giáo dục - Đào tạo",
+        "Giải trí",
+        "Phim dài tập",
+        "Quảng bá",
+        "Quảng cáo",
+        "Thể thao",
+        "Thời sự - Chính luận",
+        "Tài liệu - Phóng sự",
+        "VTV Cần Thơ",
+        "VTV1",
+        "VTV2",
+        "VTV3",
+        "VTV4",
+        "VTV8",
+        "VTV9",
+        "price",
+        "price_usd",
+        "Đời sống"
       ],
       "map_label_colors": {},
       "extra_filters": [],

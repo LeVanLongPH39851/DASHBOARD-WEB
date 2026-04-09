@@ -1,8 +1,8 @@
-export const spendUSDBarChartAdvertiserChannelPayload = {
-  url: `${import.meta.env.VITE_API_DOMAIN}api/v1/chart/data?form_data=%7B%22slice_id%22%3A616%7D&dashboard_id=49`,
+export const spendVNDBarChartTimebandPayload = {
+  url: `${import.meta.env.VITE_API_DOMAIN}/api/v1/chart/data?form_data=%7B%22slice_id%22%3A581%7D&dashboard_id=49`,
   payload: {
     "datasource": {
-      "id": 196,
+      "id": 195,
       "type": "table"
     },
     "force": false,
@@ -26,27 +26,24 @@ export const spendUSDBarChartAdvertiserChannelPayload = {
           {
             "timeGrain": "P1D",
             "columnType": "BASE_AXIS",
-            "datasourceWarning": true,
+            "datasourceWarning": false,
             "expressionType": "SQL",
-            "label": "Avertiser",
-            "sqlExpression": "advertiser"
-          },
-          "channel_name_tvd"
+            "label": "Khung giờ",
+            "sqlExpression": "CASE \r\n  WHEN time_band = '0h - 1h' THEN '00-01'\r\n  WHEN time_band = '1h - 2h' THEN '01-02'\r\n  WHEN time_band = '2h - 3h' THEN '02-03'\r\n  WHEN time_band = '3h - 4h' THEN '03-04'\r\n  WHEN time_band = '4h - 5h' THEN '04-05'\r\n  WHEN time_band = '5h - 6h' THEN '05-06'\r\n  WHEN time_band = '6h - 7h' THEN '06-07'\r\n  WHEN time_band = '7h - 8h' THEN '07-08'\r\n  WHEN time_band = '8h - 9h' THEN '08-09'\r\n  WHEN time_band = '9h - 10h' THEN '09-10'\r\n  WHEN time_band = '10h - 11h' THEN '10-11'\r\n  WHEN time_band = '11h - 12h' THEN '11-12'\r\n  WHEN time_band = '12h - 13h' THEN '12-13'\r\n  WHEN time_band = '13h - 14h' THEN '13-14'\r\n  WHEN time_band = '14h - 15h' THEN '14-15'\r\n  WHEN time_band = '15h - 16h' THEN '15-16'\r\n  WHEN time_band = '16h - 17h' THEN '16-17'\r\n  WHEN time_band = '17h - 18h' THEN '17-18'\r\n  WHEN time_band = '18h - 19h' THEN '18-19'\r\n  WHEN time_band = '19h - 20h' THEN '19-20'\r\n  WHEN time_band = '20h - 21h' THEN '20-21'\r\n  WHEN time_band = '21h - 22h' THEN '21-22'\r\n  WHEN time_band = '22h - 23h' THEN '22-23'\r\n  WHEN time_band = '23h - 24h' THEN '23-24'\r\nEND"
+          }
         ],
         "metrics": [
-          "price_usd"
+          "price"
         ],
         "orderby": [
           [
-            "price_usd",
+            "price",
             false
           ]
         ],
         "annotation_layers": [],
         "row_limit": 50000,
-        "series_columns": [
-          "channel_name_tvd"
-        ],
+        "series_columns": [],
         "series_limit": 0,
         "order_desc": true,
         "url_params": {},
@@ -58,13 +55,11 @@ export const spendUSDBarChartAdvertiserChannelPayload = {
             "operation": "pivot",
             "options": {
               "index": [
-                "Avertiser"
+                "Khung giờ"
               ],
-              "columns": [
-                "channel_name_tvd"
-              ],
+              "columns": [],
               "aggregates": {
-                "price_usd": {
+                "price": {
                   "operator": "mean"
                 }
               },
@@ -72,13 +67,10 @@ export const spendUSDBarChartAdvertiserChannelPayload = {
             }
           },
           {
-            "operation": "rename",
+            "operation": "sort",
             "options": {
-              "columns": {
-                "price_usd": null
-              },
-              "level": 0,
-              "inplace": true
+              "is_sort_index": true,
+              "ascending": true
             }
           },
           {
@@ -88,26 +80,25 @@ export const spendUSDBarChartAdvertiserChannelPayload = {
       }
     ],
     "form_data": {
-      "datasource": "196__table",
+      "datasource": "195__table",
       "viz_type": "echarts_timeseries_bar",
-      "slice_id": 616,
+      "slice_id": 581,
       "url_params": {},
       "x_axis": {
-        "datasourceWarning": true,
+        "datasourceWarning": false,
         "expressionType": "SQL",
-        "label": "Avertiser",
-        "sqlExpression": "advertiser"
+        "label": "Khung giờ",
+        "sqlExpression": "CASE \r\n  WHEN time_band = '0h - 1h' THEN '00-01'\r\n  WHEN time_band = '1h - 2h' THEN '01-02'\r\n  WHEN time_band = '2h - 3h' THEN '02-03'\r\n  WHEN time_band = '3h - 4h' THEN '03-04'\r\n  WHEN time_band = '4h - 5h' THEN '04-05'\r\n  WHEN time_band = '5h - 6h' THEN '05-06'\r\n  WHEN time_band = '6h - 7h' THEN '06-07'\r\n  WHEN time_band = '7h - 8h' THEN '07-08'\r\n  WHEN time_band = '8h - 9h' THEN '08-09'\r\n  WHEN time_band = '9h - 10h' THEN '09-10'\r\n  WHEN time_band = '10h - 11h' THEN '10-11'\r\n  WHEN time_band = '11h - 12h' THEN '11-12'\r\n  WHEN time_band = '12h - 13h' THEN '12-13'\r\n  WHEN time_band = '13h - 14h' THEN '13-14'\r\n  WHEN time_band = '14h - 15h' THEN '14-15'\r\n  WHEN time_band = '15h - 16h' THEN '15-16'\r\n  WHEN time_band = '16h - 17h' THEN '16-17'\r\n  WHEN time_band = '17h - 18h' THEN '17-18'\r\n  WHEN time_band = '18h - 19h' THEN '18-19'\r\n  WHEN time_band = '19h - 20h' THEN '19-20'\r\n  WHEN time_band = '20h - 21h' THEN '20-21'\r\n  WHEN time_band = '21h - 22h' THEN '21-22'\r\n  WHEN time_band = '22h - 23h' THEN '22-23'\r\n  WHEN time_band = '23h - 24h' THEN '23-24'\r\nEND"
       },
       "time_grain_sqla": "P1D",
+      "x_axis_sort": "Khung giờ",
       "x_axis_sort_asc": true,
-      "x_axis_sort_series": "sum",
+      "x_axis_sort_series": "name",
       "x_axis_sort_series_ascending": true,
       "metrics": [
-        "price_usd"
+        "price"
       ],
-      "groupby": [
-        "channel_name_tvd"
-      ],
+      "groupby": [],
       "adhoc_filters": [
         {
           "clause": "WHERE",
@@ -125,26 +116,24 @@ export const spendUSDBarChartAdvertiserChannelPayload = {
       "annotation_layers": [],
       "forecastPeriods": 10,
       "forecastInterval": 0.8,
-      "orientation": "horizontal",
-      "x_axis_title_margin": "0",
-      "y_axis_title": "Giá (triệu)",
-      "y_axis_title_margin": 30,
+      "orientation": "vertical",
+      "x_axis_title": "Khung giờ/ Timeband (H)",
+      "x_axis_title_margin": "40",
+      "y_axis_title": "Chi phí (Triệu VND)",
+      "y_axis_title_margin": "65",
       "y_axis_title_position": "Left",
       "sort_series_type": "sum",
       "color_scheme": "supersetColors",
       "time_shift_color": true,
       "show_value": true,
-      "stack": "Stack",
       "only_total": true,
-      "show_legend": true,
+      "zoomable": true,
+      "show_legend": false,
       "legendType": "scroll",
       "legendOrientation": "top",
-      "legendMargin": null,
       "x_axis_time_format": "smart_date",
+      "xAxisLabelRotation": 45,
       "y_axis_format": ",.2f",
-      "currency_format": {
-        "symbol": "USD"
-      },
       "y_axis_bounds": [
         null,
         null
@@ -160,7 +149,7 @@ export const spendUSDBarChartAdvertiserChannelPayload = {
       "extra_form_data": {
         "time_range": "DATEADD(DATETIME(\"today\"),-2, DAY) : DATEADD(DATETIME(\"today\"),-1, SECOND)"
       },
-      "chart_id": 616,
+      "chart_id": 581,
       "label_colors": {
         "price": "#ffd04c",
         "price_usd": "#ffd04c",

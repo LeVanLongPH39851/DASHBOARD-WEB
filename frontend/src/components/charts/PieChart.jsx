@@ -159,7 +159,7 @@ const PieChart = ({
       type: 'pie',
       radius: donut ? [innerRadius + '%', '75%'] : ['0%', '75%'],
       avoidLabelOverlap: false,
-      center: [!stateGlobals.screen_md ? '60%' : '50%', '50%'],
+      center: [!stateGlobals.screen_md && enableLegend ? '60%' : '50%', '50%'],
       top: !stateGlobals.screen_md ? 0 : '10%',
       emphasis: {
         itemStyle: {

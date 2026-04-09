@@ -1,5 +1,5 @@
-export const spendUSDNumberChartPayload = {
-  url: `${import.meta.env.VITE_API_DOMAIN}/api/v1/chart/data?form_data=%7B%22slice_id%22%3A599%7D&dashboard_id=49`,
+export const spendVNDBarChartChannelPayload = {
+  url: `${import.meta.env.VITE_API_DOMAIN}/api/v1/chart/data?form_data=%7B%22slice_id%22%3A579%7D&dashboard_id=49`,
   payload: {
     "datasource": {
       "id": 195,
@@ -17,43 +17,50 @@ export const spendUSDNumberChartPayload = {
           }
         ],
         "extras": {
-          "time_grain_sqla": "P1D",
           "having": "",
           "where": ""
         },
         "applied_time_extras": {},
         "columns": [
           {
-            "timeGrain": "P1D",
             "columnType": "BASE_AXIS",
-            "sqlExpression": "date",
-            "label": "date",
+            "sqlExpression": "channel_name_tvd",
+            "label": "channel_name_tvd",
             "expressionType": "SQL"
           }
         ],
         "metrics": [
-          "price_usd"
+          "price"
+        ],
+        "orderby": [
+          [
+            "price",
+            false
+          ]
         ],
         "annotation_layers": [],
+        "row_limit": 50000,
+        "series_columns": [],
         "series_limit": 0,
         "order_desc": true,
         "url_params": {},
         "custom_params": {},
         "custom_form_data": {},
+        "time_offsets": [],
         "post_processing": [
           {
             "operation": "pivot",
             "options": {
               "index": [
-                "date"
+                "channel_name_tvd"
               ],
               "columns": [],
               "aggregates": {
-                "price_usd": {
+                "price": {
                   "operator": "mean"
                 }
               },
-              "drop_missing_columns": true
+              "drop_missing_columns": false
             }
           },
           {
@@ -64,12 +71,17 @@ export const spendUSDNumberChartPayload = {
     ],
     "form_data": {
       "datasource": "195__table",
-      "viz_type": "big_number",
-      "slice_id": 599,
+      "viz_type": "echarts_timeseries_bar",
+      "slice_id": 579,
       "url_params": {},
-      "x_axis": "date",
-      "time_grain_sqla": "P1D",
-      "metric": "price_usd",
+      "x_axis": "channel_name_tvd",
+      "x_axis_sort_asc": true,
+      "x_axis_sort_series": "name",
+      "x_axis_sort_series_ascending": true,
+      "metrics": [
+        "price"
+      ],
+      "groupby": [],
       "adhoc_filters": [
         {
           "clause": "WHERE",
@@ -79,34 +91,47 @@ export const spendUSDNumberChartPayload = {
           "subject": "date"
         }
       ],
-      "compare_lag": 1,
-      "compare_suffix": "So với ngày hôm trước",
-      "show_timestamp": true,
-      "show_trend_line": true,
-      "start_y_axis_at_zero": true,
-      "color_picker": {
-        "a": 1,
-        "b": 137,
-        "g": 193,
-        "r": 90
-      },
-      "header_font_size": 0.4,
-      "subheader_font_size": 0.15,
-      "y_axis_format": ",.2f",
-      "currency_format": {
-        "symbol": "USD",
-        "symbolPosition": "prefix"
-      },
-      "time_format": "%d/%m/%Y",
-      "rolling_type": "None",
+      "order_desc": true,
+      "row_limit": 50000,
+      "truncate_metric": true,
+      "show_empty_columns": true,
+      "comparison_type": "values",
       "annotation_layers": [],
+      "forecastPeriods": 10,
+      "forecastInterval": 0.8,
+      "orientation": "vertical",
+      "x_axis_title": "",
+      "x_axis_title_margin": 15,
+      "y_axis_title": "Chi phí (Triệu VND)",
+      "y_axis_title_margin": "70",
+      "y_axis_title_position": "Left",
+      "sort_series_type": "sum",
+      "color_scheme": "supersetColors",
+      "time_shift_color": true,
+      "show_value": true,
+      "only_total": true,
+      "zoomable": true,
+      "show_legend": false,
+      "legendType": "scroll",
+      "legendOrientation": "top",
+      "x_axis_time_format": "smart_date",
+      "y_axis_format": ",.2f",
+      "y_axis_bounds": [
+        null,
+        null
+      ],
+      "truncateXAxis": true,
+      "rich_tooltip": true,
+      "showTooltipTotal": true,
+      "showTooltipPercentage": true,
+      "tooltipTimeFormat": "smart_date",
       "dashboards": [
         80
       ],
       "extra_form_data": {
         "time_range": "DATEADD(DATETIME(\"today\"),-2, DAY) : DATEADD(DATETIME(\"today\"),-1, SECOND)"
       },
-      "chart_id": 599,
+      "chart_id": 579,
       "label_colors": {
         "price": "#ffd04c",
         "price_usd": "#ffd04c",
@@ -135,9 +160,28 @@ export const spendUSDNumberChartPayload = {
         "Quảng cáo": "#B17BAA"
       },
       "shared_label_colors": [
-        "price"
+        "Dành cho trẻ em",
+        "Giáo dục - Đào tạo",
+        "Giải trí",
+        "Phim dài tập",
+        "Quảng bá",
+        "Quảng cáo",
+        "Thể thao",
+        "Thời sự - Chính luận",
+        "Tài liệu - Phóng sự",
+        "VTV Cần Thơ",
+        "VTV1",
+        "VTV2",
+        "VTV3",
+        "VTV4",
+        "VTV8",
+        "VTV9",
+        "price",
+        "price_usd",
+        "Đời sống"
       ],
       "map_label_colors": {},
+      "own_color_scheme": "supersetColors",
       "extra_filters": [],
       "force": false,
       "result_format": "json",

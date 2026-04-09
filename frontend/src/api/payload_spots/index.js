@@ -27,4 +27,14 @@ export { countSpotNumberChartPayload } from "./countSpotNumberChartPayload";
 export { countSpotBarChartAdvertiserPayload } from "./countSpotBarChartAdvertiserPayload";
 export { countSpotBarChartAdvertiserChannelPayload } from "./countSpotBarChartAdvertiserChannelPayload";
 
+export { adcodeTableChartProductPayload } from './adcodeTableChartProductPayload';
+export { adcodeTableChartProgramPayload } from './adcodeTableChartProgramPayload';
+export { countPieChartTimebandPayload } from './countPieChartTimebandPayload';
+export { spendVNDBarChartChannelPayload } from './spendVNDBarChartChannelPayload';
+export { spendVNDBarChartProgramPayload } from './spendVNDBarChartProgramPayload';
+export { spendVNDBarChartTimebandPayload } from './spendVNDBarChartTimebandPayload';
+export { spendVNDPivotTableChartChannelFirstLevelPayload } from './spendVNDPivotTableChartChannelFirstLevelPayload';
+export { spendVNDPivotTableChartChannelTimebandPayload } from './spendVNDPivotTableChartChannelTimebandPayload';
+export { spendVNDTableChartAdvertiserPayload } from './spendVNDTableChartAdvertiserPayload';
+
 export { filterProvincePayload } from './filterProvincePayload';

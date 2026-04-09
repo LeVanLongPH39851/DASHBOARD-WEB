@@ -30,12 +30,20 @@ const HOOKS = [
   { hook: useCallApi.useDurationSpotPieChartChannelReturnApi, dataKey: 'durationPieChannelData' },
   { hook: useCallApi.useDurationSpotNumberChartReturnApi, dataKey: 'durationNumberData' },
 
-  // ===== COUNT SPOT =====
   { hook: useCallApi.useCountSpotPieChartFirstLevelReturnApi, dataKey: 'countPieFirstLevelData' },
   { hook: useCallApi.useCountSpotPieChartChannelReturnApi, dataKey: 'countPieChannelData' },
   { hook: useCallApi.useCountSpotNumberChartReturnApi, dataKey: 'countNumberData' },
   { hook: useCallApi.useCountSpotBarChartAdvertiserReturnApi, dataKey: 'countBarAdvertiserData' },
   { hook: useCallApi.useCountSpotBarChartAdvertiserChannelReturnApi, dataKey: 'countBarAdvertiserChannelData' },
+  { hook: useCallApi.useAdcodeTableChartProductReturnApi, dataKey: 'adcodeProductData' },
+  { hook: useCallApi.useAdcodeTableChartProgramReturnApi, dataKey: 'adcodeProgramData' },
+  { hook: useCallApi.useCountPieChartTimebandReturnApi, dataKey: 'countPieTimebandData' },
+  { hook: useCallApi.useSpendVNDBarChartChannelReturnApi, dataKey: 'spendVNDBarChannelData' },
+  { hook: useCallApi.useSpendVNDBarChartProgramReturnApi, dataKey: 'spendVNDBarProgramData' },
+  { hook: useCallApi.useSpendVNDBarChartTimebandReturnApi, dataKey: 'spendVNDBarTimebandData' },
+  { hook: useCallApi.useSpendVNDPivotTableChartChannelFirstLevelReturnApi, dataKey: 'spendVNDPivotChannelFirstLevelData' },
+  { hook: useCallApi.useSpendVNDPivotTableChartChannelTimebandReturnApi, dataKey: 'spendVNDPivotChannelTimebandData' },
+  { hook: useCallApi.useSpendVNDTableChartAdvertiserReturnApi, dataKey: 'spendVNDTableAdvertiserData' },
   { hook: useCallApi.useFilterProvinceReturnApi, dataKey: 'filterProvinceData' }
 ];
 

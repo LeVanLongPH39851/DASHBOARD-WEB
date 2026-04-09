@@ -1,7 +1,5 @@
 // src/api/payloads/buildPayloadWithFilters.js
 
-const pad2 = (n) => String(n).padStart(2, '0');
-
 const toTimeRangeString = (startDate, endDate) => {
   if (!startDate && !endDate) return null;
   const s = startDate ? `${startDate}T00:00:00` : null;
@@ -20,17 +18,18 @@ const buildQueriesFilters = ({ column, values }) => {
   }];
 };
 
-const buildQueriesRangeFilters = ({ column, values, op='<=' }) => {
-  if (!values || Object.keys(values).length === 0) return null;
+const buildQueriesRangeFilters = ({ column, startHours, startMinutes, op='<=' }) => {
+  if (startHours?.min === 0 && startHours?.max === 23 && startMinutes?.min === 0 && startMinutes?.max === 59) return null;
+  
   return [{
     col: column,
     op: '>=',
-    val: values?.min
+    val: startHours?.min.toString().padStart(2, '0') + ':' + startMinutes?.min.toString().padStart(2, '0')
   },
   {
     col: column,
     op: op,
-    val: values?.max
+    val: startHours?.max.toString().padStart(2, '0') + ':' + startMinutes?.max.toString().padStart(2, '0')
   }];
 };
 
@@ -87,15 +86,10 @@ const appendAllFilters = (queries, filterState, disabledFilters) => {
     values: filterState.programs 
   });
 
-  const startHourFilters = buildQueriesRangeFilters({ 
-    column: 'start_hour', 
-    values: filterState.startHours,
-    op: '<'
-  });
-
-  const startMinuteFilters = buildQueriesRangeFilters({ 
-    column: 'start_minute', 
-    values: filterState.startMinutes
+  const startTimeFilters = buildQueriesRangeFilters({ 
+    column: 'start_time', 
+    startHours: filterState.startHours,
+    startMinutes: filterState.startMinutes
   });
   
   return queries.map((q) => {
@@ -112,8 +106,7 @@ const appendAllFilters = (queries, filterState, disabledFilters) => {
     if (timebandFilters && !disabledFilters.includes('timebandFilters') && !disabledFilters.includes('allFilters')) newFilters = appendFilters(newFilters, timebandFilters);
     if (firstLevelFilters && !disabledFilters.includes('firstLevelFilters') && !disabledFilters.includes('allFilters')) newFilters = appendFilters(newFilters, firstLevelFilters);
     if (programFilters && !disabledFilters.includes('programFilters') && !disabledFilters.includes('allFilters')) newFilters = appendFilters(newFilters, programFilters);
-    if (startHourFilters && (startHourFilters?.min !== 0 && startHourFilters?.max !== 24) && !disabledFilters.includes('startHourFilters') && !disabledFilters.includes('allFilters')) newFilters = appendFilters(newFilters, startHourFilters);
-    if (startMinuteFilters && (startMinuteFilters?.min !== 0 && startMinuteFilters?.max !== 59) && !disabledFilters.includes('startMinuteFilters') && !disabledFilters.includes('allFilters')) newFilters = appendFilters(newFilters, startMinuteFilters);
+    if (startTimeFilters && !disabledFilters.includes('startTimeFilters') && !disabledFilters.includes('allFilters')) newFilters = appendFilters(newFilters, startTimeFilters);
     
     return {
       ...q,
@@ -159,6 +152,10 @@ export const buildPayloadWithFilters = (basePayload, filterState, enabledFilters
   }
   
   next.payload.queries = appendAllFilters(next.payload.queries, filterState, enabledFilters);
+
+  if (!enabledFilters.includes('startTimeFilters')) {
+    console.log(next.payload.queries);
+  }
   
   return next;
 };

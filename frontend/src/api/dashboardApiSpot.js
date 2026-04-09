@@ -93,5 +93,39 @@ export const getCountSpotBarChartAdvertiser = (appliedFilters) =>
 export const getCountSpotBarChartAdvertiserChannel = (appliedFilters) =>
   postChart(payloads.countSpotBarChartAdvertiserChannelPayload, appliedFilters);
 
+// Tab Revenue
+
+// ===== ADCODE =====
+export const getAdcodeTableChartProduct = (appliedFilters) =>
+  postChart(payloads.adcodeTableChartProductPayload, appliedFilters);
+
+export const getAdcodeTableChartProgram = (appliedFilters) =>
+  postChart(payloads.adcodeTableChartProgramPayload, appliedFilters);
+
+// ===== COUNT =====
+export const getCountPieChartTimeband = (appliedFilters) =>
+  postChart(payloads.countPieChartTimebandPayload, appliedFilters);
+
+// ===== SPEND VND (BỔ SUNG) =====
+export const getSpendVNDBarChartChannel = (appliedFilters) =>
+  postChart(payloads.spendVNDBarChartChannelPayload, appliedFilters);
+
+export const getSpendVNDBarChartProgram = (appliedFilters) =>
+  postChart(payloads.spendVNDBarChartProgramPayload, appliedFilters);
+
+export const getSpendVNDBarChartTimeband = (appliedFilters) =>
+  postChart(payloads.spendVNDBarChartTimebandPayload, appliedFilters);
+
+// ===== SPEND VND PIVOT =====
+export const getSpendVNDPivotTableChartChannelFirstLevel = (appliedFilters) =>
+  postChart(payloads.spendVNDPivotTableChartChannelFirstLevelPayload, appliedFilters);
+
+export const getSpendVNDPivotTableChartChannelTimeband = (appliedFilters) =>
+  postChart(payloads.spendVNDPivotTableChartChannelTimebandPayload, appliedFilters);
+
+// ===== SPEND VND TABLE =====
+export const getSpendVNDTableChartAdvertiser = (appliedFilters) =>
+  postChart(payloads.spendVNDTableChartAdvertiserPayload, appliedFilters);
+
 export const getFilterProvince = () =>
   axiosClient.post(apiRoute, payloads.filterProvincePayload)

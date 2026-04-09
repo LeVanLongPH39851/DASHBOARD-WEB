@@ -66,8 +66,20 @@ const BarChart = ({
     /^\d{2}\/\d{2}\/\d{4}$/.test(label)
   );
 
+  const hasTimebands = labels.some(label => {
+    const match = label.match(/^(\d{2})-(\d{2})$/);
+    if (!match) return false;
+
+    const start = Number(match[1]);
+    const end = Number(match[2]);
+
+    return start >= 0 && start <= 23 &&
+          end >= 0 && end <= 23 &&
+          end === start + 1;
+  });
+
   const sorted = React.useMemo(() => {
-    if (hasDates) {
+    if (hasDates || hasTimebands) {
       // Sort theo ngày tăng dần
       return labels
         .map((label, index) => {

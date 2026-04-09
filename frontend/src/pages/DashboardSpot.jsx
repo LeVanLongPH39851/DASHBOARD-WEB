@@ -43,6 +43,7 @@ import iconChannelActive from '../assets/icon_channel_active.png';
 import iconProgramActive from '../assets/icon_program_active.png';
 import iconRatingByMinuteActive from '../assets/icon_rating_by_minute_active.png';
 import { useCurrentUser } from '../hooks/useCurrentUser';
+import PivotTableChart from '../components/charts/PivotTableChart';
 
 const DashboardContent = () => {
   const dashboard = useDashboardData();
@@ -433,7 +434,76 @@ const DashboardContent = () => {
                                 <InforTab inforTab={"Doanh thu"} />
                                 <InforFilter filters={scopeFilterData} />
                                 <div className='px-6 max-lg:px-5 max-md:px-4 py-6 max-lg:py-5 max-md:py-4'>
-                                  
+                                  <div className='w-full pb-6'>
+                                    <BarChart 
+                                        data={!dashboard.isLoading.spendVNDBarTimebandData ? transformBarChartData(dashboard.spendVNDBarTimebandData?.data, dashboard.spendVNDBarTimebandData?.colnames) : 'isLoading'}
+                                        height={CUSTOM_CHART.barChart.height}
+                                        fontSize={CUSTOM_CHART.barChart.fontSize}
+                                        fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                        colors={['rgba(255, 56, 60, 1)']}
+                                        fontWeight={CUSTOM_CHART.barChart.fontWeight}
+                                        nameChart={'Xu hướng quảng cáo theo khung giờ'}
+                                        description={'Xu hướng quảng cáo theo khung giờ'}
+                                        orientation={''}
+                                        colorZoom='red'
+                                        suffix='tr'
+                                    />
+                                  </div>
+                                  <div className='w-full flex gap-6 pb-6'>
+                                    <div className='w-[60%]'>
+                                      <TableChart data={!dashboard.isLoading.adcodeProgramData ? transformTableChartData(dashboard.adcodeProgramData?.data, dashboard.adcodeProgramData?.colnames) : 'isLoading'}
+                                                  height={CUSTOM_CHART.tableChart.tableChartChannel.height}
+                                                  fontSize={CUSTOM_CHART.tableChart.fontSize}
+                                                  fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                                  fontWeight={CUSTOM_CHART.tableChart.fontWeight}
+                                                  nameChart={'Chi phí quảng cáo theo Adcode'}
+                                                  description={'Chi phí quảng cáo theo Adcode'}
+                                                  showSTT={false}
+                                                  showPagination={false} />
+                                    </div>
+                                    <div className='w-[40%]'>
+                                      <TableChart data={!dashboard.isLoading.adcodeProductData ? transformTableChartData(dashboard.adcodeProductData?.data, dashboard.adcodeProductData?.colnames) : 'isLoading'}
+                                                  height={CUSTOM_CHART.tableChart.tableChartChannel.height}
+                                                  fontSize={CUSTOM_CHART.tableChart.fontSize}
+                                                  fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                                  fontWeight={CUSTOM_CHART.tableChart.fontWeight}
+                                                  nameChart={'Chi phí quảng cáo theo dòng sản phẩm'}
+                                                  description={'Chi phí quảng cáo theo dòng sản phẩm'}
+                                                  showSTT={false}
+                                                  showPagination={false} />
+                                    </div>
+                                  </div>
+                                  <div className='w-full flex gap-6 pb-6'>
+                                    <div className='w-[60%]'>
+                                      <PivotTableChart
+                                        data={!dashboard.isLoading.spendVNDPivotChannelFirstLevelData ? dashboard.spendVNDPivotChannelFirstLevelData?.data : 'isLoading'}
+                                        nameChart="Doanh thu quảng cáo theo kênh"
+                                        description="Doanh thu quảng cáo theo kênh"
+                                        rowField="firstlevel_vn"
+                                        columnField="channel_name_tvd"
+                                        valueField="price"
+                                        aggType="sum"
+                                        height="420px"
+                                        fontSize={{ label: '12px', td: '12px' }}
+                                        fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                        fontWeight={{ label: 600, td: 500 }}
+                                      />
+                                    </div>
+                                    <div className='w-[40%]'>
+                                      <PieChart data={!dashboard.isLoading.countPieTimebandData ? transformPieChartData(dashboard.countPieTimebandData?.data, dashboard.countPieTimebandData?.colnames) : 'isLoading'}
+                                                height={CUSTOM_CHART.pieChart.height}
+                                                fontSize={CUSTOM_CHART.pieChart.fontSize}
+                                                fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                                fontWeight={CUSTOM_CHART.pieChart.fontWeight}
+                                                nameChart={'Xu hướng quảng cáo theo khung giờ'}
+                                                description={'Xu hướng quảng cáo theo khung giờ'}
+                                                colors={CUSTOM_CHART.pieChart.colorChannel}
+                                                donut={CUSTOM_CHART.pieChart.donut}
+                                                innerRadius={CUSTOM_CHART.pieChart.innerRadius}
+                                                enableLegend={false}
+                                      />
+                                    </div>
+                                  </div>
                                 </div>
                               </section>
                             )

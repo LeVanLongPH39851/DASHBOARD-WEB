@@ -229,7 +229,7 @@ const Filter = ({ filters, horizontalFixed=false
         programs: (appliedFilters.programs || [])
         .map(val => ALL_PROGRAMS.find(pr => pr.value === val))
         .filter(Boolean),
-        startHours: appliedFilters.startHours || { min: 0, max: 24 },
+        startHours: appliedFilters.startHours || { min: 0, max: 23 },
         startMinutes: appliedFilters.startMinutes || { min: 0, max: 59 }
       }));
     }
@@ -319,7 +319,7 @@ const Filter = ({ filters, horizontalFixed=false
       timebands: (filterValues?.timebands || []).map(tb => tb.value),
       firstLevels: (filterValues?.firstLevels || []).map(fl => fl.value),
       programs: (filterValues?.programs || []).map(pr => pr.value),
-      startHours: filterValues?.startHours || { min: 0, max: 24 },
+      startHours: filterValues?.startHours || { min: 0, max: 23 },
       startMinutes: filterValues?.startMinutes || { min: 0, max: 59 }
     } : null);
 
@@ -475,13 +475,12 @@ const Filter = ({ filters, horizontalFixed=false
           {stateGlobals.currentTab == DISABLE_TABS.program && <RangeFilter
             label="Giờ bắt đầu"
             min={0}
-            max={24}
+            max={23}
             step={1}
-            value={filterValues?.startHours || { min: 0, max: 24 }}
+            value={filterValues?.startHours || { min: 0, max: 23 }}
             onChange={handleStartHoursChange}
             marginBottom={"mb-4 max-md:mb-2"}
             horizontalFixed={horizontalFixed}
-            minGap={1}
           />}
 
           {stateGlobals.currentTab == DISABLE_TABS.program && <RangeFilter

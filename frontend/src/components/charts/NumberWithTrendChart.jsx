@@ -110,10 +110,10 @@ const NumberWithTrendChart = ({
           const percent = totalX > 0 ? ((p.value / totalX) * 100).toFixed(1) : 0;
           return `
             <div style="padding: 4px 8px;">
-              <div style="font-weight: 600; font-size: ${!stateGlobals.screen_md ? '13' : '11'}px; color: rgba(0, 0, 0, 0.7); margin-bottom: 2px;">
+              <div style="font-weight: 500; font-size: ${!stateGlobals.screen_md ? '13' : '11'}px; color: rgba(0, 0, 0, 0.7); margin-bottom: 2px;">
                 ${p.axisValue}
               </div>
-              <span style="font-size: ${!stateGlobals.screen_md ? '12' : '10.5'}px; font-weight: 500; color: rgba(0, 0, 0, 0.7);">
+              <span style="font-size: ${!stateGlobals.screen_md ? '12' : '10.5'}px; font-weight: 400; color: rgba(0, 0, 0, 0.7);">
                 ${p.value.toLocaleString(undefined, { maximumFractionDigits: nameChart.includes('%') ? 2 : 0 })} ${suffix} <span style="font-size: ${!stateGlobals.screen_md ? '11' : '10'}px;">(${percent}%)</span>
               </span>
             </div>
@@ -159,7 +159,7 @@ const NumberWithTrendChart = ({
   return (
     <div className={`p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component`} style={{ height: `${height}px` }}>
       <NameChart nameChart={nameChart} description={description} icon={icon} width='w-5.5' backgound='bg-background-succes-type-2 dark:bg-background-succes-type-2-dark' getChartData={getEChartsData} />
-      <div className='flex gap-1 items-center mb-2'><span className='text-color-black-100 dark:text-color-white-50 transition-all duration-300 font-medium text-sm max-md:text-xs'>Ngày {currentDate}</span><figure><img src={!stateGlobals.darkMode ? iconArrowDown : iconArrowDownDark} alt="Icon Arrow Down" className='w-2.25' /></figure></div>
+      <div className='flex items-center mb-2'><span className='text-color-black-100 dark:text-color-white-50 transition-all duration-300 font-normal text-sm max-md:text-xs'>Ngày {currentDate}</span></div>
       <div className="mb-6 flex items-center gap-3 max-md:gap-2">
         <h4 className='text-5xl max-md:text-4xl text-color-black-100 dark:text-color-white-90 transition-all duration-300 font-semibold'>{currentValue.toLocaleString(undefined, { maximumFractionDigits: (nameChart.includes('%') ? 2 : 0) })} {suffix}</h4>
         <div className='flex gap-2 items-center'>
@@ -167,7 +167,7 @@ const NumberWithTrendChart = ({
             <span className='text-sm max-md:text-xs font-semibold'>{trendPercent.toFixed(1)}{unit}</span>
             <figure><img src={trendPercent > 0 ? iconArrowUp45 : iconArrowDown45} alt="Icon Arrow Up 45" className='w-2.25 h-2.25' /></figure>
           </div>
-          <span className='text-sm max-md:text-xs text-color-black-50 dark:text-color-white-50 transition-all duration-300 font-medium'>{trendPeriod}</span>
+          <span className='text-sm max-md:text-xs text-color-black-50 dark:text-color-white-50 transition-all duration-300 font-normal'>{trendPeriod}</span>
         </div>
       </div>
       <div className="w-full">

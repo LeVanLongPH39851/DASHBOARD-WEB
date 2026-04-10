@@ -22,7 +22,7 @@ import iconArrowLeft2Dark from '../../../assets/icon_arrow_left_2_dark.png';
 import { CUSTOM_CHART } from '../../../utils/customChart';
 import { useCurrentUser } from '../../../hooks/useCurrentUser';
 
-const BreadCrumb = () => {
+const BreadCrumb = ({ dashboardName='Kênh truyền hình VTV'}) => {
     const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
     const { user, userLoading } = useCurrentUser();
     const LABEL_TABS = {
@@ -318,14 +318,16 @@ const BreadCrumb = () => {
     <nav className='px-6 max-lg:px-5 max-md:px-4 bg-background-light dark:bg-background-dark border-b border-border-black-10 dark:border-transparent transition-all duration-300 pt-2 pb-1 sticky top-0' style={{zIndex: 300}}>
         <div className='flex items-center gap-2 max-lg:gap-1 max-md:hidden'>
             <figure><img src={!stateGlobals.darkMode ? iconHome : iconHomeDark} className='w-3 max-lg:w-2.5 h-3 max-lg:h-2.5' alt="Icon Home" /></figure>
-            <span className='text-sm max-lg:text-[13px] font-medium text-color-black-50 dark:text-color-white-50 transition-all duration-300'>Bảng điều khiển</span>
+                <span className='text-sm max-lg:text-[13px] font-normal text-color-black-50 dark:text-color-white-50 transition-all duration-300'>
+                    <a href={`${CUSTOM_CHART.domain}/superset/welcome/`}>Trang chủ</a>
+                </span>
             <figure><img src={iconArrowRight} className='h-2.75 max-lg:h-2.5' alt="Icon Arrow Right" /></figure>
-            <span className='text-sm max-lg:text-[13px] font-medium text-color-black-100 dark:text-color-white-90 transition-all duration-300'>Kênh truyền hình</span>
+            <span className='text-sm max-lg:text-[13px] font-medium text-color-black-100 dark:text-color-white-90 transition-all duration-300 uppercase'>{dashboardName}</span>
         </div>
         <div className='pt-2 flex justify-between items-center'>
             <div className='flex items-center'>
                 <a href={`${CUSTOM_CHART.domain}/superset/welcome/`}><figure className='cursor-pointer p-2 pl-0 mr-2 hidden max-md:block'><img src={!stateGlobals.darkMode ? iconArrowLeft2 : iconArrowLeft2Dark} className='w-3.5' alt="Icon Arrow Left 2" /></figure></a>
-                <h1 className='text-[32px] max-lg:text-2xl max-md:text-lg font-semibold text-color-black-100 dark:text-color-white-90 transition-all duration-300'>Kênh truyền hình VTV</h1>
+                <h1 className='text-[32px] max-lg:text-2xl max-md:text-lg font-semibold text-color-black-100 dark:text-color-white-90 transition-all duration-300 uppercase'>{dashboardName}</h1>
             </div>
             <div className='flex items-center gap-4 max-md:hidden'>
                 {/* <Button background={'bg-background-black-4 dark:bg-background-white-15'} color={'text-color-black-100 dark:text-color-white-80'} src={!stateGlobals.darkMode ? iconDisplay : iconDisplayDark}
@@ -384,9 +386,11 @@ const BreadCrumb = () => {
         </div>
         <div className='items-center gap-2 hidden max-md:flex mt-2'>
             <figure><img src={!stateGlobals.darkMode ? iconHome : iconHomeDark} className='w-3 h-3 max-md:w-2.5 max-md:h-2.5' alt="Icon Home" /></figure>
-            <span className='text-sm max-md:text-xs font-medium text-color-black-50 dark:text-color-white-50 transition-all duration-300'>Bảng điều khiển</span>
+                <span className='text-sm max-md:text-xs font-normal text-color-black-50 dark:text-color-white-50 transition-all duration-300'>
+                    <a href={`${CUSTOM_CHART.domain}/superset/welcome/`}>Trang chủ</a>
+                </span>
             <figure><img src={iconArrowRight} className='h-2.75' alt="Icon Arrow Right" /></figure>
-            <span className='text-sm max-md:text-xs font-medium text-color-black-100 dark:text-color-white-90 transition-all duration-300'>Kênh truyền hình</span>
+            <span className='text-sm max-md:text-xs font-medium text-color-black-100 dark:text-color-white-90 transition-all duration-300 uppercase'>{dashboardName}</span>
         </div>
     </nav>
     );

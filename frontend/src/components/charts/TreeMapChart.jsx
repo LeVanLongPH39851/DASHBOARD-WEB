@@ -174,7 +174,7 @@ const TreeMapChart = ({
             <div style="font-weight: 600; font-size: ${!stateGlobals.screen_md ? '13' : '11'}px; color: rgba(0, 0, 0, 0.7);">
               ${path}
             </div>
-            <div style="font-weight: 700; color: #059669; font-size: ${!stateGlobals.screen_md ? '12' : '10.5'}px;">
+            <div style="font-weight: 500; color: #059669; font-size: ${!stateGlobals.screen_md ? '12' : '10.5'}px;">
               <span>${value?.toLocaleString(undefined, { maximumFractionDigits: (nameChart.includes('%') ? 2 : 0) }) || 0} <span style="font-size: ${!stateGlobals.screen_md ? '11' : '10'}px">(${percent.toFixed(2)}%)</span></span>
             </div>
           </div>

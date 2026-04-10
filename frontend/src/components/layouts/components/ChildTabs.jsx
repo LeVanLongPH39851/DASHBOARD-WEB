@@ -40,9 +40,9 @@ export default function ChildTabs({ tabs, defaultTab, variant = 'default' }) {
   const variants = {
     default: {
       container: 'relative flex gap-1 mb-6 max-md:mb-4 overflow-hidden rounded-2xl p-1 bg-background-black-4 dark:bg-background-white-8 w-fit transition-all duration-300',
-      button: (isActive) => `relative px-6 max-md:px-4 py-2 font-medium text-sm max-md:text-xs transition-all duration-300 cursor-pointer z-10 ${
+      button: (isActive) => `relative px-6 max-md:px-4 py-2 font-normal text-sm max-md:text-xs transition-all duration-300 cursor-pointer z-10 ${
         isActive
-          ? 'text-color-light dark:text-background-check-box font-semibold'
+          ? 'text-color-light dark:text-background-check-box font-medium'
           : 'text-color-gray-600 dark:text-color-white-50 hover:text-gray-700 dark:hover:text-gray-100'
       }`,
       background: 'absolute inset-0 bg-background-black-child-tab dark:bg-color-white-80 rounded-2xl transition-all duration-500 ease-out'

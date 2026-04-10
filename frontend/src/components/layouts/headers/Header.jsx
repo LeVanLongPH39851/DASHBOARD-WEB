@@ -146,8 +146,8 @@ const Header = () => {
                         <img src={imageUser} className='w-10 max-lg:w-8 h-10 max-lg:h-8' alt="Image User" />
                     </figure>
                     <div className='flex flex-col justify-between'>
-                        <span className='text-base max-lg:text-sm font-medium text-color-gray-800 dark:text-color-white-90 transition-all duration-300'>{time}</span>
-                        <span className='text-xs font-medium text-color-gray-600 dark:text-color-white-50 transition-all duration-300'>{date}</span>
+                        <span className='text-base max-lg:text-sm font-normal text-color-gray-800 dark:text-color-white-90 transition-all duration-300'>{time}</span>
+                        <span className='text-xs font-normal text-color-gray-600 dark:text-color-white-50 transition-all duration-300'>{date}</span>
                     </div>
                     <figure><img src={!stateGlobals.darkMode ? iconArrowDown : iconArrowDownDark} className={`w-2.25 transition-all duration-300 ${!isDropdownOpen ? '' : 'rotate-180'}`} alt="Icon Arrow Down" /></figure>
                 </div>

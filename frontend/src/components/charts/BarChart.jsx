@@ -196,7 +196,7 @@ const BarChart = ({
 
         return `
           <div style="padding: ${!stateGlobals.screen_md ? '12' : '4'}px ${!stateGlobals.screen_md ? '16' : '8'}px; box-shadow: 0 ${!stateGlobals.screen_md ? '4' : '2'}px ${!stateGlobals.screen_md ? '12' : '4'}px rgba(0,0,0,0.1);">
-            <div style="font-weight: 600; font-size: ${!stateGlobals.screen_md ? '13' : '11'}px; color: rgba(0, 0, 0, 0.7);">
+            <div style="font-weight: 500; font-size: ${!stateGlobals.screen_md ? '13' : '11'}px; color: rgba(0, 0, 0, 0.7);">
               ${visibleParams[0].name}
             </div>
             ${visibleParams.map(p => {
@@ -204,8 +204,8 @@ const BarChart = ({
               return `
                 <div style="margin: 2px 0; display: flex; align-items: center;">
                   ${p.marker}
-                  <span style="font-weight: 600; font-size: ${!stateGlobals.screen_md ? '12' : '10.5'}px; margin-right: 4px; color: rgba(0, 0, 0, 0.7);">${LABEL_METRIC[p.seriesName] || p.seriesName}:</span> 
-                  <span style="font-size: ${!stateGlobals.screen_md ? '12' : '10.5'}px; font-weight: 500; color: rgba(0, 0, 0, 0.7);">
+                  <span style="font-weight: 500; font-size: ${!stateGlobals.screen_md ? '12' : '10.5'}px; margin-right: 4px; color: rgba(0, 0, 0, 0.7);">${LABEL_METRIC[p.seriesName] || p.seriesName}:</span> 
+                  <span style="font-size: ${!stateGlobals.screen_md ? '12' : '10.5'}px; font-weight: 400; color: rgba(0, 0, 0, 0.7);">
                     ${p.value.toLocaleString(undefined, { maximumFractionDigits: 0 })} ${suffix} ${topSeriesIndex != 0 ? ` <span style="font-size: ${!stateGlobals.screen_md ? '11' : '10'}px;">(${percent}%)</span>` : ''}
                   </span>
                 </div>
@@ -213,7 +213,7 @@ const BarChart = ({
             }).join('')}
             ${topSeriesIndex != 0 ? `
               <hr style="margin: ${!stateGlobals.screen_md ? '5' : '4'}px 0; border: none; height: 1px; background: rgba(0, 0, 0, 0.1);">
-              <div style="font-weight: 700; color: #059669; font-size: ${!stateGlobals.screen_md ? '12' : '10.5'}px;">
+              <div style="font-weight: 600; color: #059669; font-size: ${!stateGlobals.screen_md ? '12' : '10.5'}px;">
                 <span>Tổng:</span> <span>${total.toLocaleString(undefined, { maximumFractionDigits: 0 })} ${suffix}</span>
               </div>
             ` : ''}
@@ -245,7 +245,7 @@ const BarChart = ({
         textStyle: {
           fontSize: !stateGlobals.screen_md ? fontSize.axisLabel : '10.5px',
           color: !stateGlobals.darkMode ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.8)',
-          fontWeight: isHorizontal ? 500 : 600,
+          fontWeight: 500,
           fontFamily: fontFamily
         },
         emphasis: {

@@ -113,14 +113,14 @@ const MixedChart = ({
       formatter: params => {
         return `
           <div style="padding: ${!stateGlobals.screen_md ? '12' : '4'}px ${!stateGlobals.screen_md ? '16' : '8'}px; box-shadow: 0 ${!stateGlobals.screen_md ? '4' : '2'}px ${!stateGlobals.screen_md ? '12' : '4'}px rgba(0,0,0,0.1);">
-            <div style="font-weight: 600; font-size: ${!stateGlobals.screen_md ? '13' : '11'}px; color: rgba(0, 0, 0, 0.7);">
+            <div style="font-weight: 500; font-size: ${!stateGlobals.screen_md ? '13' : '11'}px; color: rgba(0, 0, 0, 0.7);">
               ${params[0].name}
             </div>
             ${params.map(p => `
               <div style="margin: 2px 0; display: flex; align-items: center;">
                 ${p.marker}
-                <span style="font-weight: 600; font-size: ${!stateGlobals.screen_md ? '12' : '10.5'}px; margin-right: 4px; color: rgba(0, 0, 0, 0.7);">${p.seriesName}:</span> 
-                <span style="font-size: ${!stateGlobals.screen_md ? '12' : '10.5'}px; font-weight: 500; color: rgba(0, 0, 0, 0.7);">${typeof p.value === 'number' ? formatNumber(p.value, { isPercent: p.seriesName.includes('%') }) : (p.value || '-')}
+                <span style="font-weight: 500; font-size: ${!stateGlobals.screen_md ? '12' : '10.5'}px; margin-right: 4px; color: rgba(0, 0, 0, 0.7);">${p.seriesName}:</span> 
+                <span style="font-size: ${!stateGlobals.screen_md ? '12' : '10.5'}px; font-weight: 400; color: rgba(0, 0, 0, 0.7);">${typeof p.value === 'number' ? formatNumber(p.value, { isPercent: p.seriesName.includes('%') }) : (p.value || '-')}
                 </span>
               </div>
             `).join('')}
@@ -151,7 +151,7 @@ const MixedChart = ({
         textStyle: {
           fontSize: !stateGlobals.screen_md ? fontSize.axisLabel : '10.5px',
           color: !stateGlobals.darkMode ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.8)',
-          fontWeight: 600
+          fontWeight: 500
         },
         emphasis: {
           handleStyle: {

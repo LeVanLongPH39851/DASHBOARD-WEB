@@ -94,7 +94,7 @@ const RangeFilter = ({
   return (
     <div className={`${horizontalFixed ? '' : isOpenFilter ? `${marginBottom}` : ''}`}>
       {!horizontalFixed && (<div onClick={() => setIsOpenFilter(prev => !prev)} className={`flex cursor-pointer group justify-between items-center h-10.5 max-md:h-8 ${isOpenFilter ? 'mb-1' : ''}`}>
-                              <label className='cursor-pointer text-[16px] max-md:text-xs text-background-black-child-tab dark:text-color-white-90 transition-all duration-300 font-semibold'>{label}</label>
+                              <label className='cursor-pointer text-[16px] max-md:text-xs text-background-black-child-tab dark:text-color-white-90 transition-all duration-300 font-medium'>{label}</label>
                               <figure className={`cursor-pointer transition-all duration-300 ${isOpenFilter ? '' : 'rotate-180'}`}><img src={!stateGlobals.darkMode ? iconArrowUpGray : iconArrowUpGrayDark} className='w-2.75 max-md:w-2' alt="Icon Arrow Up Gray" /></figure>
                             </div>)}
       <div className={!horizontalFixed ? 'transition-all duration-300 relative filter-relative overflow-hidden' : ''} data-initial-height="match">
@@ -124,9 +124,9 @@ const RangeFilter = ({
                                     />
                                 </div>)}
           <div className={`relative h-6 max-md:h-5 flex items-center ${horizontalFixed ? 'w-34 max-md:w-full' : ''}`}>
-            <div className={`absolute w-full ${!horizontalFixed ? 'h-1.5' : 'h-1.25'} h-1.5 max-md:h-1 rounded-full bg-background-black-4 dark:bg-background-white-15`} />
+            <div className={`absolute w-full h-1.25 max-md:h-1 rounded-full bg-background-black-4 dark:bg-background-white-15`} />
             <div
-              className={`absolute ${!horizontalFixed ? 'h-1.5' : 'h-1.25'} max-md:h-1 rounded-full bg-color-neotam dark:bg-color-primary-700`}
+              className={`absolute h-1.25 max-md:h-1 rounded-full bg-color-neotam dark:bg-color-primary-700`}
               style={{
                 left: `${minPercent}%`,
                 width: `${maxPercent - minPercent}%`,
@@ -140,7 +140,7 @@ const RangeFilter = ({
               value={localMin}
               disabled={disabled}
               onChange={(e) => handleMinInput(e.target.value)}
-              className={`absolute w-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none ${!horizontalFixed ? '[&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4' : '[&::-webkit-slider-thumb]:h-3.5 [&::-webkit-slider-thumb]:w-3.5'} max-md:[&::-webkit-slider-thumb]:h-3 max-md:[&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-color-neotam dark:[&::-webkit-slider-thumb]:bg-color-primary-700 [&::-webkit-slider-thumb]:cursor-pointer`}
+              className={`absolute w-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-3.5 [&::-webkit-slider-thumb]:w-3.5 max-md:[&::-webkit-slider-thumb]:h-3 max-md:[&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-color-neotam dark:[&::-webkit-slider-thumb]:bg-color-primary-700 [&::-webkit-slider-thumb]:cursor-pointer`}
             />
             <input
               type='range'
@@ -150,7 +150,7 @@ const RangeFilter = ({
               value={localMax}
               disabled={disabled}
               onChange={(e) => handleMaxInput(e.target.value)}
-              className={`absolute w-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none ${!horizontalFixed ? '[&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4' : '[&::-webkit-slider-thumb]:h-3.5 [&::-webkit-slider-thumb]:w-3.5'} max-md:[&::-webkit-slider-thumb]:h-3 max-md:[&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-color-neotam dark:[&::-webkit-slider-thumb]:bg-color-primary-700 [&::-webkit-slider-thumb]:cursor-pointer`}
+              className={`absolute w-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-3.5 [&::-webkit-slider-thumb]:w-3.5 max-md:[&::-webkit-slider-thumb]:h-3 max-md:[&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-color-neotam dark:[&::-webkit-slider-thumb]:bg-color-primary-700 [&::-webkit-slider-thumb]:cursor-pointer`}
             />
           </div>
           <div className='flex justify-between mt-1 max-md:mt-0 text-xs max-md:text-[10px] text-color-black-50 dark:text-color-white-50 transition-all duration-300'>

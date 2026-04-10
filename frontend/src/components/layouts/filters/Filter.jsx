@@ -142,12 +142,12 @@ const Filter = ({ filters, horizontalFixed=false
       if (isSticky === wasSticky) return;
       wasSticky = isSticky;
 
-      filterId.classList.remove('top-0', 'top-15', 'max-md:top-10');
+      filterId.classList.remove('top-0', 'top-15', 'max-lg:top-13', 'max-md:top-10');
 
       if (isSticky) {
         filterId.classList.add('top-0');
       } else {
-        filterId.classList.add('top-15', 'max-md:top-10');
+        filterId.classList.add('top-15', 'max-lg:top-13', 'max-md:top-10');
       }
     };
 
@@ -342,9 +342,9 @@ const Filter = ({ filters, horizontalFixed=false
     <aside className={`${horizontalFixed ? 'w-full' : `${!stateGlobals.isOpen || stateGlobals.horizontal ? 'w-0' : 'w-[16%] max-md:w-0'} h-full`} transition-all duration-300`}>
       <div id='filter' className={`${horizontalFixed ? 'w-full' : `bg-background-light dark:bg-background-dark border-r border-background-line-gray dark:border-background-white-15 w-[16%] max-md:w-[65%] max-md:z-9999 overflow-y-auto fixed left-0 ${!stateGlobals.isOpen || stateGlobals.horizontal ? '-translate-x-full' : ''} top-15 max-lg:top-13 max-md:top-10 max-md:px-4 max-lg:px-5 px-6 pt-4 max-lg:pt-3 max-md:pt-2 pb-20 transition-all duration-300 h-full`}`}>
         {!horizontalFixed && (<div className='flex justify-between items-center h-10.5 max-lg:h-9 max-md:h-8 mb-2 max-lg:mb-1.5 max-md:mb-1'>
-          <span className='text-background-black-child-tab dark:text-color-white-90 transition-all duration-300 text-[16px] max-md:text-xs font-semibold'>Bộ lọc</span><figure className='cursor-pointer transition-all duration-300 hover:rotate-180' onClick={() => setStateGlobals(prev => ({...prev, isOpen: !prev.isOpen}))}><img src={!stateGlobals.darkMode ? iconXBlack : iconXBlackDark} className='w-3.25 max-md:w-2.5' alt="Icon X Black" /></figure>
+          <span className='text-background-black-child-tab dark:text-color-white-90 transition-all duration-300 text-[16px] max-lg:text-sm max-md:text-xs font-semibold'>Bộ lọc</span><figure className='cursor-pointer transition-all duration-300 hover:rotate-180' onClick={() => setStateGlobals(prev => ({...prev, isOpen: !prev.isOpen}))}><img src={!stateGlobals.darkMode ? iconXBlack : iconXBlackDark} className='w-3.25 max-lg:w-2.75 max-md:w-2.5' alt="Icon X Black" /></figure>
         </div>)}
-        <form className={`${horizontalFixed ? 'flex flex-wrap gap-2 max-md:gap-1.5 max-md:grid max-md:grid-cols-2 items-center' : ''}`} onSubmit={onSubmit} onReset={onReset}>
+        <form className={`${horizontalFixed ? 'flex flex-wrap gap-2 max-lg:gap-1.75 max-md:gap-1.5 max-md:grid max-md:grid-cols-2 items-center' : ''}`} onSubmit={onSubmit} onReset={onReset}>
           <div className='max-md:col-span-2'>
             <DateRangeFilter
               startDate={filterValues?.startDate || getYesterday()}
@@ -361,7 +361,7 @@ const Filter = ({ filters, horizontalFixed=false
             options={ALL_DAYS}
             value={filterValues?.days || []}
             onChange={handleDaysChange}
-            marginBottom="mb-4 max-md:mb-2"
+            marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
           />) :
           (<SelectMultiFilter
             label="Nhóm ngày"
@@ -369,7 +369,7 @@ const Filter = ({ filters, horizontalFixed=false
             options={ALL_DAYS}
             value={filterValues?.days || []}
             onChange={handleDaysChange}
-            marginBottom="mb-4 max-md:mb-2"
+            marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
             horizontalFixed={horizontalFixed}
           />)}
 
@@ -380,7 +380,7 @@ const Filter = ({ filters, horizontalFixed=false
             options={ALL_CHANNELS}
             value={filterValues?.channels || []}
             onChange={handleChannelsChange}
-            marginBottom="mb-4 max-md:mb-2"
+            marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
           />) :
           (<SelectMultiFilter
             label="Kênh"
@@ -388,7 +388,7 @@ const Filter = ({ filters, horizontalFixed=false
             options={ALL_CHANNELS}
             value={filterValues?.channels || []}
             onChange={handleChannelsChange}
-            marginBottom="mb-4 max-md:mb-2"
+            marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
             horizontalFixed={horizontalFixed}
           />)}
 
@@ -398,7 +398,7 @@ const Filter = ({ filters, horizontalFixed=false
             options={ALL_TIMEBANDS}
             value={filterValues?.timebands || []}
             onChange={handleTimebandsChange}
-            marginBottom="mb-4 max-md:mb-2"
+            marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
             horizontalFixed={horizontalFixed}
           />)}
 
@@ -408,14 +408,14 @@ const Filter = ({ filters, horizontalFixed=false
             options={ALL_EVENTS}
             value={filterValues?.events || []}
             onChange={handleEventsChange}
-            marginBottom="mb-4 max-md:mb-2"
+            marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
           />) : (<SelectMultiFilter
             label="Live/TSV"
             placeholder="Chọn event..."
             options={ALL_EVENTS}
             value={filterValues?.events || []}
             onChange={handleEventsChange}
-            marginBottom="mb-4 max-md:mb-2"
+            marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
             horizontalFixed={horizontalFixed}
           />))}
 
@@ -425,14 +425,14 @@ const Filter = ({ filters, horizontalFixed=false
             options={ALL_REGIONALS}
             value={filterValues?.regionals || []}
             onChange={handleRegionalsChange}
-            marginBottom="mb-4 max-md:mb-2"
+            marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
           />, <CheckboxMultiFilter
             label="Thành phố lớn"
             placeholder="Chọn TP lớn"
             options={ALL_KEY_CITIES}
             value={filterValues?.keyCities || []}
             onChange={handleKeyCitiesChange}
-            marginBottom="mb-4 max-md:mb-2"
+            marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
             isSearch={false}
           />, <SelectMultiFilter
             label="Tỉnh/TP"
@@ -440,7 +440,7 @@ const Filter = ({ filters, horizontalFixed=false
             options={ALL_PROVINCES}
             value={filterValues?.provinces || []}
             onChange={handleProvincesChange}
-            marginBottom="mb-4 max-md:mb-2"
+            marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
             horizontalFixed={horizontalFixed}
           />]} />)}
 
@@ -451,7 +451,7 @@ const Filter = ({ filters, horizontalFixed=false
             options={ALL_REGIONALS}
             value={filterValues?.regionals || []}
             onChange={handleRegionalsChange}
-            marginBottom="mb-4 max-md:mb-2"
+            marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
             horizontalFixed={horizontalFixed}
           /> <SelectMultiFilter
             label="Thành phố lớn"
@@ -459,7 +459,7 @@ const Filter = ({ filters, horizontalFixed=false
             options={ALL_KEY_CITIES}
             value={filterValues?.keyCities || []}
             onChange={handleKeyCitiesChange}
-            marginBottom="mb-4 max-md:mb-2"
+            marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
             horizontalFixed={horizontalFixed}
           />
           <SelectMultiFilter
@@ -468,7 +468,7 @@ const Filter = ({ filters, horizontalFixed=false
             options={ALL_PROVINCES}
             value={filterValues?.provinces || []}
             onChange={handleProvincesChange}
-            marginBottom="mb-4 max-md:mb-2"
+            marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
             horizontalFixed={horizontalFixed}
           /></>)}
           
@@ -479,7 +479,7 @@ const Filter = ({ filters, horizontalFixed=false
             step={1}
             value={filterValues?.startHours || { min: 0, max: 23 }}
             onChange={handleStartHoursChange}
-            marginBottom={"mb-4 max-md:mb-2"}
+            marginBottom={"mb-4 max-lg:mb-3 max-md:mb-2"}
             horizontalFixed={horizontalFixed}
           />}
 
@@ -490,7 +490,7 @@ const Filter = ({ filters, horizontalFixed=false
             step={1}
             value={filterValues?.startMinutes || { min: 0, max: 59 }}
             onChange={handleStartMinutesChange}
-            marginBottom={"mb-4 max-md:mb-2"}
+            marginBottom={"mb-4 max-lg:mb-3 max-md:mb-2"}
             horizontalFixed={horizontalFixed}
           />}
 
@@ -500,7 +500,7 @@ const Filter = ({ filters, horizontalFixed=false
             options={ALL_FIRST_LEVELS}
             value={filterValues?.firstLevels || []}
             onChange={handleFirstLevelsChange}
-            marginBottom="mb-4 max-md:mb-2"
+            marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
           />) :
           (<SelectMultiFilter
             label="Thể loại"
@@ -508,7 +508,7 @@ const Filter = ({ filters, horizontalFixed=false
             options={ALL_FIRST_LEVELS}
             value={filterValues?.firstLevels || []}
             onChange={handleFirstLevelsChange}
-            marginBottom="mb-4 max-md:mb-2"
+            marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
             horizontalFixed={horizontalFixed}
           />))}
 
@@ -518,12 +518,12 @@ const Filter = ({ filters, horizontalFixed=false
             options={ALL_PROGRAMS}
             value={filterValues?.programs || []}
             onChange={handleProgramsChange}
-            marginBottom="mb-4 max-md:mb-2"
+            marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
             horizontalFixed={horizontalFixed} />)}
 
-          <div className={`flex justify-center items-center transition-all duration-700 bg-background-light ${!horizontalFixed ? `dark:bg-background-dark fixed bottom-0 left-0 w-[16%] max-md:w-[65%] border-r border-background-line-gray dark:border-background-white-15 ${!stateGlobals.isOpen || stateGlobals.horizontal ? '-translate-x-full' : ''} shadow-2xl shadow-color-black-50 dark:shadow-color-white-90 py-3 gap-4` : 'gap-1 dark:bg-background-chart-dark max-md:justify-start max-md:col-span-2'}`}>
-            <ButtonFilter text={'Áp dụng bộ lọc'} background={'bg-background-black-90 dark:bg-background-primary'} color={'text-color-white-90 dark:text-background-check-box'} type={'submit'} />
-            <ButtonFilter text={'Đặt lại'} background={'bg-background-light dark:bg-transparent'} color={'text-background-black-90 dark:text-color-white-50'} type={'reset'} src={!stateGlobals.darkMode ? iconReset : iconResetDark} alt={'Icon Reset'} width={'w-3 max-md:w-2.5'} />
+          <div className={`flex justify-center items-center transition-all duration-700 bg-background-light ${!horizontalFixed ? `dark:bg-background-dark fixed bottom-0 left-0 w-[16%] max-md:w-[65%] border-r border-background-line-gray dark:border-background-white-15 ${!stateGlobals.isOpen || stateGlobals.horizontal ? '-translate-x-full' : ''} shadow-2xl shadow-color-black-50 dark:shadow-color-white-90 py-3 max-lg:py-2.5 max-lg:gap-2 gap-4` : 'gap-1 dark:bg-background-chart-dark max-md:justify-start max-md:col-span-2'}`}>
+            <ButtonFilter text={'Áp dụng bộ lọc'} background={'bg-background-primary'} color={'text-background-check-box'} type={'submit'} />
+            <ButtonFilter text={'Đặt lại'} background={'bg-background-light dark:bg-transparent'} color={'text-background-black-90 dark:text-color-white-50'} type={'reset'} src={!stateGlobals.darkMode ? iconReset : iconResetDark} alt={'Icon Reset'} width={'w-3 max-lg:w-2.75 max-md:w-2.5'} />
           </div>
         </form>
       </div>

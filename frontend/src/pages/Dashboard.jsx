@@ -66,7 +66,7 @@ const DashboardContent = () => {
       <Header />
       <div className='flex w-full h-full bg-background-light dark:bg-background-dark transition-all duration-300'>
         <Filter filters={scopeFilterData} />
-        <div className={`pb-6 max-lg:pb-5 max-md:pb-4 ${stateGlobals.isOpen && !stateGlobals.horizontal ? 'w-[84%] max-md:w-full' : 'w-full'} transition-all duration-300 bg-background-dashboard dark:bg-background-dashboard-dark`}>
+        <div className={`${stateGlobals.isOpen && !stateGlobals.horizontal ? 'w-[84%] max-md:w-full' : 'w-full'} transition-all duration-300 bg-background-dashboard dark:bg-background-dashboard-dark`}>
           <BreadCrumb/>
           <div className='bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300'>
             <ParentTabs uniqueId='dashboard'
@@ -398,6 +398,9 @@ const DashboardContent = () => {
                                                 lastDataIndexActive={CUSTOM_CHART.mixedChart.mixedChartDate.lastDataIndexActive} />
                                   </div>
                                 </div>
+                                <div className='px-6 max-lg:px-5 max-md:px-4 pb-6 max-lg:pb-5 max-md:pb-19 bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300'>
+                                  <Footer color='text-color-black-100 dark:text-color-white-90' />
+                                </div>
                               </section>
                             )
                           },
@@ -662,6 +665,9 @@ const DashboardContent = () => {
                                     ]}/>
                                   </div>
                                 </div>
+                                <div className='px-6 max-lg:px-5 max-md:px-4 pb-6 max-lg:pb-5 max-md:pb-19 bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300'>
+                                  <Footer color='text-color-black-100 dark:text-color-white-90' />
+                                </div>
                               </section>
                             )
                           },
@@ -732,6 +738,9 @@ const DashboardContent = () => {
                                                 fullScreen={true} />
                                   </div>
                                 </div>
+                                <div className='px-6 max-lg:px-5 max-md:px-4 pb-6 max-lg:pb-5 max-md:pb-19 bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300'>
+                                  <Footer color='text-color-black-100 dark:text-color-white-90' />
+                                </div>
                               </section>
                             )
                           },
@@ -801,15 +810,15 @@ const DashboardContent = () => {
                                     />
                                   </div>
                                 </div>
+                                <div className='px-6 max-lg:px-5 max-md:px-4 pb-6 max-lg:pb-5 max-md:pb-19 bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300'>
+                                  <Footer color='text-color-black-100 dark:text-color-white-90' />
+                                </div>
                               </section>
                             )
                           } : null)
                         ]}
                         user={(!userLoading && user?.username !== 'vtvguest')}
             />
-          </div>
-          <div className='px-6 max-lg:px-5 max-md:px-4 max-md:pb-15 bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300'>
-            <Footer color='text-color-black-100 dark:text-color-white-90' />
           </div>
         </div>
       </div>

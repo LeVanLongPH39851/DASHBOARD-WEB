@@ -58,7 +58,7 @@ const DashboardContent = () => {
       <Header />
       <div className='flex w-full h-full bg-background-light dark:bg-background-dark transition-all duration-300'>
         <Filter filters={scopeFilterData} />
-        <div className={`pb-6 max-lg:pb-5 max-md:pb-4 ${stateGlobals.isOpen && !stateGlobals.horizontal ? 'w-[84%] max-md:w-full' : 'w-full'} transition-all duration-300 bg-background-dashboard dark:bg-background-dashboard-dark`}>
+        <div className={`${stateGlobals.isOpen && !stateGlobals.horizontal ? 'w-[84%] max-md:w-full' : 'w-full'} transition-all duration-300 bg-background-dashboard dark:bg-background-dashboard-dark`}>
           <BreadCrumb/>
           <div className='bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300'>
             <ParentTabs uniqueId='dashboard'
@@ -425,6 +425,9 @@ const DashboardContent = () => {
                                         ]} />
                                     </div>
                                 </div>
+                                <div className='px-6 max-lg:px-5 max-md:px-4 pb-6 max-lg:pb-5 max-md:pb-19 bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300'>
+                                  <Footer color='text-color-black-100 dark:text-color-white-90' />
+                                </div>
                               </section>
                             )
                           },
@@ -473,8 +476,8 @@ const DashboardContent = () => {
                                                   showPagination={false} />
                                     </div>
                                   </div>
-                                  <div className='w-full flex gap-6 pb-6'>
-                                    <div className='w-[60%]'>
+                                  <div className='w-full grid grid-cols-10 gap-6 pb-6'>
+                                    <div className='col-span-6'>
                                       <PivotTableChart
                                         data={!dashboard.isLoading.spendVNDPivotChannelFirstLevelData ? dashboard.spendVNDPivotChannelFirstLevelData?.data : 'isLoading'}
                                         nameChart="Doanh thu quảng cáo theo kênh"
@@ -483,13 +486,13 @@ const DashboardContent = () => {
                                         columnField="channel_name_tvd"
                                         valueField="price"
                                         aggType="sum"
-                                        height="420px"
+                                        height="400px"
                                         fontSize={{ label: '12px', td: '12px' }}
                                         fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                         fontWeight={{ label: 600, td: 500 }}
                                       />
                                     </div>
-                                    <div className='w-[40%]'>
+                                    <div className='col-span-4'>
                                       <PieChart data={!dashboard.isLoading.countPieTimebandData ? transformPieChartData(dashboard.countPieTimebandData?.data, dashboard.countPieTimebandData?.colnames) : 'isLoading'}
                                                 height={CUSTOM_CHART.pieChart.height}
                                                 fontSize={CUSTOM_CHART.pieChart.fontSize}
@@ -497,13 +500,77 @@ const DashboardContent = () => {
                                                 fontWeight={CUSTOM_CHART.pieChart.fontWeight}
                                                 nameChart={'Xu hướng quảng cáo theo khung giờ'}
                                                 description={'Xu hướng quảng cáo theo khung giờ'}
-                                                colors={CUSTOM_CHART.pieChart.colorChannel}
+                                                colors={{
+                                                "1.Sáng (00h - 11h)": "rgba(217, 31, 38, 1)",
+                                                "2.Trưa (11h - 14h)": "rgba(86, 154, 255, 1)",
+                                                "3.Chiều (14h - 18h)": "rgba(128, 212, 27, 1)",
+                                                "4.Tối (18h - 24h)": "rgba(2, 147, 113, 1)"
+                                                }}
                                                 donut={CUSTOM_CHART.pieChart.donut}
                                                 innerRadius={CUSTOM_CHART.pieChart.innerRadius}
                                                 enableLegend={false}
                                       />
                                     </div>
                                   </div>
+                                  <div className='w-full pb-6'>
+                                    <BarChart 
+                                        data={!dashboard.isLoading.spendVNDBarProgramData ? transformBarChartData(dashboard.spendVNDBarProgramData?.data, dashboard.spendVNDBarProgramData?.colnames) : 'isLoading'}
+                                        height={CUSTOM_CHART.barChart.height + 50}
+                                        fontSize={CUSTOM_CHART.barChart.fontSize}
+                                        fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                        colors={['rgba(255, 204, 0, 1)']}
+                                        fontWeight={CUSTOM_CHART.barChart.fontWeight}
+                                        nameChart={'Top 20 chương trình có doanh thu cao nhất'}
+                                        description={'Top 20 chương trình có doanh thu cao nhất'}
+                                        orientation={'horizontal'}
+                                        colorZoom='yellow'
+                                        suffix='tr'
+                                    />
+                                  </div>
+                                  <div className='w-full pb-6'>
+                                    <BarChart 
+                                      data={!dashboard.isLoading.spendVNDBarChannelData ? transformBarChartData(dashboard.spendVNDBarChannelData?.data, dashboard.spendVNDBarChannelData?.colnames) : 'isLoading'}
+                                      height={CUSTOM_CHART.barChart.height}
+                                      fontSize={CUSTOM_CHART.barChart.fontSize}
+                                      fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                      colors={['rgba(255, 204, 0, 1)']}
+                                      fontWeight={CUSTOM_CHART.barChart.fontWeight}
+                                      nameChart={'Chi phí quảng cáo theo kênh'}
+                                      description={'Chi phí quảng cáo theo kênh'}
+                                      orientation={''}
+                                      colorZoom='yellow'
+                                      suffix='tr'
+                                  />
+                                  </div>
+                                  <div className='w-full pb-6'>
+                                    <PivotTableChart
+                                        data={!dashboard.isLoading.spendVNDPivotChannelTimebandData ? dashboard.spendVNDPivotChannelTimebandData?.data : 'isLoading'}
+                                        nameChart="Xu hướng quảng cáo theo khung giờ"
+                                        description="Xu hướng quảng cáo theo khung giờ"
+                                        rowField="channel_name_tvd"
+                                        columnField="time_band"
+                                        valueField="price"
+                                        aggType="sum"
+                                        height="400px"
+                                        fontSize={{ label: '12px', td: '12px' }}
+                                        fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                        fontWeight={{ label: 600, td: 500 }}
+                                      />
+                                  </div>
+                                  <div className='w-full'>
+                                    <TableChart data={!dashboard.isLoading.spendVNDTableAdvertiserData ? transformTableChartData(dashboard.spendVNDTableAdvertiserData?.data, dashboard.spendVNDTableAdvertiserData?.colnames) : 'isLoading'}
+                                                  height={CUSTOM_CHART.tableChart.tableChartChannel.height}
+                                                  fontSize={CUSTOM_CHART.tableChart.fontSize}
+                                                  fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                                  fontWeight={CUSTOM_CHART.tableChart.fontWeight}
+                                                  nameChart={'Chi phí quảng cáo theo nhà quảng cáo'}
+                                                  description={'Chi phí quảng cáo theo nhà quảng cáo'}
+                                                  showSTT={false}
+                                                  showPagination={false} />
+                                  </div>
+                                </div>
+                                <div className='px-6 max-lg:px-5 max-md:px-4 pb-6 max-lg:pb-5 max-md:pb-19 bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300'>
+                                  <Footer color='text-color-black-100 dark:text-color-white-90' />
                                 </div>
                               </section>
                             )
@@ -516,6 +583,9 @@ const DashboardContent = () => {
                                 <div className='px-6 max-lg:px-5 max-md:px-4'>
                                   
                                 </div>
+                                <div className='px-6 max-lg:px-5 max-md:px-4 pb-6 max-lg:pb-5 max-md:pb-19 bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300'>
+                                  <Footer color='text-color-black-100 dark:text-color-white-90' />
+                                </div>
                               </section>
                             )
                           },
@@ -527,14 +597,14 @@ const DashboardContent = () => {
                                 <div className='px-6 max-lg:px-5 max-md:px-4'>
                                   
                                 </div>
+                                <div className='px-6 max-lg:px-5 max-md:px-4 pb-6 max-lg:pb-5 max-md:pb-19 bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300'>
+                                  <Footer color='text-color-black-100 dark:text-color-white-90' />
+                                </div>
                               </section>
                             )
                           }
                         ]}
             />
-          </div>
-          <div className='px-6 max-lg:px-5 max-md:px-4 max-md:pb-15 bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300'>
-            <Footer color='text-color-black-100 dark:text-color-white-90' />
           </div>
         </div>
       </div>

@@ -312,16 +312,16 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
               className="px-4 max-md:px-2 py-1 border border-border-black-10 dark:border-background-white-15 dark:bg-background-white-8 duration-300 rounded-xl flex items-center gap-1 transition-all h-10 max-md:h-8 cursor-pointer"
             >
               <figure><img src={!stateGlobals.darkMode ? iconShowList : iconShowListDark} alt="Icon Show List" className='w-3 max-md:w-2.5' /></figure>
-              <span className='text-sm max-md:text-[10.5px] font-medium text-background-black-90 dark:text-color-white-50 transition-all duration-300'>Chọn cột</span>
+              <span className='text-sm max-md:text-[10.5px] font-normal text-background-black-90 dark:text-color-white-50 transition-all duration-300'>Chọn cột</span>
             </button>
             {showColumnMenu && (
               <div className="absolute left-0 top-full mt-2 max-md:mt-1 bg-background-light dark:bg-background-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-lg z-50 min-w-55 max-md:min-w-50">
                 <div className="p-3 max-md:p-2 max-h-80 max-md:max-h-70 overflow-y-auto">
-                  <div className="text-xs max-md:text-[10.5px] font-semibold text-color-black-50 dark:text-color-white-80 transition-all duration-300 uppercase mb-2 px-2 max-md:px-1">Danh sách cột</div>
+                  <div className="text-xs max-md:text-[10.5px] font-medium text-color-black-50 dark:text-color-white-80 transition-all duration-300 uppercase mb-2 px-2 max-md:px-1">Danh sách cột</div>
                   {table.getAllLeafColumns().map((column) => (
                     <label
                       key={column.id}
-                      className="flex items-center gap-2 px-3 max-md:px-2 py-2 max-md:py-1.25 cursor-pointer rounded-md text-xs max-md:text-[10.5px] font-medium"
+                      className="flex items-center gap-2 px-3 max-md:px-2 py-2 max-md:py-1.25 cursor-pointer rounded-md text-xs max-md:text-[10.5px] font-normal"
                     >
                       <input
                         type="checkbox"
@@ -344,7 +344,7 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
                 className="pl-7 pr-6 py-1 border border-border-black-10 dark:border-background-white-15 text-background-black-90 dark:bg-background-white-8 dark:text-color-white-50 duration-300 cursor-pointer rounded-xl text-sm max-md:text-[10.5px] appearance-none transition-all flex items-center h-10 max-md:h-8 outline-none"
               >
                 {[10, 20, 50, 100, 200].map((pageSize) => (
-                  <option className='text-sm max-md:text-[10.5px] font-medium text-background-black-90 dark:text-color-white-80 dark:bg-background-dark transition-all duration-300' key={pageSize} value={pageSize}>
+                  <option className='text-sm max-md:text-[10.5px] font-normal text-background-black-90 dark:text-color-white-80 dark:bg-background-dark transition-all duration-300' key={pageSize} value={pageSize}>
                     {pageSize}
                   </option>
                 ))}
@@ -360,7 +360,7 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
             value={globalFilter ?? ''}
             onChange={(e) => setGlobalFilter(e.target.value)}
             placeholder="Tìm kiếm"
-            className="pl-4 pr-11 max-md:pr-10 py-2.25 max-md:py-2 border border-border-black-10 dark:border-background-white-15 rounded-2xl outline-none bg-background-search dark:bg-background-white-8 transition-all duration-300 text-sm max-md:text-[10.5px] font-medium text-color-black-50 placeholder-color-black-50 dark:text-color-white-50 dark:placeholder-color-white-50 w-70 max-md:w-35"
+            className="pl-4 pr-11 max-md:pr-10 py-2.25 max-md:py-2 border border-border-black-10 dark:border-background-white-15 rounded-2xl outline-none bg-background-search dark:bg-background-white-8 transition-all duration-300 text-sm max-md:text-[10.5px] font-normal text-color-black-50 placeholder-color-black-50 dark:text-color-white-50 dark:placeholder-color-white-50 w-70 max-md:w-35"
           />
           <figure className='absolute top-1/2 -translate-y-1/2 right-4 cursor-pointer'><img src={!stateGlobals.darkMode ? iconSearch : iconSearchDark} alt="Icon Search" className='w-3.75 max-md:w-3' /></figure>
         </div>
@@ -461,7 +461,7 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
                             }`}
                             style={{
                               fontSize: !stateGlobals.screen_md ? fontSize.td : '10.5px',
-                              fontWeight: ['CHƯƠNG TRÌNH'].includes(columnName) ? 700 : fontWeight.td,
+                              fontWeight: ['CHƯƠNG TRÌNH'].includes(columnName) ? 600 : fontWeight.td,
                               minWidth: `${stateGlobals.screen_md ? columnName === 'MÔ TẢ' ? cell.column.getSize() + 50 : columnName === 'KÊNH' ? cell.column.getSize() + 0 : columnName === 'CHƯƠNG TRÌNH' ? cell.column.getSize() + 70 : isNumericColumn ? cell.column.getSize() + 20 : cell.column.getSize() + 30 : cell.column.getSize() - 40}px`,
                               maxWidth: `${columnName === 'KÊNH' ? cell.column.getSize() + 30 : columnName === 'CHƯƠNG TRÌNH' ? cell.column.getSize() + 180 : cell.column.getSize() + 100}px`,
                               // backgroundColor: bgColor,
@@ -516,7 +516,7 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
               <button
                 key={pageNum}
                 onClick={() => table.setPageIndex(pageNum)}
-                className={`w-7.5 max-md:w-7 h-7.5 max-md:h-7 flex justify-center items-center rounded-lg font-medium transition-all dark:border dark:border-background-white-15 cursor-pointer text-sm max-md:text-xs duration-300 ${
+                className={`w-7.5 max-md:w-7 h-7.5 max-md:h-7 flex justify-center items-center rounded-lg font-normal transition-all dark:border dark:border-background-white-15 cursor-pointer text-sm max-md:text-xs duration-300 ${
                   pageIndex === pageNum
                     ? 'bg-background-black-90 text-background-light dark:bg-background-white-8 shadow-md transition-all duration-300'
                     : 'text-color-black-50 dark:text-color-white-80'

@@ -18,12 +18,9 @@ import Filter from '../filters/Filter';
 import { formatDate } from '../../../helpers/helper';
 import { useDashboardFilters, useDashboardFilterValues, useDashboardStateGlobals } from '../../../context/DashboardFilterContext';
 
-const clearSetAll = (setFilterValues) => {
-  setFilterValues(prev => ({...prev, channels: [], events: [], provinces: [], regionals: [], keyCities: [], timebanbs: [], firstLevels: [], programs: []}))
-  const element = document.getElementsByClassName('filter-item');
-  if (element){
-    Array.from(element).forEach(el => el.style.display = 'none');
-  }
+const clearSetAll = (setFilterValues, setAppliedFilters) => {
+  setFilterValues(null);
+  setAppliedFilters(null);
 }
 
 const InforFilter = ({ filters }) => {
@@ -86,7 +83,7 @@ const InforFilter = ({ filters }) => {
       <div id='inforFilterRelative' className='transition-all duration-300 w-full'>
         <div id='inforFilter' className={`px-6 max-lg:px-5 max-md:px-4 py-4 max-lg:py-3 max-md:py-2.5 bg-background-light dark:bg-background-chart-dark w-full border transition-all duration-300 absolute left-0 border-border-black-10 dark:border-background-white-15 rounded-2xl ${stateGlobals.isInfor ? 'visible opacity-100 top-0' : 'invisible opacity-0 -top-1/2'}`}>
           <div className='flex gap-2 mb-2.5 max-lg:mb-2 max-md:mb-1.5'>
-            <Button background={'bg-color-black-100 dark:bg-background-primary-2'} color={'text-color-white-90 dark:text-background-check-box'} src={!stateGlobals.darkMode ? iconArrowLeftLine : iconArrowLefLineDark} rotate={`${stateGlobals.isOpen ? (!stateGlobals.horizontal ? '' : 'rotate-90') : (!stateGlobals.horizontal ? 'rotate-180' : 'rotate-270')} transition-all duration-300`}
+            <Button background={'bg-background-primary-2'} color={'text-background-check-box'} src={iconArrowLefLineDark} rotate={`${stateGlobals.isOpen ? (!stateGlobals.horizontal ? '' : 'rotate-90') : (!stateGlobals.horizontal ? 'rotate-180' : 'rotate-270')} transition-all duration-300`}
                     heightImage={'h-2.5 max-lg:h-2.25 max-md:h-2'} alt='Icon Arrow Down Line' text={`Bộ lọc (${Object.entries(appliedFilters || {}).filter(([, values]) => Array.isArray(values) && values.length > 0).length + 1 || 1})`} click={() => setStateGlobals(prev => ({...prev, isOpen: !prev.isOpen}))} />
             <Button background={'bg-background-black-4 dark:bg-background-white-15'} color={''} src={stateGlobals.horizontal ? (!stateGlobals.darkMode ? iconNavUp : iconNavUpDark) : (!stateGlobals.darkMode ? iconNavLeft : iconNavLeftDark)}
                     widthImage='w-3 max-lg:w-2.75 max-md:w-2.5' heightImage='h-3 max-lg:h-2.75 max-md:h-2.5' alt='Icon Arrow Nav Left' text={''}
@@ -114,7 +111,9 @@ const InforFilter = ({ filters }) => {
                 ))
               )}
             </ul>
-            <span onClick={() => clearSetAll(setFilterValues)} className='text-sm max-lg:text-[13px] max-md:text-xs font-medium text-color-black-50 dark:text-color-white-50 transition-all duration-300 underline cursor-pointer'>Xóa toàn bộ</span>
+            {Object.entries(appliedFilters || {}).filter(([, values]) => Array.isArray(values) && values.length > 0).length > 0 &&
+              <span onClick={() => clearSetAll(setFilterValues, setAppliedFilters)} className='text-sm max-lg:text-[13px] max-md:text-xs font-normal text-color-black-50 dark:text-color-white-50 transition-all duration-300 underline cursor-pointer'>Xóa toàn bộ</span>
+            }
           </div>
         </div>
       </div>

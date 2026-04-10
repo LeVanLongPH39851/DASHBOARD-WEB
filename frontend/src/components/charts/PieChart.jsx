@@ -123,10 +123,10 @@ const PieChart = ({
         const percent = params.percent;
         return `
             <div style="padding: ${!stateGlobals.screen_md ? '12' : '4'}px ${!stateGlobals.screen_md ? '16' : '8'}px; box-shadow: 0 ${!stateGlobals.screen_md ? '4' : '2'}px ${!stateGlobals.screen_md ? '12' : '4'}px rgba(0,0,0,0.1);">
-            <div style="font-weight: 600; font-size: ${!stateGlobals.screen_md ? '13' : '11'}px; color: rgba(0, 0, 0, 0.7);">
+            <div style="font-weight: 500; font-size: ${!stateGlobals.screen_md ? '13' : '11'}px; color: rgba(0, 0, 0, 0.7);">
               ${params.marker} ${params.name}
             </div>
-            <div style="font-weight: 700; color: #059669; font-size: ${!stateGlobals.screen_md ? '12' : '10.5'}px;">
+            <div style="font-weight: 400; color: #059669; font-size: ${!stateGlobals.screen_md ? '12' : '10.5'}px;">
               ${params.value.toLocaleString(undefined, { maximumFractionDigits: (nameChart.includes('%') || formatterValue > 0 ? 2 : 0) })} ${suffix} <span style="font-size: 11px">(${(percent || 0).toFixed(2)}%)</span>
             </div>
           </div>

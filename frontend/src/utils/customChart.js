@@ -43,6 +43,12 @@ var variableCustoms = {
     "30s": "#FCC550",
     "5s": "#EE5960",
     "Others": "#408184"
+    },
+    colorTimeband: {
+    "1.Sáng (00h - 11h)": "rgba(217, 31, 38, 1)",
+    "2.Trưa (11h - 14h)": "rgba(86, 154, 255, 1)",
+    "3.Chiều (14h - 18h)": "rgba(128, 212, 27, 1)",
+    "4.Tối (18h - 24h)": "rgba(2, 147, 113, 1)"
     }
 }
 
@@ -95,7 +101,7 @@ export const CUSTOM_CHART = {
     },
     colorChannel: variableCustoms.colorChannel,
     fontWeight: {
-        legend: 600, tooltip: 500, axisLabel: 500, dataLabel: 500
+        legend: 500, tooltip: 500, axisLabel: 400, dataLabel: 400
     }
   },
   tableChart: {
@@ -105,7 +111,7 @@ export const CUSTOM_CHART = {
     },
     fontWeight: {
         label: 600,
-        td: 500
+        td: 400
     },
     tableChartChannel: {
         height: '400px',
@@ -149,7 +155,7 @@ export const CUSTOM_CHART = {
       legend: 12, tooltip: 12, axisLabel: 12, dataLabel: 12
     },
     fontWeight: {
-      legend: 600, tooltip: 500, axisLabel: 500, dataLabel: 600
+      legend: 500, tooltip: 500, axisLabel: 400, dataLabel: 500
     },
     mixedChartDate: {
       name: 'Biến động khán giả theo ngày',
@@ -204,7 +210,7 @@ export const CUSTOM_CHART = {
       legend: 12, tooltip: 12, axisLabel: 12, dataLabel: 12
     },
     fontWeight: {
-      legend: 600, tooltip: 500, axisLabel: 500, dataLabel: 500
+      legend: 500, tooltip: 500, axisLabel: 400, dataLabel: 400
     },
     lineChartPercentTimebandChannel: {
       name: 'Biến động Rating (%) kênh theo khung giờ',
@@ -288,7 +294,7 @@ export const CUSTOM_CHART = {
   treeMapChart: {
     height: '350px',
     fontSize: { tooltip: 12, label: 12 },
-    fontWeight: { tooltip: 500, label: 600 },
+    fontWeight: { tooltip: 600, label: 600 },
     treeMapChartPercentChannel: {
       name: 'Thị phần kênh theo Ave.Reach (%)',
       description: false
@@ -301,8 +307,8 @@ export const CUSTOM_CHART = {
   },
   pieChart: {
     height: 320,
-    fontSize: { tooltip: 12, legend: 12 , dataLabel: 12},
-    fontWeight: { tooltip: 500, legend: 500 , dataLabel: 600},
+    fontSize: { tooltip: 12, legend: 12 , dataLabel: 12 },
+    fontWeight: { tooltip: 500, legend: 500 , dataLabel: 500 },
     pieChartFirstLevel: {
       totalEvent: {
         name: 'Tỉ lệ THỜI LƯỢNG PHÁT các thể loại',

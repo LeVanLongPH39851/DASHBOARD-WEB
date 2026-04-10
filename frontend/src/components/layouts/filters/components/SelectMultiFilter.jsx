@@ -85,7 +85,7 @@ const SelectMultiFilter = ({
         return {
           ...provided,
           fontSize: !isMobile ? '14px' : '12px',
-          fontWeight: 500,
+          fontWeight: 400,
           backgroundColor: state.isSelected
             ? '#20A7C9'
             : state.isFocused
@@ -102,13 +102,13 @@ const SelectMultiFilter = ({
         ...provided,
         color: darkMode ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)',
         fontSize: !isMobile ? '14px' : '11.9px',
-        fontWeight: 500
+        fontWeight: 400
       }),
       input: (provided) => ({
         ...provided,
         color: darkMode ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)',
         fontSize: !isMobile ? '14px' : '12px',
-        fontWeight: 500,
+        fontWeight: 400,
         cursor: 'text',
         transition: 'all 0.3s ease-in-out'
       }),
@@ -138,7 +138,7 @@ const SelectMultiFilter = ({
   return (
     <div className={`${horizontalFixed ? '' : isOpenFilter ? `${marginBottom}` : ''}`}>
       {!horizontalFixed && (<div onClick={() => setIsOpenFilter(prev => !prev)} className={`flex cursor-pointer group justify-between items-center h-10.5 max-md:h-8 ${isOpenFilter ? 'mb-1' : ''}`}>
-                        <label className='cursor-pointer text-[16px] max-md:text-xs text-background-black-child-tab dark:text-color-white-90 transition-all duration-300 font-semibold'>{label}</label>
+                        <label className='cursor-pointer text-[16px] max-md:text-xs text-background-black-child-tab dark:text-color-white-90 transition-all duration-300 font-medium'>{label}</label>
                         <figure className={`cursor-pointer transition-all duration-300 ${isOpenFilter ? '' : 'rotate-180'}`}><img src={!stateGlobals.darkMode ? iconArrowUpGray : iconArrowUpGrayDark} className='w-2.75 max-md:w-2' alt="Icon Arrow Up Gray" /></figure>
                       </div>)}
       <div className={!horizontalFixed ? 'transition-all duration-300 relative filter-relative overflow-hidden' : ''} data-initial-height="match">

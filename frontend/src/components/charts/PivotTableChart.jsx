@@ -91,30 +91,17 @@ const PivotTableChart = ({
     pageSize: 200,
   });
   const [showColumnMenu, setShowColumnMenu] = useState(false);
+  const tableScrollRef = useRef(null);
 
-  if (data === 'isLoading') {
-    return (
-      <div className={`${displayName ? 'p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : ''}`} style={{ fontFamily }}>
-        <NameChart nameChart={nameChart} description={description} display={displayName} />
-        <div className='h-13 max-md:h-9.25'></div>
-        <Loading height={!stateGlobals.screen_md ? height : stateGlobals.currentTab === 'program' ? '300px' : '240px'} />
-      </div>
-    );
-  }
+  // ✅ Đặt tất cả logic kiểm tra data trước các hook
+  const isLoading = data === 'isLoading';
+  const isEmptyData = !data || !Array.isArray(data) || data.length === 0;
+  const safeData = isLoading || isEmptyData ? [] : data;
 
-  if (!data || !Array.isArray(data) || data.length === 0) {
-    return (
-      <div className={`${displayName ? 'p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : ''}`} style={{ fontFamily }}>
-        <NameChart nameChart={nameChart} description={description} display={displayName} />
-        <div className='h-13 max-md:h-9.25'></div>
-        <NoData height={!stateGlobals.screen_md ? height : stateGlobals.currentTab === 'program' ? '300px' : '240px'} />
-      </div>
-    );
-  }
-
+  // ✅ Tất cả hook luôn chạy - không còn conditional hook nữa
   const { pivotRows, colKeys } = useMemo(() => {
-    return buildPivotData({ data, rowField, columnField, valueField, aggType });
-  }, [data, rowField, columnField, valueField, aggType]);
+    return buildPivotData({ data: safeData, rowField, columnField, valueField, aggType });
+  }, [safeData, rowField, columnField, valueField, aggType]);
 
   const columnStats = useMemo(() => {
     const stats = {};
@@ -130,14 +117,14 @@ const PivotTableChart = ({
     return stats;
   }, [pivotRows, colKeys]);
 
-  const getHeatmapColor = (value, columnName) => {
+  const getHeatmapColor = useCallback((value, columnName) => {
     if (!enableHeatmap || typeof value !== 'number' || !columnStats[columnName]) return 'transparent';
     const { min, max } = columnStats[columnName];
     if (max === min) return 'rgba(34, 197, 94, 0.2)';
     const normalized = (value - min) / (max - min);
     const opacity = 0.1 + normalized * 0.5;
     return `rgba(34, 197, 94, ${opacity})`;
-  };
+  }, [enableHeatmap, columnStats]);
 
   const columns = useMemo(() => {
     return [
@@ -185,8 +172,6 @@ const PivotTableChart = ({
     columnResizeMode: 'onChange',
   });
 
-  const tableScrollRef = useRef(null);
-
   useEffect(() => {
     const el = tableScrollRef.current;
     if (!el) return;
@@ -205,9 +190,31 @@ const PivotTableChart = ({
   }, []);
 
   const getPivotChartData = useCallback(() => {
-    return { data, rowField, columnField, valueField, aggType };
-  }, [data, rowField, columnField, valueField, aggType]);
+    return { data: safeData, rowField, columnField, valueField, aggType };
+  }, [safeData, rowField, columnField, valueField, aggType]);
 
+  // ✅ Return theo điều kiện sau khi tất cả hook đã chạy xong
+  if (isLoading) {
+    return (
+      <div className={`${displayName ? 'p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : ''}`} style={{ fontFamily }}>
+        <NameChart nameChart={nameChart} description={description} display={displayName} />
+        <div className='h-13 max-md:h-9.25'></div>
+        <Loading height={!stateGlobals.screen_md ? height : stateGlobals.currentTab === 'program' ? '300px' : '240px'} />
+      </div>
+    );
+  }
+
+  if (isEmptyData) {
+    return (
+      <div className={`${displayName ? 'p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : ''}`} style={{ fontFamily }}>
+        <NameChart nameChart={nameChart} description={description} display={displayName} />
+        <div className='h-13 max-md:h-9.25'></div>
+        <NoData height={!stateGlobals.screen_md ? height : stateGlobals.currentTab === 'program' ? '300px' : '240px'} />
+      </div>
+    );
+  }
+
+  // ✅ JSX table view - giữ nguyên 100%
   return (
     <div className={`${displayName ? 'p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : ''}`} style={{ fontFamily }}>
       <NameChart nameChart={nameChart} description={description} display={displayName} getChartData={getPivotChartData} table={true} />
@@ -327,7 +334,7 @@ const PivotTableChart = ({
                       return (
                         <td
                           key={cell.id}
-                          className={`border-b border-border-black-10 dark:border-background-white-15 px-2 max-md:px-1 py-3 max-md:py-2 text-color-black-100 dark:text-color-white-90 transition-all duration-300 ${cellIdx === 0 ? 'pivot-sticky-col sticky left-0 z-10 bg-inherit' : ''} ${isNumeric ? 'text-right' : 'text-left'}`}
+                          className={`border-b border-border-black-10 dark:border-background-white-15 px-2 max-md:px-1 py-3 max-md:py-2 text-color-black-100 dark:text-color-white-90 transition-all duration-300 ${cellIdx < 0 ? 'pivot-sticky-col sticky left-0 z-10 bg-inherit' : ''} ${isNumeric ? 'text-right' : 'text-left'}`}
                           style={{
                             fontSize: !stateGlobals.screen_md ? fontSize.td : '10.5px',
                             fontWeight: cellIdx === 0 ? 700 : fontWeight.td,

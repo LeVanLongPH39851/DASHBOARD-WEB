@@ -188,7 +188,7 @@ const DashboardContent = () => {
                                                   showSTT={CUSTOM_CHART.tableChart.tableChartChannel.STT}
                                                   showPagination={CUSTOM_CHART.tableChart.tableChartChannel.pagination}
                                                   displayName={false}
-                                                  customCol={CUSTOM_CHART.tableChart.tableChartChannel.customCol} />
+                                                  customCol={CUSTOM_CHART.tableChart.tableChartChannel.customColChannel} />
                                           )},
                                           {id: CUSTOM_TAB.childTabChannel.event.id, label: CUSTOM_TAB.childTabChannel.event.label,
                                             content: (
@@ -202,7 +202,7 @@ const DashboardContent = () => {
                                                   showSTT={CUSTOM_CHART.tableChart.tableChartChannel.STT}
                                                   showPagination={CUSTOM_CHART.tableChart.tableChartChannel.pagination}
                                                   displayName={false}
-                                                  customCol={CUSTOM_CHART.tableChart.tableChartChannel.customCol} />
+                                                  customCol={CUSTOM_CHART.tableChart.tableChartChannel.customColChannelEvent} />
                                             )}
                                           ]} />
                                       </div>

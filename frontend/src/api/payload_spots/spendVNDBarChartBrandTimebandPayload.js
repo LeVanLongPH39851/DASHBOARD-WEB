@@ -1,8 +1,8 @@
-export const spendUSDBarChartAdvertiserChannelPayload = {
-  url: `${import.meta.env.VITE_API_DOMAIN}/api/v1/chart/data?form_data=%7B%22slice_id%22%3A616%7D&dashboard_id=49`,
+export const spendVNDBarChartBrandTimebandPayload = {
+  url: `${import.meta.env.VITE_API_DOMAIN}/api/v1/chart/data?form_data=%7B%22slice_id%22%3A584%7D&dashboard_id=49`,
   payload: {
     "datasource": {
-      "id": 196,
+      "id": 195,
       "type": "table"
     },
     "force": false,
@@ -28,24 +28,34 @@ export const spendUSDBarChartAdvertiserChannelPayload = {
             "columnType": "BASE_AXIS",
             "datasourceWarning": true,
             "expressionType": "SQL",
-            "label": "Avertiser",
-            "sqlExpression": "advertiser"
+            "label": "Brand",
+            "sqlExpression": "CASE\r\nWHEN length(brand) > 15\r\n   THEN CONCAT(left(brand, 15), '...')\r\nELSE brand\r\nEND"
           },
-          "channel_name_tvd"
+          {
+            "datasourceWarning": true,
+            "expressionType": "SQL",
+            "label": "Khung giờ",
+            "sqlExpression": "CASE WHEN time_band IN ('11h - 12h', '12h - 13h', '13h - 14h') THEN '2.Trưa (11h - 14h)' WHEN time_band IN ('14h - 15h', '15h - 16h', '16h - 17h', '17h - 18h') THEN '3.Chiều (14h - 18h)' WHEN time_band IN ('18h - 19h', '19h - 20h', '20h - 21h', '21h - 22h', '22h - 23h', '23h - 24h') THEN '4.Tối (18h - 24h)' ELSE '1.Sáng (0h - 11h)' END"
+          }
         ],
         "metrics": [
-          "price_usd"
+          "price"
         ],
         "orderby": [
           [
-            "price_usd",
+            "price",
             false
           ]
         ],
         "annotation_layers": [],
         "row_limit": 50000,
         "series_columns": [
-          "channel_name_tvd"
+          {
+            "datasourceWarning": true,
+            "expressionType": "SQL",
+            "label": "Khung giờ",
+            "sqlExpression": "CASE WHEN time_band IN ('11h - 12h', '12h - 13h', '13h - 14h') THEN '2.Trưa (11h - 14h)' WHEN time_band IN ('14h - 15h', '15h - 16h', '16h - 17h', '17h - 18h') THEN '3.Chiều (14h - 18h)' WHEN time_band IN ('18h - 19h', '19h - 20h', '20h - 21h', '21h - 22h', '22h - 23h', '23h - 24h') THEN '4.Tối (18h - 24h)' ELSE '1.Sáng (0h - 11h)' END"
+          }
         ],
         "series_limit": 0,
         "order_desc": true,
@@ -58,13 +68,13 @@ export const spendUSDBarChartAdvertiserChannelPayload = {
             "operation": "pivot",
             "options": {
               "index": [
-                "Avertiser"
+                "Brand"
               ],
               "columns": [
-                "channel_name_tvd"
+                "Khung giờ"
               ],
               "aggregates": {
-                "price_usd": {
+                "price": {
                   "operator": "mean"
                 }
               },
@@ -75,7 +85,7 @@ export const spendUSDBarChartAdvertiserChannelPayload = {
             "operation": "rename",
             "options": {
               "columns": {
-                "price_usd": null
+                "price": null
               },
               "level": 0,
               "inplace": true
@@ -88,25 +98,30 @@ export const spendUSDBarChartAdvertiserChannelPayload = {
       }
     ],
     "form_data": {
-      "datasource": "196__table",
+      "datasource": "195__table",
       "viz_type": "echarts_timeseries_bar",
-      "slice_id": 616,
+      "slice_id": 584,
       "url_params": {},
       "x_axis": {
         "datasourceWarning": true,
         "expressionType": "SQL",
-        "label": "Avertiser",
-        "sqlExpression": "advertiser"
+        "label": "Brand",
+        "sqlExpression": "CASE\r\nWHEN length(brand) > 15\r\n   THEN CONCAT(left(brand, 15), '...')\r\nELSE brand\r\nEND"
       },
       "time_grain_sqla": "P1D",
       "x_axis_sort_asc": true,
       "x_axis_sort_series": "sum",
       "x_axis_sort_series_ascending": true,
       "metrics": [
-        "price_usd"
+        "price"
       ],
       "groupby": [
-        "channel_name_tvd"
+        {
+          "datasourceWarning": true,
+          "expressionType": "SQL",
+          "label": "Khung giờ",
+          "sqlExpression": "CASE WHEN time_band IN ('11h - 12h', '12h - 13h', '13h - 14h') THEN '2.Trưa (11h - 14h)' WHEN time_band IN ('14h - 15h', '15h - 16h', '16h - 17h', '17h - 18h') THEN '3.Chiều (14h - 18h)' WHEN time_band IN ('18h - 19h', '19h - 20h', '20h - 21h', '21h - 22h', '22h - 23h', '23h - 24h') THEN '4.Tối (18h - 24h)' ELSE '1.Sáng (0h - 11h)' END"
+        }
       ],
       "adhoc_filters": [
         {
@@ -127,10 +142,11 @@ export const spendUSDBarChartAdvertiserChannelPayload = {
       "forecastInterval": 0.8,
       "orientation": "horizontal",
       "x_axis_title_margin": "0",
-      "y_axis_title": "Giá (triệu)",
-      "y_axis_title_margin": 30,
+      "y_axis_title": "",
+      "y_axis_title_margin": 15,
       "y_axis_title_position": "Left",
-      "sort_series_type": "sum",
+      "sort_series_type": "name",
+      "sort_series_ascending": true,
       "color_scheme": "supersetColors",
       "time_shift_color": true,
       "show_value": true,
@@ -139,12 +155,8 @@ export const spendUSDBarChartAdvertiserChannelPayload = {
       "show_legend": true,
       "legendType": "scroll",
       "legendOrientation": "top",
-      "legendMargin": null,
       "x_axis_time_format": "smart_date",
       "y_axis_format": ",.2f",
-      "currency_format": {
-        "symbol": "USD"
-      },
       "y_axis_bounds": [
         null,
         null
@@ -160,7 +172,7 @@ export const spendUSDBarChartAdvertiserChannelPayload = {
       "extra_form_data": {
         "time_range": "DATEADD(DATETIME(\"today\"),-2, DAY) : DATEADD(DATETIME(\"today\"),-1, SECOND)"
       },
-      "chart_id": 616,
+      "chart_id": 584,
       "label_colors": {
         "price": "#ffd04c",
         "price_usd": "#ffd04c",

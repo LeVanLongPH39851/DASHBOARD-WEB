@@ -1,8 +1,8 @@
-export const spendUSDBarChartAdvertiserChannelPayload = {
-  url: `${import.meta.env.VITE_API_DOMAIN}/api/v1/chart/data?form_data=%7B%22slice_id%22%3A616%7D&dashboard_id=49`,
+export const grpBarChartWeekBrandPayload = {
+  url: `${import.meta.env.VITE_API_DOMAIN}/api/v1/chart/data?form_data=%7B%22slice_id%22%3A588%7D&dashboard_id=49`,
   payload: {
     "datasource": {
-      "id": 196,
+      "id": 197,
       "type": "table"
     },
     "force": false,
@@ -17,37 +17,34 @@ export const spendUSDBarChartAdvertiserChannelPayload = {
           }
         ],
         "extras": {
-          "time_grain_sqla": "P1D",
           "having": "",
           "where": ""
         },
         "applied_time_extras": {},
         "columns": [
           {
-            "timeGrain": "P1D",
             "columnType": "BASE_AXIS",
-            "datasourceWarning": true,
-            "expressionType": "SQL",
-            "label": "Avertiser",
-            "sqlExpression": "advertiser"
+            "sqlExpression": "week",
+            "label": "week",
+            "expressionType": "SQL"
           },
-          "channel_name_tvd"
+          "brand"
         ],
         "metrics": [
-          "price_usd"
+          "grp"
         ],
         "orderby": [
           [
-            "price_usd",
+            "grp",
             false
           ]
         ],
         "annotation_layers": [],
         "row_limit": 50000,
         "series_columns": [
-          "channel_name_tvd"
+          "brand"
         ],
-        "series_limit": 0,
+        "series_limit": 10,
         "order_desc": true,
         "url_params": {},
         "custom_params": {},
@@ -58,13 +55,13 @@ export const spendUSDBarChartAdvertiserChannelPayload = {
             "operation": "pivot",
             "options": {
               "index": [
-                "Avertiser"
+                "week"
               ],
               "columns": [
-                "channel_name_tvd"
+                "brand"
               ],
               "aggregates": {
-                "price_usd": {
+                "grp": {
                   "operator": "mean"
                 }
               },
@@ -75,7 +72,7 @@ export const spendUSDBarChartAdvertiserChannelPayload = {
             "operation": "rename",
             "options": {
               "columns": {
-                "price_usd": null
+                "grp": null
               },
               "level": 0,
               "inplace": true
@@ -88,25 +85,20 @@ export const spendUSDBarChartAdvertiserChannelPayload = {
       }
     ],
     "form_data": {
-      "datasource": "196__table",
+      "datasource": "197__table",
       "viz_type": "echarts_timeseries_bar",
-      "slice_id": 616,
+      "slice_id": 588,
       "url_params": {},
-      "x_axis": {
-        "datasourceWarning": true,
-        "expressionType": "SQL",
-        "label": "Avertiser",
-        "sqlExpression": "advertiser"
-      },
-      "time_grain_sqla": "P1D",
+      "x_axis": "week",
+      "xAxisForceCategorical": false,
       "x_axis_sort_asc": true,
-      "x_axis_sort_series": "sum",
+      "x_axis_sort_series": "name",
       "x_axis_sort_series_ascending": true,
       "metrics": [
-        "price_usd"
+        "grp"
       ],
       "groupby": [
-        "channel_name_tvd"
+        "brand"
       ],
       "adhoc_filters": [
         {
@@ -117,6 +109,7 @@ export const spendUSDBarChartAdvertiserChannelPayload = {
           "subject": "date"
         }
       ],
+      "limit": 10,
       "order_desc": true,
       "row_limit": 50000,
       "truncate_metric": true,
@@ -125,13 +118,13 @@ export const spendUSDBarChartAdvertiserChannelPayload = {
       "annotation_layers": [],
       "forecastPeriods": 10,
       "forecastInterval": 0.8,
-      "orientation": "horizontal",
-      "x_axis_title_margin": "0",
-      "y_axis_title": "Giá (triệu)",
-      "y_axis_title_margin": 30,
+      "orientation": "vertical",
+      "x_axis_title": "Tuần",
+      "x_axis_title_margin": 30,
+      "y_axis_title_margin": "0",
       "y_axis_title_position": "Left",
       "sort_series_type": "sum",
-      "color_scheme": "supersetColors",
+      "color_scheme": "presetColors",
       "time_shift_color": true,
       "show_value": true,
       "stack": "Stack",
@@ -139,12 +132,8 @@ export const spendUSDBarChartAdvertiserChannelPayload = {
       "show_legend": true,
       "legendType": "scroll",
       "legendOrientation": "top",
-      "legendMargin": null,
       "x_axis_time_format": "smart_date",
-      "y_axis_format": ",.2f",
-      "currency_format": {
-        "symbol": "USD"
-      },
+      "y_axis_format": ",.1f",
       "y_axis_bounds": [
         null,
         null
@@ -160,7 +149,7 @@ export const spendUSDBarChartAdvertiserChannelPayload = {
       "extra_form_data": {
         "time_range": "DATEADD(DATETIME(\"today\"),-2, DAY) : DATEADD(DATETIME(\"today\"),-1, SECOND)"
       },
-      "chart_id": 616,
+      "chart_id": 588,
       "label_colors": {
         "price": "#ffd04c",
         "price_usd": "#ffd04c",
@@ -210,7 +199,7 @@ export const spendUSDBarChartAdvertiserChannelPayload = {
         "Đời sống"
       ],
       "map_label_colors": {},
-      "own_color_scheme": "supersetColors",
+      "own_color_scheme": "presetColors",
       "extra_filters": [],
       "force": false,
       "result_format": "json",

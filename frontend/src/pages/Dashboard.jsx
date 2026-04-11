@@ -67,7 +67,7 @@ const DashboardContent = () => {
       <div className='flex w-full h-full bg-background-light dark:bg-background-dark transition-all duration-300'>
         <Filter filters={scopeFilterData} />
         <div className={`${stateGlobals.isOpen && !stateGlobals.horizontal ? 'w-[84%] max-md:w-full' : 'w-full'} transition-all duration-300 bg-background-dashboard dark:bg-background-dashboard-dark`}>
-          <BreadCrumb/>
+          <BreadCrumb />
           <div className='bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300'>
             <ParentTabs uniqueId='dashboard'
                         defaultTab='overview'
@@ -188,7 +188,7 @@ const DashboardContent = () => {
                                                   showSTT={CUSTOM_CHART.tableChart.tableChartChannel.STT}
                                                   showPagination={CUSTOM_CHART.tableChart.tableChartChannel.pagination}
                                                   displayName={false}
-                                                  center={CUSTOM_CHART.tableChart.tableChartChannel.center} />
+                                                  customCol={CUSTOM_CHART.tableChart.tableChartChannel.customCol} />
                                           )},
                                           {id: CUSTOM_TAB.childTabChannel.event.id, label: CUSTOM_TAB.childTabChannel.event.label,
                                             content: (
@@ -202,7 +202,7 @@ const DashboardContent = () => {
                                                   showSTT={CUSTOM_CHART.tableChart.tableChartChannel.STT}
                                                   showPagination={CUSTOM_CHART.tableChart.tableChartChannel.pagination}
                                                   displayName={false}
-                                                  center={CUSTOM_CHART.tableChart.tableChartChannel.center} />
+                                                  customCol={CUSTOM_CHART.tableChart.tableChartChannel.customCol} />
                                             )}
                                           ]} />
                                       </div>
@@ -711,7 +711,8 @@ const DashboardContent = () => {
                                                 description={CUSTOM_CHART.tableChart.tableProgramChannel.programRank.description}
                                                 showSTT={CUSTOM_CHART.tableChart.tableProgramChannel.STT}
                                                 showPagination={CUSTOM_CHART.tableChart.tableProgramChannel.pagination}
-                                                fullScreen={true} />
+                                                fullScreen={true}
+                                                customCol={CUSTOM_CHART.tableChart.tableProgramChannel.customCol} />
                                   </div>
                                   <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
                                     <TableChart data={!dashboard.isLoading.allTableDetailData ? transformTableChartData(dashboard.allTableDetailData?.data, dashboard.allTableDetailData?.colnames, CUSTOM_CHART.tableChart.tableProgramChannel.programDetail.columnSort) : 'isLoading'}
@@ -723,7 +724,8 @@ const DashboardContent = () => {
                                                 description={CUSTOM_CHART.tableChart.tableProgramChannel.programDetail.description}
                                                 showSTT={CUSTOM_CHART.tableChart.tableProgramChannel.STT}
                                                 showPagination={CUSTOM_CHART.tableChart.tableProgramChannel.pagination}
-                                                fullScreen={true} />
+                                                fullScreen={true}
+                                                customCol={CUSTOM_CHART.tableChart.tableProgramChannel.customCol} />
                                   </div>
                                   <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
                                     <TableChart data={!dashboard.isLoading.allTableEventData ? transformTableChartData(dashboard.allTableEventData?.data, dashboard.allTableEventData?.colnames, CUSTOM_CHART.tableChart.tableProgramChannel.programEvent.columnSort) : 'isLoading'}
@@ -735,7 +737,8 @@ const DashboardContent = () => {
                                                 description={CUSTOM_CHART.tableChart.tableProgramChannel.programEvent.description}
                                                 showSTT={CUSTOM_CHART.tableChart.tableProgramChannel.STT}
                                                 showPagination={CUSTOM_CHART.tableChart.tableProgramChannel.pagination}
-                                                fullScreen={true} />
+                                                fullScreen={true}
+                                                customCol={CUSTOM_CHART.tableChart.tableProgramChannel.customCol} />
                                   </div>
                                 </div>
                                 <div className='px-6 max-lg:px-5 max-md:px-4 pb-6 max-lg:pb-5 max-md:pb-19 bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300'>

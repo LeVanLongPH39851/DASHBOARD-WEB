@@ -21,16 +21,11 @@ import iconListDark from '../../../assets/icon_list_dark.png';
 import iconArrowLeft2Dark from '../../../assets/icon_arrow_left_2_dark.png';
 import { CUSTOM_CHART } from '../../../utils/customChart';
 import { useCurrentUser } from '../../../hooks/useCurrentUser';
+import { LABEL_TABS } from '../../../utils/label';
 
 const BreadCrumb = ({ dashboardName='Kênh truyền hình VTV'}) => {
     const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
     const { user, userLoading } = useCurrentUser();
-    const LABEL_TABS = {
-        overview: 'Tổng quan',
-        channel: 'Kênh',
-        program: 'Chương trình',
-        rating_by_minute: 'Rating theo phút'
-    }
 
     const isFirefox = /firefox/i.test(navigator.userAgent);
 
@@ -39,6 +34,7 @@ const BreadCrumb = ({ dashboardName='Kênh truyền hình VTV'}) => {
     const inforFilterSticky = document.getElementById('inforFilterSticky');
     const divTables = document.querySelectorAll('.divTable');
     const exportTime = document.getElementById('exportTime');
+    const clearAll = document?.getElementById('clearAll');
 
     inforTabSticky?.classList.replace('transition-all', 'transition-delete');
     inforFilterSticky?.classList.replace('transition-all', 'transition-delete');
@@ -50,16 +46,17 @@ const BreadCrumb = ({ dashboardName='Kênh truyền hình VTV'}) => {
     inforFilterSticky?.classList.replace('top-46', 'top-12');
     inforFilterSticky.classList.replace('max-lg:top-[155.93px]', 'max-lg:top-11');
     inforFilterSticky?.classList.replace('max-md:top-28', 'max-md:top-10');
+    if (clearAll) clearAll.classList.add('hidden');
     divTables.forEach(table => table?.classList.replace('overflow-auto', 'overflow-hidden'));
 
     const now = new Date();
     const timeStr = `Thời gian export: ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')} ${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
     if (exportTime) exportTime.textContent = timeStr;
 
-    return { inforTabSticky, inforFilterSticky, divTables, exportTime, now };
+    return { inforTabSticky, inforFilterSticky, clearAll, divTables, exportTime, now };
     };
 
-    const restoreCaptureLayout = ({ inforTabSticky, inforFilterSticky, divTables, exportTime }) => {
+    const restoreCaptureLayout = ({ inforTabSticky, inforFilterSticky, clearAll, divTables, exportTime }) => {
     inforTabSticky?.classList.replace('transition-delete', 'transition-all');
     inforFilterSticky?.classList.replace('transition-delete', 'transition-all');
     inforTabSticky?.classList.replace('duration-delete', 'duration-300');
@@ -70,6 +67,7 @@ const BreadCrumb = ({ dashboardName='Kênh truyền hình VTV'}) => {
     inforFilterSticky?.classList.replace('top-12', 'top-46');
     inforFilterSticky.classList.replace('max-lg:top-11', 'max-lg:top-[155.93px]');
     inforFilterSticky?.classList.replace('max-md:top-10', 'max-md:top-28');
+    if (clearAll) clearAll.classList.remove('hidden');
     divTables?.forEach(table => table?.classList.replace('overflow-hidden', 'overflow-auto'));
     if (exportTime) exportTime.textContent = '';
     };
@@ -86,6 +84,7 @@ const BreadCrumb = ({ dashboardName='Kênh truyền hình VTV'}) => {
         const inforFilterSticky = document.getElementById('inforFilterSticky');
         const divTables = document.querySelectorAll('.divTable');
         const exportTime = document?.getElementById('exportTime');
+        const clearAll = document?.getElementById('clearAll');
 
         inforTabSticky.classList.replace('transition-all', 'transition-delete');
         inforFilterSticky.classList.replace('transition-all', 'transition-delete');
@@ -97,6 +96,7 @@ const BreadCrumb = ({ dashboardName='Kênh truyền hình VTV'}) => {
         inforFilterSticky.classList.replace('top-46', 'top-12');
         inforFilterSticky.classList.replace('max-lg:top-[155.93px]', 'max-lg:top-11');
         inforFilterSticky.classList.replace('max-md:top-28', 'max-md:top-10');
+        if (clearAll) clearAll.classList.add('hidden');
         divTables.forEach(table => table?.classList.replace('overflow-auto', 'overflow-hidden'));
         const now = new Date();
 
@@ -125,6 +125,7 @@ const BreadCrumb = ({ dashboardName='Kênh truyền hình VTV'}) => {
         inforFilterSticky.classList.replace('top-12', 'top-46');
         inforFilterSticky.classList.replace('max-lg:top-11', 'max-lg:top-[155.93px]');
         inforFilterSticky.classList.replace('max-md:top-10', 'max-md:top-28');
+        if (clearAll) clearAll.classList.remove('hidden');
         divTables.forEach(table => table?.classList.replace('overflow-hidden', 'overflow-auto'));
         exportTime.textContent = '';
     };
@@ -141,6 +142,7 @@ const BreadCrumb = ({ dashboardName='Kênh truyền hình VTV'}) => {
         const inforFilterSticky = document.getElementById('inforFilterSticky');
         const divTables = document.querySelectorAll('.divTable');
         const exportTime = document?.getElementById('exportTime');
+        const clearAll = document?.getElementById('clearAll');
 
         inforTabSticky.classList.replace('transition-all', 'transition-delete');
         inforFilterSticky.classList.replace('transition-all', 'transition-delete');
@@ -152,6 +154,7 @@ const BreadCrumb = ({ dashboardName='Kênh truyền hình VTV'}) => {
         inforFilterSticky.classList.replace('top-46', 'top-12');
         inforFilterSticky.classList.replace('max-lg:top-[155.93px]', 'max-lg:top-11');
         inforFilterSticky.classList.replace('max-md:top-28', 'max-md:top-10');
+        if (clearAll) clearAll.classList.add('hidden');
         divTables.forEach(table => table?.classList.replace('overflow-auto', 'overflow-hidden'));
         const now = new Date();
 
@@ -203,6 +206,7 @@ const BreadCrumb = ({ dashboardName='Kênh truyền hình VTV'}) => {
             inforFilterSticky.classList.replace('top-12', 'top-46');
             inforFilterSticky.classList.replace('max-lg:top-11', 'max-lg:top-[155.93px]');
             inforFilterSticky.classList.replace('max-md:top-10', 'max-md:top-28');
+            if (clearAll) clearAll.classList.remove('hidden');
             divTables.forEach(table => table?.classList.replace('overflow-hidden', 'overflow-auto'));
             exportTime.textContent = '';
         }

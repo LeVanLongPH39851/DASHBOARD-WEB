@@ -1,8 +1,8 @@
-export const spendUSDBarChartAdvertiserChannelPayload = {
-  url: `${import.meta.env.VITE_API_DOMAIN}/api/v1/chart/data?form_data=%7B%22slice_id%22%3A616%7D&dashboard_id=49`,
+export const grpBarChartBrandFirstLevelPayload = {
+  url: `${import.meta.env.VITE_API_DOMAIN}/api/v1/chart/data?form_data=%7B%22slice_id%22%3A603%7D&dashboard_id=49`,
   payload: {
     "datasource": {
-      "id": 196,
+      "id": 197,
       "type": "table"
     },
     "force": false,
@@ -10,6 +10,10 @@ export const spendUSDBarChartAdvertiserChannelPayload = {
       {
         "time_range": "DATEADD(DATETIME(\"today\"),-2, DAY) : DATEADD(DATETIME(\"today\"),-1, SECOND)",
         "filters": [
+          {
+            "col": "firstlevel_vn",
+            "op": "IS NOT NULL"
+          },
           {
             "col": "date",
             "op": "TEMPORAL_RANGE",
@@ -26,26 +30,26 @@ export const spendUSDBarChartAdvertiserChannelPayload = {
           {
             "timeGrain": "P1D",
             "columnType": "BASE_AXIS",
-            "datasourceWarning": true,
+            "datasourceWarning": false,
             "expressionType": "SQL",
-            "label": "Avertiser",
-            "sqlExpression": "advertiser"
+            "label": "Brand",
+            "sqlExpression": "CASE\r\nWHEN length(brand) > 15\r\n   THEN CONCAT(left(brand, 15), '...')\r\nELSE brand\r\nEND"
           },
-          "channel_name_tvd"
+          "firstlevel_vn"
         ],
         "metrics": [
-          "price_usd"
+          "grp"
         ],
         "orderby": [
           [
-            "price_usd",
+            "grp",
             false
           ]
         ],
         "annotation_layers": [],
         "row_limit": 50000,
         "series_columns": [
-          "channel_name_tvd"
+          "firstlevel_vn"
         ],
         "series_limit": 0,
         "order_desc": true,
@@ -58,13 +62,13 @@ export const spendUSDBarChartAdvertiserChannelPayload = {
             "operation": "pivot",
             "options": {
               "index": [
-                "Avertiser"
+                "Brand"
               ],
               "columns": [
-                "channel_name_tvd"
+                "firstlevel_vn"
               ],
               "aggregates": {
-                "price_usd": {
+                "grp": {
                   "operator": "mean"
                 }
               },
@@ -75,7 +79,7 @@ export const spendUSDBarChartAdvertiserChannelPayload = {
             "operation": "rename",
             "options": {
               "columns": {
-                "price_usd": null
+                "grp": null
               },
               "level": 0,
               "inplace": true
@@ -88,32 +92,50 @@ export const spendUSDBarChartAdvertiserChannelPayload = {
       }
     ],
     "form_data": {
-      "datasource": "196__table",
+      "datasource": "197__table",
       "viz_type": "echarts_timeseries_bar",
-      "slice_id": 616,
+      "slice_id": 603,
       "url_params": {},
       "x_axis": {
-        "datasourceWarning": true,
+        "datasourceWarning": false,
         "expressionType": "SQL",
-        "label": "Avertiser",
-        "sqlExpression": "advertiser"
+        "label": "Brand",
+        "sqlExpression": "CASE\r\nWHEN length(brand) > 15\r\n   THEN CONCAT(left(brand, 15), '...')\r\nELSE brand\r\nEND"
       },
       "time_grain_sqla": "P1D",
       "x_axis_sort_asc": true,
       "x_axis_sort_series": "sum",
       "x_axis_sort_series_ascending": true,
       "metrics": [
-        "price_usd"
+        "grp"
       ],
       "groupby": [
-        "channel_name_tvd"
+        "firstlevel_vn"
       ],
       "adhoc_filters": [
         {
           "clause": "WHERE",
-          "comparator": "No filter",
+          "comparator": null,
+          "datasourceWarning": false,
           "expressionType": "SIMPLE",
+          "filterOptionName": "filter_k345kdwzw9r_ncmdc8ienx",
+          "isExtra": false,
+          "isNew": false,
+          "operator": "IS NOT NULL",
+          "operatorId": "IS_NOT_NULL",
+          "sqlExpression": null,
+          "subject": "firstlevel_vn"
+        },
+        {
+          "clause": "WHERE",
+          "comparator": "No filter",
+          "datasourceWarning": false,
+          "expressionType": "SIMPLE",
+          "filterOptionName": "filter_w98q0fl6rld_8ea697frd6",
+          "isExtra": true,
+          "isNew": false,
           "operator": "TEMPORAL_RANGE",
+          "sqlExpression": null,
           "subject": "date"
         }
       ],
@@ -127,8 +149,7 @@ export const spendUSDBarChartAdvertiserChannelPayload = {
       "forecastInterval": 0.8,
       "orientation": "horizontal",
       "x_axis_title_margin": "0",
-      "y_axis_title": "Giá (triệu)",
-      "y_axis_title_margin": 30,
+      "y_axis_title_margin": 15,
       "y_axis_title_position": "Left",
       "sort_series_type": "sum",
       "color_scheme": "supersetColors",
@@ -139,12 +160,8 @@ export const spendUSDBarChartAdvertiserChannelPayload = {
       "show_legend": true,
       "legendType": "scroll",
       "legendOrientation": "top",
-      "legendMargin": null,
       "x_axis_time_format": "smart_date",
-      "y_axis_format": ",.2f",
-      "currency_format": {
-        "symbol": "USD"
-      },
+      "y_axis_format": ",.1f",
       "y_axis_bounds": [
         null,
         null
@@ -160,7 +177,7 @@ export const spendUSDBarChartAdvertiserChannelPayload = {
       "extra_form_data": {
         "time_range": "DATEADD(DATETIME(\"today\"),-2, DAY) : DATEADD(DATETIME(\"today\"),-1, SECOND)"
       },
-      "chart_id": 616,
+      "chart_id": 603,
       "label_colors": {
         "price": "#ffd04c",
         "price_usd": "#ffd04c",
@@ -189,12 +206,25 @@ export const spendUSDBarChartAdvertiserChannelPayload = {
         "Quảng cáo": "#B17BAA"
       },
       "shared_label_colors": [
+        "2.Trưa (11h - 14h)",
+        "3.Chiều (14h - 18h)",
+        "4.Tối (18h - 24h)",
+        "AJINOMOTO VIETNAM",
+        "BONCHA (RTD GREEN TEA)",
+        "CHIN-SU (CHILI SAUCE)",
         "Dành cho trẻ em",
         "Giáo dục - Đào tạo",
         "Giải trí",
+        "HISMART",
+        "KOKOMI SNACKING",
+        "MORINAGA",
+        "NESTLE NAN",
         "Phim dài tập",
         "Quảng bá",
         "Quảng cáo",
+        "SAM NHUNG BO THAN TW3 (ORIENTAL KIDNEY RESTORATIVE MEDICINE)",
+        "TAM BINH (DRINK SUPP.)",
+        "TH TRUE MILK (FRESH MILK)",
         "Thể thao",
         "Thời sự - Chính luận",
         "Tài liệu - Phóng sự",

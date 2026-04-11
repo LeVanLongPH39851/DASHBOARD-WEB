@@ -19,7 +19,9 @@ const PieChart = ({
   innerRadius, // % cho donut
   labelDisplay = 'percent', // NEW: 'percent', 'label', 'label-percent', 'percent-label'
   formatterValue = 0,
-  suffix=''
+  border = true,
+  suffix='',
+  legendHorizontal=false
 }) => {
 
   const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
@@ -82,14 +84,25 @@ const PieChart = ({
     };
   }, [pieSeriesData]);  // ✅ Chỉ deps cần thiết
 
+  const DEFAULT_COLORS = [
+    '#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', 
+    '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc', '#c23531'
+  ];
+
   // Helper function để lấy màu theo tên label (ưu tiên colorFirstLevel object)
   const getColorForItem = (name, index) => {
     // Nếu colors là object (colorFirstLevel), lấy màu theo tên
     if (colors && typeof colors === 'object' && !Array.isArray(colors)) {
-      return colors[name] || colors[`${name}`.trim()] || '#3b82f6';
+      return colors[name] || colors[`${name}`.trim()] || DEFAULT_COLORS[0];
     }
     // Nếu là array, lấy theo index
-    return colors?.[index % (colors?.length || 10)] || '#3b82f6';
+     // Array colors
+    if (Array.isArray(colors) && colors.length > 0) {
+      return colors[index % colors.length];
+    }
+    
+    // ✅ Default palette theo index
+    return DEFAULT_COLORS[index % DEFAULT_COLORS.length];
   };
   
   // Helper function để format label theo option
@@ -136,7 +149,7 @@ const PieChart = ({
 
     legend: enableLegend ? {
       type: 'scroll',
-      orient: !stateGlobals.screen_md ? 'vertical' : 'horizontal',
+      orient: !stateGlobals.screen_md && !legendHorizontal ? 'vertical' : 'horizontal',
       left: 0,
       top: 0,
       itemWidth: !stateGlobals.screen_md ? 13 : 10,
@@ -159,8 +172,8 @@ const PieChart = ({
       type: 'pie',
       radius: donut ? [innerRadius + '%', '75%'] : ['0%', '75%'],
       avoidLabelOverlap: false,
-      center: [!stateGlobals.screen_md && enableLegend ? '60%' : '50%', '50%'],
-      top: !stateGlobals.screen_md ? 0 : '10%',
+      center: [!stateGlobals.screen_md && enableLegend && !legendHorizontal ? '60%' : '50%', '50%'],
+      top: !stateGlobals.screen_md && !legendHorizontal ? 0 : '10%',
       emphasis: {
         itemStyle: {
           shadowBlur: 15,
@@ -204,9 +217,9 @@ const PieChart = ({
         }
       },
       itemStyle: {
-        borderRadius: 6,
+        borderRadius: border ? 6 : 0,
         borderColor: 'rgba(255, 255, 255, 1)',
-        borderWidth: 2
+        borderWidth: border ? 2 : 0
       },
       data: pieSeriesData.map((item, idx) => ({
         ...item,

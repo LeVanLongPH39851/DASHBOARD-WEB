@@ -44,8 +44,8 @@ const TableChart = ({
   showSTT,
   showPagination,
   displayName=true,
-  center=false,
-  fullScreen=false
+  fullScreen=false,
+  customCol=false
 }) => {
 
   const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
@@ -55,7 +55,7 @@ const TableChart = ({
       <div className={`${displayName ? 'p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : '' }`} style={{ fontFamily }}>
         <NameChart nameChart={nameChart} description={description} display={displayName} fullScreen={fullScreen} />
         <div className='h-13 max-md:h-9.25'></div>
-        <Loading height={!stateGlobals.screen_md ? height : stateGlobals.currentTab == 'program' ? '300px'  : '240px'} />
+        <Loading height={!stateGlobals.screen_md ? height : stateGlobals.currentTab == 'program' ? '300px' : stateGlobals.currentTab == 'ad_monitoring_report' ? '600px' : '240px'} />
       </div>
     );
   } else if (!data) {
@@ -63,7 +63,7 @@ const TableChart = ({
       <div className={`${displayName ? 'p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : '' }`} style={{ fontFamily }}>
         <NameChart nameChart={nameChart} description={description} display={displayName} fullScreen={fullScreen} />
         <div className='h-13 max-md:h-9.25'></div>
-        <NoData height={!stateGlobals.screen_md ? height : stateGlobals.currentTab == 'program' ? '300px'  : '240px'} />
+        <NoData height={!stateGlobals.screen_md ? height : stateGlobals.currentTab == 'program' ? '300px' : stateGlobals.currentTab == 'ad_monitoring_report' ? '600px' : '240px'} />
       </div>
     );
   }
@@ -159,6 +159,7 @@ const TableChart = ({
         minSize: 30,
         maxSize: 500,
         enableSorting: false,
+        meta: { isNumeric: false }
       });
     }
 
@@ -169,6 +170,7 @@ const TableChart = ({
 
 
     series.forEach(s => {
+      const isNumericCol = s.data.some(val => typeof val === 'number' && !isNaN(val));
       cols.push({
         accessorKey: s.name,
         header: s.name,
@@ -182,6 +184,7 @@ const TableChart = ({
           }
           return value || '';
         },
+        meta: { isNumeric: isNumericCol },
         size: s.name.length > 20 ? 50 : 50,
         minSize: 50,
         maxSize: 1000,
@@ -378,7 +381,7 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
           <div
             ref={tableScrollRef}
             className="overflow-auto divTable"
-            style={{ height: !stateGlobals.screen_md ? height : stateGlobals.currentTab == 'program' ? '300px'  : '240px' }}
+            style={{ height: !stateGlobals.screen_md ? height : stateGlobals.currentTab == 'program' ? '300px' : stateGlobals.currentTab == 'ad_monitoring_report' ? '600px' : '240px' }}
             onClick={() => setShowColumnMenu(false)}
           >
             <table 
@@ -399,10 +402,10 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
                       return (
                         <th
                           key={header.id}
-                          className={`px-2 max-md:px-1 py-3 max-md:py-2 text-center relative text-color-neotam dark:text-background-primary bg-background-light dark:bg-background-chart-dark border-b border-border-black-10 dark:border-background-white-15 transition-all duration-300 ${header.id === 'CHƯƠNG TRÌNH' ? 'max-md:sticky max-md:left-0 max-md:z-10' : ''}`}
+                          className={`px-2 ${customCol[header.id]?.sticky && stateGlobals.screen_md ? 'program-border-right' : ''} max-md:px-1 py-3 max-md:py-2 text-center relative text-color-neotam dark:text-background-primary bg-background-light dark:bg-background-chart-dark border-b border-border-black-10 dark:border-background-white-15 transition-all duration-300 ${customCol[header.id]?.sticky ? 'max-md:sticky max-md:left-0 max-md:z-10' : ''}`}
                           style={{
-                            minWidth: `${stateGlobals.screen_md ? header.id === 'MÔ TẢ' ? header.column.getSize() + 50 : header.id === 'KÊNH' ? header.column.getSize() + 0 : header.id === 'CHƯƠNG TRÌNH' ? header.column.getSize() + 70 : header.id.includes('\n') ? header.column.getSize() + 20 : header.column.getSize() + 30 : header.column.getSize() - 40}px`,
-                            maxWidth: `${header.id === 'KÊNH' ? header.column.getSize() + 30 : header.id === 'CHƯƠNG TRÌNH' ? header.column.getSize() + 180 : header.column.getSize() + 100}px`,
+                            minWidth: `${stateGlobals.screen_md || customCol[header.id]?.overflow ? header.column.getSize() + (customCol[header.id]?.minSize - (customCol[header.id]?.overflow && stateGlobals.screen_md ? customCol[header.id]?.minSize*0.3 : 0) || 0) : header.column.getSize() - 40}px`,
+                            maxWidth: `${header.column.getSize() + (customCol[header.id]?.maxSize - (customCol[header.id]?.overflow && stateGlobals.screen_md ? customCol[header.id]?.maxSize*0.3 : 0) || 100)}px`,
                             fontSize: !stateGlobals.screen_md ? fontSize.label : '10.5px',
                             fontWeight: fontWeight.label,
                             whiteSpace: 'pre-line',
@@ -410,7 +413,7 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
                           }}
                         >
                           <div
-                            className={`flex items-center gap-2 ${idx === 0 && header.id !== 'STT' ? 'justify-center' : headerGroup.headers.length - idx <= 5 ? 'justify-end' : ''} ${
+                            className={`flex text-nowrap items-center gap-2 ${customCol && customCol[header.id]?.justify ? customCol[header.id]?.justify : header.column.columnDef.meta?.isNumeric ? 'justify-end' : 'justify-start'} ${
                               header.column.getCanSort() ? 'cursor-pointer select-none' : ''
                             }`}
                             onClick={header.column.getToggleSortingHandler()}
@@ -425,8 +428,8 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
                           <div
                             onMouseDown={header.getResizeHandler()}
                             onTouchStart={header.getResizeHandler()}
-                            className={`absolute right-0 top-0 h-full w-0.5 rounded-2xl cursor-col-resize text-color-neotam dark:text-background-primary transition-colors duration-300 ${
-                              header.column.getIsResizing() ? 'text-color-neotam dark:text-background-primary' : 'bg-transparent'
+                            className={`absolute right-0 top-0 h-full w-0.5 rounded-2xl cursor-col-resize transition-colors duration-300 ${
+                              header.column.getIsResizing() ? 'bg-color-neotam dark:bg-background-primary' : 'bg-transparent'
                             }`}
                             style={{ userSelect: 'none', touchAction: 'none' }}
                           />
@@ -449,26 +452,26 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
                         const columnName = cell.column.id;
                         const rawValue = cell.row.original[columnName];
                         const bgColor = columnName === 'STT' ? 'transparent' : getHeatmapColor(rawValue, columnName);
-                        const isNumericColumn = typeof rawValue === 'number';
+                        const isNumericColumn = cell.column.columnDef.meta?.isNumeric;
                         
                         return (
                           <td
                             key={cell.id}
-                            className={`border-b ${columnName === 'CHƯƠNG TRÌNH' && stateGlobals.screen_md ? 'program-border-right' : ''} border-border-black-10 dark:border-background-white-15 px-2 max-md:px-1 py-3 max-md:py-2 text-color-black-100 dark:text-color-white-90 transition-all duration-300 ${columnName === 'CHƯƠNG TRÌNH' ? `max-md:sticky max-md:left-0 max-md:z-1 max-md:bg-background-light max-md:dark:bg-background-chart-dark max-md:before:content-[''] max-md:before:inset-0 max-md:before:absolute max-md:before:-z-2 ${idx%2===0 ? 'max-md:before:bg-background-black-4 max-md:dark:before:bg-background-white-8' : 'max-md:before:bg-background-light max-md:dark:before:bg-background-chart-dark'}` : ''} ${
+                            className={`border-b ${customCol[columnName]?.sticky && stateGlobals.screen_md ? 'program-border-right' : ''} border-border-black-10 dark:border-background-white-15 px-2 max-md:px-1 py-3 max-md:py-2 text-color-black-100 dark:text-color-white-90 transition-all duration-300 ${customCol[columnName]?.sticky ? `max-md:sticky max-md:left-0 max-md:z-1 max-md:bg-background-light max-md:dark:bg-background-chart-dark max-md:before:content-[''] max-md:before:inset-0 max-md:before:absolute max-md:before:-z-2 ${idx%2===0 ? 'max-md:before:bg-background-black-4 max-md:dark:before:bg-background-white-8' : 'max-md:before:bg-background-light max-md:dark:before:bg-background-chart-dark'}` : ''} ${
                               isNumericColumn 
-                                ? `overflow-hidden text-ellipsis whitespace-nowrap ${columnName !== 'STT' ? 'text-right' : ''}`
-                                : `whitespace-normal ${center ? 'text-center' : false}`
+                                ? `overflow-hidden text-ellipsis whitespace-nowrap ${customCol && customCol[columnName]?.align ? customCol[columnName]?.align : 'text-right'}`
+                                : `whitespace-normal ${customCol && customCol[columnName]?.align ? customCol[columnName]?.align : !rawValue ? 'text-center' : 'text-left'}`
                             }`}
                             style={{
                               fontSize: !stateGlobals.screen_md ? fontSize.td : '10.5px',
-                              fontWeight: ['CHƯƠNG TRÌNH'].includes(columnName) ? 600 : fontWeight.td,
-                              minWidth: `${stateGlobals.screen_md ? columnName === 'MÔ TẢ' ? cell.column.getSize() + 50 : columnName === 'KÊNH' ? cell.column.getSize() + 0 : columnName === 'CHƯƠNG TRÌNH' ? cell.column.getSize() + 70 : isNumericColumn ? cell.column.getSize() + 20 : cell.column.getSize() + 30 : cell.column.getSize() - 40}px`,
-                              maxWidth: `${columnName === 'KÊNH' ? cell.column.getSize() + 30 : columnName === 'CHƯƠNG TRÌNH' ? cell.column.getSize() + 180 : cell.column.getSize() + 100}px`,
+                              fontWeight: customCol[columnName]?.weight ? 600 : fontWeight.td,
+                              minWidth: `${stateGlobals.screen_md || customCol[columnName]?.overflow ? cell.column.getSize() + (customCol[columnName]?.minSize - (customCol[columnName]?.overflow && stateGlobals.screen_md ? customCol[columnName]?.minSize*0.3 : 0) || 0) : cell.column.getSize() - 40}px`,
+                              maxWidth: `${cell.column.getSize() + (customCol[columnName]?.maxSize - (customCol[columnName]?.overflow && stateGlobals.screen_md ? customCol[columnName]?.maxSize*0.3 : 0) || 100)}px`,
                               // backgroundColor: bgColor,
                               wordWrap: isNumericColumn ? 'normal' : 'break-word'
                             }}
                           >
-                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                            {rawValue ? flexRender(cell.column.columnDef.cell, cell.getContext()) : '-'} {rawValue ? customCol[columnName]?.suffix : ''}
                           </td>
                         );
                       })}

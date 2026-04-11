@@ -112,7 +112,7 @@ const InforFilter = ({ filters }) => {
               )}
             </ul>
             {Object.entries(appliedFilters || {}).filter(([, values]) => Array.isArray(values) && values.length > 0).length > 0 &&
-              <span onClick={() => clearSetAll(setFilterValues, setAppliedFilters)} className='text-sm max-lg:text-[13px] max-md:text-xs font-normal text-color-black-50 dark:text-color-white-50 transition-all duration-300 underline cursor-pointer'>Xóa toàn bộ</span>
+              <span id='clearAll' onClick={() => clearSetAll(setFilterValues, setAppliedFilters)} className='text-sm max-lg:text-[13px] max-md:text-xs font-normal text-color-black-50 dark:text-color-white-50 transition-all duration-300 underline cursor-pointer'>Xóa toàn bộ</span>
             }
           </div>
         </div>

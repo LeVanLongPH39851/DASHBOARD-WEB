@@ -17,7 +17,7 @@ export const transformBarChartData = (apiData, colnames) => {
     if (value == null) return value;
 
     const num = Number(value);
-    if (!Number.isFinite(num)) return value;
+    if (!Number.isFinite(num) || value.toString().length <= 3) return value.toString();
 
     const date = new Date(num);
 

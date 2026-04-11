@@ -119,7 +119,10 @@ export const CUSTOM_CHART = {
         description: false,
         STT: false,
         pagination: false,
-        center: true
+        customCol: {
+          'KÊNH': {justify: 'justify-center', align: 'text-center'},
+          'Live/TSV': {justify: 'justify-center', align: 'text-center'},
+        }
     },
     tableChartArea: {
         height: '400px',
@@ -146,7 +149,13 @@ export const CUSTOM_CHART = {
           columnSort: ['program_name', 'channel_name_tvd', 'event_category_name', 'rating', 'rating%', 'ave_reach', 'reach%', 'minute_user_program']
         },
         STT: true,
-        pagination: true
+        pagination: true,
+        customCol: {
+          'CHƯƠNG TRÌNH': {weight: 600, sticky: true, minSize: 70, maxSize: 180},
+          'KÊNH': {minSize: 0, maxSize: 30},
+          'MÔ TẢ': {minSize: 70},
+          'THỂ LOẠI': {minSize: 70}
+        }
     }
   },
   mixedChart: {

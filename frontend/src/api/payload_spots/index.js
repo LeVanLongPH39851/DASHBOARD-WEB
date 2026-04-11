@@ -37,4 +37,37 @@ export { spendVNDPivotTableChartChannelFirstLevelPayload } from './spendVNDPivot
 export { spendVNDPivotTableChartChannelTimebandPayload } from './spendVNDPivotTableChartChannelTimebandPayload';
 export { spendVNDTableChartAdvertiserPayload } from './spendVNDTableChartAdvertiserPayload';
 
+export { allTableChartBrandPayload } from "./allTableChartBrandPayload";
+export { allTableChartBrandProgramPayload } from "./allTableChartBrandProgramPayload";
+export { allTableChartDevicePayload } from "./allTableChartDevicePayload";
+
+export { countPivotTableChartCampaignWeekPayload } from "./countPivotTableChartCampaignWeekPayload";
+
+export { grpBarChartWeekBrandPayload } from "./grpBarChartWeekBrandPayload";
+export { grpBarChartRegionalBrandPayload } from "./grpBarChartRegionalBrandPayload";
+export { grpPivotTableChartCampaignWeekPayload } from "./grpPivotTableChartCampaignWeekPayload";
+
+export { reachPivotTableChartCampaignWeekPayload } from "./reachPivotTableChartCampaignWeekPayload";
+export { reachTableChartCampaignBrandPayload } from "./reachTableChartCampaignBrandPayload";
+
+export { spendVNDBarChartBrandChannelPayload } from "./spendVNDBarChartBrandChannelPayload";
+export { spendVNDBarChartBrandFirstLevelPayload } from "./spendVNDBarChartBrandFirstLevelPayload";
+export { spendVNDBarChartBrandTimebandPayload } from "./spendVNDBarChartBrandTimebandPayload";
+
+export { spendVNDPieChartAdvertiserPayload } from "./spendVNDPieChartAdvertiserPayload";
+
+export { grpBarChartBrandChannelPayload } from "./grpBarChartBrandChannelPayload";
+export { grpBarChartBrandFirstLevelPayload } from "./grpBarChartBrandFirstLevelPayload";
+export { grpBarChartBrandTimebandPayload } from "./grpBarChartBrandTimebandPayload";
+
+export { grpPieChartAdvertiserPayload } from "./grpPieChartAdvertiserPayload";
+
+export { reachBarChartBrandChannelPayload } from "./reachBarChartBrandChannelPayload";
+export { reachBarChartBrandFirstLevelPayload } from "./reachBarChartBrandFirstLevelPayload";
+export { reachBarChartBrandTimebandPayload } from "./reachBarChartBrandTimebandPayload";
+
+export { reachPieChartAdvertiserPayload } from "./reachPieChartAdvertiserPayload";
+
+export { allTableChartMonitoringPayload } from "./allTableChartMonitoringPayload";
+
 export { filterProvincePayload } from './filterProvincePayload';

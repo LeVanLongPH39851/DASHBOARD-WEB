@@ -44,6 +44,45 @@ const HOOKS = [
   { hook: useCallApi.useSpendVNDPivotTableChartChannelFirstLevelReturnApi, dataKey: 'spendVNDPivotChannelFirstLevelData' },
   { hook: useCallApi.useSpendVNDPivotTableChartChannelTimebandReturnApi, dataKey: 'spendVNDPivotChannelTimebandData' },
   { hook: useCallApi.useSpendVNDTableChartAdvertiserReturnApi, dataKey: 'spendVNDTableAdvertiserData' },
+
+    // ===== ALL TABLE =====
+  { hook: useCallApi.useAllTableChartBrandReturnApi, dataKey: 'allTableBrandData' },
+  { hook: useCallApi.useAllTableChartBrandProgramReturnApi, dataKey: 'allTableBrandProgramData' },
+  { hook: useCallApi.useAllTableChartDeviceReturnApi, dataKey: 'allTableDeviceData' },
+
+  // ===== COUNT PIVOT =====
+  { hook: useCallApi.useCountPivotTableChartCampaignWeekReturnApi, dataKey: 'countPivotCampaignWeekData' },
+
+  // ===== GRP =====
+  { hook: useCallApi.useGrpBarChartWeekBrandReturnApi, dataKey: 'grpBarWeekBrandData' },
+  { hook: useCallApi.useGrpBarChartRegionalBrandReturnApi, dataKey: 'grpBarRegionalBrandData' },
+  { hook: useCallApi.useGrpPivotTableChartCampaignWeekReturnApi, dataKey: 'grpPivotCampaignWeekData' },
+
+  // ===== REACH =====
+  { hook: useCallApi.useReachPivotTableChartCampaignWeekReturnApi, dataKey: 'reachPivotCampaignWeekData' },
+  { hook: useCallApi.useReachTableChartCampaignBrandReturnApi, dataKey: 'reachTableCampaignBrandData' },
+
+  // ===== SPEND VND (BRAND) =====
+  { hook: useCallApi.useSpendVNDBarChartBrandChannelReturnApi, dataKey: 'spendVNDBarBrandChannelData' },
+  { hook: useCallApi.useSpendVNDBarChartBrandFirstLevelReturnApi, dataKey: 'spendVNDBarBrandFirstLevelData' },
+  { hook: useCallApi.useSpendVNDBarChartBrandTimebandReturnApi, dataKey: 'spendVNDBarBrandTimebandData' },
+
+  // ===== SPEND VND PIE =====
+  { hook: useCallApi.useSpendVNDPieChartAdvertiserReturnApi, dataKey: 'spendVNDPieAdvertiserData' },
+
+  { hook: useCallApi.useGrpBarChartBrandChannelReturnApi, dataKey: 'grpBarBrandChannelData' },
+  { hook: useCallApi.useGrpBarChartBrandFirstLevelReturnApi, dataKey: 'grpBarBrandFirstLevelData' },
+  { hook: useCallApi.useGrpBarChartBrandTimebandReturnApi, dataKey: 'grpBarBrandTimebandData' },
+
+  { hook: useCallApi.useGrpPieChartAdvertiserReturnApi, dataKey: 'grpPieAdvertiserData' },
+
+  { hook: useCallApi.useReachBarChartBrandChannelReturnApi, dataKey: 'reachBarBrandChannelData' },
+  { hook: useCallApi.useReachBarChartBrandFirstLevelReturnApi, dataKey: 'reachBarBrandFirstLevelData' },
+  { hook: useCallApi.useReachBarChartBrandTimebandReturnApi, dataKey: 'reachBarBrandTimebandData' },
+
+  { hook: useCallApi.useReachPieChartAdvertiserReturnApi, dataKey: 'reachPieAdvertiserData' },
+  { hook: useCallApi.useAllTableChartMonitoringReturnApi, dataKey: 'allTableMonitoringData' },
+
   { hook: useCallApi.useFilterProvinceReturnApi, dataKey: 'filterProvinceData' }
 ];
 

@@ -127,5 +127,77 @@ export const getSpendVNDPivotTableChartChannelTimeband = (appliedFilters) =>
 export const getSpendVNDTableChartAdvertiser = (appliedFilters) =>
   postChart(payloads.spendVNDTableChartAdvertiserPayload, appliedFilters);
 
+// ===== ALL TABLE =====
+export const getAllTableChartBrand = (appliedFilters) =>
+  postChart(payloads.allTableChartBrandPayload, appliedFilters);
+
+export const getAllTableChartBrandProgram = (appliedFilters) =>
+  postChart(payloads.allTableChartBrandProgramPayload, appliedFilters);
+
+export const getAllTableChartDevice = (appliedFilters) =>
+  postChart(payloads.allTableChartDevicePayload, appliedFilters);
+
+// ===== COUNT PIVOT =====
+export const getCountPivotTableChartCampaignWeek = (appliedFilters) =>
+  postChart(payloads.countPivotTableChartCampaignWeekPayload, appliedFilters);
+
+// ===== GRP =====
+export const getGrpBarChartWeekBrand = (appliedFilters) =>
+  postChart(payloads.grpBarChartWeekBrandPayload, appliedFilters);
+
+export const getGrpBarChartRegionalBrand = (appliedFilters) =>
+  postChart(payloads.grpBarChartRegionalBrandPayload, appliedFilters);
+
+export const getGrpPivotTableChartCampaignWeek = (appliedFilters) =>
+  postChart(payloads.grpPivotTableChartCampaignWeekPayload, appliedFilters);
+
+// ===== REACH =====
+export const getReachPivotTableChartCampaignWeek = (appliedFilters) =>
+  postChart(payloads.reachPivotTableChartCampaignWeekPayload, appliedFilters);
+
+export const getReachTableChartCampaignBrand = (appliedFilters) =>
+  postChart(payloads.reachTableChartCampaignBrandPayload, appliedFilters);
+
+// ===== SPEND VND (BRAND) =====
+export const getSpendVNDBarChartBrandChannel = (appliedFilters) =>
+  postChart(payloads.spendVNDBarChartBrandChannelPayload, appliedFilters);
+
+export const getSpendVNDBarChartBrandFirstLevel = (appliedFilters) =>
+  postChart(payloads.spendVNDBarChartBrandFirstLevelPayload, appliedFilters);
+
+export const getSpendVNDBarChartBrandTimeband = (appliedFilters) =>
+  postChart(payloads.spendVNDBarChartBrandTimebandPayload, appliedFilters);
+
+// ===== SPEND VND PIE =====
+export const getSpendVNDPieChartAdvertiser = (appliedFilters) =>
+  postChart(payloads.spendVNDPieChartAdvertiserPayload, appliedFilters);
+
+export const getGrpBarChartBrandChannel = (appliedFilters) =>
+  postChart(payloads.grpBarChartBrandChannelPayload, appliedFilters);
+
+export const getGrpBarChartBrandFirstLevel = (appliedFilters) =>
+  postChart(payloads.grpBarChartBrandFirstLevelPayload, appliedFilters);
+
+export const getGrpBarChartBrandTimeband = (appliedFilters) =>
+  postChart(payloads.grpBarChartBrandTimebandPayload, appliedFilters);
+
+export const getGrpPieChartAdvertiser = (appliedFilters) =>
+  postChart(payloads.grpPieChartAdvertiserPayload, appliedFilters);
+
+export const getReachBarChartBrandChannel = (appliedFilters) =>
+  postChart(payloads.reachBarChartBrandChannelPayload, appliedFilters);
+
+export const getReachBarChartBrandFirstLevel = (appliedFilters) =>
+  postChart(payloads.reachBarChartBrandFirstLevelPayload, appliedFilters);
+
+export const getReachBarChartBrandTimeband = (appliedFilters) =>
+  postChart(payloads.reachBarChartBrandTimebandPayload, appliedFilters);
+
+export const getReachPieChartAdvertiser = (appliedFilters) =>
+  postChart(payloads.reachPieChartAdvertiserPayload, appliedFilters);
+
+export const getAllTableChartMonitoring = (appliedFilters) =>
+  postChart(payloads.allTableChartMonitoringPayload, appliedFilters);
+
 export const getFilterProvince = () =>
   axiosClient.post(apiRoute, payloads.filterProvincePayload)

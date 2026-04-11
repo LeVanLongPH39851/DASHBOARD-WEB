@@ -1,8 +1,8 @@
-export const spendUSDBarChartAdvertiserChannelPayload = {
-  url: `${import.meta.env.VITE_API_DOMAIN}/api/v1/chart/data?form_data=%7B%22slice_id%22%3A616%7D&dashboard_id=49`,
+export const grpBarChartRegionalBrandPayload = {
+  url: `${import.meta.env.VITE_API_DOMAIN}/api/v1/chart/data?form_data=%7B%22slice_id%22%3A587%7D&dashboard_id=49`,
   payload: {
     "datasource": {
-      "id": 196,
+      "id": 197,
       "type": "table"
     },
     "force": false,
@@ -13,7 +13,7 @@ export const spendUSDBarChartAdvertiserChannelPayload = {
           {
             "col": "date",
             "op": "TEMPORAL_RANGE",
-            "val": "No filter"
+            "val": "2025-10-20T00:00:00 : 2025-10-26T23:59:59"
           }
         ],
         "extras": {
@@ -26,28 +26,27 @@ export const spendUSDBarChartAdvertiserChannelPayload = {
           {
             "timeGrain": "P1D",
             "columnType": "BASE_AXIS",
-            "datasourceWarning": true,
             "expressionType": "SQL",
-            "label": "Avertiser",
-            "sqlExpression": "advertiser"
+            "label": "regional_name",
+            "sqlExpression": "CASE \r\n        WHEN regional_name = 'Đồng bằng sông Hồng' \r\n            THEN CONCAT('Đồng bằng', '\\n', 'sông Hồng')\r\n        WHEN regional_name = 'Bắc Trung Bộ và Duyên hải miền Trung' \r\n            THEN CONCAT('Bắc Trung', '\\n', 'Bộ và', '\\n', 'Duyên hải', '\\n', 'miền Trung')\r\n        WHEN regional_name = 'Trung du và miền núi phía Bắc' \r\n            THEN CONCAT('Trung du', '\\n', 'và', '\\n', 'miền núi', '\\n', 'phía Bắc')\r\n        WHEN regional_name = 'Đồng bằng sông Cửu Long' \r\n            THEN CONCAT('Đồng bằng', '\\n', 'sông Cửu', '\\n', 'Long')\r\n        WHEN regional_name = 'Đông Nam Bộ' \r\n            THEN CONCAT('Đông Nam', '\\n', 'Bộ')\r\n        WHEN regional_name = 'Tây Nguyên' \r\n            THEN CONCAT('Tây', '\\n', 'Nguyên')\r\n        ELSE regional_name\r\n    END"
           },
-          "channel_name_tvd"
+          "brand"
         ],
         "metrics": [
-          "price_usd"
+          "grp"
         ],
         "orderby": [
           [
-            "price_usd",
+            "grp",
             false
           ]
         ],
         "annotation_layers": [],
         "row_limit": 50000,
         "series_columns": [
-          "channel_name_tvd"
+          "brand"
         ],
-        "series_limit": 0,
+        "series_limit": 10,
         "order_desc": true,
         "url_params": {},
         "custom_params": {},
@@ -58,13 +57,13 @@ export const spendUSDBarChartAdvertiserChannelPayload = {
             "operation": "pivot",
             "options": {
               "index": [
-                "Avertiser"
+                "regional_name"
               ],
               "columns": [
-                "channel_name_tvd"
+                "brand"
               ],
               "aggregates": {
-                "price_usd": {
+                "grp": {
                   "operator": "mean"
                 }
               },
@@ -75,7 +74,7 @@ export const spendUSDBarChartAdvertiserChannelPayload = {
             "operation": "rename",
             "options": {
               "columns": {
-                "price_usd": null
+                "grp": null
               },
               "level": 0,
               "inplace": true
@@ -88,35 +87,40 @@ export const spendUSDBarChartAdvertiserChannelPayload = {
       }
     ],
     "form_data": {
-      "datasource": "196__table",
+      "datasource": "197__table",
       "viz_type": "echarts_timeseries_bar",
-      "slice_id": 616,
+      "slice_id": 587,
       "url_params": {},
       "x_axis": {
-        "datasourceWarning": true,
         "expressionType": "SQL",
-        "label": "Avertiser",
-        "sqlExpression": "advertiser"
+        "label": "regional_name",
+        "sqlExpression": "CASE \r\n        WHEN regional_name = 'Đồng bằng sông Hồng' \r\n            THEN CONCAT('Đồng bằng', '\\n', 'sông Hồng')\r\n        WHEN regional_name = 'Bắc Trung Bộ và Duyên hải miền Trung' \r\n            THEN CONCAT('Bắc Trung', '\\n', 'Bộ và', '\\n', 'Duyên hải', '\\n', 'miền Trung')\r\n        WHEN regional_name = 'Trung du và miền núi phía Bắc' \r\n            THEN CONCAT('Trung du', '\\n', 'và', '\\n', 'miền núi', '\\n', 'phía Bắc')\r\n        WHEN regional_name = 'Đồng bằng sông Cửu Long' \r\n            THEN CONCAT('Đồng bằng', '\\n', 'sông Cửu', '\\n', 'Long')\r\n        WHEN regional_name = 'Đông Nam Bộ' \r\n            THEN CONCAT('Đông Nam', '\\n', 'Bộ')\r\n        WHEN regional_name = 'Tây Nguyên' \r\n            THEN CONCAT('Tây', '\\n', 'Nguyên')\r\n        ELSE regional_name\r\n    END"
       },
       "time_grain_sqla": "P1D",
       "x_axis_sort_asc": true,
       "x_axis_sort_series": "sum",
-      "x_axis_sort_series_ascending": true,
+      "x_axis_sort_series_ascending": false,
       "metrics": [
-        "price_usd"
+        "grp"
       ],
       "groupby": [
-        "channel_name_tvd"
+        "brand"
       ],
       "adhoc_filters": [
         {
           "clause": "WHERE",
-          "comparator": "No filter",
+          "comparator": "2025-10-20T00:00:00 : 2025-10-26T23:59:59",
+          "datasourceWarning": false,
           "expressionType": "SIMPLE",
+          "filterOptionName": "filter_ecx58m6xo76_b1iw1pkcit7",
+          "isExtra": false,
+          "isNew": false,
           "operator": "TEMPORAL_RANGE",
+          "sqlExpression": null,
           "subject": "date"
         }
       ],
+      "limit": 10,
       "order_desc": true,
       "row_limit": 50000,
       "truncate_metric": true,
@@ -125,13 +129,13 @@ export const spendUSDBarChartAdvertiserChannelPayload = {
       "annotation_layers": [],
       "forecastPeriods": 10,
       "forecastInterval": 0.8,
-      "orientation": "horizontal",
-      "x_axis_title_margin": "0",
-      "y_axis_title": "Giá (triệu)",
-      "y_axis_title_margin": 30,
+      "orientation": "vertical",
+      "x_axis_title_margin": 15,
+      "y_axis_title_margin": "0",
       "y_axis_title_position": "Left",
-      "sort_series_type": "sum",
-      "color_scheme": "supersetColors",
+      "sort_series_type": "max",
+      "sort_series_ascending": false,
+      "color_scheme": "presetColors",
       "time_shift_color": true,
       "show_value": true,
       "stack": "Stack",
@@ -139,12 +143,8 @@ export const spendUSDBarChartAdvertiserChannelPayload = {
       "show_legend": true,
       "legendType": "scroll",
       "legendOrientation": "top",
-      "legendMargin": null,
       "x_axis_time_format": "smart_date",
-      "y_axis_format": ",.2f",
-      "currency_format": {
-        "symbol": "USD"
-      },
+      "y_axis_format": ",.1f",
       "y_axis_bounds": [
         null,
         null
@@ -160,7 +160,7 @@ export const spendUSDBarChartAdvertiserChannelPayload = {
       "extra_form_data": {
         "time_range": "DATEADD(DATETIME(\"today\"),-2, DAY) : DATEADD(DATETIME(\"today\"),-1, SECOND)"
       },
-      "chart_id": 616,
+      "chart_id": 587,
       "label_colors": {
         "price": "#ffd04c",
         "price_usd": "#ffd04c",
@@ -210,7 +210,7 @@ export const spendUSDBarChartAdvertiserChannelPayload = {
         "Đời sống"
       ],
       "map_label_colors": {},
-      "own_color_scheme": "supersetColors",
+      "own_color_scheme": "presetColors",
       "extra_filters": [],
       "force": false,
       "result_format": "json",

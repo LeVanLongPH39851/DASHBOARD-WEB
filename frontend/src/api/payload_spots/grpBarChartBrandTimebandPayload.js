@@ -1,8 +1,8 @@
-export const spendUSDBarChartAdvertiserChannelPayload = {
-  url: `${import.meta.env.VITE_API_DOMAIN}/api/v1/chart/data?form_data=%7B%22slice_id%22%3A616%7D&dashboard_id=49`,
+export const grpBarChartBrandTimebandPayload = {
+  url: `${import.meta.env.VITE_API_DOMAIN}/api/v1/chart/data?form_data=%7B%22slice_id%22%3A602%7D&dashboard_id=49`,
   payload: {
     "datasource": {
-      "id": 196,
+      "id": 197,
       "type": "table"
     },
     "force": false,
@@ -26,26 +26,35 @@ export const spendUSDBarChartAdvertiserChannelPayload = {
           {
             "timeGrain": "P1D",
             "columnType": "BASE_AXIS",
-            "datasourceWarning": true,
             "expressionType": "SQL",
-            "label": "Avertiser",
-            "sqlExpression": "advertiser"
+            "label": "My column",
+            "sqlExpression": "CASE\r\nWHEN length(brand) > 15\r\n   THEN CONCAT(left(brand, 15), '...')\r\nELSE brand\r\nEND"
           },
-          "channel_name_tvd"
+          {
+            "datasourceWarning": false,
+            "expressionType": "SQL",
+            "label": "time_band",
+            "sqlExpression": "CASE WHEN time_band IN ('11h - 12h', '12h - 13h', '13h - 14h') THEN '2.Trưa (11h - 14h)' WHEN time_band IN ('14h - 15h', '15h - 16h', '16h - 17h', '17h - 18h') THEN '3.Chiều (14h - 18h)' WHEN time_band IN ('18h - 19h', '19h - 20h', '20h - 21h', '21h - 22h', '22h - 23h', '23h - 24h') THEN '4.Tối (18h - 24h)' ELSE '1.Sáng (0h - 11h)' END"
+          }
         ],
         "metrics": [
-          "price_usd"
+          "grp"
         ],
         "orderby": [
           [
-            "price_usd",
+            "grp",
             false
           ]
         ],
         "annotation_layers": [],
         "row_limit": 50000,
         "series_columns": [
-          "channel_name_tvd"
+          {
+            "datasourceWarning": false,
+            "expressionType": "SQL",
+            "label": "time_band",
+            "sqlExpression": "CASE WHEN time_band IN ('11h - 12h', '12h - 13h', '13h - 14h') THEN '2.Trưa (11h - 14h)' WHEN time_band IN ('14h - 15h', '15h - 16h', '16h - 17h', '17h - 18h') THEN '3.Chiều (14h - 18h)' WHEN time_band IN ('18h - 19h', '19h - 20h', '20h - 21h', '21h - 22h', '22h - 23h', '23h - 24h') THEN '4.Tối (18h - 24h)' ELSE '1.Sáng (0h - 11h)' END"
+          }
         ],
         "series_limit": 0,
         "order_desc": true,
@@ -58,13 +67,13 @@ export const spendUSDBarChartAdvertiserChannelPayload = {
             "operation": "pivot",
             "options": {
               "index": [
-                "Avertiser"
+                "My column"
               ],
               "columns": [
-                "channel_name_tvd"
+                "time_band"
               ],
               "aggregates": {
-                "price_usd": {
+                "grp": {
                   "operator": "mean"
                 }
               },
@@ -75,7 +84,7 @@ export const spendUSDBarChartAdvertiserChannelPayload = {
             "operation": "rename",
             "options": {
               "columns": {
-                "price_usd": null
+                "grp": null
               },
               "level": 0,
               "inplace": true
@@ -88,25 +97,29 @@ export const spendUSDBarChartAdvertiserChannelPayload = {
       }
     ],
     "form_data": {
-      "datasource": "196__table",
+      "datasource": "197__table",
       "viz_type": "echarts_timeseries_bar",
-      "slice_id": 616,
+      "slice_id": 602,
       "url_params": {},
       "x_axis": {
-        "datasourceWarning": true,
         "expressionType": "SQL",
-        "label": "Avertiser",
-        "sqlExpression": "advertiser"
+        "label": "My column",
+        "sqlExpression": "CASE\r\nWHEN length(brand) > 15\r\n   THEN CONCAT(left(brand, 15), '...')\r\nELSE brand\r\nEND"
       },
       "time_grain_sqla": "P1D",
       "x_axis_sort_asc": true,
       "x_axis_sort_series": "sum",
       "x_axis_sort_series_ascending": true,
       "metrics": [
-        "price_usd"
+        "grp"
       ],
       "groupby": [
-        "channel_name_tvd"
+        {
+          "datasourceWarning": false,
+          "expressionType": "SQL",
+          "label": "time_band",
+          "sqlExpression": "CASE WHEN time_band IN ('11h - 12h', '12h - 13h', '13h - 14h') THEN '2.Trưa (11h - 14h)' WHEN time_band IN ('14h - 15h', '15h - 16h', '16h - 17h', '17h - 18h') THEN '3.Chiều (14h - 18h)' WHEN time_band IN ('18h - 19h', '19h - 20h', '20h - 21h', '21h - 22h', '22h - 23h', '23h - 24h') THEN '4.Tối (18h - 24h)' ELSE '1.Sáng (0h - 11h)' END"
+        }
       ],
       "adhoc_filters": [
         {
@@ -127,10 +140,10 @@ export const spendUSDBarChartAdvertiserChannelPayload = {
       "forecastInterval": 0.8,
       "orientation": "horizontal",
       "x_axis_title_margin": "0",
-      "y_axis_title": "Giá (triệu)",
-      "y_axis_title_margin": 30,
+      "y_axis_title_margin": 15,
       "y_axis_title_position": "Left",
-      "sort_series_type": "sum",
+      "sort_series_type": "name",
+      "sort_series_ascending": true,
       "color_scheme": "supersetColors",
       "time_shift_color": true,
       "show_value": true,
@@ -139,12 +152,8 @@ export const spendUSDBarChartAdvertiserChannelPayload = {
       "show_legend": true,
       "legendType": "scroll",
       "legendOrientation": "top",
-      "legendMargin": null,
       "x_axis_time_format": "smart_date",
-      "y_axis_format": ",.2f",
-      "currency_format": {
-        "symbol": "USD"
-      },
+      "y_axis_format": ",.1f",
       "y_axis_bounds": [
         null,
         null
@@ -160,7 +169,7 @@ export const spendUSDBarChartAdvertiserChannelPayload = {
       "extra_form_data": {
         "time_range": "DATEADD(DATETIME(\"today\"),-2, DAY) : DATEADD(DATETIME(\"today\"),-1, SECOND)"
       },
-      "chart_id": 616,
+      "chart_id": 602,
       "label_colors": {
         "price": "#ffd04c",
         "price_usd": "#ffd04c",
@@ -189,12 +198,25 @@ export const spendUSDBarChartAdvertiserChannelPayload = {
         "Quảng cáo": "#B17BAA"
       },
       "shared_label_colors": [
+        "2.Trưa (11h - 14h)",
+        "3.Chiều (14h - 18h)",
+        "4.Tối (18h - 24h)",
+        "AJINOMOTO VIETNAM",
+        "BONCHA (RTD GREEN TEA)",
+        "CHIN-SU (CHILI SAUCE)",
         "Dành cho trẻ em",
         "Giáo dục - Đào tạo",
         "Giải trí",
+        "HISMART",
+        "KOKOMI SNACKING",
+        "MORINAGA",
+        "NESTLE NAN",
         "Phim dài tập",
         "Quảng bá",
         "Quảng cáo",
+        "SAM NHUNG BO THAN TW3 (ORIENTAL KIDNEY RESTORATIVE MEDICINE)",
+        "TAM BINH (DRINK SUPP.)",
+        "TH TRUE MILK (FRESH MILK)",
         "Thể thao",
         "Thời sự - Chính luận",
         "Tài liệu - Phóng sự",

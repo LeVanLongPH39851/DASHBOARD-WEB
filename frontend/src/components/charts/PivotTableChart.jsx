@@ -21,6 +21,7 @@ import iconArrowRightGray from '../../assets/icon_arrow_right_gray.png';
 import iconArrowLeftGrayDark from '../../assets/icon_arrow_left_gray_dark.png';
 import iconArrowRightGrayDark from '../../assets/icon_arrow_right_gray_dark.png';
 import { formatNumber } from '../../utils/formatNumber';
+import { LABEL } from '../../utils/label';
 import { useDashboardStateGlobals } from '../../context/DashboardFilterContext';
 
 const aggregateValue = (items, valueField, aggType) => {
@@ -40,8 +41,8 @@ const aggregateValue = (items, valueField, aggType) => {
 };
 
 const buildPivotData = ({ data, rowField, columnField, valueField, aggType }) => {
-  const rowKeys = [...new Set(data.map((d) => d[rowField] ?? ''))];
-  const colKeys = [...new Set(data.map((d) => d[columnField] ?? ''))];
+  const rowKeys = [...new Set(data.map((d) => String(d[rowField] ?? '')))];
+  const colKeys = [...new Set(data.map((d) => String(d[columnField] ?? '')))];
 
   const grouped = {};
   data.forEach((item) => {
@@ -80,6 +81,8 @@ const PivotTableChart = ({
   showPagination = false,
   displayName = true,
   enableHeatmap = false,
+  suffix='',
+  formatterValue=0
 }) => {
   const { stateGlobals } = useDashboardStateGlobals();
   const [sorting, setSorting] = useState([]);
@@ -129,18 +132,20 @@ const PivotTableChart = ({
   const columns = useMemo(() => {
     return [
       {
+        id: String(rowField),
         accessorKey: rowField,
-        header: rowField,
+        header: LABEL[rowField] || rowField,
         cell: (info) => info.getValue(),
         enableSorting: true,
       },
       ...colKeys.map((key) => ({
+        id: key,
         accessorKey: key,
         header: key,
         cell: (info) => {
           const value = info.getValue();
           if (typeof value === 'number' && !Number.isNaN(value)) {
-            return formatNumber(value);
+            return value.toLocaleString(undefined, { maximumFractionDigits: formatterValue });
           }
           return value ?? '';
         },
@@ -301,13 +306,11 @@ const PivotTableChart = ({
                     {headerGroup.headers.map((header, idx) => (
                       <th
                         key={header.id}
-                        className={`px-2 max-md:px-1 py-3 max-md:py-2 text-center relative text-color-neotam dark:text-background-primary bg-background-light dark:bg-background-chart-dark border-b border-border-black-10 dark:border-background-white-15 transition-all duration-300 ${idx === 0 ? 'pivot-sticky-col' : ''}`}
+                        className={`px-2 max-md:px-1 py-3 max-md:py-2 text-center relative text-color-neotam dark:text-background-primary bg-background-light dark:bg-background-chart-dark border-b border-border-black-10 dark:border-background-white-15 transition-all duration-300 ${idx === 0 ? 'pivot-sticky-col sticky left-0 z-10' : ''}`}
                         style={{
-                          minWidth: `${stateGlobals.screen_md ? header.column.getSize() + 40 : header.column.getSize() - 40}px`,
-                          maxWidth: `${header.column.getSize() + 100}px`,
                           fontSize: !stateGlobals.screen_md ? fontSize.label : '10.5px',
                           fontWeight: fontWeight.label,
-                          whiteSpace: 'pre-line',
+                          whiteSpace: 'nowrap'
                         }}
                       >
                         <div
@@ -315,7 +318,20 @@ const PivotTableChart = ({
                           onClick={header.column.getToggleSortingHandler()}
                         >
                           {flexRender(header.column.columnDef.header, header.getContext())}
+                          {header.column.getIsSorted() && (
+                              <span className="text-color-neotam transition-all duration-300 text-[10px] max-md:text-[8px]">
+                                {header.column.getIsSorted() === 'asc' ? '▲' : '▼'}
+                              </span>
+                            )}
                         </div>
+                        <div
+                            onMouseDown={header.getResizeHandler()}
+                            onTouchStart={header.getResizeHandler()}
+                            className={`absolute right-0 top-0 h-full w-0.5 rounded-2xl cursor-col-resize transition-colors duration-300 ${
+                              header.column.getIsResizing() ? 'bg-color-neotam dark:bg-background-primary' : 'bg-transparent'
+                            }`}
+                            style={{ userSelect: 'none', touchAction: 'none' }}
+                          />
                       </th>
                     ))}
                   </tr>
@@ -334,16 +350,15 @@ const PivotTableChart = ({
                       return (
                         <td
                           key={cell.id}
-                          className={`border-b border-border-black-10 dark:border-background-white-15 px-2 max-md:px-1 py-3 max-md:py-2 text-color-black-100 dark:text-color-white-90 transition-all duration-300 ${cellIdx < 0 ? 'pivot-sticky-col sticky left-0 z-10 bg-inherit' : ''} ${isNumeric ? 'text-right' : 'text-left'}`}
+                          className={`border-b ${cellIdx === 0 ? 'pivot-sticky-col' : ''} border-border-black-10 dark:border-background-white-15 px-2 max-md:px-1 py-3 max-md:py-2 text-color-black-100 dark:text-color-white-90 transition-all duration-300 ${cellIdx === 0 ? `sticky left-0 z-1 bg-background-light dark:bg-background-chart-dark before:content-[''] before:inset-0 before:absolute before:-z-2 ${idx%2===0 ? 'before:bg-background-black-4 dark:before:bg-background-white-8' : 'before:bg-background-light dark:before:bg-background-chart-dark'}` : ''} ${isNumeric || !rawValue ? 'text-right' : 'text-left'}`}
                           style={{
                             fontSize: !stateGlobals.screen_md ? fontSize.td : '10.5px',
-                            fontWeight: cellIdx === 0 ? 700 : fontWeight.td,
-                            backgroundColor: bgColor,
-                            minWidth: `${stateGlobals.screen_md ? cell.column.getSize() + 40 : cell.column.getSize() - 40}px`,
-                            maxWidth: `${cell.column.getSize() + 100}px`,
+                            fontWeight: cellIdx === 0 ? 600 : fontWeight.td,
+                            // backgroundColor: bgColor,
+                            whiteSpace: 'nowrap'
                           }}
                         >
-                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                          {rawValue ? flexRender(cell.column.columnDef.cell, cell.getContext()) : '-'} {rawValue && isNumeric ? suffix : ''}
                         </td>
                       );
                     })}

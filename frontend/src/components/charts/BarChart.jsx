@@ -78,8 +78,19 @@ const BarChart = ({
           end === start + 1;
   });
 
+  const parseNumericLabel = (label) => {
+    const numMatch = label.match(/^[\d\s,.+-]+$/); // Chỉ chứa số, space, dấu thập phân, dấu ±
+    return numMatch ? parseFloat(label.replace(/[^\d.,-]/g, '').replace(',', '.')) : NaN;
+  };
+
+  // Detect labels dạng số chuỗi
+  const hasNumericLabels = labels.some(label => {
+    const num = parseNumericLabel(label);
+    return !isNaN(num);
+  });
+
   const sorted = React.useMemo(() => {
-    if (hasDates || hasTimebands) {
+    if (hasDates || hasTimebands || hasNumericLabels) {
       // Sort theo ngày tăng dần
       return labels
         .map((label, index) => {
@@ -157,16 +168,21 @@ const BarChart = ({
     return { labels: sortedLabels, series: sortedSeries };
   }, [sortedLabels, sortedSeries, needsScroll]);
 
+  const DEFAULT_COLORS = [
+    '#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', 
+    '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc', '#c23531'
+  ];
+
   const getSeriesColor = (seriesItem, idx) => {
     if (Array.isArray(colors)) {
       return colors[idx];
     }
 
     if (colors && typeof colors === 'object') {
-      return colors[seriesItem.name] || colors[seriesItem.label] || '#5470c6';
+      return colors[seriesItem.name] || colors[seriesItem.label] || DEFAULT_COLORS[0];
     }
 
-    return '#5470c6';
+    return DEFAULT_COLORS[idx % DEFAULT_COLORS.length];
   };
 
 
@@ -281,6 +297,7 @@ const BarChart = ({
 
 
     legend: {
+      type: 'scroll', // ✅ Cho phép cuộn ngang
       show: topSeriesIndex !== 0 ? true : false,
       top: needsScroll && !isHorizontal ? 0 : 0,
       left: 0,

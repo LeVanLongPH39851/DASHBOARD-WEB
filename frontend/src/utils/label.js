@@ -34,7 +34,19 @@ export const LABEL = {
   '%percent_duration': '%Share of airtime',
   '%percent_grp': '%Share of voice',
   'ads_code': 'Adcode',
-  'time_band': 'Khung giờ'
+  'Mã giờ': 'Adcode',
+  'time_band': 'Khung giờ',
+  'advertiser': 'Nhà quảng cáo',
+  'Chi phí (triệu VND)': 'Chi phí (VND)',
+  'week': 'Tuần',
+  'spot_start_time': 'Thời gian\nbắt đầu',
+  'spot_end_time': 'Thời gian\nkết thúc',
+  'duration': 'Thời lượng Spot',
+  'break_in_program': 'Break',
+  'position_in_break': 'Position',
+  'spot_type': 'Loại Spot',
+  'Ngành hàng/ Group': 'Ngành hàng',
+  'Nhãn hàng/ Brand': 'Nhãn hàng'
 };
 
 export const LABEL_METRIC = {
@@ -45,7 +57,10 @@ export const LABEL_METRIC = {
   'rating_timeband%': 'Rating (%)',
   'ave_reach_1': 'Ave.Reach',
   'ave_reach_timeband': 'Ave.Reach',
-  'rating_timeband': 'Rating'
+  'rating_timeband': 'Rating',
+  'price': 'Giá VND',
+  'price_usd': 'Giá USD',
+  'count': 'Số lượng'
 } 
 
 export const FILTER_LABEL = {
@@ -69,4 +84,14 @@ export const VALUE_LABEL = {
   'Sunday': 'Chủ nhật',
   'InWeek': '',
   'Weekend': ''
+}
+
+export const LABEL_TABS = {
+  overview: 'Tổng quan',
+  channel: 'Kênh',
+  program: 'Chương trình',
+  rating_by_minute: 'Rating theo phút',
+  revenue: 'Doanh thu',
+  effective: 'Hiệu quả',
+  ad_monitoring_report: 'Ad monitoring report'
 }

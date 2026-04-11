@@ -119,7 +119,11 @@ export const CUSTOM_CHART = {
         description: false,
         STT: false,
         pagination: false,
-        customCol: {
+        customColChannel: {
+          'KÊNH': {justify: 'justify-center', align: 'text-center', minSize: 0, maxSize: 60},
+          'Live/TSV': {justify: 'justify-center', align: 'text-center'},
+        },
+        customColChannelEvent: {
           'KÊNH': {justify: 'justify-center', align: 'text-center'},
           'Live/TSV': {justify: 'justify-center', align: 'text-center'},
         }

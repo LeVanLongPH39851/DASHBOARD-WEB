@@ -19,7 +19,7 @@ class SupersetClient {
     this.requestQueue = new PQueue({
       concurrency: 100,        // Max 50 requests đồng thời
       interval: 1000,        // 1 giây
-      intervalCap: 50       // Max 50 requests/giây
+      intervalCap: 100       // Max 50 requests/giây
     });
   }
 

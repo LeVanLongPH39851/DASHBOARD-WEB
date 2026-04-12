@@ -873,7 +873,7 @@ const DashboardContent = () => {
                                 <InforTab inforTab={"Rating theo phút - P4+ toàn quốc"} />
                                 <InforFilter filters={scopeFilterData} FilterComponent={FilterSpot} />
                                 <div className='px-6 max-lg:px-5 max-md:px-4'>
-                                  <div className='w-full pb-6 max-md:pb-4'>
+                                  <div className='w-full py-6 max-md:py-4'>
                                     <TableChart data={!dashboard.isLoading.allTableMonitoringData ? transformTableChartData(dashboard.allTableMonitoringData?.data, dashboard.allTableMonitoringData?.colnames) : 'isLoading'}
                                                 height={'600px'}
                                                 fontSize={CUSTOM_CHART.tableChart.fontSize}
@@ -896,7 +896,7 @@ const DashboardContent = () => {
                                                   'Ngành hàng': {minSize: 120, maxSize: 190, overflow: true},
                                                   'Sản phẩm': {minSize: 120, maxSize: 190, overflow: true},
                                                   'Nhãn hàng': {minSize: 180, maxSize: 240, overflow: true},
-                                                  'Nhà quảng cáo': {minSize: 180, maxSize: 240, overflow: true},
+                                                  'Nhà quảng cáo': {minSize: 180, maxSize: 240, overflow: true}
                                                 }} />
                                   </div>
                                 </div>

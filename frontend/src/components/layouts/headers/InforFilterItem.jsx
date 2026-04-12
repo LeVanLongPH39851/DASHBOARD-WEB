@@ -4,17 +4,8 @@ import { VALUE_LABEL } from '../../../utils/label';
 import { useDashboardFilters, useDashboardFilterValues, useDashboardStateGlobals } from '../../../context/DashboardFilterContext'
 
 const ClearSet = (setFilterValues, setAppliedFilters, keyFilter) => {
-    switch(keyFilter) {
-        case 'channels': setFilterValues(prev => ({...prev, channels: []})); setAppliedFilters(prev => ({...prev, channels: []})); break;
-        case 'events': setFilterValues(prev => ({...prev, events: []})); setAppliedFilters(prev => ({...prev, events: []})); break;
-        case 'days': setFilterValues(prev => ({...prev, days: []})); setAppliedFilters(prev => ({...prev, days: []})); break;
-        case 'provinces': setFilterValues(prev => ({...prev, provinces: []})); setAppliedFilters(prev => ({...prev, provinces: []})); break;
-        case 'regionals': setFilterValues(prev => ({...prev, regionals: []})); setAppliedFilters(prev => ({...prev, regionals: []})); break;
-        case 'keyCities': setFilterValues(prev => ({...prev, keyCities: []})); setAppliedFilters(prev => ({...prev, keyCities: []})); break;
-        case 'timebands': setFilterValues(prev => ({...prev, timebands: []})); setAppliedFilters(prev => ({...prev, timebands: []})); break;
-        case 'firstLevels': setFilterValues(prev => ({...prev, firstLevels: []})); setAppliedFilters(prev => ({...prev, firstLevels: []})); break;
-        case 'programs': setFilterValues(prev => ({...prev, programs: []})); setAppliedFilters(prev => ({...prev, programs: []})); break;
-    }
+  setFilterValues(prev => ({ ...prev, [keyFilter]: [] }));
+  setAppliedFilters(prev => ({ ...prev, [keyFilter]: [] }));
 };
 
 const InforFilterItem = ({ keyFilter='', nameFilter, valueFilters=[], space }) => {

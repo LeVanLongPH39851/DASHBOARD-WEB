@@ -83,7 +83,14 @@ const HOOKS = [
   { hook: useCallApi.useReachPieChartAdvertiserReturnApi, dataKey: 'reachPieAdvertiserData' },
   { hook: useCallApi.useAllTableChartMonitoringReturnApi, dataKey: 'allTableMonitoringData' },
 
-  { hook: useCallApi.useFilterProvinceReturnApi, dataKey: 'filterProvinceData' }
+  { hook: useCallApi.useFilterProvinceReturnApi, dataKey: 'filterProvinceData' },
+  { hook: useCallApi.useFilterProgramReturnApi, dataKey: 'filterProgramData' },
+  { hook: useCallApi.useFilterProductReturnApi, dataKey: 'filterProductData' },
+  { hook: useCallApi.useFilterGroupReturnApi, dataKey: 'filterGroupData' },
+  { hook: useCallApi.useFilterCampaignReturnApi, dataKey: 'filterCampaignData' },
+  { hook: useCallApi.useFilterBrandReturnApi, dataKey: 'filterBrandData' },
+  { hook: useCallApi.useFilterAdvertiserReturnApi, dataKey: 'filterAdvertiserData' },
+  { hook: useCallApi.useFilterAdcodeReturnApi, dataKey: 'filterAdcodeData' },
 ];
 
 export const useDashboardData = () => {

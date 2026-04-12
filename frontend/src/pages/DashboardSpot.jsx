@@ -44,22 +44,30 @@ import iconProgramActive from '../assets/icon_program_active.png';
 import iconRatingByMinuteActive from '../assets/icon_rating_by_minute_active.png';
 import { useCurrentUser } from '../hooks/useCurrentUser';
 import PivotTableChart from '../components/charts/PivotTableChart';
+import FilterSpot from '../components/layouts/filters/FilterSpot';
 
 const DashboardContent = () => {
   const dashboard = useDashboardData();
   const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
 
   const scopeFilterData = {
-    filterProvince: dashboard.isLoading.filterProvinceData ? [{'Loading': 'Loading'}] : dashboard.filterProvinceData?.data
+    filterProvince: dashboard.isLoading.filterProvinceData ? [{'Loading': 'Loading'}] : dashboard.filterProvinceData?.data,
+    filterProgram: dashboard.isLoading.filterProgramData ? [{ 'Loading': 'Loading' }] : dashboard.filterProgramData?.data,
+    filterProduct: dashboard.isLoading.filterProductData ? [{ 'Loading': 'Loading' }] : dashboard.filterProductData?.data,
+    filterGroup: dashboard.isLoading.filterGroupData ? [{ 'Loading': 'Loading' }] : dashboard.filterGroupData?.data,
+    filterCampaign: dashboard.isLoading.filterCampaignData ? [{ 'Loading': 'Loading' }] : dashboard.filterCampaignData?.data,
+    filterBrand: dashboard.isLoading.filterBrandData ? [{ 'Loading': 'Loading' }] : dashboard.filterBrandData?.data,
+    filterAdvertiser: dashboard.isLoading.filterAdvertiserData ? [{ 'Loading': 'Loading' }] : dashboard.filterAdvertiserData?.data,
+    filterAdcode: dashboard.isLoading.filterAdcodeData ? [{ 'Loading': 'Loading' }] : dashboard.filterAdcodeData?.data
   }
   
   return (
     <main className='font-family-be-vietnam-pro w-full h-full tracking-[0.1px] overflow-x-clip'>
       <Header />
       <div className='flex w-full h-full bg-background-light dark:bg-background-dark transition-all duration-300'>
-        <Filter filters={scopeFilterData} />
+        <FilterSpot filters={scopeFilterData} />
         <div className={`${stateGlobals.isOpen && !stateGlobals.horizontal ? 'w-[84%] max-md:w-full' : 'w-full'} transition-all duration-300 bg-background-dashboard dark:bg-background-dashboard-dark`}>
-          <BreadCrumb dashboardName='GIÁM SÁT QUẢNG CÁO/ AD MONITORING' />
+          <BreadCrumb dashboardName='GIÁM SÁT QUẢNG CÁO' />
           <div className='bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300'>
             <ParentTabs uniqueId='dashboard'
                         defaultTab='overview'
@@ -68,7 +76,7 @@ const DashboardContent = () => {
                             content: (
                               <section className='bg-background-dashboard dark:bg-background-dashboard-dark transiton-all duration-300' id="target_capture_overview">
                                 <InforTab inforTab={"Tổng quan"} />
-                                <InforFilter filters={scopeFilterData} />
+                                <InforFilter filters={scopeFilterData} FilterComponent={FilterSpot} />
                                 <div className='px-6 max-lg:px-5 max-md:px-4 pt-6 max-lg:pt-5 max-md:pt-4'>
                                     <div className='w-full grid grid-cols-5 max-md:grid-cols-2 gap-6 max-md:gap-4 pb-6 max-md:pb-4'>
                                       <div className='col-span-2'>
@@ -89,7 +97,7 @@ const DashboardContent = () => {
                                             <NumberCard
                                                 title={'Thời lượng Spot'}
                                                 description={'Thời lượng Spot'}
-                                                value={!dashboard.isLoading.durationNumberData ? dashboard.durationNumberData?.data ? dashboard.durationNumberData?.data[0].total_duration.toLocaleString(undefined, { maximumFractionDigits: 2 }) : '-' : 'isLoading'}
+                                                value={!dashboard.isLoading.durationNumberData ? dashboard.durationNumberData?.data ? dashboard.durationNumberData?.data[0]?.total_duration?.toLocaleString(undefined, { maximumFractionDigits: 2 }) : '-' : 'isLoading'}
                                                 icon={METRICS.ave_reach.icon}
                                                 background={METRICS.ave_reach.background}
                                                 widthIcon={METRICS.ave_reach.widthIcon}
@@ -273,6 +281,7 @@ const DashboardContent = () => {
                                                   orientation={'horizontal'}
                                                   displayName={false}
                                                   suffix='tr'
+                                                  overflow={true}
                                               />
                                           )},
                                           {id: 'usd', label: 'USD',
@@ -289,6 +298,7 @@ const DashboardContent = () => {
                                                   orientation={'horizontal'}
                                                   displayName={false}
                                                   suffix={'$'}
+                                                  overflow={true}
                                               />
                                           )},
                                           {id: 'spot', label: 'SPOT',
@@ -304,6 +314,7 @@ const DashboardContent = () => {
                                                   description={'Top 20 nhà quảng cáo'}
                                                   orientation={'horizontal'}
                                                   displayName={false}
+                                                  overflow={true}
                                               />
                                           )}
                                           ]} />
@@ -327,6 +338,7 @@ const DashboardContent = () => {
                                                   orientation={'horizontal'}
                                                   displayName={false}
                                                   suffix='tr'
+                                                  overflow={true}
                                               />
                                           )},
                                           {id: 'usd', label: 'USD',
@@ -343,6 +355,7 @@ const DashboardContent = () => {
                                                   orientation={'horizontal'}
                                                   displayName={false}
                                                   suffix={'$'}
+                                                  overflow={true}
                                               />
                                           )},
                                           {id: 'spot', label: 'SPOT',
@@ -358,6 +371,7 @@ const DashboardContent = () => {
                                                   description={'Top 20 nhà quảng cáo - phân bổ theo kênh'}
                                                   orientation={'horizontal'}
                                                   displayName={false}
+                                                  overflow={true}
                                               />
                                           )}
                                           ]} />
@@ -417,7 +431,7 @@ const DashboardContent = () => {
                             content: (
                               <section className='bg-background-dashboard dark:bg-background-dashboard-dark transiton-all duration-300' id="target_capture_revenue">
                                 <InforTab inforTab={"Doanh thu"} />
-                                <InforFilter filters={scopeFilterData} />
+                                <InforFilter filters={scopeFilterData} FilterComponent={FilterSpot} />
                                 <div className='px-6 max-lg:px-5 max-md:px-4 py-6 max-lg:py-5 max-md:py-4'>
                                   <div className='w-full pb-6 max-md:pb-4'>
                                     <BarChart 
@@ -509,6 +523,7 @@ const DashboardContent = () => {
                                         description={'Top 20 chương trình có doanh thu cao nhất'}
                                         orientation={'horizontal'}
                                         suffix='tr'
+                                        overflow={true}
                                     />
                                   </div>
                                   <div className='w-full pb-6 max-md:pb-4'>
@@ -564,7 +579,7 @@ const DashboardContent = () => {
                             content: (
                               <section className='bg-background-dashboard dark:bg-background-dashboard-dark transiton-all duration-300' id="target_capture_effective">
                                 <InforTab inforTab={"Hiệu quả"} />
-                                <InforFilter filters={scopeFilterData} />
+                                <InforFilter filters={scopeFilterData} FilterComponent={FilterSpot} />
                                 <div className='px-6 max-lg:px-5 max-md:px-4'>
                                   <div className='w-full py-6 max-md:py-4'>
                                       <ChildTabs tabs={[
@@ -851,11 +866,11 @@ const DashboardContent = () => {
                               </section>
                             )
                           },
-                          {id: 'ad_monitoring_report', label: 'Ad monitoring report', icon: !stateGlobals.darkMode ? iconRatingByMinute : iconRatingByMinuteDark, iconActive: iconRatingByMinuteActive,
+                          {id: 'ad_monitoring_report', label: !stateGlobals.screen_md ? 'Ad monitoring report' : 'Ad monitoring', icon: !stateGlobals.darkMode ? iconRatingByMinute : iconRatingByMinuteDark, iconActive: iconRatingByMinuteActive,
                             content: (
                               <section className='bg-background-dashboard dark:bg-background-dashboard-dark transiton-all duration-300' id="target_capture_ad_monitoring_report">
                                 <InforTab inforTab={"Rating theo phút - P4+ toàn quốc"} />
-                                <InforFilter filters={scopeFilterData} />
+                                <InforFilter filters={scopeFilterData} FilterComponent={FilterSpot} />
                                 <div className='px-6 max-lg:px-5 max-md:px-4'>
                                   <div className='w-full pb-6 max-md:pb-4'>
                                     <TableChart data={!dashboard.isLoading.allTableMonitoringData ? transformTableChartData(dashboard.allTableMonitoringData?.data, dashboard.allTableMonitoringData?.colnames) : 'isLoading'}

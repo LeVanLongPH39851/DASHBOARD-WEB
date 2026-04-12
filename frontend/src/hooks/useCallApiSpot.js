@@ -184,3 +184,25 @@ export const useAllTableChartMonitoringReturnApi = () =>
 export const useFilterProvinceReturnApi = () => {
   return useApi(getChart.getFilterProvince);
 };
+
+export const useFilterProgramReturnApi = () =>
+  createChartHook(getChart.getFilterProgram)();
+
+export const useFilterProductReturnApi = () =>
+  createChartHook(getChart.getFilterProduct)();
+
+export const useFilterGroupReturnApi = () =>
+  createChartHook(getChart.getFilterGroup)();
+
+export const useFilterCampaignReturnApi = () =>
+  createChartHook(getChart.getFilterCampaign)();
+
+export const useFilterBrandReturnApi = () =>
+  createChartHook(getChart.getFilterBrand)();
+
+export const useFilterAdvertiserReturnApi = () =>
+  createChartHook(getChart.getFilterAdvertiser)();
+
+export const useFilterAdcodeReturnApi = () => {
+  return useApi(getChart.getFilterAdcode);
+};

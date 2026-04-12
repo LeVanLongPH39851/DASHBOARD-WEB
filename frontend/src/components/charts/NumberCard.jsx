@@ -2,6 +2,8 @@ import Loading from '../commons/Loading';
 import NameChart from '../layouts/components/NameChart';
 import { useCallback } from 'react';
 import NoData from '../commons/NoData';
+import { useDashboardStateGlobals } from '../../context/DashboardFilterContext';
+
 const NumberCard = ({ title, description, value, icon=false, background, height='', widthIcon='', suffix = '' }) => {
   
   if(value==='isLoading') {
@@ -19,6 +21,8 @@ const NumberCard = ({ title, description, value, icon=false, background, height=
       </div>
     );
   }
+
+  const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
 
   const getEChartsData = useCallback(() => {
     
@@ -39,7 +43,7 @@ const NumberCard = ({ title, description, value, icon=false, background, height=
         <div className='flex items-center gap-2'>
           <div className={`w-8 h-8 max-md:w-7 max-md:h-7 max-md:flex hidden justify-center items-center rounded-lg ${background} transition-all duration-300`}><figure><img src={icon} className={`${widthIcon+' '+background}`} /></figure></div>
           <p className="text-color-black-100 dark:text-color-white-90 transition-all duration-300 text-[32px] max-md:text-lg font-semibold">
-            {value?.toLocaleString()} {suffix}
+            {value?.toLocaleString()} {!stateGlobals.screen_md && suffix}
           </p>
         </div>
     </div>

@@ -240,7 +240,6 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
             cell.font = { bold: true };
           }
 
-          if (colNumber > 2) cell.numFmt = '#,##0.###';
         });
       });
 
@@ -263,7 +262,6 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
           top: { style: 'medium' }, left: { style: 'thin', color: { argb: 'FFE0E0E0' } },
           bottom: { style: 'medium' }, right: { style: 'thin', color: { argb: 'FFE0E0E0' } }
         };
-        if (colNumber > 2) cell.numFmt = '#,##0.###';
       });
 
       // ✅ Auto width cột
@@ -376,8 +374,6 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
                     right: { style: 'thin', color: { argb: 'FFE0E0E0' } }
                 };
                 
-                if (colNumber > 1) cell.numFmt = '#,##0.###';
-
                 if (colNumber === 1) {
                     cell.font = { bold: true };
                 }

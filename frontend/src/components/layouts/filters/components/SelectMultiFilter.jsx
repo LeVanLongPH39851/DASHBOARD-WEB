@@ -131,6 +131,10 @@ const SelectMultiFilter = ({
         transition: 'all 0.3s ease-in-out',
         cursor: 'pointer'
       }),
+      noOptionsMessage: (provided) => ({
+        ...provided,
+        fontSize: !isMobile ? '14px' : '12px'
+      }),
     };
 
   const [isOpenFilter, setIsOpenFilter] = useState(true);

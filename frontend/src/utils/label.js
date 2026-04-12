@@ -26,7 +26,7 @@ export const LABEL = {
   'brand': 'Nhãn',
   'product': 'Sản phẩm',
   'campaign_name': 'Chiến dịch',
-  'price': 'Chi phí (VND)',
+  'price': 'Chi phí (Triệu VND)',
   'price_usd': 'Chi phí (USD)',
   'count': 'Số lượng',
   '%percent_price': '%Share of spend',
@@ -37,7 +37,7 @@ export const LABEL = {
   'Mã giờ': 'Adcode',
   'time_band': 'Khung giờ',
   'advertiser': 'Nhà quảng cáo',
-  'Chi phí (triệu VND)': 'Chi phí (VND)',
+  'Chi phí (triệu VND)': 'Chi phí (Triệu VND)',
   'week': 'Tuần',
   'spot_start_time': 'Thời gian\nbắt đầu',
   'spot_end_time': 'Thời gian\nkết thúc',
@@ -58,8 +58,8 @@ export const LABEL_METRIC = {
   'ave_reach_1': 'Ave.Reach',
   'ave_reach_timeband': 'Ave.Reach',
   'rating_timeband': 'Rating',
-  'price': 'Giá VND',
-  'price_usd': 'Giá USD',
+  'price': 'Chi phí (Triệu VND)',
+  'price_usd': 'Chi phí (USD)',
   'count': 'Số lượng'
 } 
 

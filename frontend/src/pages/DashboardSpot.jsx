@@ -80,15 +80,15 @@ const DashboardContent = () => {
                                 <div className='px-6 max-lg:px-5 max-md:px-4 pt-6 max-lg:pt-5 max-md:pt-4'>
                                     <div className='w-full grid grid-cols-5 max-md:grid-cols-2 gap-6 max-md:gap-4 pb-6 max-md:pb-4'>
                                       <div className='col-span-2'>
-                                        <NumberWithTrendChart nameChart={'Chi phí (VND)'} description={'Chi phí (VND)'} data={!dashboard.isLoading.spendVNDNumberData ? transformNumberWithTrendData(dashboard.spendVNDNumberData?.data, dashboard.spendVNDNumberData?.colnames) : 'isLoading'} fontFamily={CUSTOM_CHART.allChart.fontFamily} fontSize={CUSTOM_CHART.numberWithTrendChart.fontSize} fontWeight={CUSTOM_CHART.numberWithTrendChart.fontWeight} icon={METRICS.rating.icon} suffix='tr VND' />
+                                        <NumberWithTrendChart nameChart={'Chi phí (Triệu VND)'} description={false} data={!dashboard.isLoading.spendVNDNumberData ? transformNumberWithTrendData(dashboard.spendVNDNumberData?.data, dashboard.spendVNDNumberData?.colnames) : 'isLoading'} fontFamily={CUSTOM_CHART.allChart.fontFamily} fontSize={CUSTOM_CHART.numberWithTrendChart.fontSize} fontWeight={CUSTOM_CHART.numberWithTrendChart.fontWeight} icon={METRICS.rating.icon} />
                                       </div>
                                       <div className='col-span-2'>
-                                        <NumberWithTrendChart nameChart={'Chi phí (USD)'} description={'Chi phí (USD)'} data={!dashboard.isLoading.spendUSDNumberData ? transformNumberWithTrendData(dashboard.spendUSDNumberData?.data, dashboard.spendUSDNumberData?.colnames) : 'isLoading'} fontFamily={CUSTOM_CHART.allChart.fontFamily} fontSize={CUSTOM_CHART.numberWithTrendChart.fontSize} fontWeight={CUSTOM_CHART.numberWithTrendChart.fontWeight} icon={METRICS.rating.icon} suffix='$' />
+                                        <NumberWithTrendChart nameChart={'Chi phí (USD)'} description={false} data={!dashboard.isLoading.spendUSDNumberData ? transformNumberWithTrendData(dashboard.spendUSDNumberData?.data, dashboard.spendUSDNumberData?.colnames) : 'isLoading'} fontFamily={CUSTOM_CHART.allChart.fontFamily} fontSize={CUSTOM_CHART.numberWithTrendChart.fontSize} fontWeight={CUSTOM_CHART.numberWithTrendChart.fontWeight} icon={METRICS.rating.icon} suffix='$' />
                                       </div>
                                         <div className='col-span-1 max-md:col-span-2 grid grid-cols-1 max-md:grid-cols-2 gap-6 max-md:gap-4'>
                                             <NumberCard
                                                 title={'Số lượng Spot'}
-                                                description={'Số lượng Spot'}
+                                                description={false}
                                                 value={!dashboard.isLoading.countNumberData ? dashboard.countNumberData?.data ? formatNumber(dashboard.countNumberData?.data[0].count, { isPercent: false }) : '-' : 'isLoading'}
                                                 icon={METRICS.ave_reach.icon}
                                                 background={METRICS.ave_reach.background}
@@ -96,7 +96,7 @@ const DashboardContent = () => {
                                             />
                                             <NumberCard
                                                 title={'Thời lượng Spot'}
-                                                description={'Thời lượng Spot'}
+                                                description={false}
                                                 value={!dashboard.isLoading.durationNumberData ? dashboard.durationNumberData?.data ? dashboard.durationNumberData?.data[0]?.total_duration?.toLocaleString(undefined, { maximumFractionDigits: 2 }) : '-' : 'isLoading'}
                                                 icon={METRICS.ave_reach.icon}
                                                 background={METRICS.ave_reach.background}
@@ -107,9 +107,9 @@ const DashboardContent = () => {
                                     </div>
                                     <div className='w-full pb-6 max-md:pb-4'>
                                       <div className={`p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
-                                          <NameChart nameChart={'Xu hướng quảng cáo THEO NGÀY'} description={'Xu hướng quảng cáo THEO NGÀY'} opacity={true} />
+                                          <NameChart nameChart={'Xu hướng quảng cáo THEO NGÀY'} description={false} opacity={true} />
                                           <ChildTabs tabs={[
-                                          {id: 'vnd', label: 'VND',
+                                          {id: 'vnd', label: 'Triệu VND',
                                           content: (
                                               <BarChart 
                                                   data={!dashboard.isLoading.spendVNDBarDateData ? transformBarChartData(dashboard.spendVNDBarDateData?.data, dashboard.spendVNDBarDateData?.colnames) : 'isLoading'}
@@ -119,10 +119,9 @@ const DashboardContent = () => {
                                                   colors={['rgba(255, 204, 0, 1)']}
                                                   fontWeight={CUSTOM_CHART.barChart.fontWeight}
                                                   nameChart={'Xu hướng quảng cáo THEO NGÀY'}
-                                                  description={'Xu hướng quảng cáo THEO NGÀY'}
+                                                  description={false}
                                                   orientation={''}
                                                   displayName={false}
-                                                  suffix='tr'
                                               />
                                           )},
                                           {id: 'usd', label: 'USD',
@@ -135,7 +134,7 @@ const DashboardContent = () => {
                                                   colors={['rgba(255, 204, 0, 1)']}
                                                   fontWeight={CUSTOM_CHART.barChart.fontWeight}
                                                   nameChart={'Xu hướng quảng cáo THEO NGÀY'}
-                                                  description={'Xu hướng quảng cáo THEO NGÀY'}
+                                                  description={false}
                                                   orientation={''}
                                                   displayName={false}
                                                   suffix={'$'}
@@ -155,11 +154,10 @@ const DashboardContent = () => {
                                                           fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                           fontWeight={CUSTOM_CHART.pieChart.fontWeight}
                                                           nameChart={'Phân bổ chi phí quảng cáo theo kênh'}
-                                                          description={'Phân bổ chi phí quảng cáo theo kênh'}
+                                                          description={false}
                                                           colors={CUSTOM_CHART.pieChart.colorChannel}
                                                           donut={CUSTOM_CHART.pieChart.donut}
                                                           innerRadius={CUSTOM_CHART.pieChart.innerRadius}
-                                                          suffix='tr'
                                                 />
                                                 <PieChart data={!dashboard.isLoading.spendVNDPieFirstLevelData ? transformPieChartData(dashboard.spendVNDPieFirstLevelData?.data, dashboard.spendVNDPieFirstLevelData?.colnames) : 'isLoading'}
                                                           height={CUSTOM_CHART.pieChart.height}
@@ -167,11 +165,10 @@ const DashboardContent = () => {
                                                           fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                           fontWeight={CUSTOM_CHART.pieChart.fontWeight}
                                                           nameChart={'Phân bổ chi phí quảng cáo theo thể loại nội dung'}
-                                                          description={'Phân bổ chi phí quảng cáo theo thể loại nội dung'}
+                                                          description={false}
                                                           colors={CUSTOM_CHART.pieChart.colorFirstLevel}
                                                           donut={CUSTOM_CHART.pieChart.donut}
                                                           innerRadius={CUSTOM_CHART.pieChart.innerRadius}
-                                                          suffix='tr'
                                                 />
                                             </div>
                                         )},
@@ -184,7 +181,7 @@ const DashboardContent = () => {
                                                           fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                           fontWeight={CUSTOM_CHART.pieChart.fontWeight}
                                                           nameChart={'Phân bổ số lượng quảng cáo theo kênh'}
-                                                          description={'Phân bổ số lượng quảng cáo theo kênh'}
+                                                          description={false}
                                                           colors={CUSTOM_CHART.pieChart.colorChannel}
                                                           donut={CUSTOM_CHART.pieChart.donut}
                                                           innerRadius={CUSTOM_CHART.pieChart.innerRadius}
@@ -195,7 +192,7 @@ const DashboardContent = () => {
                                                           fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                           fontWeight={CUSTOM_CHART.pieChart.fontWeight}
                                                           nameChart={'Phân bổ số lượng quảng cáo theo thể loại nội dung'}
-                                                          description={'Phân bổ số lượng quảng cáo theo thể loại nội dung'}
+                                                          description={false}
                                                           colors={CUSTOM_CHART.pieChart.colorFirstLevel}
                                                           donut={CUSTOM_CHART.pieChart.donut}
                                                           innerRadius={CUSTOM_CHART.pieChart.innerRadius}
@@ -211,7 +208,7 @@ const DashboardContent = () => {
                                                           fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                           fontWeight={CUSTOM_CHART.pieChart.fontWeight}
                                                           nameChart={'Phân bổ thời lượng quảng cáo theo kênh'}
-                                                          description={'Phân bổ thời lượng quảng cáo theo kênh'}
+                                                          description={false}
                                                           colors={CUSTOM_CHART.pieChart.colorChannel}
                                                           donut={CUSTOM_CHART.pieChart.donut}
                                                           innerRadius={CUSTOM_CHART.pieChart.innerRadius}
@@ -224,7 +221,7 @@ const DashboardContent = () => {
                                                           fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                           fontWeight={CUSTOM_CHART.pieChart.fontWeight}
                                                           nameChart={'Phân bổ thời lượng quảng cáo theo thể loại nội dung'}
-                                                          description={'Phân bổ thời lượng quảng cáo theo thể loại nội dung'}
+                                                          description={false}
                                                           colors={CUSTOM_CHART.pieChart.colorFirstLevel}
                                                           donut={CUSTOM_CHART.pieChart.donut}
                                                           innerRadius={CUSTOM_CHART.pieChart.innerRadius}
@@ -242,7 +239,7 @@ const DashboardContent = () => {
                                                           fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                           fontWeight={CUSTOM_CHART.pieChart.fontWeight}
                                                           nameChart={'Phân bổ độ dài của quảng cáo theo kênh'}
-                                                          description={'Phân bổ độ dài của quảng cáo theo kênh'}
+                                                          description={false}
                                                           colors={CUSTOM_CHART.pieChart.colorDuration}
                                                           donut={CUSTOM_CHART.pieChart.donut}
                                                           innerRadius={CUSTOM_CHART.pieChart.innerRadius}
@@ -253,7 +250,7 @@ const DashboardContent = () => {
                                                           fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                           fontWeight={CUSTOM_CHART.pieChart.fontWeight}
                                                           nameChart={'Phân bổ GRP quảng cáo theo kênh'}
-                                                          description={'Phân bổ GRP quảng cáo theo kênh'}
+                                                          description={false}
                                                           colors={CUSTOM_CHART.pieChart.colorChannel}
                                                           donut={CUSTOM_CHART.pieChart.donut}
                                                           innerRadius={CUSTOM_CHART.pieChart.innerRadius}
@@ -265,9 +262,9 @@ const DashboardContent = () => {
                                     </div>
                                     <div className='w-full pb-6 max-md:pb-4'>
                                       <div className={`p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
-                                          <NameChart nameChart={'Top 20 nhà quảng cáo'} description={'Top 20 nhà quảng cáo'} opacity={true} />
+                                          <NameChart nameChart={'Top 20 nhà quảng cáo'} description={false} opacity={true} />
                                           <ChildTabs tabs={[
-                                          {id: 'vnd', label: 'VND',
+                                          {id: 'vnd', label: 'Triệu VND',
                                           content: (
                                               <BarChart 
                                                   data={!dashboard.isLoading.spendVNDBarAdvertiserData ? transformBarChartData(dashboard.spendVNDBarAdvertiserData?.data, dashboard.spendVNDBarAdvertiserData?.colnames) : 'isLoading'}
@@ -277,10 +274,9 @@ const DashboardContent = () => {
                                                   colors={['rgba(255, 204, 0, 1)']}
                                                   fontWeight={CUSTOM_CHART.barChart.fontWeight}
                                                   nameChart={'Top 20 nhà quảng cáo'}
-                                                  description={'Top 20 nhà quảng cáo'}
+                                                  description={false}
                                                   orientation={'horizontal'}
                                                   displayName={false}
-                                                  suffix='tr'
                                                   overflow={true}
                                               />
                                           )},
@@ -294,7 +290,7 @@ const DashboardContent = () => {
                                                   colors={['rgba(255, 204, 0, 1)']}
                                                   fontWeight={CUSTOM_CHART.barChart.fontWeight}
                                                   nameChart={'Top 20 nhà quảng cáo'}
-                                                  description={'Top 20 nhà quảng cáo'}
+                                                  description={false}
                                                   orientation={'horizontal'}
                                                   displayName={false}
                                                   suffix={'$'}
@@ -311,7 +307,7 @@ const DashboardContent = () => {
                                                   colors={['rgba(255, 204, 0, 1)']}
                                                   fontWeight={CUSTOM_CHART.barChart.fontWeight}
                                                   nameChart={'Top 20 nhà quảng cáo'}
-                                                  description={'Top 20 nhà quảng cáo'}
+                                                  description={false}
                                                   orientation={'horizontal'}
                                                   displayName={false}
                                                   overflow={true}
@@ -322,9 +318,9 @@ const DashboardContent = () => {
                                     </div>
                                     <div className='w-full pb-6 max-md:pb-4'>
                                       <div className={`p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
-                                          <NameChart nameChart={'Top 20 nhà quảng cáo - phân bổ theo kênh'} description={'Top 20 nhà quảng cáo - phân bổ theo kênh'} opacity={true} />
+                                          <NameChart nameChart={'Top 20 nhà quảng cáo - phân bổ theo kênh'} description={false} opacity={true} />
                                           <ChildTabs tabs={[
-                                          {id: 'vnd', label: 'VND',
+                                          {id: 'vnd', label: 'Triệu VND',
                                           content: (
                                               <BarChart 
                                                   data={!dashboard.isLoading.spendVNDBarAdvertiserChannelData ? transformBarChartData(dashboard.spendVNDBarAdvertiserChannelData?.data, dashboard.spendVNDBarAdvertiserChannelData?.colnames) : 'isLoading'}
@@ -334,10 +330,9 @@ const DashboardContent = () => {
                                                   colors={CUSTOM_CHART.barChart.colorChannel}
                                                   fontWeight={CUSTOM_CHART.barChart.fontWeight}
                                                   nameChart={'Top 20 nhà quảng cáo - phân bổ theo kênh'}
-                                                  description={'Top 20 nhà quảng cáo - phân bổ theo kênh'}
+                                                  description={false}
                                                   orientation={'horizontal'}
                                                   displayName={false}
-                                                  suffix='tr'
                                                   overflow={true}
                                               />
                                           )},
@@ -351,7 +346,7 @@ const DashboardContent = () => {
                                                   colors={CUSTOM_CHART.barChart.colorChannel}
                                                   fontWeight={CUSTOM_CHART.barChart.fontWeight}
                                                   nameChart={'Top 20 nhà quảng cáo - phân bổ theo kênh'}
-                                                  description={'Top 20 nhà quảng cáo - phân bổ theo kênh'}
+                                                  description={false}
                                                   orientation={'horizontal'}
                                                   displayName={false}
                                                   suffix={'$'}
@@ -368,7 +363,7 @@ const DashboardContent = () => {
                                                   colors={CUSTOM_CHART.barChart.colorChannel}
                                                   fontWeight={CUSTOM_CHART.barChart.fontWeight}
                                                   nameChart={'Top 20 nhà quảng cáo - phân bổ theo kênh'}
-                                                  description={'Top 20 nhà quảng cáo - phân bổ theo kênh'}
+                                                  description={false}
                                                   orientation={'horizontal'}
                                                   displayName={false}
                                                   overflow={true}
@@ -387,10 +382,10 @@ const DashboardContent = () => {
                                                 fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                 fontWeight={CUSTOM_CHART.tableChart.fontWeight}
                                                 nameChart={'Top 10 nhãn'}
-                                                description={'Top 10 nhãn'}
+                                                description={false}
                                                 showSTT={false}
                                                 showPagination={false}
-                                                customCol={{'Nhãn': {minSize: 100, maxSize: 170, weight: 600, sticky: true}, 'Chi phí (VND)': {suffix: 'tr'}, 'Chi phí (USD)': {suffix: '$'}}} />
+                                                customCol={{'Nhãn': {minSize: 100, maxSize: 170, weight: 600, sticky: true}, 'Chi phí (USD)': {suffix: '$'}}} />
                                         )},
                                         {id: 'product', label: 'Top 10 dòng sản phẩm',
                                         content: (
@@ -400,10 +395,10 @@ const DashboardContent = () => {
                                                 fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                 fontWeight={CUSTOM_CHART.tableChart.fontWeight}
                                                 nameChart={'Top 10 dòng sản phẩm'}
-                                                description={'Top 10 dòng sản phẩm'}
+                                                description={false}
                                                 showSTT={false}
                                                 showPagination={false}
-                                                customCol={{'Sản phẩm': {minSize: 100, maxSize: 170, weight: 600, sticky: true}, 'Chi phí (VND)': {suffix: 'tr'}, 'Chi phí (USD)': {suffix: '$'}}} />
+                                                customCol={{'Sản phẩm': {minSize: 100, maxSize: 170, weight: 600, sticky: true}, 'Chi phí (USD)': {suffix: '$'}}} />
                                         )},
                                         {id: 'campaign', label: 'Top 10 Chiến dịch',
                                         content: (
@@ -413,10 +408,10 @@ const DashboardContent = () => {
                                             fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                             fontWeight={CUSTOM_CHART.tableChart.fontWeight}
                                             nameChart={'Top 10 chiến dịch'}
-                                            description={'Top 10 chiến dịch'}
+                                            description={false}
                                             showSTT={false}
                                             showPagination={false}
-                                            customCol={{'Chiến dịch': {minSize: 100, maxSize: 170, weight: 600, sticky: true}, 'Chi phí (VND)': {suffix: 'tr'}, 'Chi phí (USD)': {suffix: '$'}}} />
+                                            customCol={{'Chiến dịch': {minSize: 100, maxSize: 170, weight: 600, sticky: true}, 'Chi phí (USD)': {suffix: '$'}}} />
                                         )}
                                         ]} />
                                     </div>
@@ -442,9 +437,8 @@ const DashboardContent = () => {
                                         colors={['rgba(255, 204, 0, 1)']}
                                         fontWeight={CUSTOM_CHART.barChart.fontWeight}
                                         nameChart={'Xu hướng quảng cáo theo khung giờ'}
-                                        description={'Xu hướng quảng cáo theo khung giờ'}
+                                        description={false}
                                         orientation={''}
-                                        suffix='tr'
                                         maxVisibleItems={true}
                                     />
                                   </div>
@@ -456,11 +450,10 @@ const DashboardContent = () => {
                                                   fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                   fontWeight={CUSTOM_CHART.tableChart.fontWeight}
                                                   nameChart={'Chi phí quảng cáo theo Adcode'}
-                                                  description={'Chi phí quảng cáo theo Adcode'}
+                                                  description={false}
                                                   showSTT={false}
                                                   showPagination={false}
-                                                  customCol={{'Adcode': {weight: 600}, 'CHƯƠNG TRÌNH': {minSize: 100, maxSize: 170}, 'KÊNH': {minSize: 0, maxSize: 10},
-                                                              'Chi phí (VND)': {suffix: 'tr'}}} />
+                                                  customCol={{'Adcode': {weight: 600}, 'CHƯƠNG TRÌNH': {minSize: 100, maxSize: 170}, 'KÊNH': {minSize: 0, maxSize: 10}}} />
                                     </div>
                                     <div className='col-span-4 max-md:col-span-10'>
                                       <TableChart data={!dashboard.isLoading.adcodeProductData ? transformTableChartData(dashboard.adcodeProductData?.data, dashboard.adcodeProductData?.colnames) : 'isLoading'}
@@ -469,10 +462,10 @@ const DashboardContent = () => {
                                                   fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                   fontWeight={CUSTOM_CHART.tableChart.fontWeight}
                                                   nameChart={'Chi phí quảng cáo theo dòng sản phẩm'}
-                                                  description={'Chi phí quảng cáo theo dòng sản phẩm'}
+                                                  description={false}
                                                   showSTT={false}
                                                   showPagination={false}
-                                                  customCol={{'Sản phẩm': {weight: 600}, 'Chi phí (VND)': {suffix: 'tr'}}} />
+                                                  customCol={{'Sản phẩm': {weight: 600}}} />
                                     </div>
                                   </div>
                                   <div className='w-full grid grid-cols-10 gap-6 max-md:gap-4 pb-6 max-md:pb-4'>
@@ -480,7 +473,7 @@ const DashboardContent = () => {
                                       <PivotTableChart
                                         data={!dashboard.isLoading.spendVNDPivotChannelFirstLevelData ? dashboard.spendVNDPivotChannelFirstLevelData?.data : 'isLoading'}
                                         nameChart="Doanh thu quảng cáo theo kênh"
-                                        description="Doanh thu quảng cáo theo kênh"
+                                        description={false}
                                         rowField="channel_name_tvd"
                                         columnField="firstlevel_vn"
                                         valueField="price"
@@ -489,7 +482,6 @@ const DashboardContent = () => {
                                         fontSize={CUSTOM_CHART.tableChart.fontSize}
                                         fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                         fontWeight={CUSTOM_CHART.tableChart.fontWeight}
-                                        suffix='tr'
                                       />
                                     </div>
                                     <div className='col-span-4 max-md:col-span-10 grid'>
@@ -499,7 +491,7 @@ const DashboardContent = () => {
                                                 fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                 fontWeight={CUSTOM_CHART.pieChart.fontWeight}
                                                 nameChart={'Xu hướng quảng cáo theo khung giờ'}
-                                                description={'Xu hướng quảng cáo theo khung giờ'}
+                                                description={false}
                                                 colors={{
                                                 "1.Sáng (00h - 11h)": "rgba(217, 31, 38, 1)",
                                                 "2.Trưa (11h - 14h)": "rgba(86, 154, 255, 1)",
@@ -521,9 +513,8 @@ const DashboardContent = () => {
                                         colors={['rgba(255, 204, 0, 1)']}
                                         fontWeight={CUSTOM_CHART.barChart.fontWeight}
                                         nameChart={'Top 20 chương trình có doanh thu cao nhất'}
-                                        description={'Top 20 chương trình có doanh thu cao nhất'}
+                                        description={false}
                                         orientation={'horizontal'}
-                                        suffix='tr'
                                         overflow={true}
                                     />
                                   </div>
@@ -536,16 +527,15 @@ const DashboardContent = () => {
                                       colors={['rgba(255, 204, 0, 1)']}
                                       fontWeight={CUSTOM_CHART.barChart.fontWeight}
                                       nameChart={'Chi phí quảng cáo theo kênh'}
-                                      description={'Chi phí quảng cáo theo kênh'}
+                                      description={false}
                                       orientation={''}
-                                      suffix='tr'
                                   />
                                   </div>
                                   <div className='w-full pb-6 max-md:pb-4'>
                                     <PivotTableChart
                                         data={!dashboard.isLoading.spendVNDPivotChannelTimebandData ? dashboard.spendVNDPivotChannelTimebandData?.data : 'isLoading'}
                                         nameChart="Xu hướng quảng cáo theo khung giờ"
-                                        description="Xu hướng quảng cáo theo khung giờ"
+                                        description={false}
                                         rowField="channel_name_tvd"
                                         columnField="time_band"
                                         valueField="price"
@@ -554,7 +544,7 @@ const DashboardContent = () => {
                                         fontSize={CUSTOM_CHART.tableChart.fontSize}
                                         fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                         fontWeight={CUSTOM_CHART.tableChart.fontWeight}
-                                        suffix='tr'
+                                        sortColTimeband={true}
                                       />
                                   </div>
                                   <div className='w-full'>
@@ -564,10 +554,10 @@ const DashboardContent = () => {
                                                   fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                   fontWeight={CUSTOM_CHART.tableChart.fontWeight}
                                                   nameChart={'Chi phí quảng cáo theo nhà quảng cáo'}
-                                                  description={'Chi phí quảng cáo theo nhà quảng cáo'}
+                                                  description={false}
                                                   showSTT={false}
                                                   showPagination={false}
-                                                  customCol={{'Nhà quảng cáo': {weight: 600}, 'Chi phí (VND)': {suffix: 'tr'}}} />
+                                                  customCol={{'Nhà quảng cáo': {weight: 600}}} />
                                   </div>
                                 </div>
                                 <div className='px-6 max-lg:px-5 max-md:px-4 pb-6 max-lg:pb-5 max-md:pb-19 bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300'>
@@ -589,7 +579,7 @@ const DashboardContent = () => {
                                         <PivotTableChart
                                           data={!dashboard.isLoading.grpPivotCampaignWeekData ? dashboard.grpPivotCampaignWeekData?.data : 'isLoading'}
                                           nameChart={'Campaign Detail GRP (%) by Week'}
-                                          description={'Campaign Detail GRP (%) by Week'}
+                                          description={false}
                                           rowField="campaign_name"
                                           columnField="week"
                                           valueField="grp"
@@ -606,7 +596,7 @@ const DashboardContent = () => {
                                         <PivotTableChart
                                           data={!dashboard.isLoading.countPivotCampaignWeekData ? dashboard.countPivotCampaignWeekData?.data : 'isLoading'}
                                           nameChart={'Campaign Detail number of Spot by Week'}
-                                          description={'Campaign Detail number of Spot by Week'}
+                                          description={false}
                                           rowField="campaign_name"
                                           columnField="week"
                                           valueField="count"
@@ -622,7 +612,7 @@ const DashboardContent = () => {
                                         <PivotTableChart
                                           data={!dashboard.isLoading.reachPivotCampaignWeekData ? dashboard.reachPivotCampaignWeekData?.data : 'isLoading'}
                                           nameChart={'Campaign Detail Reach by Week'}
-                                          description={'Campaign Detail Reach by Week'}
+                                          description={false}
                                           rowField="campaign_name"
                                           columnField="week"
                                           valueField="reach"
@@ -644,8 +634,9 @@ const DashboardContent = () => {
                                         fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                         fontWeight={CUSTOM_CHART.barChart.fontWeight}
                                         nameChart={'Competitor Review by Market (GRP)'}
-                                        description={'Competitor Review by Market (GRP)'}
+                                        description={false}
                                         orientation={''}
+                                        formatterValue={2}
                                     />
                                     </div>
                                     <div className='w-[40%] max-md:w-full'>
@@ -656,8 +647,9 @@ const DashboardContent = () => {
                                           fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                           fontWeight={CUSTOM_CHART.barChart.fontWeight}
                                           nameChart={'Competitor Review by Week (GRP)'}
-                                          description={'Competitor Review by Week (GRP)'}
+                                          description={false}
                                           orientation={''}
+                                          formatterValue={2}
                                       />
                                     </div>
                                   </div>
@@ -674,10 +666,9 @@ const DashboardContent = () => {
                                                   colors={CUSTOM_CHART.barChart.colorChannel}
                                                   fontWeight={CUSTOM_CHART.barChart.fontWeight}
                                                   nameChart={'Competitor Review by Channel'}
-                                                  description={'Competitor Review by Channel'}
+                                                  description={false}
                                                   orientation={'horizontal'}
                                                   colorZoom='red'
-                                                  suffix='tr'
                                               />
                                               <BarChart 
                                                   data={!dashboard.isLoading.spendVNDBarBrandTimebandData ? transformBarChartData(dashboard.spendVNDBarBrandTimebandData?.data, dashboard.spendVNDBarBrandTimebandData?.colnames) : 'isLoading'}
@@ -687,10 +678,9 @@ const DashboardContent = () => {
                                                   colors={CUSTOM_CHART.barChart.colorDuration}
                                                   fontWeight={CUSTOM_CHART.barChart.fontWeight}
                                                   nameChart={'Competitor Review by Timeband'}
-                                                  description={'Competitor Review by Timeband'}
+                                                  description={false}
                                                   orientation={'horizontal'}
                                                   colorZoom='red'
-                                                  suffix='tr'
                                               />
                                               <BarChart 
                                                   data={!dashboard.isLoading.spendVNDBarBrandFirstLevelData ? transformBarChartData(dashboard.spendVNDBarBrandFirstLevelData?.data, dashboard.spendVNDBarBrandFirstLevelData?.colnames) : 'isLoading'}
@@ -700,10 +690,9 @@ const DashboardContent = () => {
                                                   colors={CUSTOM_CHART.barChart.colorFirstLevel}
                                                   fontWeight={CUSTOM_CHART.barChart.fontWeight}
                                                   nameChart={'Competitor Review by Genre'}
-                                                  description={'Competitor Review by Genre'}
+                                                  description={false}
                                                   orientation={'horizontal'}
                                                   colorZoom='red'
-                                                  suffix='tr'
                                               />
                                               <PieChart data={!dashboard.isLoading.spendVNDPieAdvertiserData ? transformPieChartData(dashboard.spendVNDPieAdvertiserData?.data, dashboard.spendVNDPieAdvertiserData?.colnames) : 'isLoading'}
                                                         height={CUSTOM_CHART.pieChart.height}
@@ -711,11 +700,10 @@ const DashboardContent = () => {
                                                         fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                         fontWeight={CUSTOM_CHART.pieChart.fontWeight}
                                                         nameChart={"Advertisers' Share"}
-                                                        description={"Advertisers' Share"}
+                                                        description={false}
                                                         donut={CUSTOM_CHART.pieChart.donut}
                                                         innerRadius={CUSTOM_CHART.pieChart.innerRadius}
                                                         border={false}
-                                                        suffix='tr'
                                               />
                                           </div>
                                       )},
@@ -730,7 +718,7 @@ const DashboardContent = () => {
                                                   colors={CUSTOM_CHART.barChart.colorChannel}
                                                   fontWeight={CUSTOM_CHART.barChart.fontWeight}
                                                   nameChart={'Competitor Review by Channel'}
-                                                  description={'Competitor Review by Channel'}
+                                                  description={false}
                                                   orientation={'horizontal'}
                                                   colorZoom='red'
                                               />
@@ -742,7 +730,7 @@ const DashboardContent = () => {
                                                   colors={CUSTOM_CHART.barChart.colorDuration}
                                                   fontWeight={CUSTOM_CHART.barChart.fontWeight}
                                                   nameChart={'Competitor Review by Timeband'}
-                                                  description={'Competitor Review by Timeband'}
+                                                  description={false}
                                                   orientation={'horizontal'}
                                                   colorZoom='red'
                                               />
@@ -754,7 +742,7 @@ const DashboardContent = () => {
                                                   colors={CUSTOM_CHART.barChart.colorFirstLevel}
                                                   fontWeight={CUSTOM_CHART.barChart.fontWeight}
                                                   nameChart={'Competitor Review by Genre'}
-                                                  description={'Competitor Review by Genre'}
+                                                  description={false}
                                                   orientation={'horizontal'}
                                                   colorZoom='red'
                                               />
@@ -764,7 +752,7 @@ const DashboardContent = () => {
                                                         fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                         fontWeight={CUSTOM_CHART.pieChart.fontWeight}
                                                         nameChart={"Advertisers' Share"}
-                                                        description={"Advertisers' Share"}
+                                                        description={false}
                                                         donut={CUSTOM_CHART.pieChart.donut}
                                                         innerRadius={CUSTOM_CHART.pieChart.innerRadius}
                                                         border={false}
@@ -782,7 +770,7 @@ const DashboardContent = () => {
                                                   colors={CUSTOM_CHART.barChart.colorChannel}
                                                   fontWeight={CUSTOM_CHART.barChart.fontWeight}
                                                   nameChart={'Competitor Review by Channel'}
-                                                  description={'Competitor Review by Channel'}
+                                                  description={false}
                                                   orientation={'horizontal'}
                                                   colorZoom='red'
                                               />
@@ -794,7 +782,7 @@ const DashboardContent = () => {
                                                   colors={CUSTOM_CHART.barChart.colorDuration}
                                                   fontWeight={CUSTOM_CHART.barChart.fontWeight}
                                                   nameChart={'Competitor Review by Timeband'}
-                                                  description={'Competitor Review by Timeband'}
+                                                  description={false}
                                                   orientation={'horizontal'}
                                                   colorZoom='red'
                                               />
@@ -806,7 +794,7 @@ const DashboardContent = () => {
                                                   colors={CUSTOM_CHART.barChart.colorFirstLevel}
                                                   fontWeight={CUSTOM_CHART.barChart.fontWeight}
                                                   nameChart={'Competitor Review by Genre'}
-                                                  description={'Competitor Review by Genre'}
+                                                  description={false}
                                                   orientation={'horizontal'}
                                                   colorZoom='red'
                                               />
@@ -816,7 +804,7 @@ const DashboardContent = () => {
                                                         fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                         fontWeight={CUSTOM_CHART.pieChart.fontWeight}
                                                         nameChart={"Advertisers' Share"}
-                                                        description={"Advertisers' Share"}
+                                                        description={false}
                                                         donut={CUSTOM_CHART.pieChart.donut}
                                                         innerRadius={CUSTOM_CHART.pieChart.innerRadius}
                                                         border={false}
@@ -832,7 +820,7 @@ const DashboardContent = () => {
                                                 fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                 fontWeight={CUSTOM_CHART.tableChart.fontWeight}
                                                 nameChart={'Hiệu quả quảng cáo theo nhãn'}
-                                                description={'Hiệu quả quảng cáo theo nhãn'}
+                                                description={false}
                                                 showSTT={false}
                                                 showPagination={false}
                                                 customCol={{'Nhãn': {weight: 600, minSize: 100, maxSize: 170, sticky: true}}} />
@@ -844,10 +832,10 @@ const DashboardContent = () => {
                                                 fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                 fontWeight={CUSTOM_CHART.tableChart.fontWeight}
                                                 nameChart={'Hiệu quả quảng cáo của nhãn theo chương trình'}
-                                                description={'Hiệu quả quảng cáo của nhãn theo chương trình'}
+                                                description={false}
                                                 showSTT={false}
                                                 showPagination={false}
-                                                customCol={{'Nhãn': {weight: 600, minSize: 100, maxSize: 170, sticky: true}, 'CHƯƠNG TRÌNH': {minSize: 100, maxSize: 170}, 'Chi phí (VND)': {suffix: 'tr'}}} />
+                                                customCol={{'Nhãn': {weight: 600, minSize: 100, maxSize: 170, sticky: true}, 'CHƯƠNG TRÌNH': {minSize: 100, maxSize: 170}}} />
                                   </div>
                                   <div className='w-full pb-6 max-md:pb-4'>
                                       <TableChart data={!dashboard.isLoading.allTableDeviceData ? transformTableChartData(dashboard.allTableDeviceData?.data, dashboard.allTableDeviceData?.colnames) : 'isLoading'}
@@ -856,7 +844,7 @@ const DashboardContent = () => {
                                                 fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                 fontWeight={CUSTOM_CHART.tableChart.fontWeight}
                                                 nameChart={'Active Device Summary'}
-                                                description={'Active Device Summary'}
+                                                description={false}
                                                 showSTT={false}
                                                 customCol={{'Ngày': {sticky: true}}} />
                                   </div>
@@ -880,7 +868,7 @@ const DashboardContent = () => {
                                                 fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                 fontWeight={CUSTOM_CHART.tableChart.fontWeight}
                                                 nameChart={'MONITORING REPORT'}
-                                                description={'MONITORING REPORT'}
+                                                description={false}
                                                 showPagination={true}
                                                 fullScreen={true}
                                                 customCol={{
@@ -889,7 +877,7 @@ const DashboardContent = () => {
                                                   'Thời lượng Spot': {align: 'text-center', justify: 'justify-center'},
                                                   'Break': {align: 'text-center', justify: 'justify-center'},
                                                   'Position': {align: 'text-center', justify: 'justify-center'},
-                                                  'Chi phí (VND)': {align: 'text-center', justify: 'justify-center', suffix: 'tr'},
+                                                  'Chi phí (Triệu VND)': {align: 'text-center', justify: 'justify-center'},
                                                   'Reach': {align: 'text-center', justify: 'justify-center'},
                                                   'Chiến dịch': {minSize: 220, maxSize: 320, overflow: true},
                                                   'Loại Spot': {minSize: 120, maxSize: 150, overflow: true},

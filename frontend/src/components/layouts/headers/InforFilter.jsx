@@ -12,7 +12,7 @@ import iconArrowDown from '../../../assets/icon_arrow_down.png';
 import iconArrowDownDark from '../../../assets/icon_arrow_down_dark.png';
 import Button from './Button';
 import InforFilterItem from './InforFilterItem';
-import { getYesterday } from '../../../helpers/helper';
+import { getYesterday, getDayBeforeYesterday } from '../../../helpers/helper';
 import { FILTER_LABEL } from '../../../utils/label';
 import Filter from '../filters/Filter';
 import { formatDate } from '../../../helpers/helper';
@@ -30,6 +30,7 @@ const InforFilter = ({ filters, FilterComponent = Filter }) => {
   const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
   
   const yesterday = getYesterday();
+  const beforeYesterday = getDayBeforeYesterday();
 
   useEffect(() => {
     const pairs = [
@@ -97,7 +98,7 @@ const InforFilter = ({ filters, FilterComponent = Filter }) => {
           </div>
           <div className='flex gap-4 max-lg:gap-3 max-md:gap-2 items-center flex-wrap'>
             <ul className='flex gap-2 items-center flex-wrap'>
-              <InforFilterItem keyFilter={'Ngày'} nameFilter={'Ngày'} valueFilters={[formatDate(appliedFilters?.startDate || yesterday), formatDate(appliedFilters?.endDate || yesterday)]} space={' - '} />
+              <InforFilterItem keyFilter={'Ngày'} nameFilter={'Ngày'} valueFilters={[formatDate(appliedFilters?.startDate || (FilterComponent.name == 'Filter' ? yesterday : beforeYesterday)), formatDate(appliedFilters?.endDate || yesterday)]} space={' - '} />
               {appliedFilters && (
                 Object.entries(appliedFilters).filter(([, values]) => Array.isArray(values) && values.length > 0)
                   .map(([key, values]) => (

@@ -149,7 +149,7 @@ const appendAllFilters = (queries, filterState, disabledFilters) => {
     },
     {
       key: 'advertisers',
-      disabledKey: 'adCodeFilters',
+      disabledKey: 'advertiserFilters',
       build: () => buildQueriesFilters({
         column: 'advertiser',
         values: filterState.advertisers
@@ -159,7 +159,7 @@ const appendAllFilters = (queries, filterState, disabledFilters) => {
       key: 'campaigns',
       disabledKey: 'campaignFilters',
       build: () => buildQueriesFilters({
-        column: 'campaign',
+        column: 'campaign_name',
         values: filterState.campaigns
       }),
     },

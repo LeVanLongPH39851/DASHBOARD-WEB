@@ -12,3 +12,10 @@ export const formatDate = (dateStr) => {
   const year = String(date.getFullYear()); // 2 chữ số cuối
   return `${day}/${month}/${year}`;
 };
+
+export const getDayBeforeYesterday = () => {
+  const today = new Date();
+  const yesterday = new Date(today);
+  yesterday.setDate(today.getDate() - 2);
+  return yesterday.toISOString().split('T')[0];
+};

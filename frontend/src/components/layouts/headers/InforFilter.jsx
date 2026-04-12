@@ -23,7 +23,7 @@ const clearSetAll = (setFilterValues, setAppliedFilters) => {
   setAppliedFilters(null);
 }
 
-const InforFilter = ({ filters }) => {
+const InforFilter = ({ filters, FilterComponent = Filter }) => {
 
   const { appliedFilters, setAppliedFilters } = useDashboardFilters();
   const { filterValues, setFilterValues } = useDashboardFilterValues();
@@ -91,7 +91,7 @@ const InforFilter = ({ filters }) => {
           </div>
           <div id='filterHorizontalRelative' className={`w-full overflow-hidden transition-all duration-300 relative ${stateGlobals.horizontal && stateGlobals.isOpen ? 'mb-2.5 max-lg:mb-2 max-md:mb-1.5' : ''}`}>
               <div id='filterHorizontal' className={`w-full absolute left-0 transition-all duration-300 ${stateGlobals.horizontal && stateGlobals.isOpen ? 'visible opacity-100 top-0' : 'invisible opacity-0 -top-1/2'}`}>
-                {stateGlobals.horizontal && <Filter
+                {stateGlobals.horizontal && <FilterComponent
                   filters={filters} horizontalFixed={true} />}
               </div>
           </div>

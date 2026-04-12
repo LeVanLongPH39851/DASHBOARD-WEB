@@ -24,7 +24,8 @@ const BarChart = ({
   enableZoom = true, // Option bật/tắt zoom
   maxVisibleItems = 12,
   colorZoom = 'yellow',
-  suffix = ''
+  suffix = '',
+  overflow=false
 }) => {
   
   const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
@@ -374,6 +375,10 @@ const BarChart = ({
       axisLine: { show: false },
       axisTick: { show: false },
       axisLabel: {
+        formatter: (value) => {
+          if (typeof value !== 'string' || !overflow || !stateGlobals.screen_md) return value;
+          return value.length > 15 ? value.slice(0, 15) + '...' : value;
+        },
         // show:  !stateGlobals.screen_md ? true : false,
         fontSize: !stateGlobals.screen_md ? fontSize.axisLabel : '10.5px',
         color: !stateGlobals.darkMode ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.8)',

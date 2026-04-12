@@ -71,7 +71,15 @@ export const FILTER_LABEL = {
   'keyCities': 'Thành phố lớn',
   'timebands': 'Khung giờ',
   'days': 'Nhóm ngày',
-  'programs': 'Chương trình'
+  'programs': 'Chương trình',
+  'adCodes': 'Adscode',
+  'spotTypes': 'Loại spot',
+  'groups': 'Ngành hàng',
+  'advertisers': 'Nhà quảng cáo',
+  'products': 'Sản phẩm',
+  'brands': 'Nhãn hàng',
+  'campaigns': 'Chiến dịch',
+  'platforms': 'Thiết bị'
 }
 
 export const VALUE_LABEL = {

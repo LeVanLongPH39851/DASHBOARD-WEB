@@ -1,19 +1,19 @@
-export const filterProvincePayload = {
+export const filterProgramPayload = {
   url: `${import.meta.env.VITE_API_DOMAIN}/api/v1/chart/data`,
   payload: {
     "datasource": {
-      "id": 158,
+      "id": 195,
       "type": "table"
     },
     "force": false,
     "queries": [
       {
-        "time_range": "No filter",
+        "time_range": "DATEADD(DATETIME(\"today\"),-2, DAY) : DATEADD(DATETIME(\"today\"),-1, SECOND)",
+        "granularity": null,
         "filters": [
           {
-            "col": "others",
-            "op": "==",
-            "val": "Toàn quốc"
+            "col": "program_name",
+            "op": "IS NOT NULL"
           }
         ],
         "extras": {
@@ -22,14 +22,12 @@ export const filterProvincePayload = {
         },
         "applied_time_extras": {},
         "columns": [
-          "province"
+          "program_name"
         ],
-        "metrics": [
-          "sort_province"
-        ],
+        "metrics": [],
         "orderby": [
           [
-            "sort_province",
+            "program_name",
             true
           ]
         ],
@@ -38,41 +36,42 @@ export const filterProvincePayload = {
         "series_limit": 0,
         "order_desc": true,
         "url_params": {
-          "native_filters_key": "Nbns9NZoEsWSQA8OYmECuS__bJl7FRxp289AAglj_u6P2L0GcuwD7T_jjcmDsWl5"
+          "native_filters_key": "lItp2UHHv9WwzsHwV2xHwArdIlQehCU5yY2wbhqSKZlcG87G5ygnMiCYfQR1Dqyw"
         },
         "custom_params": {},
         "custom_form_data": {}
       }
     ],
     "form_data": {
-      "defaultToFirstItem": false,
       "enableEmptyFilter": false,
-      "inverseSelection": false,
+      "defaultToFirstItem": false,
       "multiSelect": true,
       "searchAllOptions": false,
-      "sortAscending": true,
-      "datasource": "158__table",
+      "inverseSelection": false,
+      "datasource": "195__table",
       "groupby": [
-        "province"
+        "program_name"
       ],
-      "sortMetric": "sort_province",
       "adhoc_filters": [
         {
-          "clause": "WHERE",
-          "comparator": "Toàn quốc",
-          "datasourceWarning": false,
           "expressionType": "SIMPLE",
-          "filterOptionName": "filter_d89obh3benv_mi55s1vn9ug",
+          "subject": "program_name",
+          "operator": "IS NOT NULL",
+          "operatorId": "IS_NOT_NULL",
+          "comparator": null,
+          "clause": "WHERE",
+          "sqlExpression": null,
           "isExtra": false,
           "isNew": false,
-          "operator": "==",
-          "operatorId": "EQUALS",
-          "sqlExpression": null,
-          "subject": "others"
+          "datasourceWarning": false,
+          "filterOptionName": "filter_xl9ovxffmo_k240zy040uj"
         }
       ],
       "extra_filters": [],
-      "extra_form_data": {},
+      "extra_form_data": {
+        "time_range": "DATEADD(DATETIME(\"today\"),-2, DAY) : DATEADD(DATETIME(\"today\"),-1, SECOND)"
+      },
+      "granularity_sqla": null,
       "metrics": [
         "count"
       ],
@@ -80,13 +79,13 @@ export const filterProvincePayload = {
       "showSearch": true,
       "time_range": "No filter",
       "url_params": {
-        "native_filters_key": "Nbns9NZoEsWSQA8OYmECuS__bJl7FRxp289AAglj_u6P2L0GcuwD7T_jjcmDsWl5"
+        "native_filters_key": "lItp2UHHv9WwzsHwV2xHwArdIlQehCU5yY2wbhqSKZlcG87G5ygnMiCYfQR1Dqyw"
       },
       "inView": true,
       "viz_type": "filter_select",
       "type": "NATIVE_FILTER",
-      "dashboardId": 45,
-      "native_filter_id": "NATIVE_FILTER-W9AKmuRoShOCcAOYg57A4",
+      "dashboardId": 49,
+      "native_filter_id": "NATIVE_FILTER-_ynpR2LbP8yFDoVbzt4yI",
       "force": false,
       "result_format": "json",
       "result_type": "full"

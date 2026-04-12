@@ -51,8 +51,8 @@ const SelectMultiFilter = ({
       }),
       multiValue: (provided) => ({
         ...provided,
-        backgroundColor: '#20A7C9',
-        border: `1px solid #20A7C9`,
+        backgroundColor: !darkMode ? '#20A7C9' : 'rgb(40 153 156 / 50%)',
+        border: `1px solid ${!darkMode ? '#20A7C9' : 'rgb(40 153 156 / 50%)'}`,
         borderRadius: '6px',
         cursor: 'pointer'
       }),
@@ -65,7 +65,7 @@ const SelectMultiFilter = ({
         color: 'rgba(255, 255, 255, 1)',
         borderRadius: '6px',
         ':hover': {
-          backgroundColor: '#1a8fb3',
+          backgroundColor: !darkMode ? '#1a8fb3' : 'rgb(35 135 145 / 50%)',
           color: 'rgba(255, 255, 255, 1)',
         }
       }),
@@ -87,7 +87,7 @@ const SelectMultiFilter = ({
           fontSize: !isMobile ? '14px' : '12px',
           fontWeight: 400,
           backgroundColor: state.isSelected
-            ? '#20A7C9'
+            ? !darkMode ? '#20A7C9' : 'rgb(40 153 156 / 50%)'
             : state.isFocused
             ? hoverBg
             : baseBg,

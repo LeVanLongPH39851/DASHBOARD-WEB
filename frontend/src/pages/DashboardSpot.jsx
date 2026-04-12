@@ -436,7 +436,7 @@ const DashboardContent = () => {
                                         fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                         colors={['rgba(255, 204, 0, 1)']}
                                         fontWeight={CUSTOM_CHART.barChart.fontWeight}
-                                        nameChart={'Xu hướng quảng cáo theo khung giờ'}
+                                        nameChart={'Xu hướng quảng cáo theo khung giờ (Triệu VND)'}
                                         description={false}
                                         orientation={''}
                                         maxVisibleItems={true}
@@ -472,7 +472,7 @@ const DashboardContent = () => {
                                     <div className='col-span-6 max-md:col-span-10'>
                                       <PivotTableChart
                                         data={!dashboard.isLoading.spendVNDPivotChannelFirstLevelData ? dashboard.spendVNDPivotChannelFirstLevelData?.data : 'isLoading'}
-                                        nameChart="Doanh thu quảng cáo theo kênh"
+                                        nameChart="Doanh thu quảng cáo theo kênh (Triệu VND)"
                                         description={false}
                                         rowField="channel_name_tvd"
                                         columnField="firstlevel_vn"
@@ -512,7 +512,7 @@ const DashboardContent = () => {
                                         fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                         colors={['rgba(255, 204, 0, 1)']}
                                         fontWeight={CUSTOM_CHART.barChart.fontWeight}
-                                        nameChart={'Top 20 chương trình có doanh thu cao nhất'}
+                                        nameChart={'Top 20 chương trình có doanh thu cao nhất (Triệu VND)'}
                                         description={false}
                                         orientation={'horizontal'}
                                         overflow={true}
@@ -526,7 +526,7 @@ const DashboardContent = () => {
                                       fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                       colors={['rgba(255, 204, 0, 1)']}
                                       fontWeight={CUSTOM_CHART.barChart.fontWeight}
-                                      nameChart={'Chi phí quảng cáo theo kênh'}
+                                      nameChart={'Chi phí quảng cáo theo kênh (Triệu VND)'}
                                       description={false}
                                       orientation={''}
                                   />
@@ -534,7 +534,7 @@ const DashboardContent = () => {
                                   <div className='w-full pb-6 max-md:pb-4'>
                                     <PivotTableChart
                                         data={!dashboard.isLoading.spendVNDPivotChannelTimebandData ? dashboard.spendVNDPivotChannelTimebandData?.data : 'isLoading'}
-                                        nameChart="Xu hướng quảng cáo theo khung giờ"
+                                        nameChart="Xu hướng quảng cáo theo khung giờ (Triệu VND)"
                                         description={false}
                                         rowField="channel_name_tvd"
                                         columnField="time_band"

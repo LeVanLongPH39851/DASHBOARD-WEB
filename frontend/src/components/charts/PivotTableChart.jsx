@@ -40,9 +40,11 @@ const aggregateValue = (items, valueField, aggType) => {
   return values.reduce((a, b) => a + b, 0);
 };
 
-const buildPivotData = ({ data, rowField, columnField, valueField, aggType }) => {
+const buildPivotData = ({ data, rowField, columnField, valueField, aggType, sortColTimeband }) => {
   const rowKeys = [...new Set(data.map((d) => String(d[rowField] ?? '')))];
-  const colKeys = [...new Set(data.map((d) => String(d[columnField] ?? '')))];
+  let colKeys = [...new Set(data.map((d) => String(d[columnField] ?? '')))];
+
+  if (sortColTimeband) colKeys = [...colKeys].sort((a, b) => ((parseInt(String(a).match(/(\d+)\s*h/i)?.[1] ?? Number.MAX_SAFE_INTEGER, 10)) - (parseInt(String(b).match(/(\d+)\s*h/i)?.[1] ?? Number.MAX_SAFE_INTEGER, 10))) || String(a).localeCompare(String(b), undefined, { sensitivity: 'base' }));
 
   const grouped = {};
   data.forEach((item) => {
@@ -82,7 +84,8 @@ const PivotTableChart = ({
   displayName = true,
   enableHeatmap = false,
   suffix='',
-  formatterValue=0
+  formatterValue=0,
+  sortColTimeband=false
 }) => {
   const { stateGlobals } = useDashboardStateGlobals();
   const [sorting, setSorting] = useState([]);
@@ -103,8 +106,8 @@ const PivotTableChart = ({
 
   // ✅ Tất cả hook luôn chạy - không còn conditional hook nữa
   const { pivotRows, colKeys } = useMemo(() => {
-    return buildPivotData({ data: safeData, rowField, columnField, valueField, aggType });
-  }, [safeData, rowField, columnField, valueField, aggType]);
+    return buildPivotData({ data: safeData, rowField, columnField, valueField, aggType, sortColTimeband });
+  }, [safeData, rowField, columnField, valueField, aggType, sortColTimeband]);
 
   const columnStats = useMemo(() => {
     const stats = {};

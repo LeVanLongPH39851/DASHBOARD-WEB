@@ -25,7 +25,8 @@ const BarChart = ({
   maxVisibleItems = 12,
   colorZoom = 'yellow',
   suffix = '',
-  overflow=false
+  overflow=false,
+  formatterValue = 0,
 }) => {
   
   const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
@@ -223,7 +224,7 @@ const BarChart = ({
                   ${p.marker}
                   <span style="font-weight: 500; font-size: ${!stateGlobals.screen_md ? '12' : '10.5'}px; margin-right: 4px; color: rgba(0, 0, 0, 0.7);">${LABEL_METRIC[p.seriesName] || p.seriesName}:</span> 
                   <span style="font-size: ${!stateGlobals.screen_md ? '12' : '10.5'}px; font-weight: 400; color: rgba(0, 0, 0, 0.7);">
-                    ${p.value.toLocaleString(undefined, { maximumFractionDigits: 0 })} ${suffix} ${topSeriesIndex != 0 ? ` <span style="font-size: ${!stateGlobals.screen_md ? '11' : '10'}px;">(${percent}%)</span>` : ''}
+                    ${p.value.toLocaleString(undefined, { maximumFractionDigits: formatterValue })} ${suffix} ${topSeriesIndex != 0 ? ` <span style="font-size: ${!stateGlobals.screen_md ? '11' : '10'}px;">(${percent}%)</span>` : ''}
                   </span>
                 </div>
               `;
@@ -231,7 +232,7 @@ const BarChart = ({
             ${topSeriesIndex != 0 ? `
               <hr style="margin: ${!stateGlobals.screen_md ? '5' : '4'}px 0; border: none; height: 1px; background: rgba(0, 0, 0, 0.1);">
               <div style="font-weight: 600; color: #059669; font-size: ${!stateGlobals.screen_md ? '12' : '10.5'}px;">
-                <span>Tổng:</span> <span>${total.toLocaleString(undefined, { maximumFractionDigits: 0 })} ${suffix}</span>
+                <span>Tổng:</span> <span>${total.toLocaleString(undefined, { maximumFractionDigits: formatterValue })} ${suffix}</span>
               </div>
             ` : ''}
           </div>
@@ -471,7 +472,7 @@ const BarChart = ({
           
           // Chỉ hiện label nếu đây là series cao nhất đang visible
           if (seriesIndex === highestVisibleIndex && total > 0) {
-            return (!stateGlobals.screen_md ? total.toLocaleString(undefined, { maximumFractionDigits: 0 }) : formatKMB(total)) + ' ' + suffix;
+            return (!stateGlobals.screen_md || formatterValue > 0 ? total.toLocaleString(undefined, { maximumFractionDigits: formatterValue }) : formatKMB(total)) + ' ' + suffix;
           }
           return '';
         },

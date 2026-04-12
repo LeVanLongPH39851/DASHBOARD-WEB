@@ -445,6 +445,7 @@ const DashboardContent = () => {
                                         description={'Xu hướng quảng cáo theo khung giờ'}
                                         orientation={''}
                                         suffix='tr'
+                                        maxVisibleItems={true}
                                     />
                                   </div>
                                   <div className='w-full grid grid-cols-10 gap-6 max-md:gap-4 pb-6 max-md:pb-4'>
@@ -846,7 +847,7 @@ const DashboardContent = () => {
                                                 description={'Hiệu quả quảng cáo của nhãn theo chương trình'}
                                                 showSTT={false}
                                                 showPagination={false}
-                                                customCol={{'Nhãn': {weight: 600, minSize: 100, maxSize: 170, sticky: true}, 'CHƯƠNG TRÌNH': {minSize: 100, maxSize: 170}}} />
+                                                customCol={{'Nhãn': {weight: 600, minSize: 100, maxSize: 170, sticky: true}, 'CHƯƠNG TRÌNH': {minSize: 100, maxSize: 170}, 'Chi phí (VND)': {suffix: 'tr'}}} />
                                   </div>
                                   <div className='w-full pb-6 max-md:pb-4'>
                                       <TableChart data={!dashboard.isLoading.allTableDeviceData ? transformTableChartData(dashboard.allTableDeviceData?.data, dashboard.allTableDeviceData?.colnames) : 'isLoading'}

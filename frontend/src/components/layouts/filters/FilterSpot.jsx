@@ -4,7 +4,7 @@ import DateRangeFilter from './components/DataRangeFilter';
 import ButtonFilter from './components/ButtonFilter';
 import SelectMultiFilter from './components/SelectMultiFilter';
 import CheckboxMultiFilter from './components/CheckboxMultiFilter';
-import { getYesterday } from '../../../helpers/helper';
+import { getYesterday, getDayBeforeYesterday } from '../../../helpers/helper';
 import iconXBlack from '../../../assets/icon_x_black.png';
 import iconXBlackDark from '../../../assets/icon_x_black_dark.png';
 import iconReset from '../../../assets/icon_reset.png';
@@ -231,7 +231,7 @@ const FilterSpot = ({ filters, horizontalFixed=false
 
     setFilterValues(prev => ({
       ...prev,
-      startDate: appliedFilters.startDate || getYesterday(),
+      startDate: appliedFilters.startDate || getDayBeforeYesterday(),
       endDate: appliedFilters.endDate || getYesterday(),
       // ✅ Generic map tất cả arrays
       ...Object.fromEntries(
@@ -328,7 +328,7 @@ const FilterSpot = ({ filters, horizontalFixed=false
         <form className={`${horizontalFixed ? 'flex flex-wrap gap-2 max-lg:gap-1.75 max-md:gap-1.5 max-md:grid max-md:grid-cols-2 items-center' : ''}`} onSubmit={onSubmit} onReset={onReset}>
           <div className='max-md:col-span-2'>
             <DateRangeFilter
-              startDate={filterValues?.startDate || getYesterday()}
+              startDate={filterValues?.startDate || getDayBeforeYesterday()}
               endDate={filterValues?.endDate || getYesterday()}
               onChange={handleDateRangeChange}
               horizontalFixed={horizontalFixed}

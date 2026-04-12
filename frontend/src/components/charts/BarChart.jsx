@@ -122,10 +122,10 @@ const BarChart = ({
   const topSeriesIndex = sortedSeries.length - 1;
 
   // Tính toán có cần dataZoom hay không
-  const needsScroll = enableZoom && sortedLabels.length > maxVisibleItems;
-  const zoomEndPercent = needsScroll 
+  const needsScroll = maxVisibleItems!=true ? enableZoom && sortedLabels.length > maxVisibleItems : true;
+  const zoomEndPercent = maxVisibleItems!=true ? (needsScroll 
     ? Math.round((maxVisibleItems / sortedLabels.length) * 100) 
-    : 100;
+    : 100) : 100;
 
   const getEChartsData = useCallback(() => {
     if (chartRef.current) {

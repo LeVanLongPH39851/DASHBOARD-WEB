@@ -33,16 +33,16 @@ const MixedChart = ({
   
   if(data==='isLoading') {
     return (
-      <div className='p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
+      <div className='p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
         <NumberChart nameChart={nameChart} description={description}/>
-        <Loading height={!stateGlobals.screen_md ? height : 230} />
+        <Loading height={!stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : 350 : 230} />
       </div>
     );
   } else if (!data.labels.length > 0) {
     return (
-      <div className='p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
+      <div className='p-6 maxlg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
         <NumberChart nameChart={nameChart} description={description}/>
-        <NoData height={!stateGlobals.screen_md ? height : 230} />
+        <NoData height={!stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : 350 : 230} />
       </div>
     );
   }
@@ -105,22 +105,22 @@ const MixedChart = ({
       backgroundColor: 'rgba(255, 255, 255, 1)',
       borderWidth: 0,
       textStyle: { 
-        fontSize: fontSize.tooltip,
+        fontSize: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.tooltip : '11px' : '10.5px',
         color: 'rgba(0, 0, 0, 0.7)',
         fontWeight: fontWeight.tooltip,
         fontFamily: fontFamily
       },
       formatter: params => {
         return `
-          <div style="padding: ${!stateGlobals.screen_md ? '12' : '4'}px ${!stateGlobals.screen_md ? '16' : '8'}px; box-shadow: 0 ${!stateGlobals.screen_md ? '4' : '2'}px ${!stateGlobals.screen_md ? '12' : '4'}px rgba(0,0,0,0.1);">
-            <div style="font-weight: 500; font-size: ${!stateGlobals.screen_md ? '13' : '11'}px; color: rgba(0, 0, 0, 0.7);">
+          <div style="padding: ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '12' : '11' : '4'}px ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '16' : '15' : '8'}px; box-shadow: 0 ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '4' : '3' : '2'}px ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '12' : '11' : '4'}px rgba(0,0,0,0.1);">
+            <div style="font-weight: 500; font-size: ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '13' : '12' : '11'}px; color: rgba(0, 0, 0, 0.7);">
               ${params[0].name}
             </div>
             ${params.map(p => `
               <div style="margin: 2px 0; display: flex; align-items: center;">
                 ${p.marker}
-                <span style="font-weight: 500; font-size: ${!stateGlobals.screen_md ? '12' : '10.5'}px; margin-right: 4px; color: rgba(0, 0, 0, 0.7);">${p.seriesName}:</span> 
-                <span style="font-size: ${!stateGlobals.screen_md ? '12' : '10.5'}px; font-weight: 400; color: rgba(0, 0, 0, 0.7);">${typeof p.value === 'number' ? formatNumber(p.value, { isPercent: p.seriesName.includes('%') }) : (p.value || '-')}
+                <span style="font-weight: 500; font-size: ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '12' : '11' : '10.5'}px; margin-right: 4px; color: rgba(0, 0, 0, 0.7);">${p.seriesName}:</span> 
+                <span style="font-size: ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '12' : '11' : '10.5'}px; font-weight: 400; color: rgba(0, 0, 0, 0.7);">${typeof p.value === 'number' ? formatNumber(p.value, { isPercent: p.seriesName.includes('%') }) : (p.value || '-')}
                 </span>
               </div>
             `).join('')}
@@ -138,7 +138,7 @@ const MixedChart = ({
         start: 0,
         end: zoomEndPercent,
         bottom: 0,
-        height: !stateGlobals.screen_md ? 20 : 10,
+        height: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? 20 : 15 : 10,
         borderRadius: 8,
         backgroundColor: !stateGlobals.darkMode ? 'rgba(255, 247, 217, 1)' : 'rgb(62, 63, 45)',
         borderColor: !stateGlobals.darkMode ? 'rgb(252, 233, 167)' : 'rgb(159, 135, 39)',
@@ -149,7 +149,7 @@ const MixedChart = ({
           borderColor: !stateGlobals.darkMode ? 'rgba(255, 255, 255, 1)' : 'rgba(28, 37, 52, 1)'
         },
         textStyle: {
-          fontSize: !stateGlobals.screen_md ? fontSize.axisLabel : '10.5px',
+          fontSize: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.axisLabel : '11px' : '10.5px',
           color: !stateGlobals.darkMode ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.8)',
           fontWeight: 500
         },
@@ -185,12 +185,12 @@ const MixedChart = ({
     legend: {
       top: needsScroll ? 0 : 0,
       left: 0,
-      itemWidth: !stateGlobals.screen_md ? 14 : 10,
-      itemHeight: !stateGlobals.screen_md ? 14 : 10,
+      itemWidth: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? 14 : 12 : 10,
+      itemHeight: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? 14 : 12 : 10,
       icon: 'roundRect',
       itemGap: 10,
       textStyle: { 
-        fontSize: !stateGlobals.screen_md ? fontSize.legend : '10.5px',
+        fontSize: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.legend : '11px' : '10.5px',
         color: !stateGlobals.darkMode ? 'rgba(30, 27, 57, 1)' : 'rgba(255, 255, 255, 0.9)',
         fontWeight: fontWeight.legend,
         letterSpacing: '0.1px',
@@ -205,7 +205,7 @@ const MixedChart = ({
     grid: {
       left: '1%',
       right: '1%',
-      bottom: needsScroll ? (!stateGlobals.screen_md ? (xAxisTitle ? '42px' : '30px') : (xAxisTitle ? '32px' : '20px')) : '1%',
+      bottom: needsScroll ? (!stateGlobals.screen_md ? !stateGlobals.screen_lg ? (xAxisTitle ? '42px' : '30px') : (xAxisTitle ? '37px' : '25px') : (xAxisTitle ? '32px' : '20px')) : '1%',
       top: !stateGlobals.screen_md ? 45.5 : 43,
       containLabel: true
     },
@@ -217,7 +217,7 @@ const MixedChart = ({
       nameLocation: 'middle',
       nameGap: !stateGlobals.screen_md ? 25 : 24,
       nameTextStyle: {
-        fontSize: !stateGlobals.screen_md ? fontSize.axisLabel : '10.5px',
+        fontSize: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.axisLabel : '11px' : '10.5px',
         fontWeight: fontWeight.axisLabel,
         fontFamily: fontFamily,
         color: !stateGlobals.darkMode
@@ -230,7 +230,7 @@ const MixedChart = ({
       },
       axisTick: { show: false },
       axisLabel: { 
-        fontSize: !stateGlobals.screen_md ? fontSize.axisLabel : '10.5px',
+        fontSize: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.axisLabel : '11px' : '10.5px',
         color: !stateGlobals.darkMode ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.9)',
         fontWeight: fontWeight.axisLabel,
         fontFamily: fontFamily,
@@ -256,7 +256,7 @@ const MixedChart = ({
       },
       axisLabel: {
         formatter: v => !stateGlobals.screen_md && !KMB ? nameChart.includes('%') ? formatNumber(v, { isPercent: true }) : v.toLocaleString(undefined, { maximumFractionDigits: 0 }) : formatKMB(v),
-        fontSize: !stateGlobals.screen_md ? fontSize.axisLabel : '10.5px',
+        fontSize: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.axisLabel : '11px' : '10.5px',
         color: !stateGlobals.darkMode ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.9)',
         fontWeight: fontWeight.axisLabel,
         fontFamily: fontFamily
@@ -298,11 +298,11 @@ const MixedChart = ({
           label: {
             show: true,
             position: 'top',
-            offset: [0, !stateGlobals.screen_md ? -8 : 0],
+            offset: [0, !stateGlobals.screen_md ? !stateGlobals.screen_lg ? -8 : -7 : 0],
             formatter: (params) => {
               return typeof params.value === 'number' ? params.seriesName.includes('%') ? params.value.toLocaleString(undefined, { maximumFractionDigits: 2 }) : (!stateGlobals.screen_md && !KMB ? params.value.toLocaleString(undefined, { maximumFractionDigits: 0 }) : formatKMB(params.value)) : (params.value || '-')
             },
-            fontSize: !stateGlobals.screen_md ? fontSize.dataLabel : '10.5px',
+            fontSize: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.dataLabel : '11px' : '10.5px',
             fontWeight: fontWeight.dataLabel,
             fontFamily: fontFamily,
             color: !stateGlobals.darkMode ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.8)'
@@ -339,11 +339,11 @@ const MixedChart = ({
           label: {
             show: true,
             position: 'top',
-            offset: [0, !stateGlobals.screen_md ? offsetLine : 0],
+            offset: [0, !stateGlobals.screen_md ? !stateGlobals.screen_lg ? offsetLine : offsetLine + 1 : 0],
             formatter: (params) => {
               return typeof params.value === 'number' ? params.seriesName.includes('%') ? params.value.toLocaleString(undefined, { maximumFractionDigits: 2 }) : (!stateGlobals.screen_md && !KMB ? params.value.toLocaleString(undefined, { maximumFractionDigits: 0 }) : formatKMB(params.value)) : (params.value || '-')
             },
-            fontSize: !stateGlobals.screen_md ? fontSize.dataLabel : '10.5px',
+            fontSize: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.dataLabel : '11px' : '10.5px',
             fontWeight: fontWeight.dataLabel,
             fontFamily: fontFamily,
             color: color
@@ -354,12 +354,12 @@ const MixedChart = ({
   };
 
   return (
-    <div className='p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
+    <div className='p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
       <NumberChart nameChart={nameChart} description={description} getChartData={getEChartsData} />
       <ReactECharts 
         ref={chartRef}
         option={option} 
-        style={{ height: !stateGlobals.screen_md ? height : 230, width: '100%' }}
+        style={{ height: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : 350 : 230, width: '100%' }}
         opts={{
           renderer: 'canvas',
           locale: 'VN'

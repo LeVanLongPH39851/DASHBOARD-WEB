@@ -38,14 +38,14 @@ const LineChart = ({
     return (
       <div className='p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
         <NameChart nameChart={nameChart} description={description} fullScreen={fullScreen} />
-        <Loading height={!stateGlobals.screen_md ? height : 240} />
+        <Loading height={!stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : 350 : 240} />
       </div>
     );
   } else if (!data.labels.length > 0) {
     return (
       <div className='p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
         <NameChart nameChart={nameChart} description={description} fullScreen={fullScreen} />
-        <NoData height={!stateGlobals.screen_md ? height : 240} />
+        <NoData height={!stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : 350 : 240} />
       </div>
     );
   }
@@ -83,6 +83,10 @@ const LineChart = ({
     let topSeriesNames = null;
     if (showTopNSeries===null) {
       showTopNSeries = labels.length > 1 ? 3 : showTopNSeries;
+    }
+    
+    if (stateGlobals.screen_lg && labels.length > 1) {
+      showTopNSeries = 1;
     }
 
     if (stateGlobals.screen_md && labels.length > 1) {
@@ -180,7 +184,7 @@ const LineChart = ({
       backgroundColor: 'rgba(255, 255, 255, 1)',
       borderWidth: 0,
       textStyle: { 
-        fontSize: !stateGlobals.screen_md ? fontSize.tooltip : '10.5px',
+        fontSize: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.tooltip : '11px' : '10.5px',
         color: 'rgba(0, 0, 0, 0.7)',
         fontWeight: fontWeight.tooltip,
         fontFamily: fontFamily
@@ -193,8 +197,8 @@ const LineChart = ({
         if (visibleParams.length === 0) return '';
         
         return `
-           <div style="padding: ${!stateGlobals.screen_md ? '12' : '4'}px ${!stateGlobals.screen_md ? '16' : '8'}px; box-shadow: 0 ${!stateGlobals.screen_md ? '4' : '2'}px ${!stateGlobals.screen_md ? '12' : '4'}px rgba(0,0,0,0.1);">
-            <div style="font-weight: 500; font-size: ${!stateGlobals.screen_md ? '13' : '11'}px; color: rgba(0, 0, 0, 0.7);">
+           <div style="padding: ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '12' : '11' : '4'}px ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '16' : '15' : '8'}px; box-shadow: 0 ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '4' : '3' : '2'}px ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '12' : '11' : '4'}px rgba(0,0,0,0.1);">
+            <div style="font-weight: 500; font-size: ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '13' : '12' : '11'}px; color: rgba(0, 0, 0, 0.7);">
               ${visibleParams[0].name}
             </div>
             ${visibleParams.map(p => {
@@ -210,15 +214,15 @@ const LineChart = ({
                     margin-right: 6px;
                     flex-shrink: 0;
                   "></span>
-                  <span style="font-weight: 500; font-size: ${!stateGlobals.screen_md ? '12' : '10.5'}px; margin-right: 4px; color: rgba(0, 0, 0, 0.7);">${p.seriesName}:</span> 
-                  <span style="font-size: ${!stateGlobals.screen_md ? '12' : '10.5'}px; font-weight: 400; color: rgba(0, 0, 0, 0.7);">
-                    ${p.value.toLocaleString(undefined, { maximumFractionDigits: (nameChart.includes('%') ? 2 : 0) })} <span style="font-size: ${!stateGlobals.screen_md ? '11' : '10'}px;">(${percent}%)</span>
+                  <span style="font-weight: 500; font-size: ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '12' : '11' : '10.5'}px; margin-right: 4px; color: rgba(0, 0, 0, 0.7);">${p.seriesName}:</span> 
+                  <span style="font-size: ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '12' : '11' : '10.5'}px; font-weight: 400; color: rgba(0, 0, 0, 0.7);">
+                    ${p.value.toLocaleString(undefined, { maximumFractionDigits: (nameChart.includes('%') ? 2 : 0) })} <span style="font-size: ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '11' : '10.5' : '10'}px;">(${percent}%)</span>
                   </span>
                 </div>
               `;
             }).join('')}
-            <hr style="margin:  ${!stateGlobals.screen_md ? '5' : '4'}px 0; border: none; height: 1px; background: rgba(0, 0, 0, 0.1);">
-            <div style="font-weight: 600; color: #059669; font-size: ${!stateGlobals.screen_md ? '12' : '10.5'}px;">
+            <hr style="margin:  ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '5' : '4.5' : '4'}px 0; border: none; height: 1px; background: rgba(0, 0, 0, 0.1);">
+            <div style="font-weight: 600; color: #059669; font-size: ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '12' : '11' : '10.5'}px;">
               <span>Tổng:</span> <span>${total.toLocaleString(undefined, { maximumFractionDigits: (nameChart.includes('%') ? 2 : 0) })}</span>
             </div>
           </div>
@@ -234,7 +238,7 @@ const LineChart = ({
         start: 0,
         end: zoomEndPercent,
         bottom: 0,
-        height: !stateGlobals.screen_md ? 20 : 10,
+        height: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? 20 : 15 : 10,
         borderRadius: 8,
         backgroundColor: !stateGlobals.darkMode ? 'rgb(223, 249, 245)' : 'rgb(31, 60, 72)',
         borderColor: !stateGlobals.darkMode ? 'rgb(205, 240, 246)' : 'rgb(38, 128, 136)',
@@ -245,7 +249,7 @@ const LineChart = ({
           borderColor: !stateGlobals.darkMode ? 'rgba(255, 255, 255, 1)' : 'rgba(28, 37, 52, 1)'
         },
         textStyle: {
-          fontSize: !stateGlobals.screen_md ? fontSize.axisLabel : '10.5px',
+          fontSize: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.axisLabel : '11px' : '10.5px',
           color: !stateGlobals.darkMode ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.8)',
           fontWeight: 500
         },
@@ -285,12 +289,12 @@ const LineChart = ({
       left: 0,                  // ✅ Canh trái (theo padding X của grid)
       right: 0,                 // Giữ khoảng cách bên phải giống grid
       align: 'left',
-      itemWidth: !stateGlobals.screen_md ? 14 : 10,
+      itemWidth: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? 14 : 12 : 10,
       itemHeight: 10,
       icon: 'circle',
       itemGap: !legendTop ? 8 : 10,
       textStyle: { 
-        fontSize: !stateGlobals.screen_md ? fontSize.legend : '10.5px',
+        fontSize: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.legend : '11px' : '10.5px',
         color: !stateGlobals.darkMode ? 'rgba(30, 27, 57, 1)' : 'rgba(255, 255, 255, 0.8)',
         fontWeight: fontWeight.legend,
         letterSpacing: '0.1px',
@@ -311,7 +315,7 @@ const LineChart = ({
         color: !stateGlobals.darkMode ? 'rgba(30, 27, 57, 1)' : 'rgba(255, 255, 255, 0.8)',
         fontWeight: 400,
         fontFamily: fontFamily,
-        fontSize: !stateGlobals.screen_md ? fontSize.legend : '10.5px'
+        fontSize: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.legend : '11px' : '10.5px'
       },
       data: legendData.map(name => ({
         name,
@@ -323,9 +327,9 @@ const LineChart = ({
     },
 
     grid: {
-      left: !legendTop && !stateGlobals.screen_md ? left : '1%',
+      left: !legendTop && !stateGlobals.screen_md ? !stateGlobals.screen_lg ? left : left - 10 : '1%',
       right: '1%',
-      bottom: needsScroll ? (!stateGlobals.screen_md ? (xAxisTitle ? '42px' : '30px') : (xAxisTitle ? '32px' : '20px')) : '1%',
+      bottom: needsScroll ? (!stateGlobals.screen_md ? !stateGlobals.screen_lg ? (xAxisTitle ? '42px' : '30px') : (xAxisTitle ? '37px' : '25px') : (xAxisTitle ? '32px' : '20px')) : '1%',
       top: !legendTop && !stateGlobals.screen_md ? '5%' : 40,
       containLabel: true
     },
@@ -337,7 +341,7 @@ const LineChart = ({
       nameLocation: 'middle',
       nameGap: !stateGlobals.screen_md ? 25 : 24,
       nameTextStyle: {
-        fontSize: !stateGlobals.screen_md ? fontSize.axisLabel : '10.5px',
+        fontSize: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.axisLabel : '11px' : '10.5px',
         fontWeight: fontWeight.axisLabel,
         fontFamily: fontFamily,
         color: !stateGlobals.darkMode
@@ -349,7 +353,7 @@ const LineChart = ({
       axisLabel: { 
         fontSize: fontSize.axisLabel,
         color: !stateGlobals.darkMode ? 'rgba(97, 94, 131, 1)' : 'rgba(255, 255, 255, 0.9)',
-        fontWeight: !stateGlobals.screen_md ? fontWeight.axisLabel : '10.5px',
+        fontWeight: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontWeight.axisLabel : '11px' : '10.5px',
         rotate: 0,
         interval: 'auto',
         fontFamily: fontFamily,
@@ -374,7 +378,7 @@ const LineChart = ({
       },
       axisLabel: {
         formatter: v => !stateGlobals.screen_md && !KMB ? v.toLocaleString(undefined, { maximumFractionDigits: 0 }) : formatKMB(v),
-        fontSize: !stateGlobals.screen_md ? fontSize.axisLabel : '10.5px',
+        fontSize: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.axisLabel : '11px' : '10.5px',
         color: !stateGlobals.darkMode ? 'rgba(97, 94, 131, 1)' : 'rgba(255, 255, 255, 0.9)',
         fontWeight: fontWeight.axisLabel,
         fontFamily: fontFamily
@@ -437,7 +441,7 @@ const LineChart = ({
             position: 'top',
             offset: [0, labelOffset],
             formatter: (params) => params.value ? nameChart.includes('%') ? params.value.toLocaleString(undefined, { maximumFractionDigits: (nameChart.includes('%') ? 2 : 0) }) : !stateGlobals.screen_md && !KMB ? params.value.toLocaleString(undefined, { maximumFractionDigits: (nameChart.includes('%') ? 2 : 0) }) : formatKMB(params.value) : '',
-            fontSize: !stateGlobals.screen_md ? fontSize.dataLabel : '10.5px',
+            fontSize: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.dataLabel : '11px' : '10.5px',
             fontWeight: fontWeight.dataLabel,
             fontFamily: fontFamily,
             color: color,
@@ -468,7 +472,7 @@ const LineChart = ({
         <ReactECharts 
           ref={chartRef}
           option={option} 
-          style={{ height: !stateGlobals.screen_md ? height : 240, width: '100%' }}
+          style={{ height: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : 350 : 240, width: '100%' }}
           opts={{
             renderer: 'canvas',
             locale: 'VN'

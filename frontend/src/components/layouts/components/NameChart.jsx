@@ -430,7 +430,7 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
           {(!userLoading && user?.username !== 'vtvguest' && fullScreen) &&
             (
               <figure className='p-2 cursor-pointer' onClick={handlefullScreen}>
-                <FontAwesomeIcon icon={faExpand} fontSize={15} color={!stateGlobals.darkMode ? 'rgba(31, 31, 31, 1)' : 'rgba(255, 255, 255, 0.8)'} />
+                <FontAwesomeIcon icon={faExpand} fontSize={!stateGlobals.screen_lg ? 15 : 14} color={!stateGlobals.darkMode ? 'rgba(31, 31, 31, 1)' : 'rgba(255, 255, 255, 0.8)'} />
               </figure>
             )
           }
@@ -448,8 +448,7 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
                 </div>
             </div>
           </figure>)}
-          <figure className='p-2 cursor-pointer'><img src={!stateGlobals.darkMode ? iconEyeHidden : iconEyeHiddenDark} alt="Icon Eye Hidden" className='w-4.5 max-lg:w-4' onClick={handleHideChart} />
-          </figure>
+          <figure className='p-2 cursor-pointer'><img src={!stateGlobals.darkMode ? iconEyeHidden : iconEyeHiddenDark} alt="Icon Eye Hidden" className='w-4.5 max-lg:w-4' onClick={handleHideChart} /></figure>
         </div>
         <div className='hidden div-hideen max-md:block'>
           <figure ref={stateGlobals.screen_md ? buttonRef : undefined} className='p-2 max-md:px-0 cursor-pointer relative' onClick={handleToggle}>

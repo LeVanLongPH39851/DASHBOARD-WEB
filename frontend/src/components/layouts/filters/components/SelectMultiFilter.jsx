@@ -20,13 +20,14 @@ const SelectMultiFilter = ({
   const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
 
    const darkMode = stateGlobals.darkMode;
-   const isMobile = window.innerWidth < 1000;
+   const isMobile = stateGlobals.screen_md;
+   const isLaptop = stateGlobals.screen_lg;
 
     const customStyles = {
       control: (provided, state) => ({
         ...provided,
-        minHeight: !horizontalFixed ? (!isMobile ? '40px' : '30px') : (!isMobile ? '38px' : '30px'),
-        fontSize: !isMobile ? '13px' : '11px',
+        minHeight: !horizontalFixed ? (!isMobile ? !isLaptop ? '40px' : '34px' : '30px') : (!isMobile ? !isLaptop ? '38px' : '32px' : '30px'),
+        fontSize: !isMobile ? !isLaptop ? '13px' : '12px' : '11px',
         borderRadius: '12px',
         outline: 'none',
         boxShadow: 'none',
@@ -84,7 +85,7 @@ const SelectMultiFilter = ({
         const hoverBg = darkMode ? 'rgba(31, 41, 55, 1)' : '#e0e0e0';
         return {
           ...provided,
-          fontSize: !isMobile ? '14px' : '12px',
+          fontSize: !isMobile ? !isLaptop ? '13px' : '12px' : '11px',
           fontWeight: 400,
           backgroundColor: state.isSelected
             ? !darkMode ? '#20A7C9' : 'rgb(40 153 156 / 50%)'
@@ -101,13 +102,13 @@ const SelectMultiFilter = ({
       placeholder: (provided) => ({
         ...provided,
         color: darkMode ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)',
-        fontSize: !isMobile ? '14px' : '11.9px',
+        fontSize: !isMobile ? !isLaptop ? '13px' : '12px' : '11px',
         fontWeight: 400
       }),
       input: (provided) => ({
         ...provided,
         color: darkMode ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)',
-        fontSize: !isMobile ? '14px' : '12px',
+        fontSize: !isMobile ? !isLaptop ? '13px' : '12px' : '11px', 
         fontWeight: 400,
         cursor: 'text',
         transition: 'all 0.3s ease-in-out'
@@ -133,7 +134,7 @@ const SelectMultiFilter = ({
       }),
       noOptionsMessage: (provided) => ({
         ...provided,
-        fontSize: !isMobile ? '14px' : '12px'
+        fontSize: !isMobile ? !isLaptop ? '13px' : '12px' : '11px'
       }),
     };
 
@@ -142,8 +143,8 @@ const SelectMultiFilter = ({
   return (
     <div className={`${horizontalFixed ? '' : isOpenFilter ? `${marginBottom}` : ''}`}>
       {!horizontalFixed && (<div onClick={() => setIsOpenFilter(prev => !prev)} className={`flex cursor-pointer group justify-between items-center h-10.5 max-md:h-8 ${isOpenFilter ? 'mb-1' : ''}`}>
-                        <label className='cursor-pointer text-[16px] max-md:text-xs text-background-black-child-tab dark:text-color-white-90 transition-all duration-300 font-medium'>{label}</label>
-                        <figure className={`cursor-pointer transition-all duration-300 ${isOpenFilter ? '' : 'rotate-180'}`}><img src={!stateGlobals.darkMode ? iconArrowUpGray : iconArrowUpGrayDark} className='w-2.75 max-md:w-2' alt="Icon Arrow Up Gray" /></figure>
+                        <label className='cursor-pointer text-[16px] max-lg:text-sm max-md:text-xs text-background-black-child-tab dark:text-color-white-90 transition-all duration-300 font-medium'>{label}</label>
+                        <figure className={`cursor-pointer transition-all duration-300 ${isOpenFilter ? '' : 'rotate-180'}`}><img src={!stateGlobals.darkMode ? iconArrowUpGray : iconArrowUpGrayDark} className='w-2.75 max-lg:w-2.5 max-md:w-2' alt="Icon Arrow Up Gray" /></figure>
                       </div>)}
       <div className={!horizontalFixed ? 'transition-all duration-300 relative filter-relative overflow-hidden' : ''} data-initial-height="match">
         <div className={!horizontalFixed ? `transition-all duration-300 absolute w-full left-0 filter-absolute ${isOpenFilter ? 'visible opacity-100 top-0' : 'invisible opacity-0 -top-1/2'}` : ''}>

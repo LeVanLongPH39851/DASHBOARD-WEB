@@ -78,14 +78,14 @@ const DashboardContent = () => {
                                 <InforTab inforTab={"Tổng quan"} />
                                 <InforFilter filters={scopeFilterData} FilterComponent={FilterSpot} />
                                 <div className='px-6 max-lg:px-5 max-md:px-4 pt-6 max-lg:pt-5 max-md:pt-4'>
-                                    <div className='w-full grid grid-cols-5 max-md:grid-cols-2 gap-6 max-md:gap-4 pb-6 max-md:pb-4'>
-                                      <div className='col-span-2'>
+                                    <div className='w-full grid grid-cols-5 max-lg:grid-cols-8 max-md:grid-cols-2 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4'>
+                                      <div className='col-span-2 max-lg:col-span-3'>
                                         <NumberWithTrendChart nameChart={'Chi phí (Triệu VND)'} description={false} data={!dashboard.isLoading.spendVNDNumberData ? transformNumberWithTrendData(dashboard.spendVNDNumberData?.data, dashboard.spendVNDNumberData?.colnames) : 'isLoading'} fontFamily={CUSTOM_CHART.allChart.fontFamily} fontSize={CUSTOM_CHART.numberWithTrendChart.fontSize} fontWeight={CUSTOM_CHART.numberWithTrendChart.fontWeight} icon={METRICS.rating.icon} />
                                       </div>
-                                      <div className='col-span-2'>
+                                      <div className='col-span-2 max-lg:col-span-3'>
                                         <NumberWithTrendChart nameChart={'Chi phí (USD)'} description={false} data={!dashboard.isLoading.spendUSDNumberData ? transformNumberWithTrendData(dashboard.spendUSDNumberData?.data, dashboard.spendUSDNumberData?.colnames) : 'isLoading'} fontFamily={CUSTOM_CHART.allChart.fontFamily} fontSize={CUSTOM_CHART.numberWithTrendChart.fontSize} fontWeight={CUSTOM_CHART.numberWithTrendChart.fontWeight} icon={METRICS.rating.icon} suffix='$' />
                                       </div>
-                                        <div className='col-span-1 max-md:col-span-2 grid grid-cols-1 max-md:grid-cols-2 gap-6 max-md:gap-4'>
+                                        <div className='col-span-1 max-lg:col-span-2 max-md:col-span-2 grid grid-cols-1 max-md:grid-cols-2 gap-6 max-lg:gap-5 max-md:gap-4'>
                                             <NumberCard
                                                 title={'Số lượng Spot'}
                                                 description={false}
@@ -105,7 +105,7 @@ const DashboardContent = () => {
                                             />
                                         </div>
                                     </div>
-                                    <div className='w-full pb-6 max-md:pb-4'>
+                                    <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
                                       <div className={`p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
                                           <NameChart nameChart={'Xu hướng quảng cáo THEO NGÀY'} description={false} opacity={true} />
                                           <ChildTabs tabs={[
@@ -143,11 +143,11 @@ const DashboardContent = () => {
                                           ]} />
                                       </div>
                                     </div>
-                                    <div className='w-full pb-6 max-md:pb-4'>
+                                    <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
                                         <ChildTabs tabs={[
                                         {id: 'spend', label: 'Share of spend',
                                         content: (
-                                            <div className='grid grid-cols-2 max-md:grid-cols-1 gap-6 max-md:gap-4'>
+                                            <div className='grid grid-cols-2 max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4'>
                                                 <PieChart data={!dashboard.isLoading.spendVNDPieChannelData ? transformPieChartData(dashboard.spendVNDPieChannelData?.data, dashboard.spendVNDPieChannelData?.colnames) : 'isLoading'}
                                                           height={CUSTOM_CHART.pieChart.height}
                                                           fontSize={CUSTOM_CHART.pieChart.fontSize}
@@ -174,7 +174,7 @@ const DashboardContent = () => {
                                         )},
                                         {id: 'spot', label: 'Share of spot',
                                         content: (
-                                            <div className='grid grid-cols-2 max-md:grid-cols-1 gap-6 max-md:gap-4'>
+                                            <div className='grid grid-cols-2 max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4'>
                                                 <PieChart data={!dashboard.isLoading.countPieChannelData ? transformPieChartData(dashboard.countPieChannelData?.data, dashboard.countPieChannelData?.colnames) : 'isLoading'}
                                                           height={CUSTOM_CHART.pieChart.height}
                                                           fontSize={CUSTOM_CHART.pieChart.fontSize}
@@ -201,7 +201,7 @@ const DashboardContent = () => {
                                         )},
                                         {id: 'duration', label: 'Share of airtime',
                                         content: (
-                                            <div className='grid grid-cols-2 max-md:grid-cols-1 gap-6 max-md:gap-4'>
+                                            <div className='grid grid-cols-2 max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4'>
                                                 <PieChart data={!dashboard.isLoading.durationPieChannelData ? transformPieChartData(dashboard.durationPieChannelData?.data, dashboard.durationPieChannelData?.colnames) : 'isLoading'}
                                                           height={CUSTOM_CHART.pieChart.height}
                                                           fontSize={CUSTOM_CHART.pieChart.fontSize}
@@ -232,7 +232,7 @@ const DashboardContent = () => {
                                         )},
                                         {id: 'length_voice', label: 'Share of spot lengths/voice',
                                         content: (
-                                            <div className='grid grid-cols-2 max-md:grid-cols-1 gap-6 max-md:gap-4'>
+                                            <div className='grid grid-cols-2 max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4'>
                                                 <PieChart data={!dashboard.isLoading.durationPieLengthData ? transformPieChartData(dashboard.durationPieLengthData?.data, dashboard.durationPieLengthData?.colnames) : 'isLoading'}
                                                           height={CUSTOM_CHART.pieChart.height}
                                                           fontSize={CUSTOM_CHART.pieChart.fontSize}
@@ -260,7 +260,7 @@ const DashboardContent = () => {
                                         )}
                                         ]} />
                                     </div>
-                                    <div className='w-full pb-6 max-md:pb-4'>
+                                    <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
                                       <div className={`p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
                                           <NameChart nameChart={'Top 20 nhà quảng cáo'} description={false} opacity={true} />
                                           <ChildTabs tabs={[
@@ -268,7 +268,7 @@ const DashboardContent = () => {
                                           content: (
                                               <BarChart 
                                                   data={!dashboard.isLoading.spendVNDBarAdvertiserData ? transformBarChartData(dashboard.spendVNDBarAdvertiserData?.data, dashboard.spendVNDBarAdvertiserData?.colnames) : 'isLoading'}
-                                                  height={CUSTOM_CHART.barChart.height + 35}
+                                                  height={CUSTOM_CHART.barChart.height}
                                                   fontSize={CUSTOM_CHART.barChart.fontSize}
                                                   fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                   colors={['rgba(255, 204, 0, 1)']}
@@ -278,13 +278,14 @@ const DashboardContent = () => {
                                                   orientation={'horizontal'}
                                                   displayName={false}
                                                   overflow={true}
+                                                  heightPlus={35}
                                               />
                                           )},
                                           {id: 'usd', label: 'USD',
                                           content: (
                                               <BarChart 
                                                   data={!dashboard.isLoading.spendUSDBarAdvertiserData ? transformBarChartData(dashboard.spendUSDBarAdvertiserData?.data, dashboard.spendUSDBarAdvertiserData?.colnames) : 'isLoading'}
-                                                  height={CUSTOM_CHART.barChart.height + 35}
+                                                  height={CUSTOM_CHART.barChart.height}
                                                   fontSize={CUSTOM_CHART.barChart.fontSize}
                                                   fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                   colors={['rgba(255, 204, 0, 1)']}
@@ -295,13 +296,14 @@ const DashboardContent = () => {
                                                   displayName={false}
                                                   suffix={'$'}
                                                   overflow={true}
+                                                  heightPlus={35}
                                               />
                                           )},
                                           {id: 'spot', label: 'SPOT',
                                           content: (
                                               <BarChart 
                                                   data={!dashboard.isLoading.countBarAdvertiserData ? transformBarChartData(dashboard.countBarAdvertiserData?.data, dashboard.countBarAdvertiserData?.colnames) : 'isLoading'}
-                                                  height={CUSTOM_CHART.barChart.height + 35}
+                                                  height={CUSTOM_CHART.barChart.height}
                                                   fontSize={CUSTOM_CHART.barChart.fontSize}
                                                   fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                   colors={['rgba(255, 204, 0, 1)']}
@@ -311,12 +313,13 @@ const DashboardContent = () => {
                                                   orientation={'horizontal'}
                                                   displayName={false}
                                                   overflow={true}
+                                                  heightPlus={35}
                                               />
                                           )}
                                           ]} />
                                       </div>
                                     </div>
-                                    <div className='w-full pb-6 max-md:pb-4'>
+                                    <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
                                       <div className={`p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
                                           <NameChart nameChart={'Top 20 nhà quảng cáo - phân bổ theo kênh'} description={false} opacity={true} />
                                           <ChildTabs tabs={[
@@ -324,7 +327,7 @@ const DashboardContent = () => {
                                           content: (
                                               <BarChart 
                                                   data={!dashboard.isLoading.spendVNDBarAdvertiserChannelData ? transformBarChartData(dashboard.spendVNDBarAdvertiserChannelData?.data, dashboard.spendVNDBarAdvertiserChannelData?.colnames) : 'isLoading'}
-                                                  height={CUSTOM_CHART.barChart.height + 50}
+                                                  height={CUSTOM_CHART.barChart.height}
                                                   fontSize={CUSTOM_CHART.barChart.fontSize}
                                                   fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                   colors={CUSTOM_CHART.barChart.colorChannel}
@@ -334,13 +337,14 @@ const DashboardContent = () => {
                                                   orientation={'horizontal'}
                                                   displayName={false}
                                                   overflow={true}
+                                                  heightPlus={50}
                                               />
                                           )},
                                           {id: 'usd', label: 'USD',
                                           content: (
                                               <BarChart 
                                                   data={!dashboard.isLoading.spendUSDBarAdvertiserChannelData ? transformBarChartData(dashboard.spendUSDBarAdvertiserChannelData?.data, dashboard.spendUSDBarAdvertiserChannelData?.colnames) : 'isLoading'}
-                                                  height={CUSTOM_CHART.barChart.height + 50}
+                                                  height={CUSTOM_CHART.barChart.height}
                                                   fontSize={CUSTOM_CHART.barChart.fontSize}
                                                   fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                   colors={CUSTOM_CHART.barChart.colorChannel}
@@ -351,13 +355,14 @@ const DashboardContent = () => {
                                                   displayName={false}
                                                   suffix={'$'}
                                                   overflow={true}
+                                                  heightPlus={50}
                                               />
                                           )},
                                           {id: 'spot', label: 'SPOT',
                                           content: (
                                               <BarChart 
                                                   data={!dashboard.isLoading.countBarAdvertiserChannelData ? transformBarChartData(dashboard.countBarAdvertiserChannelData?.data, dashboard.countBarAdvertiserChannelData?.colnames) : 'isLoading'}
-                                                  height={CUSTOM_CHART.barChart.height + 50}
+                                                  height={CUSTOM_CHART.barChart.height}
                                                   fontSize={CUSTOM_CHART.barChart.fontSize}
                                                   fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                   colors={CUSTOM_CHART.barChart.colorChannel}
@@ -367,12 +372,13 @@ const DashboardContent = () => {
                                                   orientation={'horizontal'}
                                                   displayName={false}
                                                   overflow={true}
+                                                  heightPlus={50}
                                               />
                                           )}
                                           ]} />
                                       </div>
                                     </div>
-                                    <div className='w-full pb-6 max-md:pb-4'>
+                                    <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
                                         <ChildTabs tabs={[
                                         {id: 'brand', label: 'Top 10 nhãn',
                                         content: (
@@ -428,7 +434,7 @@ const DashboardContent = () => {
                                 <InforTab inforTab={"Doanh thu"} />
                                 <InforFilter filters={scopeFilterData} FilterComponent={FilterSpot} />
                                 <div className='px-6 max-lg:px-5 max-md:px-4 py-6 max-lg:py-5 max-md:py-4'>
-                                  <div className='w-full pb-6 max-md:pb-4'>
+                                  <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
                                     <BarChart 
                                         data={!dashboard.isLoading.spendVNDBarTimebandData ? transformBarChartData(dashboard.spendVNDBarTimebandData?.data, dashboard.spendVNDBarTimebandData?.colnames) : 'isLoading'}
                                         height={CUSTOM_CHART.barChart.height}
@@ -442,7 +448,7 @@ const DashboardContent = () => {
                                         maxVisibleItems={true}
                                     />
                                   </div>
-                                  <div className='w-full grid grid-cols-10 gap-6 max-md:gap-4 pb-6 max-md:pb-4'>
+                                  <div className='w-full grid grid-cols-10 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4'>
                                     <div className='col-span-6 max-md:col-span-10'>
                                       <TableChart data={!dashboard.isLoading.adcodeProgramData ? transformTableChartData(dashboard.adcodeProgramData?.data, dashboard.adcodeProgramData?.colnames) : 'isLoading'}
                                                   height={CUSTOM_CHART.tableChart.tableChartChannel.height}
@@ -468,7 +474,7 @@ const DashboardContent = () => {
                                                   customCol={{'Sản phẩm': {weight: 600}}} />
                                     </div>
                                   </div>
-                                  <div className='w-full grid grid-cols-10 gap-6 max-md:gap-4 pb-6 max-md:pb-4'>
+                                  <div className='w-full grid grid-cols-10 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4'>
                                     <div className='col-span-6 max-md:col-span-10'>
                                       <PivotTableChart
                                         data={!dashboard.isLoading.spendVNDPivotChannelFirstLevelData ? dashboard.spendVNDPivotChannelFirstLevelData?.data : 'isLoading'}
@@ -504,10 +510,10 @@ const DashboardContent = () => {
                                       />
                                     </div>
                                   </div>
-                                  <div className='w-full pb-6 max-md:pb-4'>
+                                  <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
                                     <BarChart 
                                         data={!dashboard.isLoading.spendVNDBarProgramData ? transformBarChartData(dashboard.spendVNDBarProgramData?.data, dashboard.spendVNDBarProgramData?.colnames) : 'isLoading'}
-                                        height={CUSTOM_CHART.barChart.height + 35}
+                                        height={CUSTOM_CHART.barChart.height}
                                         fontSize={CUSTOM_CHART.barChart.fontSize}
                                         fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                         colors={['rgba(255, 204, 0, 1)']}
@@ -516,9 +522,10 @@ const DashboardContent = () => {
                                         description={false}
                                         orientation={'horizontal'}
                                         overflow={true}
+                                        heightPlus={35}
                                     />
                                   </div>
-                                  <div className='w-full pb-6 max-md:pb-4'>
+                                  <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
                                     <BarChart 
                                       data={!dashboard.isLoading.spendVNDBarChannelData ? transformBarChartData(dashboard.spendVNDBarChannelData?.data, dashboard.spendVNDBarChannelData?.colnames) : 'isLoading'}
                                       height={CUSTOM_CHART.barChart.height}
@@ -531,7 +538,7 @@ const DashboardContent = () => {
                                       orientation={''}
                                   />
                                   </div>
-                                  <div className='w-full pb-6 max-md:pb-4'>
+                                  <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
                                     <PivotTableChart
                                         data={!dashboard.isLoading.spendVNDPivotChannelTimebandData ? dashboard.spendVNDPivotChannelTimebandData?.data : 'isLoading'}
                                         nameChart="Xu hướng quảng cáo theo khung giờ (Triệu VND)"
@@ -572,7 +579,7 @@ const DashboardContent = () => {
                                 <InforTab inforTab={"Hiệu quả"} />
                                 <InforFilter filters={scopeFilterData} FilterComponent={FilterSpot} />
                                 <div className='px-6 max-lg:px-5 max-md:px-4'>
-                                  <div className='w-full py-6 max-md:py-4'>
+                                  <div className='w-full py-6 max-lg:py-5 max-md:py-4'>
                                       <ChildTabs tabs={[
                                       {id: 'grp', label: 'GRP',
                                       content: (
@@ -625,7 +632,7 @@ const DashboardContent = () => {
                                       )}
                                       ]} />
                                   </div>
-                                  <div className='w-full pb-6 max-md:pb-4 flex max-md:flex-wrap gap-6 max-md:gap-4'>
+                                  <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4 flex max-md:flex-wrap gap-6 max-lg:gap-5 max-md:gap-4'>
                                     <div className='w-[60%] max-md:w-full'>
                                       <BarChart 
                                         data={!dashboard.isLoading.grpBarRegionalBrandData ? transformBarChartData(dashboard.grpBarRegionalBrandData?.data, dashboard.grpBarRegionalBrandData?.colnames) : 'isLoading'}
@@ -653,7 +660,7 @@ const DashboardContent = () => {
                                       />
                                     </div>
                                   </div>
-                                  <div className='w-full pb-6 max-md:pb-4'>
+                                  <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
                                       <ChildTabs tabs={[
                                       {id: 'spend', label: 'AD SPEND',
                                       content: (
@@ -813,7 +820,7 @@ const DashboardContent = () => {
                                       )}
                                       ]} />
                                   </div>
-                                  <div className='w-full pb-6 max-md:pb-4'>
+                                  <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
                                       <TableChart data={!dashboard.isLoading.allTableBrandData ? transformTableChartData(dashboard.allTableBrandData?.data, dashboard.allTableBrandData?.colnames) : 'isLoading'}
                                                 height={CUSTOM_CHART.tableChart.tableChartChannel.height}
                                                 fontSize={CUSTOM_CHART.tableChart.fontSize}
@@ -825,7 +832,7 @@ const DashboardContent = () => {
                                                 showPagination={false}
                                                 customCol={{'Nhãn': {weight: 600, minSize: 100, maxSize: 170, sticky: true}}} />
                                   </div>
-                                  <div className='w-full pb-6 max-md:pb-4'>
+                                  <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
                                       <TableChart data={!dashboard.isLoading.allTableBrandProgramData ? transformTableChartData(dashboard.allTableBrandProgramData?.data, dashboard.allTableBrandProgramData?.colnames) : 'isLoading'}
                                                 height={CUSTOM_CHART.tableChart.tableChartChannel.height}
                                                 fontSize={CUSTOM_CHART.tableChart.fontSize}
@@ -837,7 +844,7 @@ const DashboardContent = () => {
                                                 showPagination={false}
                                                 customCol={{'Nhãn': {weight: 600, minSize: 100, maxSize: 170, sticky: true}, 'CHƯƠNG TRÌNH': {minSize: 100, maxSize: 170}}} />
                                   </div>
-                                  <div className='w-full pb-6 max-md:pb-4'>
+                                  <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
                                       <TableChart data={!dashboard.isLoading.allTableDeviceData ? transformTableChartData(dashboard.allTableDeviceData?.data, dashboard.allTableDeviceData?.colnames) : 'isLoading'}
                                                 height={CUSTOM_CHART.tableChart.tableChartChannel.height}
                                                 fontSize={CUSTOM_CHART.tableChart.fontSize}
@@ -861,7 +868,7 @@ const DashboardContent = () => {
                                 <InforTab inforTab={"Rating theo phút - P4+ toàn quốc"} />
                                 <InforFilter filters={scopeFilterData} FilterComponent={FilterSpot} />
                                 <div className='px-6 max-lg:px-5 max-md:px-4'>
-                                  <div className='w-full py-6 max-md:py-4'>
+                                  <div className='w-full py-6 max-lg:py-5 max-md:py-4'>
                                     <TableChart data={!dashboard.isLoading.allTableMonitoringData ? transformTableChartData(dashboard.allTableMonitoringData?.data, dashboard.allTableMonitoringData?.colnames) : 'isLoading'}
                                                 height={'600px'}
                                                 fontSize={CUSTOM_CHART.tableChart.fontSize}

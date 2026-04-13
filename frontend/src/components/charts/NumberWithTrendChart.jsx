@@ -30,8 +30,8 @@ const NumberWithTrendChart = ({
   
   if(data==='isLoading') {
     return (
-      <div className={`p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component`} style={{ height: `${height}px` }}>
-        <NameChart nameChart={nameChart} description={description} icon={icon} width='w-5.5' backgound='bg-background-succes-type-2 dark:bg-background-succes-type-2-dark' />
+      <div className={`p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component`} style={{ height: `${height}px` }}>
+        <NameChart nameChart={nameChart} description={description} icon={icon} width='w-5.5 max-lg:w-5' backgound='bg-background-succes-type-2 dark:bg-background-succes-type-2-dark' />
         <Loading height={270} />
       </div>
     );
@@ -157,23 +157,23 @@ const NumberWithTrendChart = ({
   }, [data, trendPercent]);
   
   return (
-    <div className={`p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component`} style={{ height: `${height}px` }}>
-      <NameChart nameChart={nameChart} description={description} icon={icon} width='w-5.5' backgound='bg-background-succes-type-2 dark:bg-background-succes-type-2-dark' getChartData={getEChartsData} />
-      <div className='flex items-center mb-2'><span className='text-color-black-100 dark:text-color-white-50 transition-all duration-300 font-normal text-sm max-md:text-xs'>Ngày {currentDate}</span></div>
-      <div className="mb-6 flex items-center gap-3 max-md:gap-2">
-        <h4 className='text-5xl max-md:text-4xl text-color-black-100 dark:text-color-white-90 transition-all duration-300 font-semibold'>{currentValue.toLocaleString(undefined, { maximumFractionDigits: (nameChart.includes('%') ? 2 : 0) })} {!stateGlobals.screen_md && suffix}</h4>
+    <div className={`p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component`} style={{ height: `${height}px` }}>
+      <NameChart nameChart={nameChart} description={description} icon={icon} width='w-5.5 max-lg:w-5' backgound='bg-background-succes-type-2 dark:bg-background-succes-type-2-dark' getChartData={getEChartsData} />
+      <div className='flex items-center mb-2'><span className='text-color-black-100 dark:text-color-white-50 transition-all duration-300 font-normal text-sm max-lg:text-[13px] max-md:text-xs'>Ngày {currentDate}</span></div>
+      <div className="mb-6 max-lg:mb-5 max-md:mb-4 flex items-center gap-3 max-lg:gap-2.5 max-md:gap-2">
+        <h4 className='text-5xl max-lg:text-4xl max-md:text-4xl text-nowrap text-color-black-100 dark:text-color-white-90 transition-all duration-300 font-semibold'>{currentValue.toLocaleString(undefined, { maximumFractionDigits: (nameChart.includes('%') ? 2 : 0) })} {!stateGlobals.screen_md && suffix}</h4>
         <div className='flex gap-2 items-center'>
-          <div className={`px-2 py-1 rounded-lg flex items-center gap-1 border ${trendPercent > 0 ? 'bg-background-succes-type-1 text-color-succes-type-1 border-border-succes-type-1 dark:bg-background-succes-type-1-dark dark:text-color-succes-type-1-dark dark:border-border-succes-type-1-dark' : 'bg-background-error text-color-error border-border-error'}`}>
-            <span className='text-sm max-md:text-xs font-semibold'>{trendPercent.toFixed(1)}{unit}</span>
-            <figure><img src={trendPercent > 0 ? iconArrowUp45 : iconArrowDown45} alt="Icon Arrow Up 45" className='w-2.25 h-2.25' /></figure>
+          <div className={`px-2 max-lg:px-1.5 py-1 rounded-lg flex items-center gap-1 border ${trendPercent > 0 ? 'bg-background-succes-type-1 text-color-succes-type-1 border-border-succes-type-1 dark:bg-background-succes-type-1-dark dark:text-color-succes-type-1-dark dark:border-border-succes-type-1-dark' : 'bg-background-error text-color-error border-border-error'}`}>
+            <span className='text-sm max-lg:text-[13px] max-md:text-xs font-semibold'>{trendPercent.toFixed(1)}{unit}</span>
+            <figure><img src={trendPercent > 0 ? iconArrowUp45 : iconArrowDown45} alt="Icon Arrow Up 45" className='w-2.25 max-lg:w-2 h-2.25 max-lg:h-2' /></figure>
           </div>
-          <span className='text-sm max-md:text-xs text-color-black-50 dark:text-color-white-50 transition-all duration-300 font-normal'>{trendPeriod}</span>
+          <span className='text-sm max-lg:text-[13px] max-md:text-xs text-color-black-50 dark:text-color-white-50 transition-all duration-300 font-normal'>{trendPeriod}</span>
         </div>
       </div>
       <div className="w-full">
         <ReactECharts
           option={chartOption}
-          style={{ width: '100%', height: !stateGlobals.screen_md ? 170 : 115 }}
+          style={{ width: '100%', height: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? 170 : 150 : 115 }}
           opts={{ renderer: 'canvas', locale: 'VN' }}
         />
       </div>

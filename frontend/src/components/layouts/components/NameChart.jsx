@@ -420,9 +420,9 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
   const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
 
   return (
-      <div className={`${opacity ? 'opacity-0 invisible' : ''} pb-6 max-md:pb-4 text-[16px] max-md:text-xs font-semibold text-color-black-100 dark:text-color-white-90 transition-all duration-300 flex justify-between ${!display ? 'absolute top-0 left-0 p-6 w-full max-md:p-4' : ''}`}>
-        <div className='flex items-center gap-2 max-md:gap-1 text-nowrap'>
-          {icon && <div className={`w-8 h-8 max-md:w-7 max-md:h-7 max-md:hidden flex justify-center items-center rounded-lg ${backgound} transition-all duration-300`}><figure><img src={icon} className={`${width+' '+height+' '+backgound}`} /></figure></div>}
+      <div className={`${opacity ? 'opacity-0 invisible' : ''} pb-6 max-lg:pb-5 max-md:pb-4 text-[16px] max-lg:text-sm max-md:text-xs font-semibold text-color-black-100 dark:text-color-white-90 transition-all duration-300 flex justify-between ${!display ? 'absolute top-0 left-0 w-full p-6 max-lg:p-5 max-md:p-4' : ''}`}>
+        <div className='flex items-center gap-2 max-lg:gap-1.5 max-md:gap-1 text-nowrap'>
+          {icon && <div className={`w-8 h-8 max-lg:w-7.5 max-lg:h-7.5 max-md:w-7 max-md:h-7 max-md:hidden flex justify-center items-center rounded-lg ${backgound} transition-all duration-300`}><figure><img src={icon} className={`${width+' '+height+' '+backgound}`} /></figure></div>}
           <span>{nameChart}</span>
           {description && <IconInfor description={description} />}
         </div>
@@ -436,19 +436,19 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
           }
           {(!userLoading && user?.username !== 'vtvguest') &&
           (<figure ref={!stateGlobals.screen_md ? buttonRef : undefined} className='p-2 cursor-pointer relative' onClick={handleToggle}>
-            <img src={!stateGlobals.darkMode ? iconDownloadDark : iconDownloadDarkDark} alt="Icon Download" className='w-3.25' />
+            <img src={!stateGlobals.darkMode ? iconDownloadDark : iconDownloadDarkDark} alt="Icon Download" className='w-3.25 max-lg:w-3' />
             <div ref={!stateGlobals.screen_md ? dropdownRef : undefined} className={`${isDropdownOpen ? 'scale-100 opacity-100 origin-top' : 'scale-0 opacity-0 origin-top'} left-1/2 -translate-x-1/2 transition-all duration-300 absolute z-20 top-full bg-background-light dark:bg-background-dark dark:border-background-white-15 flex flex-col border border-border-black-10 rounded-xl w-28 overflow-hidden`}>
                 <div onClick={!isFirefox ? handleChartCapture : handleChartCaptureFireFox} className='hover:bg-background-black-4 dark:hover:bg-background-hover-dark transition-all duration-300'>
                     <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-90'} src={iconIMG}
-                            widthImage='w-4' alt='Icon Instruct' text={'Tải Ảnh'} />
+                            widthImage='w-4 max-lg:w-3.75 max-md:w-3.75' alt='Icon Instruct' text={'Tải Ảnh'} />
                 </div>
                 <div onClick={table ? handleChartExcelTable : handleChartExcel} className='hover:bg-background-black-4 dark:hover:bg-background-hover-dark transition-all duration-300'>
                     <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-90'} src={iconExcel}
-                    widthImage='w-4' alt='Icon Instruct' text={'Tải Excel'} />
+                    widthImage='w-4 max-lg:w-3.75 max-md:w-3.75' alt='Icon Instruct' text={'Tải Excel'} />
                 </div>
             </div>
           </figure>)}
-          <figure className='p-2 cursor-pointer'><img src={!stateGlobals.darkMode ? iconEyeHidden : iconEyeHiddenDark} alt="Icon Eye Hidden" className='w-4.5' onClick={handleHideChart} />
+          <figure className='p-2 cursor-pointer'><img src={!stateGlobals.darkMode ? iconEyeHidden : iconEyeHiddenDark} alt="Icon Eye Hidden" className='w-4.5 max-lg:w-4' onClick={handleHideChart} />
           </figure>
         </div>
         <div className='hidden div-hideen max-md:block'>
@@ -472,7 +472,7 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
             </div>
           </figure>
         </div>
-        <span className='text-color-error font-semibold text-xs hidden max-md:hidden'></span>
+        <span className='text-color-error font-semibold text-xs max-lg:text-[11px] hidden max-md:hidden'></span>
       </div>
   );
 };

@@ -25,16 +25,16 @@ const TreeMapChart = ({
   
   if(data==='isLoading') {
     return (
-      <div className='p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
+      <div className='p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
         <NameChart nameChart={nameChart} description={description} />
-        <Loading height={!stateGlobals.screen_md ? height : 240} />
+        <Loading height={!stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : 290 : 240} />
       </div>
     );
   } else if (!data) {
     return (
-      <div className='p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
+      <div className='p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
         <NameChart nameChart={nameChart} description={description} />
-        <NoData height={!stateGlobals.screen_md ? height : 240} />
+        <NoData height={!stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : 290 : 240} />
       </div>
     );
   }
@@ -170,12 +170,12 @@ const TreeMapChart = ({
         }) || 0;
         
         return `
-           <div style="padding: ${!stateGlobals.screen_md ? '12' : '4'}px ${!stateGlobals.screen_md ? '16' : '8'}px; box-shadow: 0 ${!stateGlobals.screen_md ? '4' : '2'}px ${!stateGlobals.screen_md ? '12' : '4'}px rgba(0,0,0,0.1);">
-            <div style="font-weight: 600; font-size: ${!stateGlobals.screen_md ? '13' : '11'}px; color: rgba(0, 0, 0, 0.7);">
+           <div style="padding: ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '12' : '11' : '4'}px ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '16' : '15' : '8'}px; box-shadow: 0 ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '4' : '3' : '2'}px ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '12' : '11' : '4'}px rgba(0,0,0,0.1);">
+            <div style="font-weight: 600; font-size: ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '13' : '12' : '11'}px; color: rgba(0, 0, 0, 0.7);">
               ${path}
             </div>
-            <div style="font-weight: 500; color: #059669; font-size: ${!stateGlobals.screen_md ? '12' : '10.5'}px;">
-              <span>${value?.toLocaleString(undefined, { maximumFractionDigits: (nameChart.includes('%') ? 2 : 0) }) || 0} <span style="font-size: ${!stateGlobals.screen_md ? '11' : '10'}px">(${percent.toFixed(2)}%)</span></span>
+            <div style="font-weight: 500; color: #059669; font-size: ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '12' : '11' : '10.5'}px;">
+              <span>${value?.toLocaleString(undefined, { maximumFractionDigits: (nameChart.includes('%') ? 2 : 0) }) || 0} <span style="font-size: ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '11' : '10.5' : '10'}px">(${percent.toFixed(2)}%)</span></span>
             </div>
           </div>
         `;
@@ -196,7 +196,7 @@ const TreeMapChart = ({
         },
         label: {
           show: true,
-          fontSize: !stateGlobals.screen_md ? fontSize.label : '10.5px',
+          fontSize: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.label : '11px' : '10.5px',
           fontWeight: fontWeight.label,
           fontFamily: fontFamily,
           color: 'rgba(255, 255, 255, 1)',
@@ -206,30 +206,30 @@ const TreeMapChart = ({
           },
           rich: {
             name: {
-              fontSize: !stateGlobals.screen_md ? fontSize.label : '10.5px',
+              fontSize: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.label : '11px' : '10.5px',
               fontWeight: fontWeight.label,
               color: 'rgba(255, 255, 255, 1)',
             },
             value: {
-              fontSize: !stateGlobals.screen_md ? fontSize.label : '10.5px',
+              fontSize: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.label : '11px' : '10.5px',
               fontWeight: fontWeight.label,
               color: 'rgba(255, 255, 255, 1)'
             }
           }
         },
         itemStyle: {
-          borderRadius: !stateGlobals.screen_md ? 16 : 5,
+          borderRadius: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? 16 : 15 : 5,
         },
         emphasis: {
           label: {
             show: true,
-            fontSize: !stateGlobals.screen_md ? fontSize.label : '10.5px' + 2,
+            fontSize: (!stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.label : 11 : 10.5) + 2,
             rich: {
               name: {
-                fontSize: !stateGlobals.screen_md ? fontSize.label : '10.5px' + 2
+                fontSize: (!stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.label : 11 : 10.5) + 2
               },
               value: {
-                fontSize: !stateGlobals.screen_md ? fontSize.label : '10.5px' + 2
+                fontSize: (!stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.label : 11 : 10.5) + 2
               }
             }
           },
@@ -242,7 +242,7 @@ const TreeMapChart = ({
           {
             itemStyle: {
               borderWidth: 0,
-              gapWidth: !stateGlobals.screen_md ? 5 : 1,
+              gapWidth: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? 5 : 4 : 1,
               borderColor: !stateGlobals.darkMode ? 'rgba(255, 255, 255, 1)' : 'rgba(28, 37, 52, 1)'
             },
             colorSaturation: colorSaturation
@@ -254,12 +254,12 @@ const TreeMapChart = ({
   };
 
   return (
-    <div className='p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
+    <div className='p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
       <NameChart nameChart={nameChart} description={description} getChartData={getEChartsData} />
       <ReactECharts
         ref={chartRef}
         option={option}
-        style={{ height: !stateGlobals.screen_md ? height : 240, width: '100%' }}
+        style={{ height: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : 290 : 240, width: '100%' }}
         opts={{
           renderer: 'canvas',
           locale: 'VN'

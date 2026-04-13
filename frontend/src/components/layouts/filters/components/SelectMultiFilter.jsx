@@ -17,7 +17,7 @@ const SelectMultiFilter = ({
   horizontalFixed=false
 }) => {
   
-  const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
+   const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
 
    const darkMode = stateGlobals.darkMode;
    const isMobile = stateGlobals.screen_md;

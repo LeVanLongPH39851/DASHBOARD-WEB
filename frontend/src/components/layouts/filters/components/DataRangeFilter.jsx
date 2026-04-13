@@ -1,6 +1,6 @@
 // src/components/filters/DateRangeFilter.jsx
 import { useState, useEffect } from 'react';
-import { getYesterday } from '../../../../helpers/helper';
+import { getYesterday, formatDate } from '../../../../helpers/helper';
 import iconArrowUpGray from '../../../../assets/icon_arrow_up_gray.png';
 import iconArrowUpGrayDark from '../../../../assets/icon_arrow_up_gray_dark.png';
 import { useDashboardStateGlobals } from '../../../../context/DashboardFilterContext';
@@ -59,23 +59,29 @@ const DateRangeFilter = ({ startDate, endDate, onChange, horizontalFixed=false }
       <div className={!horizontalFixed ? `transition-all duration-300 relative filter-relative overflow-hidden` : ''} data-initial-height="match">
         <div className={`flex ${horizontalFixed ? 'gap-1 max-md:grid max-md:grid-cols-2' : 'flex-col'} ${!horizontalFixed ? `transition-all duration-300 absolute w-full left-0 filter-absolute ${isOpenFilter ? 'visible opacity-100 top-0' : 'invisible opacity-0 -top-1/2'}` : ''}`}>
           {!horizontalFixed && <label className='text-sm max-lg:text-[13px] max-md:text-xs font-normal text-color-black-50 dark:text-color-white-50 transition-all duration-300 mb-1.5 max-md:mb-1'>Từ ngày</label>}
-          <input
-            className={`px-4 max-lg:px-3 max-md:px-2.5 rounded-xl border border-background-line-gray max-md:w-full dark:border-background-white-15 text-sm max-lg:text-[13px] max-md:text-xs font-normal text-color-black-50 dark:text-color-white-50 transition-all duration-300 dark:bg-background-white-8 outline-none ${horizontalFixed ? 'py-2 max-lg:py-1.5 max-md:py-1.5' : 'mb-2 py-2.25 max-lg:py-1.75 max-md:py-1.5'}`}
-            type="date"
-            value={localStart}
-            min={getMinStartDate(localEnd)}
-            max={localEnd}
-            onChange={handleStartChange}
-          />
+          <div className={`relative w-full ${!horizontalFixed ? 'mb-2' : ''}`}>
+            <input
+              className={`px-4 max-lg:px-3 max-md:px-3 rounded-xl border border-background-line-gray w-full dark:border-background-white-15 text-sm max-lg:text-[13px] max-md:text-xs font-normal text-transparent transition-all duration-300 dark:bg-background-white-8 outline-none ${horizontalFixed ? 'py-2 max-lg:py-1.5 max-md:py-1.5' : 'py-2.25 max-lg:py-1.75 max-md:py-1.5'}`}
+              type="date"
+              value={localStart}
+              min={getMinStartDate(localEnd)}
+              max={localEnd}
+              onChange={handleStartChange}
+            />
+            <span className='absolute left-4 max-lg:left-3 max-md:left-3 top-1/2 -translate-y-1/2 text-sm max-lg:text-[13px] max-md:text-xs font-normal text-color-black-50 dark:text-color-white-50 transition-all duration-300'>{formatDate(localStart)}</span>
+          </div>
           {!horizontalFixed && <label className='text-sm max-lg:text-[13px] max-md:text-xs font-normal text-color-black-50 dark:text-color-white-50 transition-all duration-300 mb-1.5 max-md:mb-1'>Đến ngày</label>}
-          <input
-            className={`px-4 max-lg:px-3 max-md:px-2.5 rounded-xl border border-background-line-gray max-md:w-full dark:border-background-white-15 text-sm max-lg:text-[13px] max-md:text-xs font-normal text-color-black-50 dark:text-color-white-50 transition-all duration-300 dark:bg-background-white-8 outline-none ${horizontalFixed ? 'py-2 max-lg:py-1.5 max-md:py-1.5' : 'py-2.25 max-lg:py-1.75 max-md:py-1.5'}`}
-            type="date"
-            value={localEnd}
-            min={localStart}
-            max={yesterday}
-            onChange={handleEndChange}
-          />
+          <div className='relative w-full'>
+            <input
+              className={`px-4 max-lg:px-3 max-md:px-3 rounded-xl border border-background-line-gray w-full dark:border-background-white-15 text-sm max-lg:text-[13px] max-md:text-xs font-normal text-transparent transition-all duration-300 dark:bg-background-white-8 outline-none ${horizontalFixed ? 'py-2 max-lg:py-1.5 max-md:py-1.5' : 'py-2.25 max-lg:py-1.75 max-md:py-1.5'}`}
+              type="date"
+              value={localEnd}
+              min={localStart}
+              max={yesterday}
+              onChange={handleEndChange}
+            />
+            <span className='absolute left-4 max-lg:left-3 max-md:left-3 top-1/2 -translate-y-1/2 text-sm max-lg:text-[13px] max-md:text-xs font-normal text-color-black-50 dark:text-color-white-50 transition-all duration-300'>{formatDate(localEnd)}</span>
+          </div>
         </div>
       </div>
     </div>

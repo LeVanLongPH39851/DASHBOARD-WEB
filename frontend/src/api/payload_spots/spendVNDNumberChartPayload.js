@@ -2,7 +2,7 @@ export const spendVNDNumberChartPayload = {
   url: `${import.meta.env.VITE_API_DOMAIN}/api/v1/chart/data?form_data=%7B%22slice_id%22%3A567%7D&dashboard_id=49`,
   payload: {
     "datasource": {
-      "id": 195,
+      "id": 266,
       "type": "table"
     },
     "force": false,
@@ -61,7 +61,7 @@ export const spendVNDNumberChartPayload = {
       }
     ],
     "form_data": {
-      "datasource": "195__table",
+      "datasource": "266__table",
       "viz_type": "big_number",
       "slice_id": 567,
       "url_params": {},
@@ -92,9 +92,8 @@ export const spendVNDNumberChartPayload = {
       "y_axis_format": ",.2f",
       "time_format": "%d/%m/%Y",
       "rolling_type": "None",
-      "annotation_layers": [],
       "dashboards": [
-        80
+        49
       ],
       "extra_form_data": {
         "time_range": "DATEADD(DATETIME(\"today\"),-2, DAY) : DATEADD(DATETIME(\"today\"),-1, SECOND)"
@@ -128,7 +127,51 @@ export const spendVNDNumberChartPayload = {
         "Quảng cáo": "#B17BAA"
       },
       "shared_label_colors": [
-        "price"
+        "2.Trưa (11h - 14h)",
+        "3.Chiều (14h - 18h)",
+        "4.Tối (18h - 24h)",
+        "AJINOMOTO VIETNAM",
+        "BONCHA (RTD GREEN TEA)",
+        "CASPER (AIR CONDITIONER)",
+        "CHARMORA CITY NHA TRANG",
+        "CONG TY CO PHAN TAP DOAN TRUONG HAI",
+        "Dành cho trẻ em",
+        "Giáo dục - Đào tạo",
+        "Giải trí",
+        "HOA PHAT (TOLE)",
+        "ICH NIEU KHANG (PROSTATE DISORDER SUPP.)",
+        "KANGAROO (WATER FILTER)",
+        "LPBANK",
+        "PONNIE",
+        "Phim dài tập",
+        "Quảng bá",
+        "Quảng cáo",
+        "SAM NHUNG BO THAN TW3 (ORIENTAL KIDNEY RESTORATIVE MEDICINE)",
+        "SUN GROUP VIETNAM (REAL ESTATE COMPANY)",
+        "SUN PHUQUOC AIRWAYS",
+        "Sự kiện - Đặc biệt",
+        "TAM BINH (DRINK SUPP.)",
+        "TH TRUE MILK (FRESH MILK)",
+        "TH TRUE YOGURT (EATING & FLAVOURED YOGHURT)",
+        "THEP VAS",
+        "TRUONG HAI AUTO CO., LTD",
+        "Thể thao",
+        "Thời sự - Chính luận",
+        "Tài liệu - Phóng sự",
+        "VTV1",
+        "VTV10",
+        "VTV2",
+        "VTV3",
+        "VTV4",
+        "VTV5",
+        "VTV5 Tây Nam Bộ",
+        "VTV5 Tây Nguyên",
+        "VTV7",
+        "VTV8",
+        "VTV9",
+        "ZOZO IMUSE (COLD-FLU SUPP.)",
+        "price",
+        "Đời sống"
       ],
       "map_label_colors": {},
       "extra_filters": [],

@@ -146,7 +146,7 @@ const FilterSpot = ({ filters, horizontalFixed=false
     let wasSticky = false;
 
     const handleScroll = () => {
-      const threshold = window.innerWidth < 1025 ? 40 : 60;
+      const threshold = window.innerWidth < 1025 ? 40 : window.innerWidth < 1707 ? 52 : 60;
       const isSticky = window.scrollY > threshold;
 
       if (isSticky === wasSticky) return;

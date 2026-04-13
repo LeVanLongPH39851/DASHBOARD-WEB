@@ -2,7 +2,7 @@
 @custom-variant dark (&:where(.dark, .dark *));
 @theme {
   --breakpoint-md: 1025px;
-  --breakpoint-lg: 1700px;
+  --breakpoint-lg: 1707px;
   --color-background-dashboard: rgba(249, 251, 252, 1);
   --color-background-light: rgba(255, 255, 255, 1);
   --color-color-dark: rgba(0, 0, 0, 1);

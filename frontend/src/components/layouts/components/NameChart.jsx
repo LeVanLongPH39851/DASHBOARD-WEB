@@ -83,7 +83,7 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
     const divTables = document.querySelectorAll('.divTable');
     iconNone.classList.add('hidden');
     const now = new Date();
-    const timeStr = `Thời gian export: ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')} ${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
+    const timeStr = `Thời gian xuất: ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')} ${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
     errorSpan.classList.remove('hidden');
     errorSpan.textContent = timeStr;
     divTables.forEach(table => table?.classList.replace('overflow-auto', 'overflow-hidden'));
@@ -126,7 +126,7 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
     if (!chartParent || !iconNone || !errorSpan) return;
 
     const now = new Date();
-    const timeStr = `Thời gian export: ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')} ${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
+    const timeStr = `Thời gian xuất: ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')} ${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
 
     try {
       iconNone.classList.add('hidden');

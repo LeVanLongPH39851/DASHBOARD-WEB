@@ -725,7 +725,7 @@ const DashboardContent = () => {
                                                 showSTT={CUSTOM_CHART.tableChart.tableProgramChannel.STT}
                                                 showPagination={CUSTOM_CHART.tableChart.tableProgramChannel.pagination}
                                                 fullScreen={true}
-                                                customCol={CUSTOM_CHART.tableChart.tableProgramChannel.customCol} />
+                                                customCol={CUSTOM_CHART.tableChart.tableProgramChannel.programDetail.customCol} />
                                   </div>
                                   <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
                                     <TableChart data={!dashboard.isLoading.allTableEventData ? transformTableChartData(dashboard.allTableEventData?.data, dashboard.allTableEventData?.colnames, CUSTOM_CHART.tableChart.tableProgramChannel.programEvent.columnSort) : 'isLoading'}
@@ -771,6 +771,7 @@ const DashboardContent = () => {
                                               legendTop={CUSTOM_CHART.lineChart.lineChartMinuteChannel.legendTop}
                                               xAxisTitle={CUSTOM_CHART.lineChart.xAxisTitleMinute}
                                               fullScreen={true}
+                                              textOverflow={true}
                                     />
                                   </div>
                                   <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
@@ -791,6 +792,7 @@ const DashboardContent = () => {
                                               legendTop={CUSTOM_CHART.lineChart.lineChartMinuteChannel.legendTop}
                                               xAxisTitle={CUSTOM_CHART.lineChart.xAxisTitleMinute}
                                               fullScreen={true}
+                                              textOverflow={true}
                                     />
                                   </div>
                                   <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
@@ -810,6 +812,7 @@ const DashboardContent = () => {
                                               showTopNSeries={0}
                                               legendTop={CUSTOM_CHART.lineChart.lineChartMinuteChannel.legendTop}
                                               fullScreen={true}
+                                              textOverflow={true}
                                     />
                                   </div>
                                 </div>

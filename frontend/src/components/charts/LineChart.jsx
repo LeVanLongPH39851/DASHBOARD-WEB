@@ -29,7 +29,8 @@ const LineChart = ({
   legendTop=false,
   KMB=true,
   xAxisTitle=false,
-  fullScreen=false
+  fullScreen=false,
+  textOverflow=false
 }) => {
 
   const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
@@ -85,7 +86,7 @@ const LineChart = ({
       showTopNSeries = labels.length > 1 ? 3 : showTopNSeries;
     }
     
-    if (stateGlobals.screen_lg && labels.length > 1) {
+    if (stateGlobals.screen_lg && showTopNSeries !==0  && labels.length > 1) {
       showTopNSeries = 1;
     }
 
@@ -290,7 +291,8 @@ const LineChart = ({
       right: 0,                 // Giữ khoảng cách bên phải giống grid
       align: 'left',
       itemWidth: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? 14 : 12 : 10,
-      itemHeight: 10,
+      itemHeight: 10,  // ✅ Tăng từ 10 lên 14 để có chỗ cho dấu
+      lineHeight: 10, 
       icon: 'circle',
       itemGap: !legendTop ? 8 : 10,
       textStyle: { 
@@ -298,7 +300,9 @@ const LineChart = ({
         color: !stateGlobals.darkMode ? 'rgba(30, 27, 57, 1)' : 'rgba(255, 255, 255, 0.8)',
         fontWeight: fontWeight.legend,
         letterSpacing: '0.1px',
-        fontFamily: fontFamily
+        fontFamily: fontFamily,
+        height: textOverflow && legendTop ? 20 : 10,
+        lineHeight: textOverflow && legendTop ? 20 : 10
       },
       selector: [
         { type: 'all', title: 'All' },
@@ -457,7 +461,7 @@ const LineChart = ({
           position: 'top',
           offset: [0, labelOffset],
           formatter: (params) => params.value ? nameChart.includes('%') ? params.value.toLocaleString(undefined, { maximumFractionDigits: (nameChart.includes('%') ? 2 : 0) }) : !stateGlobals.screen_md && !KMB ? params.value.toLocaleString(undefined, { maximumFractionDigits: (nameChart.includes('%') ? 2 : 0) }) : formatKMB(params.value) : '',
-          fontSize: fontSize.dataLabel,
+          fontSize: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.dataLabel : '11px' : '10.5px',
           fontWeight: fontWeight.dataLabel,
           fontFamily: fontFamily,
           color: color

@@ -180,3 +180,7 @@ html.dark body::-webkit-scrollbar-thumb, html.dark #filter::-webkit-scrollbar-th
 .fullscreen-canvas {
   height: calc(100vh - 102px) !important;
 }
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0;
+}

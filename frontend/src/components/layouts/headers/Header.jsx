@@ -15,7 +15,7 @@ import iconUserInfor from '../../../assets/icon_user_infor.png';
 import iconUserInforDark from '../../../assets/icon_user_infor_dark.png';
 import iconLogout from '../../../assets/icon_logout.png';
 
-const Header = () => {
+const Header = ({ username }) => {
     
     const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
 
@@ -155,7 +155,7 @@ const Header = () => {
                 <div ref={dropdownRef} className={`${isDropdownOpen ? 'scale-100 opacity-100 origin-top' : 'scale-0 opacity-0 origin-top'} transition-all duration-300 absolute top-full left-0 bg-background-light dark:bg-background-dark flex flex-col border border-border-black-10 dark:border-background-white-15 rounded-xl w-full overflow-hidden`}>
                         <div className='hover:bg-background-black-4 dark:hover:bg-color-black-70 transition-all duration-300'>
                             <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-80'} src={!stateGlobals.darkMode ? iconUserInfor : iconUserInforDark}
-                                        widthImage='w-4.5 max-lg:w-4.25 max-md:w-4' alt='Icon User' text={'vtvguest'} />
+                                        widthImage='w-4.5 max-lg:w-4.25 max-md:w-4' alt='Icon User' text={username ? username : 'vtvguest'} />
                         </div>
                         <div className='hover:bg-background-black-4 dark:hover:bg-color-black-70 transition-all duration-300'>
                             <Button background={'bg-transparent'} color={'text-color-error'} src={iconLogout}

@@ -63,7 +63,7 @@ const DashboardContent = () => {
 
   return (
     <main className='font-family-be-vietnam-pro w-full h-full tracking-[0.1px] overflow-x-clip'>
-      <Header />
+      <Header username={user?.username} />
       <div className='flex w-full h-full bg-background-light dark:bg-background-dark transition-all duration-300'>
         <Filter filters={scopeFilterData} />
         <div className={`${stateGlobals.isOpen && !stateGlobals.horizontal ? 'w-[84%] max-md:w-full' : 'w-full'} transition-all duration-300 bg-background-dashboard dark:bg-background-dashboard-dark`}>

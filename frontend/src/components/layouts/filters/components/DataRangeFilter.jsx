@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react';
 import { getYesterday, formatDate } from '../../../../helpers/helper';
 import iconArrowUpGray from '../../../../assets/icon_arrow_up_gray.png';
 import iconArrowUpGrayDark from '../../../../assets/icon_arrow_up_gray_dark.png';
+import iconCalendar from '../../../../assets/icon_input_date.png';
+import iconCalendarDark from '../../../../assets/icon_calendar_dark.png';
 import { useDashboardStateGlobals } from '../../../../context/DashboardFilterContext';
 
 const DateRangeFilter = ({ startDate, endDate, onChange, horizontalFixed=false }) => {
@@ -47,6 +49,20 @@ const DateRangeFilter = ({ startDate, endDate, onChange, horizontalFixed=false }
     onChange?.({ startDate: localStart, endDate: value });
   };
 
+  const showPicker = (e) => {
+    const wrapper = e.currentTarget.parentElement;
+    const input = wrapper.querySelector('input[type="date"]');
+
+    if (!input) return;
+
+    try {
+      input.showPicker();
+    } catch {
+      input.focus();
+      input.click();
+    }
+  };
+
   const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
   const [isOpenFilter, setIsOpenFilter] = useState(true);
 
@@ -68,7 +84,10 @@ const DateRangeFilter = ({ startDate, endDate, onChange, horizontalFixed=false }
               max={localEnd}
               onChange={handleStartChange}
             />
-            <span className='absolute left-4 max-lg:left-3 max-md:left-3 top-1/2 -translate-y-1/2 text-sm max-lg:text-[13px] max-md:text-xs font-normal text-color-black-50 dark:text-color-white-50 transition-all duration-300'>{formatDate(localStart)}</span>
+            <span className='absolute left-4 max-lg:left-3 max-md:left-3 top-1/2 -translate-y-1/2 text-sm max-lg:text-[13px] max-md:text-xs font-normal text-color-black-50 dark:text-color-white-50 transition-all duration-300 bg-background-light dark:bg-inherit pr-3'>{formatDate(localStart)}</span>
+            <figure onClick={showPicker} className='cursor-pointer absolute right-4.75 max-lg:right-3.75 top-1/2 -translate-y-1/2'>
+              <img src={iconCalendar} className='w-3 max-lg:w-2.75 max-md:w-2.5' alt="Icon Calendar" />
+            </figure>
           </div>
           {!horizontalFixed && <label className='text-sm max-lg:text-[13px] max-md:text-xs font-normal text-color-black-50 dark:text-color-white-50 transition-all duration-300 mb-1.5 max-md:mb-1'>Đến ngày</label>}
           <div className='relative w-full'>
@@ -80,7 +99,10 @@ const DateRangeFilter = ({ startDate, endDate, onChange, horizontalFixed=false }
               max={yesterday}
               onChange={handleEndChange}
             />
-            <span className='absolute left-4 max-lg:left-3 max-md:left-3 top-1/2 -translate-y-1/2 text-sm max-lg:text-[13px] max-md:text-xs font-normal text-color-black-50 dark:text-color-white-50 transition-all duration-300'>{formatDate(localEnd)}</span>
+            <span className='absolute left-4 max-lg:left-3 max-md:left-3 top-1/2 -translate-y-1/2 text-sm max-lg:text-[13px] max-md:text-xs font-normal text-color-black-50 dark:text-color-white-50 transition-all duration-300 bg-background-light dark:bg-inherit pr-3'>{formatDate(localEnd)}</span>
+            <figure onClick={showPicker} className='cursor-pointer absolute right-4.75 max-lg:right-3.75 top-1/2 -translate-y-1/2'>
+              <img src={iconCalendar} className='w-3 max-lg:w-2.75 max-md:w-2.5' alt="Icon Calendar" />
+            </figure>
           </div>
         </div>
       </div>

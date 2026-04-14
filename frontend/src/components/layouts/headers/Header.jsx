@@ -107,20 +107,35 @@ const Header = ({ username }) => {
         window.location.href = CUSTOM_CHART.domain + '/logout/';
     };
 
-    const now = new Date();
+    const [currentTime, setCurrentTime] = useState('');
+    const [currentDate, setCurrentDate] = useState('');
 
-    const time = now.toLocaleTimeString('vi-VN', {
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: true
-    });
+    // ✅ Update clock mỗi giây
+    useEffect(() => {
+        const updateClock = () => {
+        const now = new Date();
+        setCurrentTime(now.toLocaleTimeString('vi-VN', {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: true
+        }));
+        setCurrentDate(now.toLocaleDateString('vi-VN', {
+            month: 'long',
+            day: '2-digit',
+            year: 'numeric'
+        }));
+        };
 
-    const date = now.toLocaleDateString('vi-VN', {
-    month: 'long',
-    day: '2-digit',
-    year: 'numeric'
-    });
+        // ✅ Update ngay lập tức
+        updateClock();
+
+        // ✅ Update mỗi giây
+        const intervalId = setInterval(updateClock, 1000);
+
+        // ✅ Cleanup khi unmount
+        return () => clearInterval(intervalId);
+    }, []);
         
   return (
     <header className="h-15 max-lg:h-13 max-md:h-10 bg-background-light dark:bg-background-dark transition-all duration-300 px-6 max-lg:px-5 max-md:px-4 py-px flex justify-between items-center border-b border-border-black-10 dark:border-background-white-15">
@@ -147,8 +162,8 @@ const Header = ({ username }) => {
                         <img src={imageUser} className='w-10 max-lg:w-8 h-10 max-lg:h-8' alt="Image User" />
                     </figure>
                     <div className='flex flex-col justify-between'>
-                        <span className='text-base max-lg:text-sm font-normal text-color-gray-800 dark:text-color-white-90 transition-all duration-300'>{time}</span>
-                        <span className='text-xs font-normal text-color-gray-600 dark:text-color-white-50 transition-all duration-300'>{date}</span>
+                        <span className='text-base max-lg:text-sm font-normal text-color-gray-800 dark:text-color-white-90 transition-all duration-300'>{currentTime}</span>
+                        <span className='text-xs font-normal text-color-gray-600 dark:text-color-white-50 transition-all duration-300'>{currentDate}</span>
                     </div>
                     <figure><img src={!stateGlobals.darkMode ? iconArrowDown : iconArrowDownDark} className={`w-2.25 transition-all duration-300 ${!isDropdownOpen ? '' : 'rotate-180'}`} alt="Icon Arrow Down" /></figure>
                 </div>

@@ -145,7 +145,15 @@ export const CUSTOM_CHART = {
         programDetail: {
           name: 'Chỉ số đo lường chi tiết từng chương trình',
           description: false,
-          columnSort: ['program_name', 'description', 'NGÀY PHÁT', 'start_time', 'end_time', 'channel_name_tvd', 'rating', 'rating%', 'ave_reach', 'reach%', 'minute_user_program']
+          columnSort: ['program_name', 'description', 'NGÀY PHÁT', 'start_time', 'end_time', 'channel_name_tvd', 'rating', 'rating%', 'ave_reach', 'reach%', 'minute_user_program'],
+          customCol: {
+            'CHƯƠNG TRÌNH': {weight: 600, sticky: true, minSize: 70, maxSize: 180},
+            'KÊNH': {minSize: 0, maxSize: 30, align: 'text-center', justify: 'justify-center'},
+            'THỜI GIAN\nBẮT ĐẦU': {align: 'text-center', justify: 'justify-center'},
+            'THỜI GIAN\nKẾT THÚC': {align: 'text-center', justify: 'justify-center'},
+            'MÔ TẢ': {minSize: 70},
+            'THỂ LOẠI': {minSize: 70}
+          }
         },
         programEvent: {
           name: 'Chỉ số đo lường chương trình theo Live/TimeShift',
@@ -282,17 +290,20 @@ export const CUSTOM_CHART = {
     lineChartMinuteChannel: {
         name: 'Xu hướng Rating (000) CÁC KÊNH',
         description: false,
-        legendTop: true
+        legendTop: true,
+        textOverflow: true
     },
     lineChartMinuteDay: {
         name: 'RATING (000) KÊNH TRONG NGÀY',
         description: false,
-        legendTop: true
+        legendTop: true,
+        textOverflow: true
     },
     lineChartMinuteDays: {
         name: 'RATING (000) CHƯƠNG TRÌNH theo phút (nhiều ngày)',
         description: false,
-        legendTop: true
+        legendTop: true,
+        textOverflow: true
     },
     colorChannel: variableCustoms.colorChannel,
     smooth: true,

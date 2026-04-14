@@ -100,7 +100,7 @@ const BreadCrumb = ({ dashboardName='Kênh truyền hình VTV'}) => {
         divTables.forEach(table => table?.classList.replace('overflow-auto', 'overflow-hidden'));
         const now = new Date();
 
-        const timeStr = `Thời gian export: ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')} ${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
+        const timeStr = `Thời gian xuất: ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')} ${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
         exportTime.textContent = timeStr;
 
         const dataUrl = await toPng(target, {
@@ -158,7 +158,7 @@ const BreadCrumb = ({ dashboardName='Kênh truyền hình VTV'}) => {
         divTables.forEach(table => table?.classList.replace('overflow-auto', 'overflow-hidden'));
         const now = new Date();
 
-        const timeStr = `Thời gian export: ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')} ${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
+        const timeStr = `Thời gian xuất: ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')} ${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
         exportTime.textContent = timeStr;
 
         try {

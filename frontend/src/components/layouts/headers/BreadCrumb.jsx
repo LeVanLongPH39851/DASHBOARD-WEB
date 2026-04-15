@@ -176,22 +176,32 @@ const BreadCrumb = ({ dashboardName='Kênh truyền hình VTV'}) => {
 
             // ✅ FIX jsPDF: Tạo PDF đơn giản 1 trang, KHÔNG multi-page
             const { jsPDF } = await import('jspdf');
-            
-            // ✅ VALIDATE kích thước trước khi tạo
-            const canvasWidth = canvas.width;
-            const canvasHeight = canvas.height;
-            const pdfWidth = 190;  // A4 - margin
-            const pdfHeight = Math.max(50, (canvasHeight * pdfWidth) / canvasWidth);  // Min 50mm
-            
-            console.log(`Canvas: ${canvasWidth}x${canvasHeight} → PDF: ${pdfWidth}x${pdfHeight}mm`);
 
-            const pdf = new jsPDF('p', 'mm', 'a4');  // Portrait cố định, an toàn
-            
-            // ✅ SINGLE PAGE - ĐẸP NHƯ PNG
-            pdf.addImage(imgData, 'PNG', 10, 10, pdfWidth, pdfHeight);
+            const pdf = new jsPDF('p', 'mm', 'a4');
 
+            const pageWidth = pdf.internal.pageSize.getWidth();
+            const pageHeight = pdf.internal.pageSize.getHeight();
+
+            const margin = 10;
+            const maxWidth = pageWidth - margin * 2;
+            const maxHeight = pageHeight - margin * 2;
+
+            const imgProps = pdf.getImageProperties(imgData);
+            const imgWidth = imgProps.width;
+            const imgHeight = imgProps.height;
+
+            // scale để fit TRỌN 1 trang
+            const ratio = Math.min(maxWidth / imgWidth, maxHeight / imgHeight);
+
+            const renderWidth = imgWidth * ratio;
+            const renderHeight = imgHeight * ratio;
+
+            // canh giữa
+            const x = (pageWidth - renderWidth) / 2;
+            const y = (pageHeight - renderHeight) / 2;
+
+            pdf.addImage(imgData, 'PNG', x, y, renderWidth, renderHeight);
             pdf.save(`Report Dashboard VTVRatings ${LABEL_TABS[stateGlobals.currentTab]} ${dateStr}.pdf`);
-            console.log('✅ PDF created successfully!');
 
         } catch (error) {
             console.error('❌ Lỗi tạo PDF:', error);

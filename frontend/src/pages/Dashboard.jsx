@@ -26,7 +26,7 @@ import Header from '../components/layouts/headers/Header';
 import BreadCrumb from '../components/layouts/headers/BreadCrumb';
 import InforTab from '../components/layouts/headers/InforTab';
 import InforFilter from '../components/layouts/headers/InforFilter';
-import { useDashboardStateGlobals } from '../context/DashboardFilterContext';
+import { useDashboardStateGlobals, useDashboardFilters } from '../context/DashboardFilterContext';
 import NumberWithTrendChart from '../components/charts/NumberWithTrendChart';
 import NameChart from '../components/layouts/components/NameChart';
 import { transformNumberWithTrendData } from '../utils/transfromApiNumberWithTrendChart';
@@ -43,10 +43,12 @@ import iconChannelActive from '../assets/icon_channel_active.png';
 import iconProgramActive from '../assets/icon_program_active.png';
 import iconRatingByMinuteActive from '../assets/icon_rating_by_minute_active.png';
 import { useCurrentUser } from '../hooks/useCurrentUser';
+import { getYesterday, formatDate } from '../helpers/helper';
 
 const DashboardContent = () => {
   const dashboard = useDashboardData();
   const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
+  const { appliedFilters, setAppliedFilters} = useDashboardFilters();
   const { user, userLoading } = useCurrentUser();
   
   const scopeNumberData = {
@@ -780,7 +782,7 @@ const DashboardContent = () => {
                                               fontSize={CUSTOM_CHART.lineChart.fontSize}
                                               fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                               fontWeight={CUSTOM_CHART.lineChart.fontWeight}
-                                              nameChart={CUSTOM_CHART.lineChart.lineChartMinuteDay.name}
+                                              nameChart={CUSTOM_CHART.lineChart.lineChartMinuteDay.name + ' (' + formatDate(appliedFilters?.endDate || getYesterday()) + (appliedFilters?.channels ? ' - ' + appliedFilters?.channels[0] : ' - VTV1') + ')'}
                                               description={CUSTOM_CHART.lineChart.lineChartMinuteDay.description}
                                               colors={CUSTOM_CHART.lineChart.colorChannel}
                                               smooth={CUSTOM_CHART.lineChart.smooth}
@@ -801,7 +803,7 @@ const DashboardContent = () => {
                                               fontSize={CUSTOM_CHART.lineChart.fontSize}
                                               fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                               fontWeight={CUSTOM_CHART.lineChart.fontWeight}
-                                              nameChart={CUSTOM_CHART.lineChart.lineChartMinuteDays.name}
+                                              nameChart={CUSTOM_CHART.lineChart.lineChartMinuteDays.name + ' (' + 'nhiều ngày ' + (appliedFilters?.channels ? ' - ' + appliedFilters?.channels[0] : ' - VTV1') + ')'}
                                               description={CUSTOM_CHART.lineChart.lineChartMinuteDays.description}
                                               colors={CUSTOM_CHART.lineChart.colorChannel}
                                               smooth={CUSTOM_CHART.lineChart.smooth}

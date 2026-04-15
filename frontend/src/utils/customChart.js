@@ -300,7 +300,7 @@ export const CUSTOM_CHART = {
         textOverflow: true
     },
     lineChartMinuteDays: {
-        name: 'RATING (000) CHƯƠNG TRÌNH theo phút (nhiều ngày)',
+        name: 'RATING (000) CHƯƠNG TRÌNH theo phút',
         description: false,
         legendTop: true,
         textOverflow: true

@@ -257,8 +257,10 @@ const BreadCrumb = ({ dashboardName='Kênh truyền hình VTV'}) => {
         if (!target) return;
 
         const layoutState = prepareCaptureLayout();
+
         try {
             await waitForNextPaint();
+
             const canvas = await html2canvas(target, {
             scale: isFirefox ? 1.5 : 2,
             backgroundColor: '#ffffff',
@@ -266,17 +268,44 @@ const BreadCrumb = ({ dashboardName='Kênh truyền hình VTV'}) => {
             allowTaint: false,
             logging: false
             });
+
             const imgData = canvas.toDataURL('image/png');
             const { jsPDF } = await import('jspdf');
             const { now } = layoutState;
-            const canvasWidth = canvas.width;
-            const canvasHeight = canvas.height;
-            const pdf = new jsPDF('p', 'mm', 'a4');
-            const pageWidth = 190;
-            const pageHeight = (canvasHeight * pageWidth) / canvasWidth;
-            pdf.addImage(imgData, 'PNG', 10, 10, pageWidth, pageHeight);
-            const dateStr = `${String(now.getDate()).padStart(2, '0')}-${String(now.getMonth() + 1).padStart(2, '0')}-${now.getFullYear()} ${String(now.getHours()).padStart(2, '0')}h${String(now.getMinutes()).padStart(2, '0')}m${String(now.getSeconds()).padStart(2, '0')}s`;
+
+            // ✅ Tự chọn orientation theo canvas
+            const orientation = canvas.width > canvas.height ? 'l' : 'p';
+            const pdf = new jsPDF(orientation, 'mm', 'a4');
+
+            const pageWidth = pdf.internal.pageSize.getWidth();
+            const pageHeight = pdf.internal.pageSize.getHeight();
+
+            const margin = 10;
+            const maxWidth = pageWidth - margin * 2;
+            const maxHeight = pageHeight - margin * 2;
+
+            const imgProps = pdf.getImageProperties(imgData);
+            const imgWidth = imgProps.width;
+            const imgHeight = imgProps.height;
+
+            // ✅ Luôn fit cả width và height, không bị cắt
+            const ratio = Math.min(maxWidth / imgWidth, maxHeight / imgHeight);
+
+            const renderWidth = imgWidth * ratio;
+            const renderHeight = imgHeight * ratio;
+
+            // ✅ Canh giữa
+            const x = (pageWidth - renderWidth) / 2;
+            const y = (pageHeight - renderHeight) / 2;
+
+            pdf.addImage(imgData, 'PNG', x, y, renderWidth, renderHeight);
+
+            const dateStr =
+            `${String(now.getDate()).padStart(2, '0')}-${String(now.getMonth() + 1).padStart(2, '0')}-${now.getFullYear()} ` +
+            `${String(now.getHours()).padStart(2, '0')}h${String(now.getMinutes()).padStart(2, '0')}m${String(now.getSeconds()).padStart(2, '0')}s`;
+
             const fileName = `Report Dashboard VTVRatings ${LABEL_TABS[stateGlobals.currentTab]} ${dateStr}.pdf`;
+
             if (isFirefox) {
             const blob = pdf.output('blob');
             const url = URL.createObjectURL(blob);

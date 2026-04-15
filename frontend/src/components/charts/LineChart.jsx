@@ -301,8 +301,8 @@ const LineChart = ({
         fontWeight: fontWeight.legend,
         letterSpacing: '0.1px',
         fontFamily: fontFamily,
-        height: textOverflow && legendTop ? 20 : 10,
-        lineHeight: textOverflow && legendTop ? 20 : 10
+        height: textOverflow && legendTop ? (!stateGlobals.screen_md ? !stateGlobals.screen_lg ? 23 : 20 : 19) : 10,
+        lineHeight: textOverflow && legendTop ? (!stateGlobals.screen_md ? !stateGlobals.screen_lg ? 23 : 20 : 19) : 10
       },
       selector: [
         { type: 'all', title: 'All' },

@@ -56,7 +56,7 @@ const appendAllFilters = (queries, filterState, disabledFilters) => {
       disabledKey: 'channelFilters',
       build: () => buildQueriesFilters({
         column: 'channel_name_tvd',
-        values: disabledFilters.includes('overwriteChannelFilters') ? [filterState.channels[0]] : filterState.channels
+        values: disabledFilters.includes('overwriteChannelFilters') && filterState?.channels?.length > 0 ? [filterState.channels[0]] : filterState.channels
       }),
     },
     {

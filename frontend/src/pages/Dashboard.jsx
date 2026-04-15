@@ -782,7 +782,7 @@ const DashboardContent = () => {
                                               fontSize={CUSTOM_CHART.lineChart.fontSize}
                                               fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                               fontWeight={CUSTOM_CHART.lineChart.fontWeight}
-                                              nameChart={CUSTOM_CHART.lineChart.lineChartMinuteDay.name + ' (' + formatDate(appliedFilters?.endDate || getYesterday()) + (appliedFilters?.channels ? ' - ' + appliedFilters?.channels[0] : ' - VTV1') + ')'}
+                                              nameChart={CUSTOM_CHART.lineChart.lineChartMinuteDay.name + ' (' + formatDate(appliedFilters?.endDate || getYesterday()) + (appliedFilters?.channels?.length > 0 ? ' - ' + appliedFilters?.channels[0] : ' - VTV1') + ')'}
                                               description={CUSTOM_CHART.lineChart.lineChartMinuteDay.description}
                                               colors={CUSTOM_CHART.lineChart.colorChannel}
                                               smooth={CUSTOM_CHART.lineChart.smooth}
@@ -803,7 +803,7 @@ const DashboardContent = () => {
                                               fontSize={CUSTOM_CHART.lineChart.fontSize}
                                               fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                               fontWeight={CUSTOM_CHART.lineChart.fontWeight}
-                                              nameChart={CUSTOM_CHART.lineChart.lineChartMinuteDays.name + ' (' + 'nhiều ngày ' + (appliedFilters?.channels ? ' - ' + appliedFilters?.channels[0] : ' - VTV1') + ')'}
+                                              nameChart={CUSTOM_CHART.lineChart.lineChartMinuteDays.name + ' (' + 'nhiều ngày ' + (appliedFilters?.channels?.length > 0 ? ' - ' + appliedFilters?.channels[0] : ' - VTV1') + ')'}
                                               description={CUSTOM_CHART.lineChart.lineChartMinuteDays.description}
                                               colors={CUSTOM_CHART.lineChart.colorChannel}
                                               smooth={CUSTOM_CHART.lineChart.smooth}

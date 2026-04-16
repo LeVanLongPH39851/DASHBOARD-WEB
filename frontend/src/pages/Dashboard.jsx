@@ -773,7 +773,6 @@ const DashboardContent = () => {
                                               legendTop={CUSTOM_CHART.lineChart.lineChartMinuteChannel.legendTop}
                                               xAxisTitle={CUSTOM_CHART.lineChart.xAxisTitleMinute}
                                               fullScreen={true}
-                                              textOverflow={true}
                                     />
                                   </div>
                                   <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>

@@ -6,11 +6,11 @@ import iconArrowDownDark from '../../assets/icon_arrow_down_dark.png';
 import iconArrowUp45 from '../../assets/icon_arrow_up_45.png';
 import iconArrowDown45 from '../../assets/icon_arrow_down_45.png';
 import lineTrend from '../../assets/line_trend.png';
-import lineBorderTrend from '../../assets/line_border_trend.png'
+import lineBorderTrend from '../../assets/line_border_trend.png';
 import lineTrendDown from '../../assets/line_trend_down.png';
 import lineTrendDark from '../../assets/line_trend_dark.png';
 import lineTrendDownDark from '../../assets/line_trend_down_dark.png';
-import lineBorderTrendDown from '../../assets/line_border_trend_down.png'
+import lineBorderTrendDown from '../../assets/line_border_trend_down.png';
 import Loading from '../commons/Loading';
 import { useDashboardStateGlobals } from '../../context/DashboardFilterContext';
 
@@ -37,35 +37,48 @@ const NumberWithTrendChart = ({
     );
   }
 
+  const hasData = Array.isArray(data) && data.length > 0;
+
+  // ✅ thêm: chỉ có trend khi có hơn 1 ngày
+  const hasTrend = Array.isArray(data) && data.length > 1;
+  
   const getEChartsData = useCallback(() => {
     
-    if (!data || data.length === 0) {
+    if (!hasData) {
       return { labels: [], series: [] };
     }
 
     // Transform data thành {labels, series} format chuẩn Excel
-    const labels = data.map(item => item.date || `Ngày ${data.indexOf(item) + 1}`);
+    const labels = data.map((item, index) => item.date || `Ngày ${index + 1}`);
     const series = [{
-      name: 'Value',  // ✅ Fixed name, bỏ nameChart
+      name: 'Value',
       data: data.map(item => item.value || 0)
     }];
 
     return { labels, series };
-  }, [data]);  // ✅ Chỉ deps data
+  }, [data, hasData]);
 
   const { currentValue, trendPercent, currentDate } = useMemo(() => {
-    if (!data || data.length < 2) {
+    if (!hasData) {
       return { currentValue: 0, trendPercent: 0, currentDate: '' };
+    }
+
+    if (!hasTrend) {
+      return {
+        currentValue: data[0]?.value || 0,
+        trendPercent: 0,
+        currentDate: data[0]?.date || ''
+      };
     }
 
     const lastIndex = data.length - 1;
     const currentValue = data[lastIndex].value;
     const prevValue    = data[lastIndex - 1].value;
-    const trendPercent = ((currentValue - prevValue) / prevValue * 100);
-    const currentDate  = data[lastIndex].date; // ← lấy từ data
+    const trendPercent = prevValue !== 0 ? ((currentValue - prevValue) / prevValue * 100) : 0;
+    const currentDate = data[lastIndex]?.date || '';
 
     return { currentValue, trendPercent, currentDate };
-  }, [data]);
+  }, [data, hasData, hasTrend]);
 
   const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
 
@@ -162,21 +175,24 @@ const NumberWithTrendChart = ({
       <div className='flex items-center mb-2'><span className='text-color-black-100 dark:text-color-white-50 transition-all duration-300 font-normal text-sm max-lg:text-[13px] max-md:text-xs'>Ngày {currentDate}</span></div>
       <div className="mb-6 max-lg:mb-5 max-md:mb-4 flex items-center gap-3 max-lg:gap-2.5 max-md:gap-2">
         <h4 className='text-5xl max-lg:text-4xl max-md:text-4xl text-nowrap text-color-black-100 dark:text-color-white-90 transition-all duration-300 font-semibold'>{currentValue.toLocaleString(undefined, { maximumFractionDigits: (nameChart.includes('%') ? 2 : 0) })} {!stateGlobals.screen_md && suffix}</h4>
+        {hasTrend && (
         <div className='flex gap-2 items-center'>
           <div className={`px-2 max-lg:px-1.5 py-1 rounded-lg flex items-center gap-1 border ${trendPercent > 0 ? 'bg-background-succes-type-1 text-color-succes-type-1 border-border-succes-type-1 dark:bg-background-succes-type-1-dark dark:text-color-succes-type-1-dark dark:border-border-succes-type-1-dark' : 'bg-background-error text-color-error border-border-error'}`}>
             <span className='text-sm max-lg:text-[13px] max-md:text-xs font-semibold'>{trendPercent.toFixed(1)}{unit}</span>
             <figure><img src={trendPercent > 0 ? iconArrowUp45 : iconArrowDown45} alt="Icon Arrow Up 45" className='w-2.25 max-lg:w-2 h-2.25 max-lg:h-2' /></figure>
           </div>
           <span className='text-sm max-lg:text-[13px] max-md:text-xs text-color-black-50 dark:text-color-white-50 transition-all duration-300 font-normal'>{trendPeriod}</span>
-        </div>
+        </div>)}
       </div>
-      <div className="w-full">
-        <ReactECharts
-          option={chartOption}
-          style={{ width: '100%', height: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? 170 : 150 : 115 }}
-          opts={{ renderer: 'canvas', locale: 'VN' }}
-        />
-      </div>
+      {hasTrend && (
+        <div className="w-full">
+          <ReactECharts
+            option={chartOption}
+            style={{ width: '100%', height: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? 170 : 150 : 115 }}
+            opts={{ renderer: 'canvas', locale: 'VN' }}
+          />
+        </div>)
+      }
     </div>
   );
 };

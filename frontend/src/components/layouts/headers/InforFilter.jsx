@@ -23,7 +23,7 @@ const clearSetAll = (setFilterValues, setAppliedFilters) => {
   setAppliedFilters(null);
 }
 
-const InforFilter = ({ filters, FilterComponent = Filter }) => {
+const InforFilter = ({ filters, FilterComponent = Filter, nameFilter = 'FilterRating' }) => {
 
   const { appliedFilters, setAppliedFilters } = useDashboardFilters();
   const { filterValues, setFilterValues } = useDashboardFilterValues();
@@ -98,7 +98,7 @@ const InforFilter = ({ filters, FilterComponent = Filter }) => {
           </div>
           <div className='flex gap-4 max-lg:gap-3 max-md:gap-2 items-center flex-wrap'>
             <ul className='flex gap-2 items-center flex-wrap'>
-              <InforFilterItem keyFilter={'Ngày'} nameFilter={'Ngày'} valueFilters={[formatDate(appliedFilters?.startDate || (FilterComponent.name == 'Filter' ? yesterday : beforeYesterday)), formatDate(appliedFilters?.endDate || yesterday)]} space={' - '} />
+              <InforFilterItem keyFilter={'Ngày'} nameFilter={'Ngày'} valueFilters={[formatDate(appliedFilters?.startDate || (nameFilter == 'FilterRating' ? yesterday : beforeYesterday)), formatDate(appliedFilters?.endDate || yesterday)]} space={' - '} />
               {appliedFilters && (
                 Object.entries(appliedFilters).filter(([, values]) => Array.isArray(values) && values.length > 0)
                   .map(([key, values]) => (

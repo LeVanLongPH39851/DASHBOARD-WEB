@@ -77,7 +77,7 @@ const DashboardContent = () => {
                             content: (
                               <section className='bg-background-dashboard dark:bg-background-dashboard-dark transiton-all duration-300' id="target_capture_overview">
                                 <InforTab inforTab={"Tổng quan"} />
-                                <InforFilter filters={scopeFilterData} FilterComponent={FilterSpot} />
+                                <InforFilter filters={scopeFilterData} FilterComponent={FilterSpot} nameFilter='FilterSpot' />
                                 <div className='px-6 max-lg:px-5 max-md:px-4 pt-6 max-lg:pt-5 max-md:pt-4'>
                                     <div className='w-full grid grid-cols-5 max-lg:grid-cols-8 max-md:grid-cols-2 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4'>
                                       <div className='col-span-2 max-lg:col-span-3'>
@@ -433,7 +433,7 @@ const DashboardContent = () => {
                             content: (
                               <section className='bg-background-dashboard dark:bg-background-dashboard-dark transiton-all duration-300' id="target_capture_revenue">
                                 <InforTab inforTab={"Doanh thu"} />
-                                <InforFilter filters={scopeFilterData} FilterComponent={FilterSpot} />
+                                <InforFilter filters={scopeFilterData} FilterComponent={FilterSpot} nameFilter='FilterSpot' />
                                 <div className='px-6 max-lg:px-5 max-md:px-4 py-6 max-lg:py-5 max-md:py-4'>
                                   <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
                                     <BarChart 
@@ -578,7 +578,7 @@ const DashboardContent = () => {
                             content: (
                               <section className='bg-background-dashboard dark:bg-background-dashboard-dark transiton-all duration-300' id="target_capture_effective">
                                 <InforTab inforTab={"Hiệu quả"} />
-                                <InforFilter filters={scopeFilterData} FilterComponent={FilterSpot} />
+                                <InforFilter filters={scopeFilterData} FilterComponent={FilterSpot} nameFilter='FilterSpot' />
                                 <div className='px-6 max-lg:px-5 max-md:px-4'>
                                   <div className='w-full py-6 max-lg:py-5 max-md:py-4'>
                                       <ChildTabs tabs={[
@@ -867,7 +867,7 @@ const DashboardContent = () => {
                             content: (
                               <section className='bg-background-dashboard dark:bg-background-dashboard-dark transiton-all duration-300' id="target_capture_ad_monitoring_report">
                                 <InforTab inforTab={"Rating theo phút - P4+ toàn quốc"} />
-                                <InforFilter filters={scopeFilterData} FilterComponent={FilterSpot} />
+                                <InforFilter filters={scopeFilterData} FilterComponent={FilterSpot} nameFilter='FilterSpot' />
                                 <div className='px-6 max-lg:px-5 max-md:px-4'>
                                   <div className='w-full py-6 max-lg:py-5 max-md:py-4'>
                                     <TableChart data={!dashboard.isLoading.allTableMonitoringData ? transformTableChartData(dashboard.allTableMonitoringData?.data, dashboard.allTableMonitoringData?.colnames) : 'isLoading'}

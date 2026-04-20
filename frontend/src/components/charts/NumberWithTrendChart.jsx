@@ -184,14 +184,14 @@ const NumberWithTrendChart = ({
           <span className='text-sm max-lg:text-[13px] max-md:text-xs text-color-black-50 dark:text-color-white-50 transition-all duration-300 font-normal'>{trendPeriod}</span>
         </div>)}
       </div>
-      {hasTrend && (
+      {hasTrend ? (
         <div className="w-full">
           <ReactECharts
             option={chartOption}
             style={{ width: '100%', height: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? 170 : 150 : 115 }}
             opts={{ renderer: 'canvas', locale: 'VN' }}
           />
-        </div>)
+        </div>) : (<div className='h-42.5 max-lg:h-37.5 max-md:h-28.75 w-full'></div>)
       }
     </div>
   );

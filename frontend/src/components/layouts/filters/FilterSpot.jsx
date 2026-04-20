@@ -325,7 +325,7 @@ const FilterSpot = ({ filters, horizontalFixed=false
         {!horizontalFixed && (<div className='flex justify-between items-center h-10.5 max-lg:h-9 max-md:h-8 mb-2 max-lg:mb-1.5 max-md:mb-1'>
           <span className='text-background-black-child-tab dark:text-color-white-90 transition-all duration-300 text-[16px] max-lg:text-sm max-md:text-xs font-semibold'>Bộ lọc</span><figure className='cursor-pointer transition-all duration-300 hover:rotate-180' onClick={() => setStateGlobals(prev => ({...prev, isOpen: !prev.isOpen}))}><img src={!stateGlobals.darkMode ? iconXBlack : iconXBlackDark} className='w-3.25 max-lg:w-2.75 max-md:w-2.5' alt="Icon X Black" /></figure>
         </div>)}
-        <form className={`${horizontalFixed ? 'flex flex-wrap gap-2 max-lg:gap-1.75 max-md:gap-1.5 max-md:grid max-md:grid-cols-2 items-center' : ''}`} onSubmit={onSubmit} onReset={onReset}>
+        <form className={`${horizontalFixed ? 'flex flex-wrap gap-2 max-lg:gap-1.5 max-md:gap-1.5 max-md:grid max-md:grid-cols-2 items-center' : ''}`} onSubmit={onSubmit} onReset={onReset}>
           <div className='max-md:col-span-2'>
             <DateRangeFilter
               startDate={filterValues?.startDate || getDayBeforeYesterday()}

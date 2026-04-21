@@ -100,6 +100,9 @@ export const CUSTOM_CHART = {
         orientation: 'horizontal'
     },
     colorChannel: variableCustoms.colorChannel,
+    colorFirstLevel: variableCustoms.colorFirstLevel,
+    colorDuration: variableCustoms.colorDuration,
+    colorTimeband: variableCustoms.colorTimeband,
     fontWeight: {
         legend: 500, tooltip: 500, axisLabel: 400, dataLabel: 400
     }

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import NumberCard from '../components/charts/NumberCard';
 import Filter from '../components/layouts/filters/Filter';
-import { METRICS } from '../utils/metricInfor';
+import { METRIC_SPOTS } from '../utils/metricInfor';
 import { CUSTOM_CHART } from '../utils/customChart';
 import { formatNumber } from '../utils/formatNumber';
 import { transformBarChartData } from '../utils/transformApiBartChart';
@@ -81,27 +81,27 @@ const DashboardContent = () => {
                                 <div className='px-6 max-lg:px-5 max-md:px-4 pt-6 max-lg:pt-5 max-md:pt-4'>
                                     <div className='w-full grid grid-cols-5 max-lg:grid-cols-8 max-md:grid-cols-2 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4'>
                                       <div className='col-span-2 max-lg:col-span-3'>
-                                        <NumberWithTrendChart nameChart={'Chi phí (Triệu VND)'} description={false} data={!dashboard.isLoading.spendVNDNumberData ? transformNumberWithTrendData(dashboard.spendVNDNumberData?.data, dashboard.spendVNDNumberData?.colnames) : 'isLoading'} fontFamily={CUSTOM_CHART.allChart.fontFamily} fontSize={CUSTOM_CHART.numberWithTrendChart.fontSize} fontWeight={CUSTOM_CHART.numberWithTrendChart.fontWeight} icon={METRICS.rating.icon} />
+                                        <NumberWithTrendChart nameChart={'Chi phí (Triệu VND)'} description={false} data={!dashboard.isLoading.spendVNDNumberData ? transformNumberWithTrendData(dashboard.spendVNDNumberData?.data, dashboard.spendVNDNumberData?.colnames) : 'isLoading'} fontFamily={CUSTOM_CHART.allChart.fontFamily} fontSize={CUSTOM_CHART.numberWithTrendChart.fontSize} fontWeight={CUSTOM_CHART.numberWithTrendChart.fontWeight} icon={METRIC_SPOTS.spend_vnd.icon} />
                                       </div>
                                       <div className='col-span-2 max-lg:col-span-3'>
-                                        <NumberWithTrendChart nameChart={'Chi phí (USD)'} description={false} data={!dashboard.isLoading.spendUSDNumberData ? transformNumberWithTrendData(dashboard.spendUSDNumberData?.data, dashboard.spendUSDNumberData?.colnames) : 'isLoading'} fontFamily={CUSTOM_CHART.allChart.fontFamily} fontSize={CUSTOM_CHART.numberWithTrendChart.fontSize} fontWeight={CUSTOM_CHART.numberWithTrendChart.fontWeight} icon={METRICS.rating.icon} suffix='$' />
+                                        <NumberWithTrendChart nameChart={'Chi phí (USD)'} description={false} data={!dashboard.isLoading.spendUSDNumberData ? transformNumberWithTrendData(dashboard.spendUSDNumberData?.data, dashboard.spendUSDNumberData?.colnames) : 'isLoading'} fontFamily={CUSTOM_CHART.allChart.fontFamily} fontSize={CUSTOM_CHART.numberWithTrendChart.fontSize} fontWeight={CUSTOM_CHART.numberWithTrendChart.fontWeight} icon={METRIC_SPOTS.spend_usd.icon} suffix='$' />
                                       </div>
                                         <div className='col-span-1 max-lg:col-span-2 max-md:col-span-2 grid grid-cols-1 max-md:grid-cols-2 gap-6 max-lg:gap-5 max-md:gap-4'>
                                             <NumberCard
                                                 title={'Số lượng Spot'}
                                                 description={false}
                                                 value={!dashboard.isLoading.countNumberData ? dashboard.countNumberData?.data ? formatNumber(dashboard.countNumberData?.data[0].count, { isPercent: false }) : '-' : 'isLoading'}
-                                                icon={METRICS.ave_reach.icon}
-                                                background={METRICS.ave_reach.background}
-                                                widthIcon={METRICS.ave_reach.widthIcon}
+                                                icon={METRIC_SPOTS.count.icon}
+                                                background={METRIC_SPOTS.count.background}
+                                                widthIcon={METRIC_SPOTS.count.widthIcon}
                                             />
                                             <NumberCard
                                                 title={'Thời lượng Spot'}
                                                 description={false}
                                                 value={!dashboard.isLoading.durationNumberData ? dashboard.durationNumberData?.data ? dashboard.durationNumberData?.data[0]?.total_duration?.toLocaleString(undefined, { maximumFractionDigits: 2 }) : '-' : 'isLoading'}
-                                                icon={METRICS.ave_reach.icon}
-                                                background={METRICS.ave_reach.background}
-                                                widthIcon={METRICS.ave_reach.widthIcon}
+                                                icon={METRIC_SPOTS.duration.icon}
+                                                background={METRIC_SPOTS.duration.background}
+                                                widthIcon={METRIC_SPOTS.duration.widthIcon}
                                                 suffix='phút'
                                             />
                                         </div>
@@ -636,16 +636,16 @@ const DashboardContent = () => {
                                   <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4 flex max-md:flex-wrap gap-6 max-lg:gap-5 max-md:gap-4'>
                                     <div className='w-[60%] max-md:w-full'>
                                       <BarChart 
-                                        data={!dashboard.isLoading.grpBarRegionalBrandData ? transformBarChartData(dashboard.grpBarRegionalBrandData?.data, dashboard.grpBarRegionalBrandData?.colnames) : 'isLoading'}
-                                        height={CUSTOM_CHART.barChart.height}
-                                        fontSize={CUSTOM_CHART.barChart.fontSize}
-                                        fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                        fontWeight={CUSTOM_CHART.barChart.fontWeight}
-                                        nameChart={'Competitor Review by Market (GRP)'}
-                                        description={false}
-                                        orientation={''}
-                                        formatterValue={2}
-                                    />
+                                          data={!dashboard.isLoading.grpBarRegionalBrandData ? transformBarChartData(dashboard.grpBarRegionalBrandData?.data, dashboard.grpBarRegionalBrandData?.colnames) : 'isLoading'}
+                                          height={CUSTOM_CHART.barChart.height}
+                                          fontSize={CUSTOM_CHART.barChart.fontSize}
+                                          fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                          fontWeight={CUSTOM_CHART.barChart.fontWeight}
+                                          nameChart={'Competitor Review by Market (GRP)'}
+                                          description={false}
+                                          orientation={''}
+                                          formatterValue={2}
+                                      />
                                     </div>
                                     <div className='w-[40%] max-md:w-full'>
                                       <BarChart 
@@ -683,7 +683,7 @@ const DashboardContent = () => {
                                                   height={CUSTOM_CHART.barChart.height}
                                                   fontSize={CUSTOM_CHART.barChart.fontSize}
                                                   fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                  colors={CUSTOM_CHART.barChart.colorDuration}
+                                                  colors={CUSTOM_CHART.barChart.colorTimeband}
                                                   fontWeight={CUSTOM_CHART.barChart.fontWeight}
                                                   nameChart={'Competitor Review by Timeband'}
                                                   description={false}
@@ -735,7 +735,7 @@ const DashboardContent = () => {
                                                   height={CUSTOM_CHART.barChart.height}
                                                   fontSize={CUSTOM_CHART.barChart.fontSize}
                                                   fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                  colors={CUSTOM_CHART.barChart.colorDuration}
+                                                  colors={CUSTOM_CHART.barChart.colorTimeband}
                                                   fontWeight={CUSTOM_CHART.barChart.fontWeight}
                                                   nameChart={'Competitor Review by Timeband'}
                                                   description={false}
@@ -787,7 +787,7 @@ const DashboardContent = () => {
                                                   height={CUSTOM_CHART.barChart.height}
                                                   fontSize={CUSTOM_CHART.barChart.fontSize}
                                                   fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                  colors={CUSTOM_CHART.barChart.colorDuration}
+                                                  colors={CUSTOM_CHART.barChart.colorTimeband}
                                                   fontWeight={CUSTOM_CHART.barChart.fontWeight}
                                                   nameChart={'Competitor Review by Timeband'}
                                                   description={false}
@@ -866,7 +866,7 @@ const DashboardContent = () => {
                           {id: 'ad_monitoring_report', label: !stateGlobals.screen_md ? 'Ad monitoring report' : 'Ad monitoring', icon: !stateGlobals.darkMode ? iconRatingByMinute : iconRatingByMinuteDark, iconActive: iconRatingByMinuteActive,
                             content: (
                               <section className='bg-background-dashboard dark:bg-background-dashboard-dark transiton-all duration-300' id="target_capture_ad_monitoring_report">
-                                <InforTab inforTab={"Rating theo phút - P4+ toàn quốc"} />
+                                <InforTab inforTab={"Ad monitoring report"} />
                                 <InforFilter filters={scopeFilterData} FilterComponent={FilterSpot} nameFilter='FilterSpot' />
                                 <div className='px-6 max-lg:px-5 max-md:px-4'>
                                   <div className='w-full py-6 max-lg:py-5 max-md:py-4'>

@@ -21,7 +21,8 @@ const PieChart = ({
   formatterValue = 0,
   border = true,
   suffix='',
-  legendHorizontal=false
+  legendHorizontal=false,
+  center=false
 }) => {
 
   const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
@@ -172,7 +173,7 @@ const PieChart = ({
       type: 'pie',
       radius: donut ? [innerRadius + '%', '75%'] : ['0%', '75%'],
       avoidLabelOverlap: false,
-      center: [!stateGlobals.screen_md && enableLegend && !legendHorizontal ? '60%' : '50%', '50%'],
+      center: [!stateGlobals.screen_md && enableLegend && !legendHorizontal && !center ? '60%' : '50%', '50%'],
       top: !stateGlobals.screen_md && !legendHorizontal ? 0 : '10%',
       emphasis: {
         itemStyle: {

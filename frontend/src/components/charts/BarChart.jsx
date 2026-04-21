@@ -27,7 +27,8 @@ const BarChart = ({
   suffix = '',
   overflow=false,
   formatterValue = 0,
-  heightPlus=0
+  heightPlus=0,
+  showPercent = false
 }) => {
   
   const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
@@ -116,10 +117,23 @@ const BarChart = ({
 
 
   const sortedLabels = sorted.map(i => i.label);
-  const sortedSeries = series.map(s => ({
-    ...s,
-    data: sorted.map(i => s.data?.[i.index] || 0)
-  }));
+  const sortedSeries = React.useMemo(() => {
+    const baseSeries = series.map(s => ({
+      ...s,
+      data: sorted.map(i => s.data?.[i.index] || 0)
+    }));
+
+    if (!showPercent) return baseSeries;
+
+    return baseSeries.map((s, seriesIdx) => ({
+      ...s,
+      originalData: baseSeries[seriesIdx].data, // ✅ giữ value gốc nếu cần tooltip
+      data: baseSeries[seriesIdx].data.map((value, dataIndex) => {
+        const total = baseSeries.reduce((sum, item) => sum + (item.data?.[dataIndex] || 0), 0);
+        return total > 0 ? Number(((value / total) * 100).toFixed(2)) : 0;
+      })
+    }));
+  }, [series, sorted, showPercent]);
 
   const topSeriesIndex = sortedSeries.length - 1;
 
@@ -188,6 +202,11 @@ const BarChart = ({
     return DEFAULT_COLORS[idx % DEFAULT_COLORS.length];
   };
 
+  const formatPercentValue = (value, total) => {
+    if (!total || total <= 0) return `0.${'0'.repeat(2)}%`;
+    return `${((value / total) * 100).toFixed(2)}%`;
+  };
+
 
 
 
@@ -225,7 +244,7 @@ const BarChart = ({
                   ${p.marker}
                   <span style="font-weight: 500; font-size: ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '12': '11' : '10.5'}px; margin-right: 4px; color: rgba(0, 0, 0, 0.7);">${LABEL_METRIC[p.seriesName] || p.seriesName}:</span> 
                   <span style="font-size: ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '12' : '11' : '10.5'}px; font-weight: 400; color: rgba(0, 0, 0, 0.7);">
-                    ${p.value.toLocaleString(undefined, { maximumFractionDigits: formatterValue })} ${suffix} ${topSeriesIndex != 0 ? ` <span style="font-size: ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '11' : '10.5' : '10'}px;">(${percent}%)</span>` : ''}
+                    ${p.value.toLocaleString(undefined, { maximumFractionDigits: showPercent ? 2 : formatterValue })}${showPercent ? '%' : ''} ${suffix} ${topSeriesIndex != 0 ? ` <span style="font-size: ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '11' : '10.5' : '10'}px;">(${percent}%)</span>` : ''}
                   </span>
                 </div>
               `;
@@ -324,7 +343,7 @@ const BarChart = ({
       left: !stateGlobals.screen_md ? '1%' : '1.5%',
       right: isHorizontal ? (needsScroll ? (!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '12%' : '11%' : '10%') : (!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '10%' : '9.5%' : '9%')) : '1%',
       bottom: isHorizontal ? '1%' : (needsScroll ? (!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '30px' : '25px' : '20px') : '1%'),
-      top: topSeriesIndex !== 0 ? (!stateGlobals.screen_md ? !stateGlobals.screen_lg ? 39 : 37 : (isHorizontal ? 27 : 36)) : (!isHorizontal ? '4%' : '1%'),
+      top: topSeriesIndex !== 0 ? (!stateGlobals.screen_md ? !stateGlobals.screen_lg ? 39 : 37 : (isHorizontal ? 27 : 36)) : (!isHorizontal ? '6%' : '1%'),
       containLabel: true
     },
 
@@ -345,7 +364,7 @@ const BarChart = ({
         }
       },
       axisLabel: {
-        formatter: v => (!stateGlobals.screen_md ? v.toLocaleString(undefined, { maximumFractionDigits: 0 }) : formatKMB(v)) + ' ' + suffix,
+        formatter: v => (showPercent ? `${Number(v).toFixed(percentDigits)}%` : !stateGlobals.screen_md ? v.toLocaleString(undefined, { maximumFractionDigits: 0 }) : formatKMB(v)) + ' ' + suffix,
         fontSize: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.axisLabel : '11px' : '10.5px',
         color: !stateGlobals.darkMode ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.8)',
         fontWeight: fontWeight.axisLabel,
@@ -402,7 +421,7 @@ const BarChart = ({
         }
       },
       axisLabel: {
-        formatter: v => (!stateGlobals.screen_md ? v.toLocaleString(undefined, { maximumFractionDigits: 0 }) : formatKMB(v)) + ' ' + suffix,
+        formatter: v => (showPercent ? `${Number(v).toFixed(2)}%` : !stateGlobals.screen_md ? v.toLocaleString(undefined, { maximumFractionDigits: 0 }) : formatKMB(v)) + ' ' + suffix,
         fontSize: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.axisLabel : '11px' : '10.5px',
         color: !stateGlobals.darkMode ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.8)',
         fontWeight: fontWeight.axisLabel,
@@ -435,8 +454,8 @@ const BarChart = ({
       },
       label: {
         show: true,
-        position: isHorizontal ? 'right' : 'top',
-        offset: isHorizontal ? [!stateGlobals.screen_md ? !stateGlobals.screen_lg ? 3 : 2 : 0, 0] : [0, !stateGlobals.screen_md ? !stateGlobals.screen_lg ? -3 : -2 : 0],
+        position: showPercent ? 'inside' : isHorizontal ? 'right' : 'top',
+        offset: showPercent ? [0, -1] : isHorizontal ? [!stateGlobals.screen_md ? !stateGlobals.screen_lg ? 3 : 2 : 0, 0] : [0, !stateGlobals.screen_md ? !stateGlobals.screen_lg ? -3 : -2 : 0],
         formatter: (params) => {
           const dataIndex = params.dataIndex;
           const seriesIndex = params.seriesIndex;
@@ -470,8 +489,14 @@ const BarChart = ({
               total += ss.data[dataIndex] || 0;
             }
           });
-          
-          // Chỉ hiện label nếu đây là series cao nhất đang visible
+          const currentValue = sortedSeries[seriesIndex]?.data?.[dataIndex] || 0;
+          if (total <= 0 || currentValue <= 0) return '';
+          const percent = ((currentValue / total) * 100).toFixed(0);
+
+          if (showPercent) {
+            return `${percent}%`;
+          }
+
           if (seriesIndex === highestVisibleIndex && total > 0) {
             return (!stateGlobals.screen_md || formatterValue > 0 ? total.toLocaleString(undefined, { maximumFractionDigits: formatterValue }) : formatKMB(total)) + ' ' + suffix;
           }

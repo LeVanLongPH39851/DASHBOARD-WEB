@@ -46,7 +46,12 @@ export const LABEL = {
   'position_in_break': 'Position',
   'spot_type': 'Loại Spot',
   'Ngành hàng/ Group': 'Ngành hàng',
-  'Nhãn hàng/ Brand': 'Nhãn hàng'
+  'Nhãn hàng/ Brand': 'Nhãn hàng',
+  'Nhãn': 'Nhãn hàng',
+  'Dòng sản phẩm': 'Sản phẩm',
+  'others': 'Thời lượng khác',
+  'Tổng user truy cập VTVgo': 'Tổng user',
+  'Thời lượng (phút)': 'Thời lượng'
 };
 
 export const LABEL_METRIC = {

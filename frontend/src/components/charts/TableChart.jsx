@@ -471,7 +471,7 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
                               wordWrap: isNumericColumn ? 'normal' : 'break-word'
                             }}
                           >
-                            {rawValue ? flexRender(cell.column.columnDef.cell, cell.getContext()) : '-'} {rawValue ? customCol[columnName]?.suffix : ''}
+                            {rawValue || rawValue === 0 ? flexRender(cell.column.columnDef.cell, cell.getContext()) : '-'} {rawValue ? customCol[columnName]?.suffix : ''}
                           </td>
                         );
                       })}

@@ -1,5 +1,9 @@
 import iconEye from '../assets/icon_eye.png';
 import iconUsers from '../assets/icon_users.png';
+import iconVND from '../assets/icon_vnd.png';
+import iconDollar from '../assets/icon_dollar.png';
+import iconCount from '../assets/icon_count.png';
+import iconDuration from '../assets/icon_duration.png';
 
 export const METRICS = {
   rating: {
@@ -47,3 +51,21 @@ export const METRICS = {
     background: 'bg-background-purple dark:bg-background-purple-dark'
   }
 };
+export const METRIC_SPOTS = {
+  spend_vnd: {
+    icon: iconVND
+  },
+  spend_usd: {
+    icon: iconDollar
+  },
+  count: {
+    icon: iconCount,
+    widthIcon: 'w-4.25 max-lg:w-3.75 max-md:w-3.25',
+    background: 'bg-background-purple dark:bg-background-purple-dark'
+  },
+  duration: {
+    icon: iconDuration,
+    widthIcon: 'w-5 max-lg:w-4.5 max-md:w-4',
+    background: 'bg-background-purple dark:bg-background-purple-dark'
+  }
+}

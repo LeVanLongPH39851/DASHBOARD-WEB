@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Link, Navigate } from "react-router-dom";
 import Dashboard from './pages/Dashboard';
 import DashboardSpot from './pages/DashboardSpot';
+import DashboardBrand from './pages/DashboardBrand';
 import Login from "./pages/Login";
 
 const ProtectedRoute = ({ children }) => {
@@ -20,6 +21,7 @@ function App() {
         {/* <Route path="/" element={<PublicRoute><Login /></PublicRoute>}/> */}
         <Route path="/rating" element={<Dashboard />}/>
         <Route path="/spot" element={<DashboardSpot />}/>
+        <Route path="/brand" element={<DashboardBrand />}/>
       </Routes>
     </BrowserRouter>
   )

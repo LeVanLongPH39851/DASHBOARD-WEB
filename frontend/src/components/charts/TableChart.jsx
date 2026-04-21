@@ -145,6 +145,12 @@ const TableChart = ({
 
 
 
+  const parseDDMMYYYY = (value) => {
+    if (!value || typeof value !== 'string') return 0;
+    const [day, month, year] = value.split('/').map(Number);
+    if (!day || !month || !year) return 0;
+    return new Date(year, month - 1, day).getTime();
+  };
 
   const columns = useMemo(() => {
     const cols = [];
@@ -171,6 +177,7 @@ const TableChart = ({
 
     series.forEach(s => {
       const isNumericCol = s.data.some(val => typeof val === 'number' && !isNaN(val));
+      const isDateCol = s.data.some(val => typeof val === 'string' && /^\d{2}\/\d{2}\/\d{4}$/.test(val));
       cols.push({
         accessorKey: s.name,
         header: s.name,
@@ -184,6 +191,13 @@ const TableChart = ({
           }
           return value || '';
         },
+        sortingFn: isDateCol
+          ? (rowA, rowB, columnId) => {
+              const a = parseDDMMYYYY(rowA.getValue(columnId));
+              const b = parseDDMMYYYY(rowB.getValue(columnId));
+              return a - b;
+            }
+          : undefined,
         meta: { isNumeric: isNumericCol },
         size: s.name.length > 20 ? 50 : 50,
         minSize: 50,

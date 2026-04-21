@@ -252,7 +252,7 @@ const BarChart = ({
             ${topSeriesIndex != 0 ? `
               <hr style="margin: ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '5' : '4.5' : '4'}px 0; border: none; height: 1px; background: rgba(0, 0, 0, 0.1);">
               <div style="font-weight: 600; color: #059669; font-size: ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '12' : '11' : '10.5'}px;">
-                <span>Tổng:</span> <span>${total.toLocaleString(undefined, { maximumFractionDigits: formatterValue })} ${suffix}</span>
+                <span>Tổng:</span> <span>${total.toLocaleString(undefined, { maximumFractionDigits: formatterValue })}${showPercent ? '%' : ''} ${suffix}</span>
               </div>
             ` : ''}
           </div>
@@ -491,7 +491,7 @@ const BarChart = ({
           });
           const currentValue = sortedSeries[seriesIndex]?.data?.[dataIndex] || 0;
           if (total <= 0 || currentValue <= 0) return '';
-          const percent = ((currentValue / total) * 100).toFixed(0);
+          const percent = ((currentValue / total) * 100).toFixed(2);
 
           if (showPercent) {
             return `${percent}%`;

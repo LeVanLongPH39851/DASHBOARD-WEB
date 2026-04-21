@@ -68,7 +68,7 @@ const DashboardContent = () => {
       <div className='flex w-full h-full bg-background-light dark:bg-background-dark transition-all duration-300'>
         <FilterSpot filters={scopeFilterData} />
         <div className={`${stateGlobals.isOpen && !stateGlobals.horizontal ? 'w-[84%] max-md:w-full' : 'w-full'} transition-all duration-300 bg-background-dashboard dark:bg-background-dashboard-dark`}>
-          <BreadCrumb dashboardName='GIÁM SÁT QUẢNG CÁO' />
+          <BreadCrumb dashboardName='BÁO CÁO CHO NHÃN HÀNG' />
           <div className='bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300'>
             <ParentTabs uniqueId='dashboard'
                         defaultTab='overview'

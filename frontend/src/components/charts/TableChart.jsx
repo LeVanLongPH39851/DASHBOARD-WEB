@@ -152,6 +152,24 @@ const TableChart = ({
     return new Date(year, month - 1, day).getTime();
   };
 
+  const textSortingFn = (rowA, rowB, columnId) => {
+    const a = String(rowA.getValue(columnId) ?? '').toLowerCase();
+    const b = String(rowB.getValue(columnId) ?? '').toLowerCase();
+    return a.localeCompare(b, 'vi');
+  };
+
+  const dateSortingFn = (rowA, rowB, columnId) => {
+    const a = parseDDMMYYYY(rowA.getValue(columnId));
+    const b = parseDDMMYYYY(rowB.getValue(columnId));
+    return a - b;
+  };
+
+  const numberSortingFn = (rowA, rowB, columnId) => {
+    const a = Number(rowA.getValue(columnId) ?? 0);
+    const b = Number(rowB.getValue(columnId) ?? 0);
+    return a - b;
+  };
+
   const columns = useMemo(() => {
     const cols = [];
 
@@ -178,6 +196,7 @@ const TableChart = ({
     series.forEach(s => {
       const isNumericCol = s.data.some(val => typeof val === 'number' && !isNaN(val));
       const isDateCol = s.data.some(val => typeof val === 'string' && /^\d{2}\/\d{2}\/\d{4}$/.test(val));
+
       cols.push({
         accessorKey: s.name,
         header: s.name,
@@ -187,17 +206,11 @@ const TableChart = ({
           if (typeof value === 'number' && !isNaN(value)) {
             const isPercent = columnId.includes('%');
             const isMinuteUserProgram = columnId.includes('Phút/người/\nlượt phát');
-            return  isMinuteUserProgram ? value.toLocaleString(undefined, { maximumFractionDigits: 2 }) : formatNumber(value, { isPercent });
+            return isMinuteUserProgram ? value.toLocaleString(undefined, { maximumFractionDigits: 2 }) : formatNumber(value, { isPercent });
           }
           return value || '';
         },
-        sortingFn: isDateCol
-          ? (rowA, rowB, columnId) => {
-              const a = parseDDMMYYYY(rowA.getValue(columnId));
-              const b = parseDDMMYYYY(rowB.getValue(columnId));
-              return a - b;
-            }
-          : undefined,
+        sortingFn: isDateCol ? dateSortingFn : isNumericCol ? numberSortingFn : textSortingFn,
         meta: { isNumeric: isNumericCol },
         size: s.name.length > 20 ? 50 : 50,
         minSize: 50,

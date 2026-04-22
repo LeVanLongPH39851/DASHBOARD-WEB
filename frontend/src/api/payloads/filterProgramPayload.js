@@ -27,7 +27,7 @@ export const filterProgramPayload = {
                 ]
             ],
             "annotation_layers": [],
-            "row_limit": 1000,
+            "row_limit": 10000,
             "series_limit": 0,
             "order_desc": true,
             "url_params": {
@@ -56,7 +56,7 @@ export const filterProgramPayload = {
         "metrics": [
             "count"
         ],
-        "row_limit": 1000,
+        "row_limit": 10000,
         "showSearch": true,
         "url_params": {
             "native_filters_key": "bqBRzQqCDO6Q3EuDzjgYnd-86WSu9BH4U4rwudIJ3WKsK8Ubg1uUWied3l7cXUqs"

@@ -93,13 +93,13 @@ const RangeFilter = ({
 
   return (
     <div className={`${horizontalFixed ? '' : isOpenFilter ? `${marginBottom}` : ''}`}>
-      {!horizontalFixed && (<div onClick={() => setIsOpenFilter(prev => !prev)} className={`flex cursor-pointer group justify-between items-center h-10.5 max-md:h-8 ${isOpenFilter ? 'mb-1' : ''}`}>
-                              <label className='cursor-pointer text-[16px] max-md:text-xs text-background-black-child-tab dark:text-color-white-90 transition-all duration-300 font-medium'>{label}</label>
-                              <figure className={`cursor-pointer transition-all duration-300 ${isOpenFilter ? '' : 'rotate-180'}`}><img src={!stateGlobals.darkMode ? iconArrowUpGray : iconArrowUpGrayDark} className='w-2.75 max-md:w-2' alt="Icon Arrow Up Gray" /></figure>
+      {!horizontalFixed && (<div onClick={() => setIsOpenFilter(prev => !prev)} className={`flex cursor-pointer group justify-between items-center h-10.5 max-lg:h-9 max-md:h-8 ${isOpenFilter ? 'mb-1' : ''}`}>
+                              <label className='cursor-pointer text-[16px] max-lg:text-sm max-md:text-xs text-background-black-child-tab dark:text-color-white-90 transition-all duration-300 font-medium'>{label}</label>
+                              <figure className={`cursor-pointer transition-all duration-300 ${isOpenFilter ? '' : 'rotate-180'}`}><img src={!stateGlobals.darkMode ? iconArrowUpGray : iconArrowUpGrayDark} className='w-2.75 max-lg:w-2.5 max-md:w-2' alt="Icon Arrow Up Gray" /></figure>
                             </div>)}
       <div className={!horizontalFixed ? 'transition-all duration-300 relative filter-relative overflow-hidden' : ''} data-initial-height="match">
         <div className={!horizontalFixed ? `transition-all duration-300 absolute w-full left-0 filter-absolute ${isOpenFilter ? 'visible opacity-100 top-0' : 'invisible opacity-0 -top-1/2'}` : ''}>
-          {!horizontalFixed && (<div className='flex items-center gap-2 mb-1'>
+          {!horizontalFixed && (<div className='flex items-center gap-2 max-lg:gap-1.5 mb-1'>
                                     <input
                                     type='number'
                                     value={localMin === '' ? '' : localMin}
@@ -109,7 +109,7 @@ const RangeFilter = ({
                                     step={step}
                                     disabled={disabled}
                                     onChange={(e) => handleMinInput(e.target.value)}
-                                    className='w-1/2 px-3 py-2 max-md:py-1.5 text-sm max-md:text-xs rounded-xl border border-background-line-gray dark:border-background-white-15 bg-background-light dark:bg-background-white-8 outline-none text-color-black-50 dark:text-color-white-50 transition-all duration-300'
+                                    className='w-1/2 px-3 py-2 max-lg:py-1.75 max-md:py-1.5 text-sm max-lg:text-[13px] max-md:text-xs rounded-xl border border-background-line-gray dark:border-background-white-15 bg-background-light dark:bg-background-white-8 outline-none text-color-black-50 dark:text-color-white-50 transition-all duration-300'
                                     />
                                     <input
                                     type='number'
@@ -120,13 +120,13 @@ const RangeFilter = ({
                                     step={step}
                                     disabled={disabled}
                                     onChange={(e) => handleMaxInput(e.target.value)}
-                                    className='w-1/2 px-3 py-2 max-md:py-1.5 text-sm max-md:text-xs rounded-xl border border-background-line-gray dark:border-background-white-15 bg-background-light dark:bg-background-white-8 outline-none text-color-black-50 dark:text-color-white-50 transition-all duration-300'
+                                    className='w-1/2 px-3 py-2 max-lg:py-1.75 max-md:py-1.5 text-sm max-lg:text-[13px] max-md:text-xs rounded-xl border border-background-line-gray dark:border-background-white-15 bg-background-light dark:bg-background-white-8 outline-none text-color-black-50 dark:text-color-white-50 transition-all duration-300'
                                     />
                                 </div>)}
-          <div className={`relative h-6 max-md:h-5 flex items-center ${horizontalFixed ? 'w-34 max-md:w-full' : ''}`}>
-            <div className={`absolute w-full h-1.25 max-md:h-1 rounded-full bg-background-black-4 dark:bg-background-white-15`} />
+          <div className={`relative h-6 max-lg:h-5.5 max-md:h-5 flex items-center ${horizontalFixed ? 'w-34 max-lg:w-32 max-md:w-full' : ''}`}>
+            <div className={`absolute w-full h-1.25 max-lg:h-1 max-md:h-1 rounded-full bg-background-black-4 dark:bg-background-white-15`} />
             <div
-              className={`absolute h-1.25 max-md:h-1 rounded-full bg-color-neotam dark:bg-color-primary-700`}
+              className={`absolute h-1.25 max-lg:h-1 max-md:h-1 rounded-full bg-color-neotam dark:bg-color-primary-700`}
               style={{
                 left: `${minPercent}%`,
                 width: `${maxPercent - minPercent}%`,
@@ -140,7 +140,7 @@ const RangeFilter = ({
               value={localMin}
               disabled={disabled}
               onChange={(e) => handleMinInput(e.target.value)}
-              className={`absolute w-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-3.5 [&::-webkit-slider-thumb]:w-3.5 max-md:[&::-webkit-slider-thumb]:h-3 max-md:[&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-color-neotam dark:[&::-webkit-slider-thumb]:bg-color-primary-700 [&::-webkit-slider-thumb]:cursor-pointer`}
+              className={`absolute w-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-3.5 [&::-webkit-slider-thumb]:w-3.5 max-md:[&::-webkit-slider-thumb]:h-3 max-md:[&::-webkit-slider-thumb]:w-3 max-lg:[&::-webkit-slider-thumb]:h-3.25 max-lg:[&::-webkit-slider-thumb]:w-3.25 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-color-neotam dark:[&::-webkit-slider-thumb]:bg-color-primary-700 [&::-webkit-slider-thumb]:cursor-pointer`}
             />
             <input
               type='range'
@@ -150,10 +150,10 @@ const RangeFilter = ({
               value={localMax}
               disabled={disabled}
               onChange={(e) => handleMaxInput(e.target.value)}
-              className={`absolute w-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-3.5 [&::-webkit-slider-thumb]:w-3.5 max-md:[&::-webkit-slider-thumb]:h-3 max-md:[&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-color-neotam dark:[&::-webkit-slider-thumb]:bg-color-primary-700 [&::-webkit-slider-thumb]:cursor-pointer`}
+              className={`absolute w-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-3.5 [&::-webkit-slider-thumb]:w-3.5 max-md:[&::-webkit-slider-thumb]:h-3 max-md:[&::-webkit-slider-thumb]:w-3 max-lg:[&::-webkit-slider-thumb]:h-3.25 max-lg:[&::-webkit-slider-thumb]:w-3.25 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-color-neotam dark:[&::-webkit-slider-thumb]:bg-color-primary-700 [&::-webkit-slider-thumb]:cursor-pointer`}
             />
           </div>
-          <div className='flex justify-between mt-1 max-md:mt-0 text-xs max-md:text-[10px] text-color-black-50 dark:text-color-white-50 transition-all duration-300'>
+          <div className='flex justify-between mt-1 max-lg:mt-0.75 max-md:mt-0 text-xs max-lg:text-[11px] max-md:text-[10px] text-color-black-50 dark:text-color-white-50 transition-all duration-300'>
             <span>{formatValue(min)}</span>
             <span>{formatValue(max)}</span>
           </div>

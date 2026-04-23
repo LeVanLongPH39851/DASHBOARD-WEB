@@ -148,7 +148,7 @@ export const getAllTableChartEvent = (appliedFilters) =>
 // Tab Rating By Minute
 
 export const getRatingLineChartMinuteChannel = (appliedFilters) =>
-  postChart(payloads.ratingLineChartMinuteChannelPayload, appliedFilters, ['eventFilters', 'timebandFilters', 'firstLevelFilters', 'startTimeFilters'])
+  postChart(payloads.ratingLineChartMinuteChannelPayload, appliedFilters, ['eventFilters', 'timebandFilters', 'firstLevelFilters', 'startTimeFilters', 'programFilters'])
 
 export const getRatingLineChartMinuteChannelOneDate = (appliedFilters) =>
   postChart(payloads.ratingLineChartMinuteChannelOneDatePayload, appliedFilters, ['eventFilters', 'timebandFilters', 'firstLevelFilters', 'startTimeFilters', 'overwriteChannelFilters', 'oneDateFilters'])

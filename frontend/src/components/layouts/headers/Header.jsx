@@ -105,6 +105,10 @@ const Header = ({ username }) => {
 
     const handleLogout = () => {
         window.location.href = CUSTOM_CHART.domain + '/logout/';
+        sessionStorage.removeItem('dashboard_filters');
+        sessionStorage.removeItem('filter_values');
+        sessionStorage.removeItem('dashboard_filter_spots');
+        sessionStorage.removeItem('filter_value_spots');
     };
 
     const [currentTime, setCurrentTime] = useState('');

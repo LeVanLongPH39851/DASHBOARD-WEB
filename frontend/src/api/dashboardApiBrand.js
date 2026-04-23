@@ -100,6 +100,9 @@ export const getReachNumberChart = (appliedFilters) =>
 export const getSpendVNDNumberChart = (appliedFilters) =>
   postChart(payloads.spendVNDNumberChartPayload, appliedFilters);
 
+export const getAllTableChartMonitoring = (appliedFilters) =>
+  postChart(payloads.allTableChartMonitoringPayload, appliedFilters);
+
 export const getFilterProvince = () =>
   axiosClient.post(apiRoute, payloads.filterProvincePayload)
 

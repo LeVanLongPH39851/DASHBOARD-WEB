@@ -91,6 +91,9 @@ export const useReachNumberChartReturnApi = () =>
 export const useSpendVNDNumberChartReturnApi = () =>
   createChartHook(getChart.getSpendVNDNumberChart)();
 
+export const useAllTableChartMonitoringReturnApi = () =>
+  createChartHook(getChart.getAllTableChartMonitoring)();
+
 export const useFilterProvinceReturnApi = () => {
   return useApi(getChart.getFilterProvince);
 };

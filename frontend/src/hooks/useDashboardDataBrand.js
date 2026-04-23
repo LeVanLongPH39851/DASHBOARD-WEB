@@ -45,6 +45,7 @@ const HOOKS = [
     { hook: useCallApi.useFrequencyNumberChartReturnApi, dataKey: 'frequencyNumberData' },
     { hook: useCallApi.useReachNumberChartReturnApi, dataKey: 'reachNumberData' },
     { hook: useCallApi.useSpendVNDNumberChartReturnApi, dataKey: 'spendVNDNumberData' },
+    { hook: useCallApi.useAllTableChartMonitoringReturnApi, dataKey: 'allTableMonitoringData' },
 
     { hook: useCallApi.useFilterProvinceReturnApi, dataKey: 'filterProvinceData' },
     { hook: useCallApi.useFilterProgramReturnApi, dataKey: 'filterProgramData' },

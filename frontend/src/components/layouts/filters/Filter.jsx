@@ -114,6 +114,8 @@ const Filter = ({ filters, horizontalFixed=false
 
   const ALL_PROVINCES = toOptions(filters?.filterProvince, 'province');
   const ALL_PROGRAMS = toOptions(filters?.filterProgram, 'program_name');
+  const FILTER_SESSION_KEY = 'dashboard_filters';
+  const FILTER_SESSION_VALUE = 'filter_values';
 
   const { appliedFilters, setAppliedFilters} = useDashboardFilters();
   const { filterValues, setFilterValues } = useDashboardFilterValues();
@@ -203,8 +205,8 @@ const Filter = ({ filters, horizontalFixed=false
       programs: ALL_PROGRAMS
     };
 
-    setFilterValues(prev => ({
-      ...prev,
+    const transformed = {
+      ...filterValues,
       startDate: appliedFilters.startDate || getYesterday(),
       endDate: appliedFilters.endDate || getYesterday(),
       // ✅ Generic map tất cả arrays
@@ -218,7 +220,9 @@ const Filter = ({ filters, horizontalFixed=false
       ),
       startHours: appliedFilters.startHours || { min: 0, max: 23 },
       startMinutes: appliedFilters.startMinutes || { min: 0, max: 59 }
-    }));
+    };
+    setFilterValues(transformed);
+    sessionStorage.setItem(FILTER_SESSION_VALUE, JSON.stringify(transformed));
   }, [appliedFilters]);
 
   const handleDateRangeChange = ({ startDate: s, endDate: e }) => {
@@ -281,6 +285,7 @@ const Filter = ({ filters, horizontalFixed=false
     };
 
     setAppliedFilters(transformed);
+    sessionStorage.setItem(FILTER_SESSION_KEY, JSON.stringify(transformed));
 
     if(stateGlobals.screen_md) {
       setStateGlobals(prev => ({...prev, isOpen: !prev.isOpen}))
@@ -290,6 +295,8 @@ const Filter = ({ filters, horizontalFixed=false
   const onReset = () => {
     setAppliedFilters(null);
     setFilterValues(null);
+    sessionStorage.removeItem(FILTER_SESSION_KEY);
+    sessionStorage.removeItem(FILTER_SESSION_VALUE);
 
     if(stateGlobals.screen_md) {
       setStateGlobals(prev => ({...prev, isOpen: !prev.isOpen}))

@@ -2,18 +2,41 @@
 
 /**
  * Transform API data to MixedChart format - UNIVERSAL
- * 
+ *
  * @param {Array} apiData - Array of data objects
  * @param {String} labelKey - Key for labels (e.g., 'date', 'time_band', 'channel')
  * @param {Array|Object} colnamesOrOptions - Colnames array OR options object
  * @returns {Object} - {labels, series}
  */
+
+const timeToMinutes = (timeStr) => {
+  if (!timeStr || typeof timeStr !== 'string') return null;
+  const clean = timeStr.trim();
+  const match = clean.match(/^(\d{1,2}):(\d{2})$/);
+  if (!match) return null;
+
+  const hh = Number(match[1]);
+  const mm = Number(match[2]);
+
+  if (Number.isNaN(hh) || Number.isNaN(mm) || hh < 0 || hh > 23 || mm < 0 || mm > 59) {
+    return null;
+  }
+
+  return hh * 60 + mm;
+};
+
+const minutesToTime = (totalMinutes) => {
+  const hh = Math.floor(totalMinutes / 60);
+  const mm = totalMinutes % 60;
+  return `${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}`;
+};
+
 export const transformMixedChartData = (
   apiData = [],
   labelKey = 'date',
-  colnamesOrOptions = null
+  colnamesOrOptions = null,
+  fullTimeband = null
 ) => {
-  // ✅ HANDLE FLEXIBLE PARAMETERS
   let colnames = null;
   let formatLabel = null;
   let metricsConfig = null;
@@ -21,10 +44,8 @@ export const transformMixedChartData = (
   let excludeColumns = [];
 
   if (Array.isArray(colnamesOrOptions)) {
-    // ✅ Truyền trực tiếp colnames array
     colnames = colnamesOrOptions;
   } else if (colnamesOrOptions && typeof colnamesOrOptions === 'object') {
-    // ✅ Truyền options object
     ({
       colnames = null,
       formatLabel = null,
@@ -40,34 +61,30 @@ export const transformMixedChartData = (
 
   // ✅ BƯỚC 1: Group data by label
   const groupedData = {};
-  
+
   apiData.forEach(item => {
     const labelValue = item[labelKey];
     if (!labelValue && labelValue !== 0) return;
-    
-    // ✅ AUTO FORMAT LABEL
+
     let formattedLabel;
-    
+
     if (formatLabel) {
       formattedLabel = formatLabel(labelValue);
     } else {
       if (typeof labelValue === 'number') {
-        // Timestamp
         const date = new Date(labelValue);
         formattedLabel = `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
       } else if (typeof labelValue === 'string') {
-        // Keep string as is
         formattedLabel = labelValue;
       } else {
         formattedLabel = String(labelValue);
       }
     }
-    
+
     if (!groupedData[formattedLabel]) {
       groupedData[formattedLabel] = { _sortKey: labelValue };
     }
-    
-    // Add all metrics
+
     Object.keys(item).forEach(key => {
       if (key !== labelKey && !excludeColumns.includes(key)) {
         groupedData[formattedLabel][key] = item[key];
@@ -77,31 +94,41 @@ export const transformMixedChartData = (
 
   // ✅ BƯỚC 2: Extract labels
   let labels = Object.keys(groupedData);
-  
-  // Sort if needed
-  if (sortByLabel) {
+
+  if (fullTimeband === 'full_timeband_minute') {
+    
+    // ✅ FIX CỨNG FULL DAY 00:00 -> 23:59
+    labels = [];
+    for (let m = 0; m <= 1439; m++) {
+      const minuteLabel = minutesToTime(m);
+      labels.push(minuteLabel);
+
+      if (!groupedData[minuteLabel]) {
+        groupedData[minuteLabel] = { _sortKey: minuteLabel };
+      }
+    }
+  } else if (sortByLabel) {
     labels.sort((a, b) => {
-      const valA = groupedData[a]._sortKey;
-      const valB = groupedData[b]._sortKey;
-      
+      const valA = groupedData[a]?._sortKey;
+      const valB = groupedData[b]?._sortKey;
+
       if (typeof valA === 'number' && typeof valB === 'number') {
         return valA - valB;
       }
+
       return String(valA).localeCompare(String(valB));
     });
   }
 
   // ✅ BƯỚC 3: Determine metrics
   let metrics = metricsConfig;
-  
+
   if (!metrics) {
     if (colnames && Array.isArray(colnames)) {
-      // ✅ Use colnames from API
       metrics = colnames.filter(
         col => col !== labelKey && !excludeColumns.includes(col)
       );
     } else {
-      // Auto detect from data
       const allKeys = new Set();
       Object.values(groupedData).forEach(obj => {
         Object.keys(obj).forEach(key => {
@@ -118,7 +145,7 @@ export const transformMixedChartData = (
   const series = metrics.map(metricName => ({
     name: metricName,
     data: labels.map(label => {
-      const value = groupedData[label][metricName];
+      const value = groupedData[label]?.[metricName];
       return value !== undefined && value !== null ? Number(value) : null;
     })
   }));
@@ -129,14 +156,13 @@ export const transformMixedChartData = (
   };
 };
 
-
 /**
  * Helper: Format date
  */
 export const formatDate = (timestamp, format = 'DD/MM/YYYY') => {
   const date = new Date(timestamp);
-  
-  switch(format) {
+
+  switch (format) {
     case 'DD/MM/YYYY':
       return `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
     case 'DD/MM':

@@ -581,13 +581,16 @@ const DashboardContent = () => {
                                 <InforFilter filters={scopeFilterData} FilterComponent={FilterSpot} nameFilter='FilterSpot' />
                                 <div className='px-6 max-lg:px-5 max-md:px-4'>
                                   <div className='w-full py-6 max-lg:py-5 max-md:py-4'>
+                                    <div className={`p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
+                                      <NameChart nameChart={'Top 20 nhà quảng cáo'} description={false} opacity={true} />
                                       <ChildTabs tabs={[
                                       {id: 'grp', label: 'GRP',
                                       content: (
                                         <PivotTableChart
                                           data={!dashboard.isLoading.grpPivotCampaignWeekData ? dashboard.grpPivotCampaignWeekData?.data : 'isLoading'}
-                                          nameChart={'Campaign Detail GRP (%) by Week'}
+                                          nameChart={'Chỉ số về hiệu quả chiến dịch (GRP, REACH và SỐ LƯỢNG SPOT)'}
                                           description={false}
+                                          displayName={false}
                                           rowField="campaign_name"
                                           columnField="week"
                                           valueField="grp"
@@ -599,28 +602,13 @@ const DashboardContent = () => {
                                           formatterValue={2}
                                         />
                                       )},
-                                      {id: 'spot', label: 'SPOT',
-                                      content: (
-                                        <PivotTableChart
-                                          data={!dashboard.isLoading.countPivotCampaignWeekData ? dashboard.countPivotCampaignWeekData?.data : 'isLoading'}
-                                          nameChart={'Campaign Detail number of Spot by Week'}
-                                          description={false}
-                                          rowField="campaign_name"
-                                          columnField="week"
-                                          valueField="count"
-                                          aggType="sum"
-                                          height={CUSTOM_CHART.tableChart.tableChartChannel.height}
-                                          fontSize={CUSTOM_CHART.tableChart.fontSize}
-                                          fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                          fontWeight={CUSTOM_CHART.tableChart.fontWeight}
-                                        />
-                                      )},
                                       {id: 'reach', label: 'REACH',
                                       content: (
                                         <PivotTableChart
                                           data={!dashboard.isLoading.reachPivotCampaignWeekData ? dashboard.reachPivotCampaignWeekData?.data : 'isLoading'}
-                                          nameChart={'Campaign Detail Reach by Week'}
+                                          nameChart={'Chỉ số về hiệu quả chiến dịch (GRP, REACH và SỐ LƯỢNG SPOT)'}
                                           description={false}
+                                          displayName={false}
                                           rowField="campaign_name"
                                           columnField="week"
                                           valueField="reach"
@@ -630,8 +618,26 @@ const DashboardContent = () => {
                                           fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                           fontWeight={CUSTOM_CHART.tableChart.fontWeight}
                                         />
+                                      )},
+                                      {id: 'spot', label: 'SPOT',
+                                      content: (
+                                        <PivotTableChart
+                                          data={!dashboard.isLoading.countPivotCampaignWeekData ? dashboard.countPivotCampaignWeekData?.data : 'isLoading'}
+                                          nameChart={'Chỉ số về hiệu quả chiến dịch (GRP, REACH và SỐ LƯỢNG SPOT)'}
+                                          description={false}
+                                          displayName={false}
+                                          rowField="campaign_name"
+                                          columnField="week"
+                                          valueField="count"
+                                          aggType="sum"
+                                          height={CUSTOM_CHART.tableChart.tableChartChannel.height}
+                                          fontSize={CUSTOM_CHART.tableChart.fontSize}
+                                          fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                          fontWeight={CUSTOM_CHART.tableChart.fontWeight}
+                                        />
                                       )}
                                       ]} />
+                                    </div>
                                   </div>
                                   <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4 flex max-md:flex-wrap gap-6 max-lg:gap-5 max-md:gap-4'>
                                     <div className='w-[60%] max-md:w-full'>
@@ -641,7 +647,7 @@ const DashboardContent = () => {
                                           fontSize={CUSTOM_CHART.barChart.fontSize}
                                           fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                           fontWeight={CUSTOM_CHART.barChart.fontWeight}
-                                          nameChart={'Competitor Review by Market (GRP)'}
+                                          nameChart={'GRP (%) theo thị trường'}
                                           description={false}
                                           orientation={''}
                                           formatterValue={2}
@@ -654,7 +660,7 @@ const DashboardContent = () => {
                                           fontSize={CUSTOM_CHART.barChart.fontSize}
                                           fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                           fontWeight={CUSTOM_CHART.barChart.fontWeight}
-                                          nameChart={'Competitor Review by Week (GRP)'}
+                                          nameChart={'GRP (%) trong tuần theo nhà quảng cáo'}
                                           description={false}
                                           orientation={''}
                                           formatterValue={2}
@@ -673,7 +679,7 @@ const DashboardContent = () => {
                                                   fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                   colors={CUSTOM_CHART.barChart.colorChannel}
                                                   fontWeight={CUSTOM_CHART.barChart.fontWeight}
-                                                  nameChart={'Competitor Review by Channel'}
+                                                  nameChart={'Phân bổ quảng cáo theo kênh'}
                                                   description={false}
                                                   orientation={'horizontal'}
                                                   colorZoom='red'
@@ -685,7 +691,7 @@ const DashboardContent = () => {
                                                   fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                   colors={CUSTOM_CHART.barChart.colorTimeband}
                                                   fontWeight={CUSTOM_CHART.barChart.fontWeight}
-                                                  nameChart={'Competitor Review by Timeband'}
+                                                  nameChart={'Phân bổ quảng cáo theo khung giờ'}
                                                   description={false}
                                                   orientation={'horizontal'}
                                                   colorZoom='red'
@@ -697,7 +703,7 @@ const DashboardContent = () => {
                                                   fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                   colors={CUSTOM_CHART.barChart.colorFirstLevel}
                                                   fontWeight={CUSTOM_CHART.barChart.fontWeight}
-                                                  nameChart={'Competitor Review by Genre'}
+                                                  nameChart={'Phân bổ quảng cáo theo Thể loại nội dung'}
                                                   description={false}
                                                   orientation={'horizontal'}
                                                   colorZoom='red'
@@ -707,7 +713,7 @@ const DashboardContent = () => {
                                                         fontSize={CUSTOM_CHART.pieChart.fontSize}
                                                         fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                         fontWeight={CUSTOM_CHART.pieChart.fontWeight}
-                                                        nameChart={"Advertisers' Share"}
+                                                        nameChart={"Thị phần các nhà quảng cáo"}
                                                         description={false}
                                                         donut={CUSTOM_CHART.pieChart.donut}
                                                         innerRadius={CUSTOM_CHART.pieChart.innerRadius}
@@ -725,7 +731,7 @@ const DashboardContent = () => {
                                                   fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                   colors={CUSTOM_CHART.barChart.colorChannel}
                                                   fontWeight={CUSTOM_CHART.barChart.fontWeight}
-                                                  nameChart={'Competitor Review by Channel'}
+                                                  nameChart={'Phân bổ quảng cáo theo kênh'}
                                                   description={false}
                                                   orientation={'horizontal'}
                                                   colorZoom='red'
@@ -737,7 +743,7 @@ const DashboardContent = () => {
                                                   fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                   colors={CUSTOM_CHART.barChart.colorTimeband}
                                                   fontWeight={CUSTOM_CHART.barChart.fontWeight}
-                                                  nameChart={'Competitor Review by Timeband'}
+                                                  nameChart={'Phân bổ quảng cáo theo khung giờ'}
                                                   description={false}
                                                   orientation={'horizontal'}
                                                   colorZoom='red'
@@ -749,7 +755,7 @@ const DashboardContent = () => {
                                                   fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                   colors={CUSTOM_CHART.barChart.colorFirstLevel}
                                                   fontWeight={CUSTOM_CHART.barChart.fontWeight}
-                                                  nameChart={'Competitor Review by Genre'}
+                                                  nameChart={'Phân bổ quảng cáo theo Thể loại nội dung'}
                                                   description={false}
                                                   orientation={'horizontal'}
                                                   colorZoom='red'
@@ -759,7 +765,7 @@ const DashboardContent = () => {
                                                         fontSize={CUSTOM_CHART.pieChart.fontSize}
                                                         fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                         fontWeight={CUSTOM_CHART.pieChart.fontWeight}
-                                                        nameChart={"Advertisers' Share"}
+                                                        nameChart={"Thị phần các nhà quảng cáo"}
                                                         description={false}
                                                         donut={CUSTOM_CHART.pieChart.donut}
                                                         innerRadius={CUSTOM_CHART.pieChart.innerRadius}
@@ -777,7 +783,7 @@ const DashboardContent = () => {
                                                   fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                   colors={CUSTOM_CHART.barChart.colorChannel}
                                                   fontWeight={CUSTOM_CHART.barChart.fontWeight}
-                                                  nameChart={'Competitor Review by Channel'}
+                                                  nameChart={'Phân bổ quảng cáo theo kênh'}
                                                   description={false}
                                                   orientation={'horizontal'}
                                                   colorZoom='red'
@@ -789,7 +795,7 @@ const DashboardContent = () => {
                                                   fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                   colors={CUSTOM_CHART.barChart.colorTimeband}
                                                   fontWeight={CUSTOM_CHART.barChart.fontWeight}
-                                                  nameChart={'Competitor Review by Timeband'}
+                                                  nameChart={'Phân bổ quảng cáo theo khung giờ'}
                                                   description={false}
                                                   orientation={'horizontal'}
                                                   colorZoom='red'
@@ -801,7 +807,7 @@ const DashboardContent = () => {
                                                   fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                   colors={CUSTOM_CHART.barChart.colorFirstLevel}
                                                   fontWeight={CUSTOM_CHART.barChart.fontWeight}
-                                                  nameChart={'Competitor Review by Genre'}
+                                                  nameChart={'Phân bổ quảng cáo theo Thể loại nội dung'}
                                                   description={false}
                                                   orientation={'horizontal'}
                                                   colorZoom='red'
@@ -811,7 +817,7 @@ const DashboardContent = () => {
                                                         fontSize={CUSTOM_CHART.pieChart.fontSize}
                                                         fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                         fontWeight={CUSTOM_CHART.pieChart.fontWeight}
-                                                        nameChart={"Advertisers' Share"}
+                                                        nameChart={"Thị phần các nhà quảng cáo"}
                                                         description={false}
                                                         donut={CUSTOM_CHART.pieChart.donut}
                                                         innerRadius={CUSTOM_CHART.pieChart.innerRadius}
@@ -851,7 +857,7 @@ const DashboardContent = () => {
                                                 fontSize={CUSTOM_CHART.tableChart.fontSize}
                                                 fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                 fontWeight={CUSTOM_CHART.tableChart.fontWeight}
-                                                nameChart={'Active Device Summary'}
+                                                nameChart={'Tỉ lệ tiếp cận Reach (1+, 2+, 3+) theo ngày'}
                                                 description={false}
                                                 showSTT={false}
                                                 customCol={{'Ngày': {sticky: true}}} />

@@ -180,23 +180,6 @@ const PivotTableChart = ({
     columnResizeMode: 'onChange',
   });
 
-  useEffect(() => {
-    const el = tableScrollRef.current;
-    if (!el) return;
-
-    const handleScroll = () => {
-      const stickyCells = el.querySelectorAll('.pivot-sticky-col');
-      stickyCells.forEach((cell) => {
-        if (el.scrollLeft > 0) cell.classList.add('border-r');
-        else cell.classList.remove('border-r');
-      });
-    };
-
-    handleScroll();
-    el.addEventListener('scroll', handleScroll, { passive: true });
-    return () => el.removeEventListener('scroll', handleScroll);
-  }, []);
-
   const getPivotChartData = useCallback(() => {
     return { data: safeData, rowField, columnField, valueField, aggType };
   }, [safeData, rowField, columnField, valueField, aggType]);
@@ -303,7 +286,7 @@ const PivotTableChart = ({
                     {headerGroup.headers.map((header, idx) => (
                       <th
                         key={header.id}
-                        className={`px-2 max-lg:px-1.5 max-md:px-1 py-3 max-lg:py-2.5 max-md:py-2 text-center relative text-color-neotam dark:text-background-primary bg-background-light dark:bg-background-chart-dark border-b border-border-black-10 dark:border-background-white-15 transition-all duration-300 ${idx === 0 ? 'pivot-sticky-col sticky left-0 z-10' : ''}`}
+                        className={`px-2 max-lg:px-1.5 max-md:px-1 py-3 max-lg:py-2.5 max-md:py-2 text-center relative text-color-neotam dark:text-background-primary bg-background-light dark:bg-background-chart-dark border-b border-r border-border-black-10 dark:border-background-white-15 transition-all duration-300 ${idx === 0 ? 'sticky left-0 z-10' : ''}`}
                         style={{
                           fontSize: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.label : '12px' : '10.5px',
                           fontWeight: fontWeight.label,
@@ -347,7 +330,7 @@ const PivotTableChart = ({
                       return (
                         <td
                           key={cell.id}
-                          className={`border-b ${cellIdx === 0 ? 'pivot-sticky-col' : ''} border-border-black-10 dark:border-background-white-15 px-2 max-lg:px-1.5 max-md:px-1 py-3 max-lg:py-2.5 max-md:py-2 text-color-black-100 dark:text-color-white-90 transition-all duration-300 ${cellIdx === 0 ? `sticky left-0 z-1 bg-background-light dark:bg-background-chart-dark before:content-[''] before:inset-0 before:absolute before:-z-2 ${idx%2===0 ? 'before:bg-background-black-4 dark:before:bg-background-white-8' : 'before:bg-background-light dark:before:bg-background-chart-dark'}` : ''} ${isNumeric || !rawValue ? 'text-right' : 'text-left'}`}
+                          className={`border-b border-r border-border-black-10 dark:border-background-white-15 px-2 max-lg:px-1.5 max-md:px-1 py-3 max-lg:py-2.5 max-md:py-2 text-color-black-100 dark:text-color-white-90 transition-all duration-300 ${cellIdx === 0 ? `sticky left-0 z-1 bg-background-light dark:bg-background-chart-dark before:content-[''] before:inset-0 before:absolute before:-z-2 ${idx%2===0 ? 'before:bg-background-black-4 dark:before:bg-background-white-8' : 'before:bg-background-light dark:before:bg-background-chart-dark'}` : ''} ${isNumeric || !rawValue ? 'text-right' : 'text-left'}`}
                           style={{
                             fontSize: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.td : '12px' : '10.5px',
                             fontWeight: cellIdx === 0 ? 600 : fontWeight.td,

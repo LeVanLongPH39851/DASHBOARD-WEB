@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import NumberCard from '../components/charts/NumberCard';
 import Filter from '../components/layouts/filters/Filter';
-import { METRIC_SPOTS } from '../utils/metricInfor';
+import { METRIC_SPOTS, METRICS } from '../utils/metricInfor';
 import { CUSTOM_CHART } from '../utils/customChart';
 import { formatNumber } from '../utils/formatNumber';
 import { transformBarChartData } from '../utils/transformApiBartChart';
@@ -79,7 +79,7 @@ const DashboardContent = () => {
                                 <InforTab inforTab={"Báo cáo cho nhãn hàng"} />
                                 <InforFilter filters={scopeFilterData} FilterComponent={FilterSpot} nameFilter='FilterSpot' />
                                 <div className='px-6 max-lg:px-5 max-md:px-4 pt-6 max-lg:pt-5 max-md:pt-4'>
-                                    <div className='w-full grid grid-cols-3 gap-6 pb-6'>
+                                    <div className='w-full grid grid-cols-3 max-md:grid-cols-2 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4'>
                                         <NumberCard
                                             title={'Số lượng Campaign'}
                                             description={false}
@@ -100,36 +100,36 @@ const DashboardContent = () => {
                                             title={'Thời lượng Spot (Phút)'}
                                             description={false}
                                             value={!dashboard.isLoading.durationSpotNumberData ? dashboard.durationSpotNumberData?.data ? formatNumber(dashboard.durationSpotNumberData?.data[0].total_duration, { isPercent: false }) : '-' : 'isLoading'}
-                                            icon={METRIC_SPOTS.count.icon}
-                                            background={METRIC_SPOTS.count.background}
-                                            widthIcon={METRIC_SPOTS.count.widthIcon}
+                                            icon={METRIC_SPOTS.duration.icon}
+                                            background={METRIC_SPOTS.duration.background}
+                                            widthIcon={METRIC_SPOTS.duration.widthIcon}
                                         />
                                         <NumberCard
                                             title={'Tổng chi phí (Triệu VND)'}
                                             description={false}
                                             value={!dashboard.isLoading.spendVNDNumberData ? dashboard.spendVNDNumberData?.data ? formatNumber(dashboard.spendVNDNumberData?.data[0].price, { isPercent: false }) : '-' : 'isLoading'}
-                                            icon={METRIC_SPOTS.count.icon}
-                                            background={METRIC_SPOTS.count.background}
-                                            widthIcon={METRIC_SPOTS.count.widthIcon}
+                                            icon={METRIC_SPOTS.spend_vnd.icon}
+                                            background={METRIC_SPOTS.spend_vnd.background}
+                                            widthIcon={METRIC_SPOTS.spend_vnd.widthIcon}
                                         />
                                         <NumberCard
                                             title={'Reach'}
                                             description={false}
                                             value={!dashboard.isLoading.reachNumberData ? dashboard.reachNumberData?.data ? formatNumber(dashboard.reachNumberData?.data[0].reach, { isPercent: false }) : '-' : 'isLoading'}
-                                            icon={METRIC_SPOTS.count.icon}
-                                            background={METRIC_SPOTS.count.background}
-                                            widthIcon={METRIC_SPOTS.count.widthIcon}
+                                            icon={METRICS.ave_reach.icon}
+                                            background={METRICS.ave_reach.background}
+                                            widthIcon={METRICS.ave_reach.widthIcon}
                                         />
                                         <NumberCard
                                             title={'Tần suất'}
                                             description={false}
                                             value={!dashboard.isLoading.frequencyNumberData ? dashboard.frequencyNumberData?.data ? formatNumber(dashboard.frequencyNumberData?.data[0]['SUM(view)/SUM(reach)'], { isPercent: false }) : '-' : 'isLoading'}
-                                            icon={METRIC_SPOTS.count.icon}
-                                            background={METRIC_SPOTS.count.background}
-                                            widthIcon={METRIC_SPOTS.count.widthIcon}
+                                            icon={METRICS.rating.icon}
+                                            background={METRICS.rating.background}
+                                            widthIcon={METRICS.rating.widthIcon}
                                         />
                                     </div>
-                                    <div className='w-full pb-6'>
+                                    <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
                                         <TableChart data={!dashboard.isLoading.allTableBrandData ? transformTableChartData(dashboard.allTableBrandData?.data, dashboard.allTableBrandData?.colnames) : 'isLoading'}
                                                     height={'450px'}
                                                     fontSize={CUSTOM_CHART.tableChart.fontSize}
@@ -145,7 +145,7 @@ const DashboardContent = () => {
                                                         'Nhãn hàng': {minSize: 150, maxSize: 250}
                                                     }} />
                                     </div>
-                                    <div className='w-full grid grid-cols-2 gap-6 pb-6'>
+                                    <div className='w-full grid grid-cols-2 max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4'>
                                         <TableChart data={!dashboard.isLoading.allTableDeviceData ? transformTableChartData(dashboard.allTableDeviceData?.data, dashboard.allTableDeviceData?.colnames) : 'isLoading'}
                                                     height={'300px'}
                                                     fontSize={CUSTOM_CHART.tableChart.fontSize}
@@ -163,7 +163,7 @@ const DashboardContent = () => {
                                                     description={false}
                                                     showPagination={false} />                                    
                                     </div>
-                                    <div className='w-full grid grid-cols-2 gap-6 pb-6'>
+                                    <div className='w-full grid grid-cols-2 max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4'>
                                       <PieChart data={!dashboard.isLoading.viewPiePlatformData ? transformPieChartData(dashboard.viewPiePlatformData?.data, dashboard.viewPiePlatformData?.colnames) : 'isLoading'}
                                                 height={CUSTOM_CHART.pieChart.height}
                                                 fontSize={CUSTOM_CHART.pieChart.fontSize}
@@ -185,7 +185,7 @@ const DashboardContent = () => {
                                                 orientation={''}
                                                 showPercent={true} />
                                     </div>
-                                    <div className='w-full pb-6'>
+                                    <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
                                         <TableChart data={!dashboard.isLoading.allTableTopProgramData ? transformTableChartData(dashboard.allTableTopProgramData?.data, dashboard.allTableTopProgramData?.colnames) : 'isLoading'}
                                                     height={'400px'}
                                                     fontSize={CUSTOM_CHART.tableChart.fontSize}
@@ -195,12 +195,12 @@ const DashboardContent = () => {
                                                     description={false}
                                                     showPagination={false}
                                                     customCol={{
-                                                        'Nhãn hàng': {minSize: 100, maxSize: 350},
-                                                        'CHƯƠNG TRÌNH': {minSize: 100, maxSize: 250},
+                                                        'Nhãn hàng': {minSize: 120, maxSize: 350},
+                                                        'CHƯƠNG TRÌNH': {minSize: 120, maxSize: 250},
                                                         'KÊNH': {minSize: 0, maxSize: 20}
                                                     }} />
                                     </div>
-                                    <div className='w-full pb-6'>
+                                    <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
                                         <TableChart data={!dashboard.isLoading.adcodeProgramData ? transformTableChartData(dashboard.adcodeProgramData?.data, dashboard.adcodeProgramData?.colnames) : 'isLoading'}
                                                     height={'400px'}
                                                     fontSize={CUSTOM_CHART.tableChart.fontSize}
@@ -210,18 +210,18 @@ const DashboardContent = () => {
                                                     description={false}
                                                     showPagination={false}
                                                     customCol={{
-                                                        'CHƯƠNG TRÌNH': {minSize: 100, maxSize: 150},
+                                                        'CHƯƠNG TRÌNH': {minSize: 120, maxSize: 150},
                                                         'Khung giờ': {minSize: 40, maxSize: 150},
                                                         'Adcode': {minSize: 40, maxSize: 150},
                                                     }} />
                                     </div>
-                                    <div className='w-full grid grid-cols-2 gap-6 pb-6'>
+                                    <div className='w-full grid grid-cols-2 max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4'>
                                       <PieChart data={!dashboard.isLoading.sosPieBrandGroupData ? transformPieChartData(dashboard.sosPieBrandGroupData?.data, dashboard.sosPieBrandGroupData?.colnames) : 'isLoading'}
                                                         height={CUSTOM_CHART.pieChart.height}
                                                         fontSize={CUSTOM_CHART.pieChart.fontSize}
                                                         fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                         fontWeight={CUSTOM_CHART.pieChart.fontWeight}
-                                                        nameChart={"Tỷ trọng chi tiêu (SOS)"}
+                                                        nameChart={"Tỷ trọng chi tiêu trong ngành hàng"}
                                                         description={false}
                                                         donut={CUSTOM_CHART.pieChart.donut}
                                                         innerRadius={CUSTOM_CHART.pieChart.innerRadius}
@@ -232,7 +232,7 @@ const DashboardContent = () => {
                                                         fontSize={CUSTOM_CHART.pieChart.fontSize}
                                                         fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                         fontWeight={CUSTOM_CHART.pieChart.fontWeight}
-                                                        nameChart={"Tỷ trọng chi tiêu (SOS)"}
+                                                        nameChart={"Tỷ trọng chi tiêu trong dòng sản phẩm"}
                                                         description={false}
                                                         donut={CUSTOM_CHART.pieChart.donut}
                                                         innerRadius={CUSTOM_CHART.pieChart.innerRadius}
@@ -243,7 +243,7 @@ const DashboardContent = () => {
                                                         fontSize={CUSTOM_CHART.pieChart.fontSize}
                                                         fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                         fontWeight={CUSTOM_CHART.pieChart.fontWeight}
-                                                        nameChart={"Tỷ trọng hiện diện (SOV)"}
+                                                        nameChart={"Tỷ trọng hiện diện trong ngành hàng"}
                                                         description={false}
                                                         donut={CUSTOM_CHART.pieChart.donut}
                                                         innerRadius={CUSTOM_CHART.pieChart.innerRadius}
@@ -254,14 +254,14 @@ const DashboardContent = () => {
                                                         fontSize={CUSTOM_CHART.pieChart.fontSize}
                                                         fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                         fontWeight={CUSTOM_CHART.pieChart.fontWeight}
-                                                        nameChart={"Tỷ trọng hiện diện (SOV)"}
+                                                        nameChart={"Tỷ trọng hiện diện trong dòng sản phẩm"}
                                                         description={false}
                                                         donut={CUSTOM_CHART.pieChart.donut}
                                                         innerRadius={CUSTOM_CHART.pieChart.innerRadius}
                                                         border={false}
                                       />
                                     </div>
-                                    <div className='w-full grid grid-cols-2 gap-6 pb-6'>
+                                    <div className='w-full grid grid-cols-2 max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4'>
                                       <BarChart 
                                           data={!dashboard.isLoading.spendVNDBarChannelData ? transformBarChartData(dashboard.spendVNDBarChannelData?.data, dashboard.spendVNDBarChannelData?.colnames) : 'isLoading'}
                                           height={CUSTOM_CHART.barChart.height}
@@ -311,7 +311,7 @@ const DashboardContent = () => {
                                           colorZoom='red'
                                       />
                                     </div>
-                                    <div className='w-full pb-6'>
+                                    <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
                                       <BarChart 
                                           data={!dashboard.isLoading.spendVNDBarDateData ? transformBarChartData(dashboard.spendVNDBarDateData?.data, dashboard.spendVNDBarDateData?.colnames) : 'isLoading'}
                                           height={CUSTOM_CHART.barChart.height}
@@ -324,7 +324,7 @@ const DashboardContent = () => {
                                           orientation={''}
                                       />
                                     </div>
-                                    <div className='w-full pb-6'>
+                                    <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
                                       <BarChart 
                                           data={!dashboard.isLoading.spendVNDBarTimebandData ? transformBarChartData(dashboard.spendVNDBarTimebandData?.data, dashboard.spendVNDBarTimebandData?.colnames) : 'isLoading'}
                                           height={CUSTOM_CHART.barChart.height}
@@ -337,14 +337,14 @@ const DashboardContent = () => {
                                           orientation={''}
                                           maxVisibleItems={true} />
                                     </div>
-                                    <div className='w-full pb-6'>
+                                    <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
                                       <BarChart 
                                           data={!dashboard.isLoading.grpBarBrandData ? transformBarChartData(dashboard.grpBarBrandData?.data, dashboard.grpBarBrandData?.colnames) : 'isLoading'}
                                           height={CUSTOM_CHART.barChart.height}
                                           fontSize={CUSTOM_CHART.barChart.fontSize}
                                           fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                           fontWeight={CUSTOM_CHART.barChart.fontWeight}
-                                          nameChart={'Competitor Review by Market (GRP)'}
+                                          nameChart={'GRP (%) theo thị trường'}
                                           description={false}
                                           orientation={''}
                                           formatterValue={2}
@@ -363,7 +363,32 @@ const DashboardContent = () => {
                                 <InforTab inforTab={"Ad monitoring report"} />
                                 <InforFilter filters={scopeFilterData} FilterComponent={FilterSpot} nameFilter='FilterSpot' />
                                 <div className='px-6 max-lg:px-5 max-md:px-4'>
-                                  
+                                  <div className='w-full py-6 max-lg:py-5 max-md:py-4'>
+                                    <TableChart data={!dashboard.isLoading.allTableMonitoringData ? transformTableChartData(dashboard.allTableMonitoringData?.data, dashboard.allTableMonitoringData?.colnames) : 'isLoading'}
+                                                height={'600px'}
+                                                fontSize={CUSTOM_CHART.tableChart.fontSize}
+                                                fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                                fontWeight={CUSTOM_CHART.tableChart.fontWeight}
+                                                nameChart={'MONITORING REPORT'}
+                                                description={false}
+                                                showPagination={true}
+                                                fullScreen={true}
+                                                customCol={{
+                                                  'Tuần': {align: 'text-center', justify: 'justify-center'},
+                                                  'CHƯƠNG TRÌNH': {minSize: 200, maxSize: 300, overflow: true, justify: 'justify-center', align: 'text-center', weight: 600},
+                                                  'Thời lượng Spot': {align: 'text-center', justify: 'justify-center'},
+                                                  'Break': {align: 'text-center', justify: 'justify-center'},
+                                                  'Position': {align: 'text-center', justify: 'justify-center'},
+                                                  'Chi phí (Triệu VND)': {align: 'text-center', justify: 'justify-center'},
+                                                  'Reach': {align: 'text-center', justify: 'justify-center'},
+                                                  'Chiến dịch': {minSize: 220, maxSize: 320, overflow: true},
+                                                  'Loại Spot': {minSize: 120, maxSize: 150, overflow: true},
+                                                  'Ngành hàng': {minSize: 120, maxSize: 190, overflow: true},
+                                                  'Sản phẩm': {minSize: 120, maxSize: 190, overflow: true},
+                                                  'Nhãn hàng': {minSize: 180, maxSize: 240, overflow: true},
+                                                  'Nhà quảng cáo': {minSize: 180, maxSize: 240, overflow: true}
+                                                }} />
+                                  </div>
                                 </div>
                                 <div className='px-6 max-lg:px-5 max-md:px-4 pb-6 max-lg:pb-5 max-md:pb-19 bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300'>
                                   <Footer color='text-color-black-100 dark:text-color-white-90' />
@@ -372,6 +397,7 @@ const DashboardContent = () => {
                             )
                           }
                         ]}
+                        countTab='max-md:grid-cols-2'
             />
           </div>
         </div>

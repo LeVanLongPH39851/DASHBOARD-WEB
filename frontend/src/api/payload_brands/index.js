@@ -17,6 +17,7 @@ export { spendVNDBarChartDatePayload } from "./spendVNDBarChartDatePayload";
 export { spendVNDBarChartFirstLevelPayload } from "./spendVNDBarChartFirstLevelPayload";
 export { spendVNDBarChartTimebandPayload } from "./spendVNDBarChartTimebandPayload";
 export { viewPieChartPlatformPayload } from "./viewPieChartPlatformPayload";
+export { allTableChartMonitoringPayload } from "./allTableChartMonitoringPayload";
 
 export { countCampaignNumberChartPayload } from "./countCampaignNumberChartPayload";
 export { countSpotNumberChartPayload } from "./countSpotNumberChartPayload";

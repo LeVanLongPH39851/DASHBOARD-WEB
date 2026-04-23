@@ -776,7 +776,7 @@ const DashboardContent = () => {
                                     />
                                   </div>
                                   <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
-                                    <LineChart data={!dashboard.isLoading.ratingLineMinuteChannelOneDateData ? transformMixedChartData(dashboard.ratingLineMinuteChannelOneDateData?.data, 'event_hour_minute', dashboard.ratingLineMinuteChannelOneDateData?.colnames) : 'isLoading'}
+                                    <LineChart data={!dashboard.isLoading.ratingLineMinuteChannelOneDateData ? transformMixedChartData(dashboard.ratingLineMinuteChannelOneDateData?.data, 'event_hour_minute', dashboard.ratingLineMinuteChannelOneDateData?.colnames, 'full_timeband_minute') : 'isLoading'}
                                               height={CUSTOM_CHART.lineChart.heightMinute}
                                               fontSize={CUSTOM_CHART.lineChart.fontSize}
                                               fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -824,7 +824,7 @@ const DashboardContent = () => {
                             )
                           } : null)
                         ]}
-                        user={(!userLoading && user?.username !== 'vtvguest')}
+                        countTab={(!userLoading && user?.username !== 'vtvguest') ? 'max-md:grid-cols-4' : 'max-md:grid-cols-3'}
             />
           </div>
         </div>

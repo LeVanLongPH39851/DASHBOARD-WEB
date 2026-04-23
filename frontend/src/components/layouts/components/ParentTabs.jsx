@@ -9,7 +9,7 @@ export default function ParentTabs({
   sticky = true,
   stickyTop = 'top-22 max-lg:top-[71.93px]',
   zIndex = 'z-100',
-  user = true,
+  countTab = 'max-md:grid-cols-4',
 }) {
   
   tabs = tabs.filter(Boolean);
@@ -52,7 +52,7 @@ export default function ParentTabs({
 
   const variants = {
     default: {
-      container: `relative flex border-b border-border-black-10 dark:border-transparent max-md:shadow-2xl max-md:shadow-color-black-70 max-md:dark:shadow-none max-md:border-transparent max-md:w-full transition-colors duration-300 px-6 max-lg:px-5 max-md:px-4 gap-7 max-lg:gap-6 max-md:gap-0 h-12 max-lg:h-10 max-md:h-15.5 max-md:grid ${user ? 'max-md:grid-cols-4' : 'max-md:grid-cols-3'}`,
+      container: `relative flex border-b border-border-black-10 dark:border-transparent max-md:shadow-2xl max-md:shadow-color-black-70 max-md:dark:shadow-none max-md:border-transparent max-md:w-full transition-colors duration-300 px-6 max-lg:px-5 max-md:px-4 gap-7 max-lg:gap-6 max-md:gap-0 h-12 max-lg:h-10 max-md:h-15.5 max-md:grid ${countTab}`,
       button: (isActive) => `py-2 text-nowrap uppercase max-md:normal-case font-medium text-[16px] max-lg:text-sm max-md:text-xs transition-colors duration-300 cursor-pointer flex gap-2 max-lg:gap-1.5 max-md:flex-col max-md:justify-center items-center ${
         isActive ? 'text-color-primary-700 font-semibold' : 'text-color-black-50 dark:text-color-white-50 hover:text-gray-700 hover:text-gray-700 dark:hover:text-color-white-80'
       }`,

@@ -53,10 +53,14 @@ export const METRICS = {
 };
 export const METRIC_SPOTS = {
   spend_vnd: {
-    icon: iconVND
+    icon: iconVND,
+    widthIcon: 'w-5.5 max-lg:w-5 max-md:w-4.5',
+    background: 'bg-background-succes-type-2 dark:bg-background-succes-type-2-dark'
   },
   spend_usd: {
-    icon: iconDollar
+    icon: iconDollar,
+    widthIcon: 'w-5.5 max-lg:w-5 max-md:w-4.5',
+    background: 'bg-background-succes-type-2 dark:bg-background-succes-type-2-dark'
   },
   count: {
     icon: iconCount,

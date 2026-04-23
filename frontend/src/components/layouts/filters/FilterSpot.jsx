@@ -133,6 +133,8 @@ const FilterSpot = ({ filters, horizontalFixed=false
   const ALL_BRANDS = toOptions(filters?.filterBrand, 'brand');
   const ALL_ADVERTISERS = toOptions(filters?.filterAdvertiser, 'advertiser');
   const ALL_ADCODES = toOptions(filters?.filterAdcode, 'ads_code');
+  const FILTER_SESSION_KEY = 'dashboard_filter_spots';
+  const FILTER_SESSION_VALUE = 'filter_values_spots';
 
   const { appliedFilters, setAppliedFilters} = useDashboardFilters();
   const { filterValues, setFilterValues } = useDashboardFilterValues();
@@ -229,8 +231,8 @@ const FilterSpot = ({ filters, horizontalFixed=false
       campaigns: ALL_CAMPAIGNS
     };
 
-    setFilterValues(prev => ({
-      ...prev,
+    const transformed = {
+      ...filterValues,
       startDate: appliedFilters.startDate || getDayBeforeYesterday(),
       endDate: appliedFilters.endDate || getYesterday(),
       // ✅ Generic map tất cả arrays
@@ -242,7 +244,9 @@ const FilterSpot = ({ filters, horizontalFixed=false
           ).filter(Boolean)
         ])
       )
-    }));
+    };
+    setFilterValues(transformed);
+    sessionStorage.setItem(FILTER_SESSION_VALUE, JSON.stringify(transformed));
   }, [appliedFilters]);
 
   const handleDateRangeChange = ({ startDate: s, endDate: e }) => {
@@ -303,6 +307,7 @@ const FilterSpot = ({ filters, horizontalFixed=false
     };
 
     setAppliedFilters(transformed);
+    sessionStorage.setItem(FILTER_SESSION_KEY, JSON.stringify(transformed));
 
     if(stateGlobals.screen_md) {
       setStateGlobals(prev => ({...prev, isOpen: !prev.isOpen}))
@@ -312,6 +317,8 @@ const FilterSpot = ({ filters, horizontalFixed=false
   const onReset = () => {
     setAppliedFilters(null);
     setFilterValues(null);
+    sessionStorage.removeItem(FILTER_SESSION_KEY);
+    sessionStorage.removeItem(FILTER_SESSION_VALUE);
 
     if(stateGlobals.screen_md) {
       setStateGlobals(prev => ({...prev, isOpen: !prev.isOpen}))
@@ -384,8 +391,8 @@ const FilterSpot = ({ filters, horizontalFixed=false
           />}
 
           {stateGlobals.currentTab !== DISABLE_TABS.effective && (<SelectMultiFilter
-            label="Adscode"
-            placeholder="Chọn Adscode"
+            label="Ad code"
+            placeholder="Chọn Ad code"
             options={ALL_ADCODES}
             value={filterValues?.adCodes || []}
             onChange={(selected) => handleFilterChange('adCodes', selected)}

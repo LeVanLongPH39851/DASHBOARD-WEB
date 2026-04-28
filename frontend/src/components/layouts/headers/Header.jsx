@@ -150,26 +150,26 @@ const Header = ({ username }) => {
         </a>
         <div className='flex items-center'>
             <div className='flex items-center gap-2 max-lg:gap-1.5 max-md:gap-1'>
-                <div className='flex items-center gap-2 py-2 px-4 max-lg:px-3 max-md:px-2'>
+                {/* <div className='flex items-center gap-2 py-2 px-4 max-lg:px-3 max-md:px-2'>
                     <figure><img src={!stateGlobals.darkMode ? iconLanguge : iconLanguageDark} className='w-4 max-lg:w-3.5 max-md:w-3 h-4 max-lg:h-3.5 max-md:h-3' alt="Icon Language" /></figure>
                     <span className='text-base max-lg:text-sm max-md:text-xs font-medium text-color-black-100 dark:text-color-white-90 transition-all duration-300'>English</span>
                     <figure><img src={!stateGlobals.darkMode ? iconArrowDown : iconArrowDownDark} className='w-2.25' alt="Icon Arrow Down" /></figure>
-                </div>
+                </div> */}
                 <figure className='p-2 max-md:pr-0 cursor-pointer' onClick={toggleDarkMode} title={stateGlobals.darkMode ? 'Chế độ sáng' : 'Chế độ tối'}>
                     <img src={!stateGlobals.darkMode ? iconDarkMode : iconDarkModeDark} className='w-4.5 max-lg:w-4 max-md:w-3.5 h-4.5 max-lg:h-4 max-md:h-3.5' alt="Icon Dark Mode" />
                 </figure>
             </div>
-            <div className='w-px h-6 rounded-full bg-background-line-gray mx-2 max-md:hidden'></div>
-            <div className='relative z-500 max-md:hidden'>
+            <div className='w-px h-6 rounded-full bg-background-line-gray mx-2'></div>
+            <div className='relative z-500'>
                 <div ref={buttonRef} className='flex items-center gap-2 cursor-pointer' onClick={handleToggle}>
                     <figure>
-                        <img src={imageUser} className='w-10 max-lg:w-8 h-10 max-lg:h-8' alt="Image User" />
+                        <img src={imageUser} className='w-10 max-lg:w-8 h-10 max-lg:h-8 max-md:w-7 max-md:h-7' alt="Image User" />
                     </figure>
                     <div className='flex flex-col justify-between'>
-                        <span className='text-base max-lg:text-sm font-normal text-color-gray-800 dark:text-color-white-90 transition-all duration-300'>{currentTime}</span>
-                        <span className='text-xs font-normal text-color-gray-600 dark:text-color-white-50 transition-all duration-300'>{currentDate}</span>
+                        <span className='text-base max-lg:text-sm max-md:text-xs font-normal text-color-gray-800 dark:text-color-white-90 transition-all duration-300'>{currentTime}</span>
+                        <span className='text-xs max-md:text-[11px] font-normal text-color-gray-600 dark:text-color-white-50 transition-all duration-300'>{currentDate}</span>
                     </div>
-                    <figure><img src={!stateGlobals.darkMode ? iconArrowDown : iconArrowDownDark} className={`w-2.25 transition-all duration-300 ${!isDropdownOpen ? '' : 'rotate-180'}`} alt="Icon Arrow Down" /></figure>
+                    <figure><img src={!stateGlobals.darkMode ? iconArrowDown : iconArrowDownDark} className={`w-2.25 max-md:w-2 transition-all duration-300 ${!isDropdownOpen ? '' : 'rotate-180'}`} alt="Icon Arrow Down" /></figure>
                 </div>
                 <div ref={dropdownRef} className={`${isDropdownOpen ? 'scale-100 opacity-100 origin-top' : 'scale-0 opacity-0 origin-top'} transition-all duration-300 absolute top-full left-0 bg-background-light dark:bg-background-dark flex flex-col border border-border-black-10 dark:border-background-white-15 rounded-xl w-full overflow-hidden`}>
                         <div className='hover:bg-background-black-4 dark:hover:bg-color-black-70 transition-all duration-300'>

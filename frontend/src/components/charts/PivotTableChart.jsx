@@ -85,7 +85,10 @@ const PivotTableChart = ({
   enableHeatmap = false,
   suffix='',
   formatterValue=0,
-  sortColTimeband=false
+  sortColTimeband=false,
+  labelTables = LABEL,
+  suffixHeader = '',
+  fullScreen=false
 }) => {
   const { stateGlobals } = useDashboardStateGlobals();
   const [sorting, setSorting] = useState([]);
@@ -137,7 +140,7 @@ const PivotTableChart = ({
       {
         id: String(rowField),
         accessorKey: rowField,
-        header: LABEL[rowField] || rowField,
+        header: labelTables[rowField] || rowField,
         cell: (info) => info.getValue(),
         enableSorting: true,
       },
@@ -181,14 +184,21 @@ const PivotTableChart = ({
   });
 
   const getPivotChartData = useCallback(() => {
-    return { data: safeData, rowField, columnField, valueField, aggType };
-  }, [safeData, rowField, columnField, valueField, aggType]);
+    return {
+      pivotRows,
+      colKeys,
+      rowField,
+      valueField,
+      aggType,
+      nameChart
+    };
+  }, [pivotRows, colKeys, rowField, valueField, aggType, nameChart]);
 
   // ✅ Return theo điều kiện sau khi tất cả hook đã chạy xong
   if (isLoading) {
     return (
       <div className={`${displayName ? 'p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : ''}`} style={{ fontFamily }}>
-        <NameChart nameChart={nameChart} description={description} display={displayName} />
+        <NameChart nameChart={nameChart} description={description} display={displayName} fullScreen={fullScreen} />
         <div className='h-13 max-lg:h-1 max-md:h-9.25'></div>
         <Loading height={!stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : '320px' : '240px'} />
       </div>
@@ -198,7 +208,7 @@ const PivotTableChart = ({
   if (isEmptyData) {
     return (
       <div className={`${displayName ? 'p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : ''}`} style={{ fontFamily }}>
-        <NameChart nameChart={nameChart} description={description} display={displayName} />
+        <NameChart nameChart={nameChart} description={description} display={displayName} fullScreen={fullScreen} />
         <div className='h-13 max-lg:h-1 max-md:h-9.25'></div>
         <NoData height={!stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : '320px' : '240px'} />
       </div>
@@ -208,9 +218,9 @@ const PivotTableChart = ({
   // ✅ JSX table view - giữ nguyên 100%
   return (
     <div className={`${displayName ? 'p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : ''}`} style={{ fontFamily }}>
-      <NameChart nameChart={nameChart} description={description} display={displayName} getChartData={getPivotChartData} table={true} />
+      <NameChart nameChart={nameChart} description={description} display={displayName} getChartData={getPivotChartData} table='pivot' fullScreen={fullScreen} />
 
-      <div className="flex justify-between items-center mb-3 max-lg:mb-2 max-md:mb-1">
+      <div className="flex justify-between items-center mb-3 max-lg:mb-2 max-md:mb-1 searchTable">
         <div className='flex items-center gap-2 max-lg:gap-1.5 max-md:gap-1'>
           <div className={`relative`}>
             <button
@@ -235,7 +245,7 @@ const PivotTableChart = ({
                         onChange={column.getToggleVisibilityHandler()}
                         className="cursor-pointer w-3 max-lg:w-2.75 h-3 max-lg:h-2.75 max-md:w-2.5 max-md:h-2.5 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
                       />
-                      <span className="text-color-black-70 dark:text-color-white-80 transition-all duration-300">{LABEL[column.id] || column.id}</span>
+                      <span className="text-color-black-70 dark:text-color-white-80 transition-all duration-300">{labelTables[column.id] || column.id}</span>
                     </label>
                   ))}
                 </div>
@@ -294,10 +304,10 @@ const PivotTableChart = ({
                         }}
                       >
                         <div
-                          className={`flex items-center gap-2 max-lg:gap-1.5 ${header.column.getCanSort() ? 'cursor-pointer select-none' : ''}`}
+                          className={`flex items-center gap-2 max-lg:gap-1.5 ${idx !== 0 ? 'justify-center' : ''} ${header.column.getCanSort() ? 'cursor-pointer select-none' : ''}`}
                           onClick={header.column.getToggleSortingHandler()}
                         >
-                          {flexRender(header.column.columnDef.header, header.getContext())}
+                          {idx !== 0 ? suffixHeader : ''} {flexRender(header.column.columnDef.header, header.getContext())}
                           {header.column.getIsSorted() && (
                               <span className="text-color-neotam transition-all duration-300 text-[10px] max-lg:text-[9px] max-md:text-[8px]">
                                 {header.column.getIsSorted() === 'asc' ? '▲' : '▼'}
@@ -338,7 +348,7 @@ const PivotTableChart = ({
                             whiteSpace: 'nowrap'
                           }}
                         >
-                          {rawValue ? flexRender(cell.column.columnDef.cell, cell.getContext()) : '-'} {rawValue && isNumeric ? suffix : ''}
+                          {rawValue || rawValue === 0 ? flexRender(cell.column.columnDef.cell, cell.getContext()) : '-'} {rawValue && isNumeric ? suffix : ''}
                         </td>
                       );
                     })}

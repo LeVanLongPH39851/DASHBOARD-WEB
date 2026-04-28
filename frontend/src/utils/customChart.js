@@ -71,14 +71,14 @@ export const CUSTOM_CHART = {
         legend: 12, tooltip: 12, axisLabel: 12, dataLabel: 12
     },
     barChartChannelEvent: {
-        colors: [variableCustoms.colorLive, variableCustoms.colorTimeshift],
+        colors: {'Live': variableCustoms.colorLive, 'TSV': variableCustoms.colorTimeshift},
         ratingNameChart: 'Lượng khán giả bình quân mỗi ngày',
         aveReachNameChart: 'Lượng khán giả bình quân mỗi ngày',
         description: 'Các chỉ số Reach và Rating trung bình của từng kênh trong thời gian đã lựa chọn',
         orientation: 'horizontal'
     },
     barChartDayEvent: {
-        colors: [variableCustoms.colorLive, variableCustoms.colorTimeshift],
+        colors: {'Live': variableCustoms.colorLive, 'TSV': variableCustoms.colorTimeshift},
         ratingNameChart: 'Lượng khán giả bình quân mỗi ngày',
         aveReachNameChart: 'Lượng khán giả bình quân mỗi ngày',
         description: 'Các chỉ số Reach và Rating trung bình trong thời gian đã lựa chọn, chia thành hai nhóm: ngày trong tuần và ngày cuối tuần',

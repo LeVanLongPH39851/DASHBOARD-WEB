@@ -207,6 +207,20 @@ const BarChart = ({
     return `${((value / total) * 100).toFixed(2)}%`;
   };
 
+  const getVisibleEdgeIndexes = (dataIndex) => {
+    let first = -1;
+    let last = -1;
+
+    sortedSeries.forEach((seriesItem, idx) => {
+      const value = Number(seriesItem.data?.[dataIndex] || 0);
+      if (value > 0) {
+        if (first === -1) first = idx;
+        last = idx;
+      }
+    });
+
+    return { first, last };
+  };
 
 
 
@@ -441,10 +455,31 @@ const BarChart = ({
       barGap: 0,
       barCategoryGap: '25%',
       itemStyle: {
-        color: getSeriesColor(s, idx),
-        barBorderRadius: isHorizontal ? idx === 0 ? (topSeriesIndex===0 ? [8, 8, 8, 8] : [8, 0, 0, 8]) : (idx === topSeriesIndex ? [0, 8, 8, 0] : 0)
-                                      : idx === 0 ? (topSeriesIndex===0 ? [8, 8, 0, 0] : 0) : (idx === topSeriesIndex ? [8, 8, 0, 0] : 0)
+        color: getSeriesColor(s, idx)
       },
+      data: s.data.map((value, dataIndex) => {
+        const { first, last } = getVisibleEdgeIndexes(dataIndex);
+        const numValue = Number(value || 0);
+
+        let barBorderRadius = [0, 0, 0, 0];
+
+        if (numValue > 0) {
+          if (first === last) {
+            barBorderRadius = [8, 8, 8, 8];
+          } else if (idx === first) {
+            barBorderRadius = isHorizontal ? [8, 0, 0, 8] : [0, 0, 0, 0];
+          } else if (idx === last) {
+            barBorderRadius = isHorizontal ? [0, 8, 8, 0] : [8, 8, 0, 0];
+          }
+        }
+
+        return {
+          value: numValue,
+          itemStyle: {
+            barBorderRadius
+          }
+        };
+      }),
       emphasis: {
         itemStyle: { 
           shadowBlur: 15,
@@ -475,8 +510,9 @@ const BarChart = ({
           // Duyệt từ cuối lên để tìm series cao nhất đang visible
           for (let i = sortedSeries.length - 1; i >= 0; i--) {
             const seriesName = sortedSeries[i].name;
-            // Nếu không có trong legendSelected hoặc = true thì đang visible
-            if (legendSelected[seriesName] !== false) {
+            const value = Number(sortedSeries[i].data?.[dataIndex] || 0);
+
+            if (legendSelected[seriesName] !== false && value > 0) {
               highestVisibleIndex = i;
               break;
             }

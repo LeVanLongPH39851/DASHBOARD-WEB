@@ -159,7 +159,7 @@ const Header = ({ username }) => {
                     <img src={!stateGlobals.darkMode ? iconDarkMode : iconDarkModeDark} className='w-4.5 max-lg:w-4 max-md:w-3.5 h-4.5 max-lg:h-4 max-md:h-3.5' alt="Icon Dark Mode" />
                 </figure>
             </div>
-            <div className='w-px h-6 rounded-full bg-background-line-gray mx-2'></div>
+            <div className='w-px h-6 max-md:h-5 rounded-full bg-background-line-gray mx-2'></div>
             <div className='relative z-500'>
                 <div ref={buttonRef} className='flex items-center gap-2 cursor-pointer' onClick={handleToggle}>
                     <figure>

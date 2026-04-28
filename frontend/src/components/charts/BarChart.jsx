@@ -465,7 +465,7 @@ const BarChart = ({
 
         if (numValue > 0) {
           if (first === last) {
-            barBorderRadius = [8, 8, 8, 8];
+            barBorderRadius = isHorizontal ? [8, 8, 8, 8] : [8, 8, 0, 0];
           } else if (idx === first) {
             barBorderRadius = isHorizontal ? [8, 0, 0, 8] : [0, 0, 0, 0];
           } else if (idx === last) {

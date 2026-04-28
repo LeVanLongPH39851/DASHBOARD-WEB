@@ -26,7 +26,6 @@ const formatDate = (timestamp) => {
  * @param {string} key - Key cần mapping
  * @returns {string} - Label đã mapping hoặc chính key nếu không tìm thấy
  */
-const mapLabel = (key) => LABEL[key] || key;
 
 /**
  * Transform API data to TableChart format
@@ -34,7 +33,8 @@ const mapLabel = (key) => LABEL[key] || key;
  * @param {Array} colnames - Column names array (optional)
  * @returns {Object} - { labels, series }
  */
-export const transformTableChartData = (apiData, colnames = null, columnSort = null, hiddenLabels = []) => {
+export const transformTableChartData = (apiData, colnames = null, columnSort = null, hiddenLabels = [], labelTables = LABEL) => {
+  const mapLabel = (key) => labelTables[key] || key;
   if (!apiData || !Array.isArray(apiData) || apiData.length === 0) {
     return null;
   }

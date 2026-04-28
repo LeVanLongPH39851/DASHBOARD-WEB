@@ -45,6 +45,7 @@ import iconRatingByMinuteActive from '../assets/icon_rating_by_minute_active.png
 import { useCurrentUser } from '../hooks/useCurrentUser';
 import PivotTableChart from '../components/charts/PivotTableChart';
 import FilterSpot from '../components/layouts/filters/FilterSpot';
+import { LABEL_SPOT } from '../utils/label';
 
 const DashboardContent = () => {
   const dashboard = useDashboardData();
@@ -451,7 +452,7 @@ const DashboardContent = () => {
                                   </div>
                                   <div className='w-full grid grid-cols-10 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4'>
                                     <div className='col-span-6 max-md:col-span-10'>
-                                      <TableChart data={!dashboard.isLoading.adcodeProgramData ? transformTableChartData(dashboard.adcodeProgramData?.data, dashboard.adcodeProgramData?.colnames) : 'isLoading'}
+                                      <TableChart data={!dashboard.isLoading.adcodeProgramData ? transformTableChartData(dashboard.adcodeProgramData?.data, dashboard.adcodeProgramData?.colnames, null, [], LABEL_SPOT) : 'isLoading'}
                                                   height={CUSTOM_CHART.tableChart.tableChartChannel.height}
                                                   fontSize={CUSTOM_CHART.tableChart.fontSize}
                                                   fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -460,7 +461,7 @@ const DashboardContent = () => {
                                                   description={false}
                                                   showSTT={false}
                                                   showPagination={false}
-                                                  customCol={{'Adcode': {weight: 600}, 'CHƯƠNG TRÌNH': {minSize: 100, maxSize: 170}, 'KÊNH': {minSize: 0, maxSize: 10}}} />
+                                                  customCol={{'Adcode': {weight: 600}, 'Chương trình': {minSize: 100, maxSize: 170}, 'Kênh': {minSize: 0, maxSize: 10}}} />
                                     </div>
                                     <div className='col-span-4 max-md:col-span-10'>
                                       <TableChart data={!dashboard.isLoading.adcodeProductData ? transformTableChartData(dashboard.adcodeProductData?.data, dashboard.adcodeProductData?.colnames) : 'isLoading'}
@@ -489,6 +490,8 @@ const DashboardContent = () => {
                                         fontSize={CUSTOM_CHART.tableChart.fontSize}
                                         fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                         fontWeight={CUSTOM_CHART.tableChart.fontWeight}
+                                        labelTables={LABEL_SPOT}
+                                        fullScreen={true}
                                       />
                                     </div>
                                     <div className='col-span-4 max-md:col-span-10 grid'>
@@ -553,6 +556,8 @@ const DashboardContent = () => {
                                         fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                         fontWeight={CUSTOM_CHART.tableChart.fontWeight}
                                         sortColTimeband={true}
+                                        labelTables={LABEL_SPOT}
+                                        fullScreen={true}
                                       />
                                   </div>
                                   <div className='w-full'>
@@ -600,6 +605,7 @@ const DashboardContent = () => {
                                           fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                           fontWeight={CUSTOM_CHART.tableChart.fontWeight}
                                           formatterValue={2}
+                                          suffixHeader='Tuần'
                                         />
                                       )},
                                       {id: 'reach', label: 'REACH',
@@ -617,6 +623,7 @@ const DashboardContent = () => {
                                           fontSize={CUSTOM_CHART.tableChart.fontSize}
                                           fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                           fontWeight={CUSTOM_CHART.tableChart.fontWeight}
+                                          suffixHeader='Tuần'
                                         />
                                       )},
                                       {id: 'spot', label: 'SPOT',
@@ -634,6 +641,7 @@ const DashboardContent = () => {
                                           fontSize={CUSTOM_CHART.tableChart.fontSize}
                                           fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                           fontWeight={CUSTOM_CHART.tableChart.fontWeight}
+                                          suffixHeader='Tuần'
                                         />
                                       )}
                                       ]} />
@@ -840,7 +848,7 @@ const DashboardContent = () => {
                                                 customCol={{'Nhãn': {weight: 600, minSize: 100, maxSize: 170, sticky: true}}} />
                                   </div>
                                   <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
-                                      <TableChart data={!dashboard.isLoading.allTableBrandProgramData ? transformTableChartData(dashboard.allTableBrandProgramData?.data, dashboard.allTableBrandProgramData?.colnames) : 'isLoading'}
+                                      <TableChart data={!dashboard.isLoading.allTableBrandProgramData ? transformTableChartData(dashboard.allTableBrandProgramData?.data, dashboard.allTableBrandProgramData?.colnames, null, [], LABEL_SPOT) : 'isLoading'}
                                                 height={CUSTOM_CHART.tableChart.tableChartChannel.height}
                                                 fontSize={CUSTOM_CHART.tableChart.fontSize}
                                                 fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -849,7 +857,7 @@ const DashboardContent = () => {
                                                 description={false}
                                                 showSTT={false}
                                                 showPagination={false}
-                                                customCol={{'Nhãn': {weight: 600, minSize: 100, maxSize: 170, sticky: true}, 'CHƯƠNG TRÌNH': {minSize: 100, maxSize: 170}}} />
+                                                customCol={{'Nhãn': {weight: 600, minSize: 100, maxSize: 170, sticky: true}, 'Chương trình': {minSize: 100, maxSize: 170}}} />
                                   </div>
                                   <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
                                       <TableChart data={!dashboard.isLoading.allTableDeviceData ? transformTableChartData(dashboard.allTableDeviceData?.data, dashboard.allTableDeviceData?.colnames) : 'isLoading'}
@@ -876,7 +884,7 @@ const DashboardContent = () => {
                                 <InforFilter filters={scopeFilterData} FilterComponent={FilterSpot} nameFilter='FilterSpot' />
                                 <div className='px-6 max-lg:px-5 max-md:px-4'>
                                   <div className='w-full py-6 max-lg:py-5 max-md:py-4'>
-                                    <TableChart data={!dashboard.isLoading.allTableMonitoringData ? transformTableChartData(dashboard.allTableMonitoringData?.data, dashboard.allTableMonitoringData?.colnames) : 'isLoading'}
+                                    <TableChart data={!dashboard.isLoading.allTableMonitoringData ? transformTableChartData(dashboard.allTableMonitoringData?.data, dashboard.allTableMonitoringData?.colnames, null, [], LABEL_SPOT) : 'isLoading'}
                                                 height={'600px'}
                                                 fontSize={CUSTOM_CHART.tableChart.fontSize}
                                                 fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -887,7 +895,7 @@ const DashboardContent = () => {
                                                 fullScreen={true}
                                                 customCol={{
                                                   'Tuần': {align: 'text-center', justify: 'justify-center'},
-                                                  'CHƯƠNG TRÌNH': {minSize: 200, maxSize: 300, overflow: true, justify: 'justify-center', align: 'text-center', weight: 600},
+                                                  'Chương trình': {minSize: 200, maxSize: 300, overflow: true, justify: 'justify-center', align: 'text-center', weight: 600},
                                                   'Thời lượng Spot': {align: 'text-center', justify: 'justify-center'},
                                                   'Break': {align: 'text-center', justify: 'justify-center'},
                                                   'Position': {align: 'text-center', justify: 'justify-center'},

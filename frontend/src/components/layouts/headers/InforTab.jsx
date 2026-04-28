@@ -12,7 +12,7 @@ const InforTab = ({ inforTab }) => {
 
   return (
     <section id='inforTabSticky' className={`px-6 max-lg:px-5 max-md:px-4 py-3 flex gap-2.5 max-lg:gap-2 h-12 max-lg:h-11 max-md:h-10 items-center sticky top-34 max-lg:top-[111.93px] max-md:top-18 bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300 border-b ${!stateGlobals.isInfor ? ' border-border-black-10 dark:border-background-white-15' : 'border-transparent'}`} style={{zIndex: 200}}>
-        <span className='text-color-black-100 dark:text-color-white-80 transition-all duration-300 font-normal text-sm max-lg:text-[13px] max-md:text-xs text-nowrap'>{inforTab}</span>
+        <span className='text-color-black-100 dark:text-color-white-80 transition-all duration-300 font-normal text-sm max-lg:text-[13px] max-md:text-xs text-nowrap uppercase'>{inforTab}</span>
         <div className='w-px h-5 rounded-full bg-background-line-gray'></div>
         <div className='flex items-center gap-1 max-md:hidden'>
             <figure><img src={!stateGlobals.darkMode ? iconCalendar : iconCalendarDark} className='w-3.75 max-lg:w-3.5' alt="Icon Calendar" /></figure>

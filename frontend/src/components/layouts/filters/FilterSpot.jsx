@@ -391,8 +391,8 @@ const FilterSpot = ({ filters, horizontalFixed=false
           />}
 
           {stateGlobals.currentTab !== DISABLE_TABS.effective && (<SelectMultiFilter
-            label="Ad code"
-            placeholder="Chọn Ad code"
+            label="Adcode"
+            placeholder="Chọn Adcode"
             options={ALL_ADCODES}
             value={filterValues?.adCodes || []}
             onChange={(selected) => handleFilterChange('adCodes', selected)}

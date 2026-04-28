@@ -28,6 +28,7 @@ const BreadCrumb = ({ dashboardName='Kênh truyền hình VTV'}) => {
     const { user, userLoading } = useCurrentUser();
 
     const isFirefox = /firefox/i.test(navigator.userAgent);
+    const sleep = ms => new Promise(r => setTimeout(r, ms));
 
     const prepareCaptureLayout = () => {
     const inforTabSticky = document.getElementById('inforTabSticky');
@@ -35,7 +36,10 @@ const BreadCrumb = ({ dashboardName='Kênh truyền hình VTV'}) => {
     const divTables = document.querySelectorAll('.divTable');
     const exportTime = document.getElementById('exportTime');
     const clearAll = document?.getElementById('clearAll');
+    const inforFilterBtn = document.querySelector('#inforFilter div:first-child');
 
+    inforFilterBtn.classList.add('hidden');
+    sleep(300);
     inforTabSticky?.classList.replace('transition-all', 'transition-delete');
     inforFilterSticky?.classList.replace('transition-all', 'transition-delete');
     inforTabSticky?.classList.replace('duration-300', 'duration-delete');
@@ -53,10 +57,10 @@ const BreadCrumb = ({ dashboardName='Kênh truyền hình VTV'}) => {
     const timeStr = `Thời gian export: ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')} ${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
     if (exportTime) exportTime.textContent = timeStr;
 
-    return { inforTabSticky, inforFilterSticky, clearAll, divTables, exportTime, now };
+    return { inforTabSticky, inforFilterSticky, clearAll, divTables, exportTime, inforFilterBtn, now };
     };
 
-    const restoreCaptureLayout = ({ inforTabSticky, inforFilterSticky, clearAll, divTables, exportTime }) => {
+    const restoreCaptureLayout = ({ inforTabSticky, inforFilterSticky, clearAll, divTables, exportTime, inforFilterBtn }) => {
     inforTabSticky?.classList.replace('transition-delete', 'transition-all');
     inforFilterSticky?.classList.replace('transition-delete', 'transition-all');
     inforTabSticky?.classList.replace('duration-delete', 'duration-300');
@@ -67,6 +71,7 @@ const BreadCrumb = ({ dashboardName='Kênh truyền hình VTV'}) => {
     inforFilterSticky?.classList.replace('top-12', 'top-46');
     inforFilterSticky.classList.replace('max-lg:top-11', 'max-lg:top-[155.93px]');
     inforFilterSticky?.classList.replace('max-md:top-10', 'max-md:top-28');
+    inforFilterBtn.classList.remove('hidden');
     if (clearAll) clearAll.classList.remove('hidden');
     divTables?.forEach(table => table?.classList.replace('overflow-hidden', 'overflow-auto'));
     if (exportTime) exportTime.textContent = '';
@@ -77,7 +82,6 @@ const BreadCrumb = ({ dashboardName='Kênh truyền hình VTV'}) => {
 
     const handleCapture = async () => {
         const target = document.getElementById(`target_capture_${stateGlobals.currentTab}`);
-
         if (!target) return;
 
         const inforTabSticky = document.getElementById('inforTabSticky');
@@ -85,7 +89,8 @@ const BreadCrumb = ({ dashboardName='Kênh truyền hình VTV'}) => {
         const divTables = document.querySelectorAll('.divTable');
         const exportTime = document?.getElementById('exportTime');
         const clearAll = document?.getElementById('clearAll');
-
+        const inforFilterBtn = document.querySelector('#inforFilter div:first-child');
+        
         inforTabSticky.classList.replace('transition-all', 'transition-delete');
         inforFilterSticky.classList.replace('transition-all', 'transition-delete');
         inforTabSticky.classList.replace('duration-300', 'duration-delete');
@@ -96,6 +101,8 @@ const BreadCrumb = ({ dashboardName='Kênh truyền hình VTV'}) => {
         inforFilterSticky.classList.replace('top-46', 'top-12');
         inforFilterSticky.classList.replace('max-lg:top-[155.93px]', 'max-lg:top-11');
         inforFilterSticky.classList.replace('max-md:top-28', 'max-md:top-10');
+        inforFilterBtn.classList.add('hidden');
+        await sleep(300);
         if (clearAll) clearAll.classList.add('hidden');
         divTables.forEach(table => table?.classList.replace('overflow-auto', 'overflow-hidden'));
         const now = new Date();
@@ -125,6 +132,7 @@ const BreadCrumb = ({ dashboardName='Kênh truyền hình VTV'}) => {
         inforFilterSticky.classList.replace('top-12', 'top-46');
         inforFilterSticky.classList.replace('max-lg:top-11', 'max-lg:top-[155.93px]');
         inforFilterSticky.classList.replace('max-md:top-10', 'max-md:top-28');
+        inforFilterBtn.classList.remove('hidden');
         if (clearAll) clearAll.classList.remove('hidden');
         divTables.forEach(table => table?.classList.replace('overflow-hidden', 'overflow-auto'));
         exportTime.textContent = '';
@@ -143,7 +151,10 @@ const BreadCrumb = ({ dashboardName='Kênh truyền hình VTV'}) => {
         const divTables = document.querySelectorAll('.divTable');
         const exportTime = document?.getElementById('exportTime');
         const clearAll = document?.getElementById('clearAll');
+        const inforFilterBtn = document.querySelector('#inforFilter div:first-child');
 
+        inforFilterBtn.classList.add('hidden');
+        await sleep(300);
         inforTabSticky.classList.replace('transition-all', 'transition-delete');
         inforFilterSticky.classList.replace('transition-all', 'transition-delete');
         inforTabSticky.classList.replace('duration-300', 'duration-delete');
@@ -216,6 +227,7 @@ const BreadCrumb = ({ dashboardName='Kênh truyền hình VTV'}) => {
             inforFilterSticky.classList.replace('top-12', 'top-46');
             inforFilterSticky.classList.replace('max-lg:top-11', 'max-lg:top-[155.93px]');
             inforFilterSticky.classList.replace('max-md:top-10', 'max-md:top-28');
+            inforFilterBtn.classList.remove('hidden');
             if (clearAll) clearAll.classList.remove('hidden');
             divTables.forEach(table => table?.classList.replace('overflow-hidden', 'overflow-auto'));
             exportTime.textContent = '';

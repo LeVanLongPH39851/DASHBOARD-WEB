@@ -45,6 +45,7 @@ import iconRatingByMinuteActive from '../assets/icon_rating_by_minute_active.png
 import { useCurrentUser } from '../hooks/useCurrentUser';
 import PivotTableChart from '../components/charts/PivotTableChart';
 import FilterSpot from '../components/layouts/filters/FilterSpot';
+import { LABEL_SPOT } from '../utils/label';
 
 const DashboardContent = () => {
   const dashboard = useDashboardData();
@@ -186,7 +187,7 @@ const DashboardContent = () => {
                                                 showPercent={true} />
                                     </div>
                                     <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
-                                        <TableChart data={!dashboard.isLoading.allTableTopProgramData ? transformTableChartData(dashboard.allTableTopProgramData?.data, dashboard.allTableTopProgramData?.colnames) : 'isLoading'}
+                                        <TableChart data={!dashboard.isLoading.allTableTopProgramData ? transformTableChartData(dashboard.allTableTopProgramData?.data, dashboard.allTableTopProgramData?.colnames, null, [], LABEL_SPOT) : 'isLoading'}
                                                     height={'400px'}
                                                     fontSize={CUSTOM_CHART.tableChart.fontSize}
                                                     fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -196,12 +197,12 @@ const DashboardContent = () => {
                                                     showPagination={false}
                                                     customCol={{
                                                         'Nhãn hàng': {minSize: 120, maxSize: 350},
-                                                        'CHƯƠNG TRÌNH': {minSize: 120, maxSize: 250},
-                                                        'KÊNH': {minSize: 0, maxSize: 20}
+                                                        'Chương trình': {minSize: 120, maxSize: 250},
+                                                        'Kênh': {minSize: 0, maxSize: 20}
                                                     }} />
                                     </div>
                                     <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
-                                        <TableChart data={!dashboard.isLoading.adcodeProgramData ? transformTableChartData(dashboard.adcodeProgramData?.data, dashboard.adcodeProgramData?.colnames) : 'isLoading'}
+                                        <TableChart data={!dashboard.isLoading.adcodeProgramData ? transformTableChartData(dashboard.adcodeProgramData?.data, dashboard.adcodeProgramData?.colnames, null, [], LABEL_SPOT) : 'isLoading'}
                                                     height={'400px'}
                                                     fontSize={CUSTOM_CHART.tableChart.fontSize}
                                                     fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -210,7 +211,7 @@ const DashboardContent = () => {
                                                     description={false}
                                                     showPagination={false}
                                                     customCol={{
-                                                        'CHƯƠNG TRÌNH': {minSize: 120, maxSize: 150},
+                                                        'Chương trình': {minSize: 120, maxSize: 150},
                                                         'Khung giờ': {minSize: 40, maxSize: 150},
                                                         'Adcode': {minSize: 40, maxSize: 150},
                                                     }} />
@@ -364,7 +365,7 @@ const DashboardContent = () => {
                                 <InforFilter filters={scopeFilterData} FilterComponent={FilterSpot} nameFilter='FilterSpot' />
                                 <div className='px-6 max-lg:px-5 max-md:px-4'>
                                   <div className='w-full py-6 max-lg:py-5 max-md:py-4'>
-                                    <TableChart data={!dashboard.isLoading.allTableMonitoringData ? transformTableChartData(dashboard.allTableMonitoringData?.data, dashboard.allTableMonitoringData?.colnames) : 'isLoading'}
+                                    <TableChart data={!dashboard.isLoading.allTableMonitoringData ? transformTableChartData(dashboard.allTableMonitoringData?.data, dashboard.allTableMonitoringData?.colnames, null, [], LABEL_SPOT) : 'isLoading'}
                                                 height={'600px'}
                                                 fontSize={CUSTOM_CHART.tableChart.fontSize}
                                                 fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -375,7 +376,7 @@ const DashboardContent = () => {
                                                 fullScreen={true}
                                                 customCol={{
                                                   'Tuần': {align: 'text-center', justify: 'justify-center'},
-                                                  'CHƯƠNG TRÌNH': {minSize: 200, maxSize: 300, overflow: true, justify: 'justify-center', align: 'text-center', weight: 600},
+                                                  'Chương trình': {minSize: 200, maxSize: 300, overflow: true, justify: 'justify-center', align: 'text-center', weight: 600},
                                                   'Thời lượng Spot': {align: 'text-center', justify: 'justify-center'},
                                                   'Break': {align: 'text-center', justify: 'justify-center'},
                                                   'Position': {align: 'text-center', justify: 'justify-center'},

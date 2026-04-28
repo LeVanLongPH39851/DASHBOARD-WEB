@@ -80,13 +80,15 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
     const iconNone = event.currentTarget.closest('.div-hideen');
     const parentIconNone = iconNone.parentElement;
     const errorSpan = parentIconNone.children[parentIconNone.children.length - 1];
-    const divTables = document.querySelectorAll('.divTable');
+    const divTable = chartParent.querySelector('.divTable');
+    const searchTable = chartParent.querySelector('.searchTable');
     iconNone.classList.add('hidden');
     const now = new Date();
     const timeStr = `Thời gian xuất: ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')} ${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
     errorSpan.classList.remove('hidden');
     errorSpan.textContent = timeStr;
-    divTables.forEach(table => table?.classList.replace('overflow-auto', 'overflow-hidden'));
+    divTable?.classList.replace('overflow-auto', 'overflow-hidden');
+    searchTable?.classList.add('hidden');
 
     const dataUrl = await toPng(chartParent, {
         quality: 1,
@@ -101,7 +103,8 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
     link.click();
     iconNone.classList.remove('hidden')
     errorSpan.classList.add('hidden');
-    divTables.forEach(table => table?.classList.replace('overflow-hidden', 'overflow-auto'));
+    divTable?.classList.replace('overflow-hidden', 'overflow-auto');
+    searchTable?.classList.remove('hidden');
     errorSpan.textContent = '';
     setIsDropdownOpen(false);
   };
@@ -121,7 +124,8 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
     const iconNone = trigger.closest('.div-hideen');
     const parentIconNone = iconNone?.parentElement;
     const errorSpan = parentIconNone?.children?.[parentIconNone.children.length - 1];
-    const divTables = document.querySelectorAll('.divTable');
+    const divTable = chartParent.querySelector('.divTable');
+    const searchTable = chartParent.querySelector('.searchTable');
 
     if (!chartParent || !iconNone || !errorSpan) return;
 
@@ -132,7 +136,8 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
       iconNone.classList.add('hidden');
       errorSpan.classList.remove('hidden');
       errorSpan.textContent = timeStr;
-      divTables.forEach(table => table?.classList.replace('overflow-auto', 'overflow-hidden'));
+      divTable?.classList.replace('overflow-auto', 'overflow-hidden');
+      searchTable?.classList.add('hidden');
 
       await waitForNextPaint();
 
@@ -159,7 +164,8 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
       iconNone.classList.remove('hidden');
       errorSpan.classList.add('hidden');
       errorSpan.textContent = '';
-      divTables.forEach(table => table?.classList.replace('overflow-hidden', 'overflow-auto'));
+      divTable?.classList.replace('overflow-hidden', 'overflow-auto');
+      searchTable?.classList.remove('hidden');
       setIsDropdownOpen(false);
     }
   };
@@ -216,10 +222,16 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
         let rowTotal = 0;
 
         series.forEach(s => {
-          const val = s.data?.[i] || 0;
+          const valRaw = s.data?.[i];
+          const val =
+            typeof valRaw === 'number'
+              ? Math.round((valRaw + Number.EPSILON) * 100) / 100
+              : (valRaw ?? 0);
           rowValues.push(val);
           rowTotal += val;
         });
+
+        rowTotal = Math.round((rowTotal + Number.EPSILON) * 100) / 100;
 
         if (series.length > 1) rowValues.push(rowTotal);  // Cột Tổng
 
@@ -247,10 +259,12 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
       const totalValues = ['', 'TỔNG'];
       let grandTotal = 0;
       series.forEach(s => {
-        const total = (s.data || []).reduce((sum, v) => sum + (v || 0), 0);
+        let total = (s.data || []).reduce((sum, v) => sum + (v || 0), 0);
+        total = Math.round((total + Number.EPSILON) * 100) / 100;
         totalValues.push(total);
         grandTotal += total;
       });
+      grandTotal = Math.round((grandTotal + Number.EPSILON) * 100) / 100;
       if (series.length > 1) totalValues.push(grandTotal);
 
       const totalRow = worksheet.addRow(totalValues);
@@ -358,7 +372,11 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
             const rowValues = [label + 1]; // ✅ Cột STT (label)
 
             series.forEach(s => {
-                const val = s.data?.[i] || 0;
+                const valRaw = s.data?.[i];
+                const val =
+                  typeof valRaw === 'number'
+                    ? Math.round((valRaw + Number.EPSILON) * 100) / 100
+                    : (valRaw ?? 0);
                 rowValues.push(val);
             });
 
@@ -375,7 +393,7 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
                 };
                 
                 if (colNumber === 1) {
-                    cell.font = { bold: true };
+                  cell.font = { bold: true };
                 }
             });
         });
@@ -417,10 +435,177 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
     }
   };
 
+  const handleChartExcelPivot = async (event) => {
+    if (!event.currentTarget) return;
+
+    try {
+      if (typeof getChartData !== 'function') return;
+
+      const chartData = getChartData();
+      console.log('Pivot excel data:', chartData);
+
+      const pivotRows = chartData.pivotRows || [];
+      const colKeys = chartData.colKeys || [];
+      const rowField = chartData.rowField || 'Label';
+
+      if (!pivotRows.length || !colKeys.length) return;
+
+      const ExcelJS = (await import('exceljs')).default;
+      const workbook = new ExcelJS.Workbook();
+      const safeNameChart = nameChart.replace(/[\\/:*?"<>|]/g, '_');
+      const worksheet = workbook.addWorksheet(safeNameChart);
+
+      const now = new Date();
+      const timeStr = `Thời gian export: ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')} ${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
+
+      const totalCols = 2 + colKeys.length + (colKeys.length > 1 ? 1 : 0);
+      const timeRow = worksheet.addRow([timeStr]);
+      worksheet.mergeCells(1, 1, 1, totalCols);
+      timeRow.getCell(1).font = { italic: true, color: { argb: 'AFF383C' } };
+      timeRow.getCell(1).alignment = { horizontal: 'left', vertical: 'middle' };
+
+      const headerRow = worksheet.addRow([
+        'STT',
+        rowField,
+        ...colKeys,
+        ...(colKeys.length > 1 ? ['Tổng'] : [])
+      ]);
+
+      headerRow.eachCell(cell => {
+        cell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1E3A5F' } };
+        cell.alignment = { horizontal: 'center', vertical: 'middle' };
+        cell.border = {
+          top: { style: 'thin' },
+          left: { style: 'thin' },
+          bottom: { style: 'thin' },
+          right: { style: 'thin' }
+        };
+      });
+
+      pivotRows.forEach((row, i) => {
+        let rowTotal = 0;
+
+        const valueCells = colKeys.map((key) => {
+          const val = typeof row[key] === 'number'
+                      ? Math.round((row[key] + Number.EPSILON) * 100) / 100
+                      : (row[key] ?? 0);
+          rowTotal += val;
+          return val;
+        });
+
+        rowTotal = Math.round((rowTotal + Number.EPSILON) * 100) / 100;
+
+        const rowValues = [
+          i + 1,
+          row[rowField] ?? '',
+          ...valueCells,
+          ...(colKeys.length > 1 ? [rowTotal] : [])
+        ];
+
+        const dataRow = worksheet.addRow(rowValues);
+
+        dataRow.eachCell((cell, colNumber) => {
+          cell.alignment = {
+            horizontal: colNumber <= 2 ? 'left' : 'right',
+            vertical: 'middle'
+          };
+          cell.border = {
+            top: { style: 'thin', color: { argb: 'FFE0E0E0' } },
+            left: { style: 'thin', color: { argb: 'FFE0E0E0' } },
+            bottom: { style: 'thin', color: { argb: 'FFE0E0E0' } },
+            right: { style: 'thin', color: { argb: 'FFE0E0E0' } }
+          };
+
+          if (colNumber === 1) {
+            cell.font = { bold: true };
+          }
+        });
+      });
+
+      const totalValues = ['', 'TỔNG'];
+      let grandTotal = 0;
+
+      colKeys.forEach((key) => {
+        let total = pivotRows.reduce((sum, row) => sum + (Number(row[key]) || 0), 0);
+        total = Math.round((total + Number.EPSILON) * 100) / 100;
+        totalValues.push(total);
+        grandTotal += total;
+      });
+
+      grandTotal = Math.round((grandTotal + Number.EPSILON) * 100) / 100;
+
+      if (colKeys.length > 1) totalValues.push(grandTotal);
+
+      const totalRow = worksheet.addRow(totalValues);
+      totalRow.eachCell((cell, colNumber) => {
+        cell.font = { bold: true };
+        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF0F4FF' } };
+        cell.alignment = {
+          horizontal: colNumber <= 2 ? 'left' : 'right',
+          vertical: 'middle'
+        };
+        cell.border = {
+          top: { style: 'medium' },
+          left: { style: 'thin', color: { argb: 'FFE0E0E0' } },
+          bottom: { style: 'medium' },
+          right: { style: 'thin', color: { argb: 'FFE0E0E0' } }
+        };
+      });
+
+      const colWidths = [];
+
+      worksheet.eachRow((row, rowNumber) => {
+        if (rowNumber === 1) return;
+
+        row.eachCell({ includeEmpty: true }, (cell, colNumber) => {
+          const len = cell.value ? cell.value.toString().length : 0;
+          colWidths[colNumber] = Math.max(colWidths[colNumber] || 8, len);
+        });
+      });
+
+      colWidths.forEach((width, colNumber) => {
+        if (colNumber > 0) {
+          worksheet.getColumn(colNumber).width = Math.min(width + 2, 40);
+        }
+      });
+
+      if (colKeys.length > 1) {
+        const lastColNum = 2 + colKeys.length + 1;
+
+        worksheet.eachRow((row, rowNumber) => {
+          if (rowNumber === 1 || rowNumber === 2) return;
+
+          const lastCell = row.getCell(lastColNum);
+          if (lastCell.value !== null && lastCell.value !== undefined) {
+            lastCell.font = { bold: true };
+          }
+        });
+      }
+
+      const buffer = await workbook.xlsx.writeBuffer();
+      const blob = new Blob([buffer], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      });
+
+      const dateStr = `${String(now.getDate()).padStart(2, '0')}-${String(now.getMonth() + 1).padStart(2, '0')}-${now.getFullYear()} ${String(now.getHours()).padStart(2, '0')}h${String(now.getMinutes()).padStart(2, '0')}m${String(now.getSeconds()).padStart(2, '0')}s`;
+
+      const link = document.createElement('a');
+      link.download = `${safeNameChart} ${dateStr}.xlsx`;
+      link.href = URL.createObjectURL(blob);
+      link.click();
+      URL.revokeObjectURL(link.href);
+    } catch (error) {
+      console.error('Excel pivot export error:', error);
+    } finally {
+      setIsDropdownOpen(false);
+    }
+  };
+
   const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
 
   return (
-      <div className={`${opacity ? 'opacity-0 invisible' : ''} pb-6 max-lg:pb-5 max-md:pb-4 text-[16px] max-lg:text-sm max-md:text-xs font-semibold text-color-black-100 dark:text-color-white-90 transition-all duration-300 flex justify-between ${!display ? 'absolute top-0 left-0 w-full p-6 max-lg:p-5 max-md:p-4' : ''}`}>
+      <div className={`${opacity ? 'opacity-0 invisible' : ''} pb-6 max-lg:pb-5 max-md:pb-4 text-[16px] max-lg:text-sm max-md:text-xs font-semibold text-color-black-100 dark:text-color-white-90 transition-all duration-300 flex justify-between items-center ${!display ? 'absolute top-0 left-0 w-full p-6 max-lg:p-5 max-md:p-4' : ''}`}>
         <div className='flex items-center gap-2 max-lg:gap-1.5 max-md:gap-1 text-nowrap'>
           {icon && <div className={`w-8 h-8 max-lg:w-7.5 max-lg:h-7.5 max-md:w-7 max-md:h-7 max-md:hidden flex justify-center items-center rounded-lg ${backgound} transition-all duration-300`}><figure><img src={icon} className={`${width+' '+height+' '+backgound}`} /></figure></div>}
           <span>{nameChart}</span>
@@ -442,7 +627,7 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
                     <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-90'} src={iconIMG}
                             widthImage='w-4 max-lg:w-3.75 max-md:w-3.75' alt='Icon Instruct' text={'Tải Ảnh'} />
                 </div>
-                <div onClick={table ? handleChartExcelTable : handleChartExcel} className='hover:bg-background-black-4 dark:hover:bg-background-hover-dark transition-all duration-300'>
+                <div onClick={table ? table === true ? handleChartExcelTable : handleChartExcelPivot : handleChartExcel} className='hover:bg-background-black-4 dark:hover:bg-background-hover-dark transition-all duration-300'>
                     <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-90'} src={iconExcel}
                     widthImage='w-4 max-lg:w-3.75 max-md:w-3.75' alt='Icon Instruct' text={'Tải Excel'} />
                 </div>
@@ -460,7 +645,7 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
                             widthImage='w-4 max-md:w-3.5' alt='Icon Instruct' text={'Tải Ảnh'} />
                 </div>)}
                 {(!userLoading && user?.username !== 'vtvguest') &&
-                (<div onClick={table ? handleChartExcelTable : handleChartExcel} className='hover:bg-background-black-4 dark:hover:bg-background-hover-dark transition-all duration-300'>
+                (<div onClick={table ? table === true ? handleChartExcelTable : handleChartExcelPivot : handleChartExcel} className='hover:bg-background-black-4 dark:hover:bg-background-hover-dark transition-all duration-300'>
                     <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-90'} src={iconExcel}
                     widthImage='w-4 max-md:w-3.5' alt='Icon Instruct' text={'Tải Excel'} />
                 </div>)}

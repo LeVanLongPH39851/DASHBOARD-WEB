@@ -43,8 +43,23 @@ const aggregateValue = (items, valueField, aggType) => {
 const buildPivotData = ({ data, rowField, columnField, valueField, aggType, sortColTimeband }) => {
   const rowKeys = [...new Set(data.map((d) => String(d[rowField] ?? '')))];
   let colKeys = [...new Set(data.map((d) => String(d[columnField] ?? '')))];
-
-  if (sortColTimeband) colKeys = [...colKeys].sort((a, b) => ((parseInt(String(a).match(/(\d+)\s*h/i)?.[1] ?? Number.MAX_SAFE_INTEGER, 10)) - (parseInt(String(b).match(/(\d+)\s*h/i)?.[1] ?? Number.MAX_SAFE_INTEGER, 10))) || String(a).localeCompare(String(b), undefined, { sensitivity: 'base' }));
+  const isNumericColumnField = colKeys.length > 0 && colKeys.every((v) => {
+    if (v === null || v === undefined || v === '') return false;
+    return !Number.isNaN(Number(v));
+  });
+  if (sortColTimeband) {
+    colKeys = [...colKeys].sort((a, b) => {
+      const hourA = parseInt(String(a).match(/(\d+)\s*h/i)?.[1] ?? Number.MAX_SAFE_INTEGER, 10);
+      const hourB = parseInt(String(b).match(/(\d+)\s*h/i)?.[1] ?? Number.MAX_SAFE_INTEGER, 10);
+      return hourA - hourB || String(a).localeCompare(String(b), undefined, { sensitivity: 'base' });
+    });
+  } else if (isNumericColumnField) {
+    colKeys = [...colKeys].sort((a, b) => Number(a) - Number(b));
+  } else {
+    colKeys = [...colKeys].sort((a, b) =>
+      String(a).localeCompare(String(b), undefined, { sensitivity: 'base' })
+    );
+  }
 
   const grouped = {};
   data.forEach((item) => {

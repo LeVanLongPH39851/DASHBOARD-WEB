@@ -132,16 +132,6 @@ export const getSpendVNDTableChartAdvertiser = (appliedFilters) =>
 
 // Tab Effective
 
-// ===== ALL TABLE =====
-export const getAllTableChartBrand = (appliedFilters) =>
-  postChart(payloads.allTableChartBrandPayload, appliedFilters, DISIBLE_EFFECTIVE);
-
-export const getAllTableChartBrandProgram = (appliedFilters) =>
-  postChart(payloads.allTableChartBrandProgramPayload, appliedFilters, DISIBLE_EFFECTIVE);
-
-export const getAllTableChartDevice = (appliedFilters) =>
-  postChart(payloads.allTableChartDevicePayload, appliedFilters, DISIBLE_EFFECTIVE);
-
 // ===== COUNT PIVOT =====
 export const getCountPivotTableChartCampaignWeek = (appliedFilters) =>
   postChart(payloads.countPivotTableChartCampaignWeekPayload, appliedFilters, DISIBLE_EFFECTIVE);
@@ -160,8 +150,8 @@ export const getGrpPivotTableChartCampaignWeek = (appliedFilters) =>
 export const getReachPivotTableChartCampaignWeek = (appliedFilters) =>
   postChart(payloads.reachPivotTableChartCampaignWeekPayload, appliedFilters, DISIBLE_EFFECTIVE);
 
-export const getReachTableChartCampaignBrand = (appliedFilters) =>
-  postChart(payloads.reachTableChartCampaignBrandPayload, appliedFilters, DISIBLE_EFFECTIVE);
+// export const getReachTableChartCampaignBrand = (appliedFilters) =>
+//   postChart(payloads.reachTableChartCampaignBrandPayload, appliedFilters, DISIBLE_EFFECTIVE);
 
 // ===== SPEND VND (BRAND) =====
 export const getSpendVNDBarChartBrandChannel = (appliedFilters) =>
@@ -200,6 +190,16 @@ export const getReachBarChartBrandTimeband = (appliedFilters) =>
 
 export const getReachPieChartAdvertiser = (appliedFilters) =>
   postChart(payloads.reachPieChartAdvertiserPayload, appliedFilters, DISIBLE_EFFECTIVE);
+
+// ===== ALL TABLE =====
+export const getAllTableChartBrand = (appliedFilters) =>
+  postChart(payloads.allTableChartBrandPayload, appliedFilters, DISIBLE_EFFECTIVE);
+
+export const getAllTableChartBrandProgram = (appliedFilters) =>
+  postChart(payloads.allTableChartBrandProgramPayload, appliedFilters, DISIBLE_EFFECTIVE);
+
+export const getAllTableChartDevice = (appliedFilters) =>
+  postChart(payloads.allTableChartDevicePayload, appliedFilters, DISIBLE_EFFECTIVE);
 
 // Tab Ad monitoring report
 

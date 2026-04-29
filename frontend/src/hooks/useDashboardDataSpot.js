@@ -45,11 +45,6 @@ const HOOKS = [
   { hook: useCallApi.useSpendVNDPivotTableChartChannelTimebandReturnApi, dataKey: 'spendVNDPivotChannelTimebandData' },
   { hook: useCallApi.useSpendVNDTableChartAdvertiserReturnApi, dataKey: 'spendVNDTableAdvertiserData' },
 
-    // ===== ALL TABLE =====
-  { hook: useCallApi.useAllTableChartBrandReturnApi, dataKey: 'allTableBrandData' },
-  { hook: useCallApi.useAllTableChartBrandProgramReturnApi, dataKey: 'allTableBrandProgramData' },
-  { hook: useCallApi.useAllTableChartDeviceReturnApi, dataKey: 'allTableDeviceData' },
-
   // ===== COUNT PIVOT =====
   { hook: useCallApi.useCountPivotTableChartCampaignWeekReturnApi, dataKey: 'countPivotCampaignWeekData' },
 
@@ -60,7 +55,7 @@ const HOOKS = [
 
   // ===== REACH =====
   { hook: useCallApi.useReachPivotTableChartCampaignWeekReturnApi, dataKey: 'reachPivotCampaignWeekData' },
-  { hook: useCallApi.useReachTableChartCampaignBrandReturnApi, dataKey: 'reachTableCampaignBrandData' },
+  // { hook: useCallApi.useReachTableChartCampaignBrandReturnApi, dataKey: 'reachTableCampaignBrandData' },
 
   // ===== SPEND VND (BRAND) =====
   { hook: useCallApi.useSpendVNDBarChartBrandChannelReturnApi, dataKey: 'spendVNDBarBrandChannelData' },
@@ -79,8 +74,12 @@ const HOOKS = [
   { hook: useCallApi.useReachBarChartBrandChannelReturnApi, dataKey: 'reachBarBrandChannelData' },
   { hook: useCallApi.useReachBarChartBrandFirstLevelReturnApi, dataKey: 'reachBarBrandFirstLevelData' },
   { hook: useCallApi.useReachBarChartBrandTimebandReturnApi, dataKey: 'reachBarBrandTimebandData' },
-
   { hook: useCallApi.useReachPieChartAdvertiserReturnApi, dataKey: 'reachPieAdvertiserData' },
+  
+    // ===== ALL TABLE =====
+  { hook: useCallApi.useAllTableChartBrandReturnApi, dataKey: 'allTableBrandData' },
+  { hook: useCallApi.useAllTableChartBrandProgramReturnApi, dataKey: 'allTableBrandProgramData' },
+  { hook: useCallApi.useAllTableChartDeviceReturnApi, dataKey: 'allTableDeviceData' },
   { hook: useCallApi.useAllTableChartMonitoringReturnApi, dataKey: 'allTableMonitoringData' },
 
   { hook: useCallApi.useFilterProvinceReturnApi, dataKey: 'filterProvinceData' },

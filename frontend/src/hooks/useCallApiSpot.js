@@ -109,16 +109,6 @@ export const useSpendVNDPivotTableChartChannelTimebandReturnApi = () =>
 export const useSpendVNDTableChartAdvertiserReturnApi = () =>
   createChartHook(getChart.getSpendVNDTableChartAdvertiser)();
 
-// ===== ALL TABLE =====
-export const useAllTableChartBrandReturnApi = () =>
-  createChartHook(getChart.getAllTableChartBrand)();
-
-export const useAllTableChartBrandProgramReturnApi = () =>
-  createChartHook(getChart.getAllTableChartBrandProgram)();
-
-export const useAllTableChartDeviceReturnApi = () =>
-  createChartHook(getChart.getAllTableChartDevice)();
-
 // ===== COUNT PIVOT =====
 export const useCountPivotTableChartCampaignWeekReturnApi = () =>
   createChartHook(getChart.getCountPivotTableChartCampaignWeek)();
@@ -137,8 +127,8 @@ export const useGrpPivotTableChartCampaignWeekReturnApi = () =>
 export const useReachPivotTableChartCampaignWeekReturnApi = () =>
   createChartHook(getChart.getReachPivotTableChartCampaignWeek)();
 
-export const useReachTableChartCampaignBrandReturnApi = () =>
-  createChartHook(getChart.getReachTableChartCampaignBrand)();
+// export const useReachTableChartCampaignBrandReturnApi = () =>
+//   createChartHook(getChart.getReachTableChartCampaignBrand)();
 
 // ===== SPEND VND (BRAND) =====
 export const useSpendVNDBarChartBrandChannelReturnApi = () =>
@@ -177,6 +167,16 @@ export const useReachBarChartBrandTimebandReturnApi = () =>
 
 export const useReachPieChartAdvertiserReturnApi = () =>
   createChartHook(getChart.getReachPieChartAdvertiser)();
+
+// ===== ALL TABLE =====
+export const useAllTableChartBrandReturnApi = () =>
+  createChartHook(getChart.getAllTableChartBrand)();
+
+export const useAllTableChartBrandProgramReturnApi = () =>
+  createChartHook(getChart.getAllTableChartBrandProgram)();
+
+export const useAllTableChartDeviceReturnApi = () =>
+  createChartHook(getChart.getAllTableChartDevice)();
 
 export const useAllTableChartMonitoringReturnApi = () =>
   createChartHook(getChart.getAllTableChartMonitoring)();

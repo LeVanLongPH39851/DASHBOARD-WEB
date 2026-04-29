@@ -44,12 +44,12 @@ const BreadCrumb = ({ dashboardName='Kênh truyền hình VTV'}) => {
     inforFilterSticky?.classList.replace('transition-all', 'transition-delete');
     inforTabSticky?.classList.replace('duration-300', 'duration-delete');
     inforFilterSticky?.classList.replace('duration-300', 'duration-delete');
-    inforTabSticky?.classList.replace('top-34', 'top-0');
-    inforTabSticky.classList.replace('max-lg:top-[111.93px]', 'max-lg:top-0');
-    inforTabSticky?.classList.replace('max-md:top-18', 'max-md:top-0');
-    inforFilterSticky?.classList.replace('top-46', 'top-12');
-    inforFilterSticky.classList.replace('max-lg:top-[155.93px]', 'max-lg:top-11');
-    inforFilterSticky?.classList.replace('max-md:top-28', 'max-md:top-10');
+    inforTabSticky?.classList.replace('top-29.25', 'top-0');
+    inforTabSticky.classList.replace('max-lg:top-[93.56px]', 'max-lg:top-0');
+    inforTabSticky?.classList.replace('max-md:top-12.25', 'max-md:top-0');
+    inforFilterSticky?.classList.replace('top-41.25', 'top-12');
+    inforFilterSticky.classList.replace('max-lg:top-[137.56px]', 'max-lg:top-11');
+    inforFilterSticky?.classList.replace('max-md:top-22.25', 'max-md:top-10');
     if (clearAll) clearAll.classList.add('hidden');
     divTables.forEach(table => table?.classList.replace('overflow-auto', 'overflow-hidden'));
 
@@ -65,12 +65,12 @@ const BreadCrumb = ({ dashboardName='Kênh truyền hình VTV'}) => {
     inforFilterSticky?.classList.replace('transition-delete', 'transition-all');
     inforTabSticky?.classList.replace('duration-delete', 'duration-300');
     inforFilterSticky?.classList.replace('duration-delete', 'duration-300');
-    inforTabSticky?.classList.replace('top-0', 'top-34');
-    inforTabSticky.classList.replace('max-lg:top-0', 'max-lg:top-[111.93px]');
-    inforTabSticky?.classList.replace('max-md:top-0', 'max-md:top-18');
-    inforFilterSticky?.classList.replace('top-12', 'top-46');
-    inforFilterSticky.classList.replace('max-lg:top-11', 'max-lg:top-[155.93px]');
-    inforFilterSticky?.classList.replace('max-md:top-10', 'max-md:top-28');
+    inforTabSticky?.classList.replace('top-0', 'top-29.25');
+    inforTabSticky.classList.replace('max-lg:top-0', 'max-lg:top-[93.56px]');
+    inforTabSticky?.classList.replace('max-md:top-0', 'max-md:top-12.25');
+    inforFilterSticky?.classList.replace('top-12', 'top-41.25');
+    inforFilterSticky.classList.replace('max-lg:top-11', 'max-lg:top-[137.56px]');
+    inforFilterSticky?.classList.replace('max-md:top-10', 'max-md:top-22.25');
     inforFilterBtn.classList.remove('hidden');
     if (clearAll) clearAll.classList.remove('hidden');
     divTables?.forEach(table => table?.classList.replace('overflow-hidden', 'overflow-auto'));
@@ -95,12 +95,12 @@ const BreadCrumb = ({ dashboardName='Kênh truyền hình VTV'}) => {
         inforFilterSticky.classList.replace('transition-all', 'transition-delete');
         inforTabSticky.classList.replace('duration-300', 'duration-delete');
         inforFilterSticky.classList.replace('duration-300', 'duration-delete');
-        inforTabSticky.classList.replace('top-34', 'top-0');
-        inforTabSticky.classList.replace('max-lg:top-[111.93px]', 'max-lg:top-0');
-        inforTabSticky.classList.replace('max-md:top-18', 'max-md:top-0');
-        inforFilterSticky.classList.replace('top-46', 'top-12');
-        inforFilterSticky.classList.replace('max-lg:top-[155.93px]', 'max-lg:top-11');
-        inforFilterSticky.classList.replace('max-md:top-28', 'max-md:top-10');
+        inforTabSticky.classList.replace('top-29.25', 'top-0');
+        inforTabSticky.classList.replace('max-lg:top-[93.56px]', 'max-lg:top-0');
+        inforTabSticky.classList.replace('max-md:top-12.25', 'max-md:top-0');
+        inforFilterSticky.classList.replace('top-41.25', 'top-12');
+        inforFilterSticky.classList.replace('max-lg:top-[137.56px]', 'max-lg:top-11');
+        inforFilterSticky.classList.replace('max-md:top-22.25', 'max-md:top-10');
         inforFilterBtn.classList.add('hidden');
         await sleep(300);
         if (clearAll) clearAll.classList.add('hidden');
@@ -126,12 +126,12 @@ const BreadCrumb = ({ dashboardName='Kênh truyền hình VTV'}) => {
         inforFilterSticky.classList.replace('transition-delete', 'transition-all');
         inforTabSticky.classList.replace('duration-delete', 'duration-300');
         inforFilterSticky.classList.replace('duration-delete', 'duration-300');
-        inforTabSticky.classList.replace('top-0', 'top-34');
-        inforTabSticky.classList.replace('max-lg:top-0', 'max-lg:top-[111.93px]');
-        inforTabSticky.classList.replace('max-md:top-0', 'max-md:top-18');
-        inforFilterSticky.classList.replace('top-12', 'top-46');
-        inforFilterSticky.classList.replace('max-lg:top-11', 'max-lg:top-[155.93px]');
-        inforFilterSticky.classList.replace('max-md:top-10', 'max-md:top-28');
+        inforTabSticky.classList.replace('top-0', 'top-29.25');
+        inforTabSticky.classList.replace('max-lg:top-0', 'max-lg:top-[93.56px]');
+        inforTabSticky.classList.replace('max-md:top-0', 'max-md:top-12.25');
+        inforFilterSticky.classList.replace('top-12', 'top-41.25');
+        inforFilterSticky.classList.replace('max-lg:top-11', 'max-lg:top-[137.56px]');
+        inforFilterSticky.classList.replace('max-md:top-10', 'max-md:top-22.25');
         inforFilterBtn.classList.remove('hidden');
         if (clearAll) clearAll.classList.remove('hidden');
         divTables.forEach(table => table?.classList.replace('overflow-hidden', 'overflow-auto'));
@@ -159,12 +159,12 @@ const BreadCrumb = ({ dashboardName='Kênh truyền hình VTV'}) => {
         inforFilterSticky.classList.replace('transition-all', 'transition-delete');
         inforTabSticky.classList.replace('duration-300', 'duration-delete');
         inforFilterSticky.classList.replace('duration-300', 'duration-delete');
-        inforTabSticky.classList.replace('top-34', 'top-0');
-        inforTabSticky.classList.replace('max-lg:top-[111.93px]', 'max-lg:top-0');
-        inforTabSticky.classList.replace('max-md:top-18', 'max-md:top-0');
-        inforFilterSticky.classList.replace('top-46', 'top-12');
-        inforFilterSticky.classList.replace('max-lg:top-[155.93px]', 'max-lg:top-11');
-        inforFilterSticky.classList.replace('max-md:top-28', 'max-md:top-10');
+        inforTabSticky.classList.replace('top-29.25', 'top-0');
+        inforTabSticky.classList.replace('max-lg:top-[93.56px]', 'max-lg:top-0');
+        inforTabSticky.classList.replace('max-md:top-12.25', 'max-md:top-0');
+        inforFilterSticky.classList.replace('top-41.25', 'top-12');
+        inforFilterSticky.classList.replace('max-lg:top-[137.56px]', 'max-lg:top-11');
+        inforFilterSticky.classList.replace('max-md:top-22.25', 'max-md:top-10');
         if (clearAll) clearAll.classList.add('hidden');
         divTables.forEach(table => table?.classList.replace('overflow-auto', 'overflow-hidden'));
         const now = new Date();
@@ -221,12 +221,12 @@ const BreadCrumb = ({ dashboardName='Kênh truyền hình VTV'}) => {
             inforFilterSticky.classList.replace('transition-delete', 'transition-all');
             inforTabSticky.classList.replace('duration-delete', 'duration-300');
             inforFilterSticky.classList.replace('duration-delete', 'duration-300');
-            inforTabSticky.classList.replace('top-0', 'top-34');
-            inforTabSticky.classList.replace('max-lg:top-0', 'max-lg:top-[111.93px]');
-            inforTabSticky.classList.replace('max-md:top-0', 'max-md:top-18');
-            inforFilterSticky.classList.replace('top-12', 'top-46');
-            inforFilterSticky.classList.replace('max-lg:top-11', 'max-lg:top-[155.93px]');
-            inforFilterSticky.classList.replace('max-md:top-10', 'max-md:top-28');
+            inforTabSticky.classList.replace('top-0', 'top-29.25');
+            inforTabSticky.classList.replace('max-lg:top-0', 'max-lg:top-[93.56px]');
+            inforTabSticky.classList.replace('max-md:top-0', 'max-md:top-12.25');
+            inforFilterSticky.classList.replace('top-12', 'top-41.25');
+            inforFilterSticky.classList.replace('max-lg:top-11', 'max-lg:top-[137.56px]');
+            inforFilterSticky.classList.replace('max-md:top-10', 'max-md:top-22.25');
             inforFilterBtn.classList.remove('hidden');
             if (clearAll) clearAll.classList.remove('hidden');
             divTables.forEach(table => table?.classList.replace('overflow-hidden', 'overflow-auto'));
@@ -371,14 +371,14 @@ const BreadCrumb = ({ dashboardName='Kênh truyền hình VTV'}) => {
 
     return (
     <nav className='px-6 max-lg:px-5 max-md:px-4 bg-background-light dark:bg-background-dark border-b border-border-black-10 dark:border-transparent transition-all duration-300 pt-2 pb-1 sticky top-0' style={{zIndex: 300}}>
-        <div className='flex items-center gap-2 max-lg:gap-1 max-md:hidden'>
+        {/* <div className='flex items-center gap-2 max-lg:gap-1 max-md:hidden'>
             <figure><img src={!stateGlobals.darkMode ? iconHome : iconHomeDark} className='w-3 max-lg:w-2.5 h-3 max-lg:h-2.5' alt="Icon Home" /></figure>
                 <span className='text-sm max-lg:text-[13px] font-normal text-color-black-50 dark:text-color-white-50 transition-all duration-300'>
                     <a href={`${CUSTOM_CHART.domain}/superset/welcome/`}>Trang chủ</a>
                 </span>
             <figure><img src={iconArrowRight} className='h-2.75 max-lg:h-2.5' alt="Icon Arrow Right" /></figure>
             <span className='text-sm max-lg:text-[13px] font-medium text-color-black-100 dark:text-color-white-90 transition-all duration-300 uppercase'>{dashboardName}</span>
-        </div>
+        </div> */}
         <div className='pt-2 flex justify-between items-center'>
             <div className='flex items-center'>
                 <a href={`${CUSTOM_CHART.domain}/superset/welcome/`}><figure className='cursor-pointer p-2 pl-0 mr-2 hidden max-md:block'><img src={!stateGlobals.darkMode ? iconArrowLeft2 : iconArrowLeft2Dark} className='w-3.5' alt="Icon Arrow Left 2" /></figure></a>
@@ -439,14 +439,14 @@ const BreadCrumb = ({ dashboardName='Kênh truyền hình VTV'}) => {
                 </div>
             </div>
         </div>
-        <div className='items-center gap-2 hidden max-md:flex mt-2'>
+        {/* <div className='items-center gap-2 hidden max-md:flex mt-2'>
             <figure><img src={!stateGlobals.darkMode ? iconHome : iconHomeDark} className='w-3 h-3 max-md:w-2.5 max-md:h-2.5' alt="Icon Home" /></figure>
                 <span className='text-sm max-md:text-xs font-normal text-color-black-50 dark:text-color-white-50 transition-all duration-300'>
                     <a href={`${CUSTOM_CHART.domain}/superset/welcome/`}>Trang chủ</a>
                 </span>
             <figure><img src={iconArrowRight} className='h-2.75' alt="Icon Arrow Right" /></figure>
             <span className='text-sm max-md:text-xs font-medium text-color-black-100 dark:text-color-white-90 transition-all duration-300 uppercase'>{dashboardName}</span>
-        </div>
+        </div> */}
     </nav>
     );
 };

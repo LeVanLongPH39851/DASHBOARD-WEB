@@ -27,7 +27,7 @@ const SelectMultiFilter = ({
       control: (provided, state) => ({
         ...provided,
         minHeight: !horizontalFixed ? (!isMobile ? !isLaptop ? '40px' : '34px' : '30px') : (!isMobile ? !isLaptop ? '38px' : '32px' : '30px'),
-        fontSize: !isMobile ? !isLaptop ? '13px' : '12px' : '11px',
+        fontSize: !isMobile ? !isLaptop ? '14px' : '13px' : '12px',
         borderRadius: '12px',
         outline: 'none',
         boxShadow: 'none',
@@ -85,7 +85,7 @@ const SelectMultiFilter = ({
         const hoverBg = darkMode ? 'rgba(31, 41, 55, 1)' : '#e0e0e0';
         return {
           ...provided,
-          fontSize: !isMobile ? !isLaptop ? '13px' : '12px' : '11px',
+          fontSize: !isMobile ? !isLaptop ? '14px' : '13px' : '12px',
           fontWeight: 400,
           backgroundColor: state.isSelected
             ? !darkMode ? '#20A7C9' : 'rgb(40 153 156 / 50%)'
@@ -102,13 +102,13 @@ const SelectMultiFilter = ({
       placeholder: (provided) => ({
         ...provided,
         color: darkMode ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)',
-        fontSize: !isMobile ? !isLaptop ? '13px' : '12px' : '11px',
+        fontSize: !isMobile ? !isLaptop ? '14px' : '13px' : '12px',
         fontWeight: 400
       }),
       input: (provided) => ({
         ...provided,
         color: darkMode ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)',
-        fontSize: !isMobile ? !isLaptop ? '13px' : '12px' : '11px', 
+        fontSize: !isMobile ? !isLaptop ? '14px' : '13px' : '12px', 
         fontWeight: 400,
         cursor: 'text',
         transition: 'all 0.3s ease-in-out'
@@ -134,7 +134,7 @@ const SelectMultiFilter = ({
       }),
       noOptionsMessage: (provided) => ({
         ...provided,
-        fontSize: !isMobile ? !isLaptop ? '13px' : '12px' : '11px'
+        fontSize: !isMobile ? !isLaptop ? '14px' : '13px' : '12px'
       }),
     };
 

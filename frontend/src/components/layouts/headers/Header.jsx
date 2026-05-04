@@ -111,35 +111,35 @@ const Header = ({ username }) => {
         sessionStorage.removeItem('filter_value_spots');
     };
 
-    const [currentTime, setCurrentTime] = useState('');
-    const [currentDate, setCurrentDate] = useState('');
+    // const [currentTime, setCurrentTime] = useState('');
+    // const [currentDate, setCurrentDate] = useState('');
 
-    // ✅ Update clock mỗi giây
-    useEffect(() => {
-        const updateClock = () => {
-        const now = new Date();
-        setCurrentTime(now.toLocaleTimeString('vi-VN', {
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
-            hour12: true
-        }));
-        setCurrentDate(now.toLocaleDateString('vi-VN', {
-            month: 'long',
-            day: '2-digit',
-            year: 'numeric'
-        }));
-        };
+    // // ✅ Update clock mỗi giây
+    // useEffect(() => {
+    //     const updateClock = () => {
+    //     const now = new Date();
+    //     setCurrentTime(now.toLocaleTimeString('vi-VN', {
+    //         hour: '2-digit',
+    //         minute: '2-digit',
+    //         second: '2-digit',
+    //         hour12: true
+    //     }));
+    //     setCurrentDate(now.toLocaleDateString('vi-VN', {
+    //         month: 'long',
+    //         day: '2-digit',
+    //         year: 'numeric'
+    //     }));
+    //     };
 
-        // ✅ Update ngay lập tức
-        updateClock();
+    //     // ✅ Update ngay lập tức
+    //     updateClock();
 
-        // ✅ Update mỗi giây
-        const intervalId = setInterval(updateClock, 1000);
+    //     // ✅ Update mỗi giây
+    //     const intervalId = setInterval(updateClock, 1000);
 
-        // ✅ Cleanup khi unmount
-        return () => clearInterval(intervalId);
-    }, []);
+    //     // ✅ Cleanup khi unmount
+    //     return () => clearInterval(intervalId);
+    // }, []);
         
   return (
     <header className="h-15 max-lg:h-13 max-md:h-10 bg-background-light dark:bg-background-dark transition-all duration-300 px-6 max-lg:px-5 max-md:px-4 py-px flex justify-between items-center border-b border-border-black-10 dark:border-background-white-15">
@@ -165,13 +165,13 @@ const Header = ({ username }) => {
                     <figure>
                         <img src={imageUser} className='w-10 max-lg:w-8 h-10 max-lg:h-8 max-md:w-7 max-md:h-7' alt="Image User" />
                     </figure>
-                    <div className='flex flex-col justify-between'>
+                    {/* <div className='flex flex-col justify-between'>
                         <span className='text-base max-lg:text-sm max-md:text-xs font-normal text-color-gray-800 dark:text-color-white-90 transition-all duration-300'>{currentTime}</span>
                         <span className='text-xs max-md:text-[11px] font-normal text-color-gray-600 dark:text-color-white-50 transition-all duration-300'>{currentDate}</span>
-                    </div>
+                    </div> */}
                     <figure><img src={!stateGlobals.darkMode ? iconArrowDown : iconArrowDownDark} className={`w-2.25 max-md:w-2 transition-all duration-300 ${!isDropdownOpen ? '' : 'rotate-180'}`} alt="Icon Arrow Down" /></figure>
                 </div>
-                <div ref={dropdownRef} className={`${isDropdownOpen ? 'scale-100 opacity-100 origin-top' : 'scale-0 opacity-0 origin-top'} transition-all duration-300 absolute top-full left-0 bg-background-light dark:bg-background-dark flex flex-col border border-border-black-10 dark:border-background-white-15 rounded-xl w-full overflow-hidden`}>
+                <div ref={dropdownRef} className={`${isDropdownOpen ? 'scale-100 opacity-100 origin-top' : 'scale-0 opacity-0 origin-top'} transition-all duration-300 absolute top-full right-0 bg-background-light dark:bg-background-dark flex flex-col border border-border-black-10 dark:border-background-white-15 rounded-xl w-[220%] max-lg:w-[230%] max-md:w-[250%] overflow-hidden`}>
                         <div className='hover:bg-background-black-4 dark:hover:bg-color-black-70 transition-all duration-300'>
                             <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-80'} src={!stateGlobals.darkMode ? iconUserInfor : iconUserInforDark}
                                         widthImage='w-4.5 max-lg:w-4.25 max-md:w-4' alt='Icon User' text={username ? username : 'vtvguest'} />

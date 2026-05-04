@@ -49,17 +49,24 @@ const InforFilter = ({ filters, FilterComponent = Filter, nameFilter = 'FilterRa
     const observers = pairs
       .filter(({ relative, absolute }) => relative && absolute)
       .map(({ relative, absolute, initialHeight }) => {
+        const getHeight = () => {
+          // 🔥 FIX: dùng getBoundingClientRect để lấy height có thập phân
+          return absolute.getBoundingClientRect().height;
+        };
         const updateHeight = () => {
           const isVisible = absolute.classList.contains('visible')
                         && absolute.classList.contains('opacity-100')
                         && absolute.classList.contains('top-0');
 
-          relative.style.height = isVisible ? `${absolute.offsetHeight}px` : '0px';
+          const height = getHeight();
+
+          relative.style.height = isVisible ? `${height}px` : '0px';
         };
 
         // Set height ban đầu theo option
         if (initialHeight === 'match') {
-          relative.style.height = `${absolute.offsetHeight}px`;
+          const height = getHeight();
+          relative.style.height = `${height}px`;
         } else {
           relative.style.height = '0px';
         }

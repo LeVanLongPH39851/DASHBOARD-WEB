@@ -423,7 +423,8 @@ export const grpBarChartBrandPayload = {
       "extra_filters": [],
       "force": false,
       "result_format": "json",
-      "result_type": "full"
+      "result_type": "full",
+      heavy: true
     },
     "result_format": "json",
     "result_type": "full"

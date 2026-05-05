@@ -107,7 +107,8 @@ export const LABEL_SPOT = {
   'Dòng sản phẩm': 'Sản phẩm',
   'others': 'Thời lượng khác',
   'Tổng user truy cập VTVgo': 'Tổng user',
-  'Thời lượng (phút)': 'Thời lượng'
+  'Thời lượng (phút)': 'Thời lượng',
+  'reach': 'Reach',
 };
 
 export const LABEL_METRIC = {

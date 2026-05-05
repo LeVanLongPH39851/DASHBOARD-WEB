@@ -80,32 +80,46 @@ const DashboardContent = () => {
                                 <InforTab inforTab={"Tổng quan"} />
                                 <InforFilter filters={scopeFilterData} FilterComponent={FilterSpot} nameFilter='FilterSpot' />
                                 <div className='px-6 max-lg:px-5 max-md:px-4 pt-6 max-lg:pt-5 max-md:pt-4'>
-                                    <div className='w-full grid grid-cols-5 max-lg:grid-cols-8 max-md:grid-cols-2 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4'>
-                                      <div className='col-span-2 max-lg:col-span-3'>
+                                    <div className='w-full grid grid-cols-4 max-lg:grid-cols-4 max-md:grid-cols-2 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4'>
+                                      {/* <div className='col-span-2 max-lg:col-span-3'>
                                         <NumberWithTrendChart nameChart={'Chi phí (Triệu VND)'} description={false} data={!dashboard.isLoading.spendVNDNumberData ? transformNumberWithTrendData(dashboard.spendVNDNumberData?.data, dashboard.spendVNDNumberData?.colnames) : 'isLoading'} fontFamily={CUSTOM_CHART.allChart.fontFamily} fontSize={CUSTOM_CHART.numberWithTrendChart.fontSize} fontWeight={CUSTOM_CHART.numberWithTrendChart.fontWeight} icon={METRIC_SPOTS.spend_vnd.icon} />
                                       </div>
                                       <div className='col-span-2 max-lg:col-span-3'>
                                         <NumberWithTrendChart nameChart={'Chi phí (USD)'} description={false} data={!dashboard.isLoading.spendUSDNumberData ? transformNumberWithTrendData(dashboard.spendUSDNumberData?.data, dashboard.spendUSDNumberData?.colnames) : 'isLoading'} fontFamily={CUSTOM_CHART.allChart.fontFamily} fontSize={CUSTOM_CHART.numberWithTrendChart.fontSize} fontWeight={CUSTOM_CHART.numberWithTrendChart.fontWeight} icon={METRIC_SPOTS.spend_usd.icon} suffix='$' />
-                                      </div>
-                                        <div className='col-span-1 max-lg:col-span-2 max-md:col-span-2 grid grid-cols-1 max-md:grid-cols-2 gap-6 max-lg:gap-5 max-md:gap-4'>
-                                            <NumberCard
-                                                title={'Số lượng Spot'}
-                                                description={false}
-                                                value={!dashboard.isLoading.countNumberData ? dashboard.countNumberData?.data ? formatNumber(dashboard.countNumberData?.data[0].count, { isPercent: false }) : '-' : 'isLoading'}
-                                                icon={METRIC_SPOTS.count.icon}
-                                                background={METRIC_SPOTS.count.background}
-                                                widthIcon={METRIC_SPOTS.count.widthIcon}
-                                            />
-                                            <NumberCard
-                                                title={'Thời lượng Spot'}
-                                                description={false}
-                                                value={!dashboard.isLoading.durationNumberData ? dashboard.durationNumberData?.data ? dashboard.durationNumberData?.data[0]?.total_duration?.toLocaleString(undefined, { maximumFractionDigits: 2 }) : '-' : 'isLoading'}
-                                                icon={METRIC_SPOTS.duration.icon}
-                                                background={METRIC_SPOTS.duration.background}
-                                                widthIcon={METRIC_SPOTS.duration.widthIcon}
-                                                suffix='phút'
-                                            />
-                                        </div>
+                                      </div> */}
+                                      <NumberCard
+                                          title={'Chi phí (Triệu VND)'}
+                                          description={false}
+                                          value={!dashboard.isLoading.spendVNDNumberData ? dashboard.spendVNDNumberData?.data ? formatNumber(dashboard.spendVNDNumberData?.data[0].price, { isPercent: false }) : '-' : 'isLoading'}
+                                          icon={METRIC_SPOTS.spend_vnd.icon}
+                                          background={METRIC_SPOTS.spend_vnd.background}
+                                          widthIcon={METRIC_SPOTS.spend_vnd.widthIcon}
+                                      />
+                                      <NumberCard
+                                          title={'Chi phí (USD)'}
+                                          description={false}
+                                          value={!dashboard.isLoading.spendUSDNumberData ? dashboard.spendUSDNumberData?.data ? formatNumber(dashboard.spendUSDNumberData?.data[0].price_usd, { isPercent: false }) : '-' : 'isLoading'}
+                                          icon={METRIC_SPOTS.spend_usd.icon}
+                                          background={METRIC_SPOTS.spend_usd.background}
+                                          widthIcon={METRIC_SPOTS.spend_usd.widthIcon}
+                                      />
+                                      <NumberCard
+                                          title={'Số lượng Spot'}
+                                          description={false}
+                                          value={!dashboard.isLoading.countNumberData ? dashboard.countNumberData?.data ? formatNumber(dashboard.countNumberData?.data[0].count, { isPercent: false }) : '-' : 'isLoading'}
+                                          icon={METRIC_SPOTS.count.icon}
+                                          background={METRIC_SPOTS.count.background}
+                                          widthIcon={METRIC_SPOTS.count.widthIcon}
+                                      />
+                                      <NumberCard
+                                          title={'Thời lượng Spot'}
+                                          description={false}
+                                          value={!dashboard.isLoading.durationNumberData ? dashboard.durationNumberData?.data ? dashboard.durationNumberData?.data[0]?.total_duration?.toLocaleString(undefined, { maximumFractionDigits: 2 }) : '-' : 'isLoading'}
+                                          icon={METRIC_SPOTS.duration.icon}
+                                          background={METRIC_SPOTS.duration.background}
+                                          widthIcon={METRIC_SPOTS.duration.widthIcon}
+                                          suffix='phút'
+                                      />
                                     </div>
                                     <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
                                       <div className={`p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
@@ -743,6 +757,7 @@ const DashboardContent = () => {
                                                   description={false}
                                                   orientation={'horizontal'}
                                                   colorZoom='red'
+                                                  formatterValue={2}
                                               />
                                               <BarChart 
                                                   data={!dashboard.isLoading.grpBarBrandTimebandData ? transformBarChartData(dashboard.grpBarBrandTimebandData?.data, dashboard.grpBarBrandTimebandData?.colnames) : 'isLoading'}
@@ -755,6 +770,7 @@ const DashboardContent = () => {
                                                   description={false}
                                                   orientation={'horizontal'}
                                                   colorZoom='red'
+                                                  formatterValue={2}
                                               />
                                               <BarChart 
                                                   data={!dashboard.isLoading.grpBarBrandFirstLevelData ? transformBarChartData(dashboard.grpBarBrandFirstLevelData?.data, dashboard.grpBarBrandFirstLevelData?.colnames) : 'isLoading'}
@@ -767,6 +783,7 @@ const DashboardContent = () => {
                                                   description={false}
                                                   orientation={'horizontal'}
                                                   colorZoom='red'
+                                                  formatterValue={2}
                                               />
                                               <PieChart data={!dashboard.isLoading.grpPieAdvertiserData ? transformPieChartData(dashboard.grpPieAdvertiserData?.data, dashboard.grpPieAdvertiserData?.colnames) : 'isLoading'}
                                                         height={CUSTOM_CHART.pieChart.height}
@@ -778,6 +795,7 @@ const DashboardContent = () => {
                                                         donut={CUSTOM_CHART.pieChart.donut}
                                                         innerRadius={CUSTOM_CHART.pieChart.innerRadius}
                                                         border={false}
+                                                        formatterValue={2}
                                               />
                                           </div>
                                       )},

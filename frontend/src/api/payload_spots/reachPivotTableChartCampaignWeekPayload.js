@@ -315,6 +315,7 @@ export const reachPivotTableChartCampaignWeekPayload = {
       "result_type": "full"
     },
     "result_format": "json",
-    "result_type": "full"
+    "result_type": "full",
+    heavy: true
   }
 };

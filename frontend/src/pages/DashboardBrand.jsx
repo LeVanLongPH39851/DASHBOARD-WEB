@@ -124,7 +124,7 @@ const DashboardContent = () => {
                                         <NumberCard
                                             title={'Tần suất'}
                                             description={false}
-                                            value={!dashboard.isLoading.frequencyNumberData ? dashboard.frequencyNumberData?.data ? formatNumber(dashboard.frequencyNumberData?.data[0]['SUM(view)/SUM(reach)'], { isPercent: false }) : '-' : 'isLoading'}
+                                            value={!dashboard.isLoading.frequencyNumberData ? dashboard.frequencyNumberData?.data ? formatNumber(dashboard.frequencyNumberData?.data[0].frequency, { isPercent: false }) : '-' : 'isLoading'}
                                             icon={METRICS.rating.icon}
                                             background={METRICS.rating.background}
                                             widthIcon={METRICS.rating.widthIcon}

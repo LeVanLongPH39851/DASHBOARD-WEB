@@ -138,7 +138,7 @@ const SelectMultiFilter = ({
       }),
     };
 
-  const [isOpenFilter, setIsOpenFilter] = useState(true);
+  const [isOpenFilter, setIsOpenFilter] = useState(false);
 
   return (
     <div className={`${horizontalFixed ? '' : isOpenFilter ? `${marginBottom}` : ''}`}>

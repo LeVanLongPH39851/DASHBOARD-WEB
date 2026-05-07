@@ -18,7 +18,7 @@ const RangeFilter = ({
   minGap = 0
 }) => {
   const { stateGlobals } = useDashboardStateGlobals();
-  const [isOpenFilter, setIsOpenFilter] = useState(true);
+  const [isOpenFilter, setIsOpenFilter] = useState(false);
 
   const normalizeInt = (val, fallback) => {
     if (val === '') return '';

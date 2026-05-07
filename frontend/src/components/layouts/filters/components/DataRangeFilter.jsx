@@ -64,7 +64,7 @@ const DateRangeFilter = ({ startDate, endDate, onChange, horizontalFixed=false }
   };
 
   const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
-  const [isOpenFilter, setIsOpenFilter] = useState(true);
+  const [isOpenFilter, setIsOpenFilter] = useState(false);
 
   return (
     <div className={`${horizontalFixed ? '' : isOpenFilter ? `mb-4 max-lg:mb-3 max-md:mb-2` : ''}`}>

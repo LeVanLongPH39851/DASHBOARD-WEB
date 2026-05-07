@@ -95,57 +95,7 @@ export const allTableChartMonitoringPayload = {
             },
             "order_desc": false,
             "url_params": {
-                "native_filters_key": "gbNa_GVFVxJhbOzNzry_UneSMH1CY4_sSfaxjIjBTVYTsdTvAKKRveKSCunCxOOq"
-            },
-            "custom_params": {},
-            "custom_form_data": {},
-            "post_processing": [],
-            "time_offsets": []
-        },
-        {
-            "time_range": "DATEADD(DATETIME(\"today\"),-2, DAY) : DATEADD(DATETIME(\"today\"),-1, SECOND)",
-            "filters": [
-                {
-                    "col": "date",
-                    "op": "TEMPORAL_RANGE",
-                    "val": "No filter"
-                }
-            ],
-            "extras": {
-                "having": "",
-                "where": ""
-            },
-            "applied_time_extras": {},
-            "columns": [],
-            "metrics": [
-                {
-                    "aggregate": null,
-                    "column": null,
-                    "datasourceWarning": false,
-                    "expressionType": "SQL",
-                    "hasCustomLabel": true,
-                    "label": "Chi phí (triệu VND)",
-                    "optionName": "metric_j8hhpgdhil_bjx8lrm2ls",
-                    "sqlExpression": "MAX(price)/1000000"
-                },
-                "reach"
-            ],
-            "annotation_layers": [],
-            "row_limit": 0,
-            "row_offset": 0,
-            "series_limit": 0,
-            "series_limit_metric": {
-                "aggregate": null,
-                "column": null,
-                "datasourceWarning": false,
-                "expressionType": "SQL",
-                "hasCustomLabel": false,
-                "label": "date ASC ,RIGHT(channel_name_tvd, 1) ASC ,spot_start_time",
-                "optionName": "metric_zbeogmehqk_z96xd75qcoe",
-                "sqlExpression": "date ASC ,RIGHT(channel_name_tvd, 1) ASC ,spot_start_time"
-            },
-            "url_params": {
-                "native_filters_key": "gbNa_GVFVxJhbOzNzry_UneSMH1CY4_sSfaxjIjBTVYTsdTvAKKRveKSCunCxOOq"
+                "native_filters_key": "Jvfjj0Yeui1_K9RAk17kSfI4Bd9GRja1cX0ymDia6OOujiwbxlQ6PXRZ8fndfLfl"
             },
             "custom_params": {},
             "custom_form_data": {},
@@ -158,7 +108,7 @@ export const allTableChartMonitoringPayload = {
         "viz_type": "table",
         "slice_id": 832,
         "url_params": {
-            "native_filters_key": "gbNa_GVFVxJhbOzNzry_UneSMH1CY4_sSfaxjIjBTVYTsdTvAKKRveKSCunCxOOq"
+            "native_filters_key": "Jvfjj0Yeui1_K9RAk17kSfI4Bd9GRja1cX0ymDia6OOujiwbxlQ6PXRZ8fndfLfl"
         },
         "query_mode": "aggregate",
         "groupby": [
@@ -234,7 +184,7 @@ export const allTableChartMonitoringPayload = {
         "row_limit": 10000,
         "server_page_length": 10,
         "order_desc": false,
-        "show_totals": true,
+        "show_totals": false,
         "table_timestamp_format": "smart_date",
         "include_search": true,
         "allow_rearrange_columns": false,
@@ -261,13 +211,7 @@ export const allTableChartMonitoringPayload = {
         "show_cell_bars": false,
         "color_pn": true,
         "comparison_color_scheme": "Green",
-        "conditional_formatting": [
-            {
-                "colorScheme": "#ACE1C4",
-                "column": "Reach",
-                "operator": "None"
-            }
-        ],
+        "conditional_formatting": [],
         "comparison_type": "values",
         "dashboards": [
             54

@@ -36,7 +36,7 @@ const CheckboxMultiFilter = ({
   );
 
   const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
-  const [isOpenFilter, setIsOpenFilter] = useState(true);
+  const [isOpenFilter, setIsOpenFilter] = useState(false);
 
   return (
     <div className={isOpenFilter ? marginBottom : ''}>

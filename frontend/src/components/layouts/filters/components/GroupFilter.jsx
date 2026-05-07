@@ -7,7 +7,7 @@ import { useDashboardStateGlobals } from '../../../../context/DashboardFilterCon
 const GroupFilter = ({ title, components = [] }) => {
 
   const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
-  const [isOpenFilter, setIsOpenFilter] = useState(true);
+  const [isOpenFilter, setIsOpenFilter] = useState(false);
 
   return (
     <div>

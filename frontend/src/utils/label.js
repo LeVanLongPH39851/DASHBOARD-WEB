@@ -141,7 +141,8 @@ export const FILTER_LABEL = {
   'products': 'Sản phẩm',
   'brands': 'Nhãn hàng',
   'campaigns': 'Chiến dịch',
-  'platforms': 'Thiết bị'
+  'platforms': 'Thiết bị',
+  'firstLevels': 'Thể loại'
 }
 
 export const VALUE_LABEL = {

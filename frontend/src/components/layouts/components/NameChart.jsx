@@ -607,7 +607,7 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
   return (
       <div className={`${opacity ? 'opacity-0 invisible' : ''} pb-6 max-lg:pb-5 max-md:pb-4 text-[16px] max-lg:text-sm max-md:text-xs font-semibold text-color-black-100 dark:text-color-white-90 transition-all duration-300 flex justify-between items-center ${!display ? 'absolute top-0 left-0 w-full p-6 max-lg:p-5 max-md:p-4' : ''}`}>
         <div className='flex items-center gap-2 max-lg:gap-1.5 max-md:gap-1 text-nowrap'>
-          {icon && <div className={`w-8 h-8 max-lg:w-7.5 max-lg:h-7.5 max-md:w-7 max-md:h-7 max-md:hidden flex justify-center items-center rounded-lg ${backgound} transition-all duration-300`}><figure><img src={icon} className={`${width+' '+height+' '+backgound}`} /></figure></div>}
+          {icon && <div className={`w-8 h-8 max-lg:w-7.5 max-lg:h-7.5 max-md:w-7 max-md:h-7 max-md:hidden flex justify-center items-center rounded-lg ${backgound} transition-all duration-300`}><figure><img src={icon} className={`${width+' '+height}`} /></figure></div>}
           <span>{nameChart}</span>
           {description && <IconInfor description={description} />}
         </div>

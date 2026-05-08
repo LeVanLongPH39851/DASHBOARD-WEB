@@ -36,12 +36,16 @@ const CheckboxMultiFilter = ({
   );
 
   const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
-  const [isOpenFilter, setIsOpenFilter] = useState(false);
+  const openFilter = sessionStorage.getItem('open_filters') ? JSON.parse(sessionStorage.getItem('open_filters')).includes(label) : false;
+  const [isOpenFilter, setIsOpenFilter] = useState(openFilter);
 
   return (
     <div className={isOpenFilter ? marginBottom : ''}>
       {/* Label */}
-      <div  onClick={() => setIsOpenFilter(prev => !prev)} className={`flex cursor-pointer group justify-between items-center h-10.5 max-lg:h-9 max-md:h-8 ${isOpenFilter ? 'mb-1' : ''}`}>
+      <div onClick={() => {setIsOpenFilter(prev => !prev);
+                          const sessionOpen = isOpenFilter ? JSON.stringify([...(JSON.parse(sessionStorage.getItem('open_filters') || '[]')).filter(item => item !== label)]) : JSON.stringify([...(JSON.parse(sessionStorage.getItem('open_filters') || '[]')), label]);
+                          sessionStorage.setItem('open_filters', sessionOpen);}}
+        className={`flex cursor-pointer group justify-between items-center h-10.5 max-lg:h-9 max-md:h-8 ${isOpenFilter ? 'mb-1' : ''}`}>
         <label className='cursor-pointer text-[16px] max-lg:text-sm max-md:text-xs text-background-black-child-tab dark:text-color-white-90 transition-all duration-300 font-medium'>{label}</label>
         <figure className={`cursor-pointer transition-all duration-300 ${isOpenFilter ? '' : 'rotate-180'}`}><img src={!stateGlobals.darkMode ? iconArrowUpGray : iconArrowUpGrayDark} className='w-2.75 max-lg:w-2.5 max-md:w-2' alt="Icon Arrow Up Gray" /></figure>
       </div>

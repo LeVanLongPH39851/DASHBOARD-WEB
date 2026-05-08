@@ -2,14 +2,14 @@ export const filterProductPayload = {
   url: `${import.meta.env.VITE_API_DOMAIN}/api/v1/chart/data`,
   payload: {
     "datasource": {
-      "id": 195,
+      "id": 223,
       "type": "table"
     },
     "force": false,
     "queries": [
       {
         "time_range": "DATEADD(DATETIME(\"today\"),-2, DAY) : DATEADD(DATETIME(\"today\"),-1, SECOND)",
-        "granularity": "date",
+        "granularity": null,
         "filters": [
           {
             "col": "product",
@@ -36,7 +36,7 @@ export const filterProductPayload = {
         "series_limit": 0,
         "order_desc": true,
         "url_params": {
-          "native_filters_key": "lItp2UHHv9WwzsHwV2xHwArdIlQehCU5yY2wbhqSKZlcG87G5ygnMiCYfQR1Dqyw"
+          "native_filters_key": "6-5sccYi8MUrXCVp1bHFRKAFgIM7SUHukXMssa2PAx0TjL7H3sDeXpCJAxxWlgTx"
         },
         "custom_params": {},
         "custom_form_data": {}
@@ -48,7 +48,7 @@ export const filterProductPayload = {
       "multiSelect": true,
       "searchAllOptions": false,
       "inverseSelection": false,
-      "datasource": "195__table",
+      "datasource": "223__table",
       "groupby": [
         "product"
       ],
@@ -71,7 +71,7 @@ export const filterProductPayload = {
       "extra_form_data": {
         "time_range": "DATEADD(DATETIME(\"today\"),-2, DAY) : DATEADD(DATETIME(\"today\"),-1, SECOND)"
       },
-      "granularity_sqla": "date",
+      "granularity_sqla": null,
       "metrics": [
         "count"
       ],
@@ -79,12 +79,12 @@ export const filterProductPayload = {
       "showSearch": true,
       "time_range": "No filter",
       "url_params": {
-        "native_filters_key": "lItp2UHHv9WwzsHwV2xHwArdIlQehCU5yY2wbhqSKZlcG87G5ygnMiCYfQR1Dqyw"
+        "native_filters_key": "6-5sccYi8MUrXCVp1bHFRKAFgIM7SUHukXMssa2PAx0TjL7H3sDeXpCJAxxWlgTx"
       },
       "inView": true,
       "viz_type": "filter_select",
       "type": "NATIVE_FILTER",
-      "dashboardId": 49,
+      "dashboardId": 52,
       "native_filter_id": "NATIVE_FILTER-7DXSrwapidPL3W-lT_CNe",
       "force": false,
       "result_format": "json",

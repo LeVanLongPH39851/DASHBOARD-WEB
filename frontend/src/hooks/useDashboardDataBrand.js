@@ -5,13 +5,6 @@ const HOOKS = [
   // ===== ADCODE =====
     { hook: useCallApi.useAdcodeTableChartProgramReturnApi, dataKey: 'adcodeProgramData' },
 
-    // ===== ALL TABLE =====
-    { hook: useCallApi.useAllTableChartBrandReturnApi, dataKey: 'allTableBrandData' },
-    { hook: useCallApi.useAllTableChartCampaignReturnApi, dataKey: 'allTableCampaignData' },
-    { hook: useCallApi.useAllTableChartDeviceReturnApi, dataKey: 'allTableDeviceData' },
-    { hook: useCallApi.useAllTableChartPlatformReturnApi, dataKey: 'allTablePlatformData' },
-    { hook: useCallApi.useAllTableChartTopProgramReturnApi, dataKey: 'allTableTopProgramData' },
-
     // ===== GRP =====
     { hook: useCallApi.useGrpBarChartBrandReturnApi, dataKey: 'grpBarBrandData' },
 
@@ -45,7 +38,16 @@ const HOOKS = [
     { hook: useCallApi.useFrequencyNumberChartReturnApi, dataKey: 'frequencyNumberData' },
     { hook: useCallApi.useReachNumberChartReturnApi, dataKey: 'reachNumberData' },
     { hook: useCallApi.useSpendVNDNumberChartReturnApi, dataKey: 'spendVNDNumberData' },
+
+    // ===== ALL TABLE =====
+    { hook: useCallApi.useAllTableChartBrandReturnApi, dataKey: 'allTableBrandData' },
+    { hook: useCallApi.useAllTableChartCampaignReturnApi, dataKey: 'allTableCampaignData' },
+    { hook: useCallApi.useAllTableChartDeviceReturnApi, dataKey: 'allTableDeviceData' },
+    { hook: useCallApi.useAllTableChartPlatformReturnApi, dataKey: 'allTablePlatformData' },
+    { hook: useCallApi.useAllTableChartTopProgramReturnApi, dataKey: 'allTableTopProgramData' },
     { hook: useCallApi.useAllTableChartMonitoringReturnApi, dataKey: 'allTableMonitoringData' },
+    
+    { hook: useCallApi.useMaxInsertReturnApi, dataKey: 'maxInsertData' },
 
     { hook: useCallApi.useFilterProvinceReturnApi, dataKey: 'filterProvinceData' },
     { hook: useCallApi.useFilterProgramReturnApi, dataKey: 'filterProgramData' },

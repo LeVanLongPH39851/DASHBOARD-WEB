@@ -77,7 +77,7 @@ const DashboardContent = () => {
                           {id: 'overview', label: 'Tổng quan', icon: !stateGlobals.darkMode ? iconOverview : iconOverviewDark, iconActive: iconOverviewActive,
                             content: (
                               <section className='bg-background-dashboard dark:bg-background-dashboard-dark transiton-all duration-300' id="target_capture_overview">
-                                <InforTab inforTab={"Tổng quan - P4+ toàn quốc"} />
+                                <InforTab inforTab={"Tổng quan - P4+ toàn quốc"} maxInsert={dashboard?.maxInsertData?.data?.[0]?.['MAX(check_time)']} />
                                 <InforFilter filters={scopeFilterData} />
                                 <div className='px-6 max-lg:px-5 max-md:px-4 pt-6 max-lg:pt-5 max-md:pt-4'>
                                   <div className='w-full grid grid-cols-2 max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4'>
@@ -99,7 +99,7 @@ const DashboardContent = () => {
                                   </div>
                                   <div className='w-full flex gap-6 max-lg:gap-5 max-md:gap-4 max-md:flex-wrap pb-6 max-lg:pb-5 max-md:pb-4'>
                                     <div className='w-[60%] max-md:w-full'>
-                                      <div className={`p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
+                                      <div className={`p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
                                         <NameChart nameChart={CUSTOM_CHART.barChart.barChartChannelEvent.ratingNameChart} description={METRICS.rating.description} opacity={true} />
                                         <ChildTabs tabs={[
                                           {id: CUSTOM_TAB.childTabRatingReach.rating.id, label: CUSTOM_TAB.childTabRatingReach.rating.label,
@@ -115,6 +115,9 @@ const DashboardContent = () => {
                                               description={CUSTOM_CHART.barChart.barChartChannelEvent.description}
                                               orientation={CUSTOM_CHART.barChart.barChartChannelEvent.orientation}
                                               displayName={false}
+                                              crossFilter='events'
+                                              keyChart='barChannelEventData'
+                                              stack={true}
                                             />
                                           )},
                                           {id: CUSTOM_TAB.childTabRatingReach.ave_reach.id, label: CUSTOM_TAB.childTabRatingReach.ave_reach.label,
@@ -130,13 +133,16 @@ const DashboardContent = () => {
                                                 description={CUSTOM_CHART.barChart.barChartChannelEvent.description}
                                                 orientation={CUSTOM_CHART.barChart.barChartChannelEvent.orientation}
                                                 displayName={false}
+                                                crossFilter='events'
+                                                keyChart='barChannelEventData'
+                                                stack={true}
                                               />
                                             )}
                                           ]} />
                                       </div>
                                     </div>
                                     <div className='w-[40%] max-md:w-full'>
-                                      <div className={`p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
+                                      <div className={`p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
                                         <NameChart nameChart={CUSTOM_CHART.barChart.barChartChannelEvent.ratingNameChart} description={METRICS.rating.description} opacity={true} />
                                         <ChildTabs tabs={[
                                           {id: CUSTOM_TAB.childTabRatingReach.rating.id, label: CUSTOM_TAB.childTabRatingReach.rating.label,
@@ -152,6 +158,9 @@ const DashboardContent = () => {
                                               description={CUSTOM_CHART.barChart.barChartDayEvent.description}
                                               orientation={CUSTOM_CHART.barChart.barChartDayEvent.orientation}
                                               displayName={false}
+                                              crossFilter='events'
+                                              keyChart='barDayEventData'
+                                              stack={true}
                                             />
                                           )},
                                           {id: CUSTOM_TAB.childTabRatingReach.ave_reach.id, label: CUSTOM_TAB.childTabRatingReach.ave_reach.label,
@@ -167,6 +176,9 @@ const DashboardContent = () => {
                                                 description={CUSTOM_CHART.barChart.barChartDayEvent.description}
                                                 orientation={CUSTOM_CHART.barChart.barChartDayEvent.orientation}
                                                 displayName={false}
+                                                crossFilter='events'
+                                                keyChart='barDayEventData'
+                                                stack={true}
                                               />
                                             )}
                                           ]} />
@@ -175,7 +187,7 @@ const DashboardContent = () => {
                                   </div>
                                   <div className='w-full flex gap-6 max-lg:gap-5 max-md:gap-4 max-md:flex-wrap pb-6 max-lg:pb-5 max-md:pb-4'>
                                     <div className='w-[60%] max-md:w-full'>
-                                      <div className={`p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
+                                      <div className={`p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
                                         <NameChart nameChart={CUSTOM_CHART.tableChart.tableChartChannel.name} description={CUSTOM_CHART.tableChart.tableChartChannel.description} opacity={true} />
                                         <ChildTabs tabs={[
                                           {id: CUSTOM_TAB.childTabChannel.channel.id, label: CUSTOM_TAB.childTabChannel.channel.label,
@@ -190,7 +202,9 @@ const DashboardContent = () => {
                                                   showSTT={CUSTOM_CHART.tableChart.tableChartChannel.STT}
                                                   showPagination={CUSTOM_CHART.tableChart.tableChartChannel.pagination}
                                                   displayName={false}
-                                                  customCol={CUSTOM_CHART.tableChart.tableChartChannel.customColChannel} />
+                                                  customCol={CUSTOM_CHART.tableChart.tableChartChannel.customColChannel}
+                                                  crossFilter={true}
+                                                  keyChart={'allTableChannelData'} />
                                           )},
                                           {id: CUSTOM_TAB.childTabChannel.event.id, label: CUSTOM_TAB.childTabChannel.event.label,
                                             content: (
@@ -204,13 +218,15 @@ const DashboardContent = () => {
                                                   showSTT={CUSTOM_CHART.tableChart.tableChartChannel.STT}
                                                   showPagination={CUSTOM_CHART.tableChart.tableChartChannel.pagination}
                                                   displayName={false}
-                                                  customCol={CUSTOM_CHART.tableChart.tableChartChannel.customColChannelEvent} />
+                                                  customCol={CUSTOM_CHART.tableChart.tableChartChannel.customColChannelEvent}
+                                                  crossFilter={true}
+                                                  keyChart={'allTableChannelData'} />
                                             )}
                                           ]} />
                                       </div>
                                     </div>
                                     <div className='w-[40%] max-md:w-full'>
-                                      <div className={`p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
+                                      <div className={`p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
                                         <NameChart nameChart={CUSTOM_CHART.tableChart.tableChartArea.name} description={CUSTOM_CHART.tableChart.tableChartArea.description} opacity={true} />
                                         <ChildTabs tabs={[
                                           {id: CUSTOM_TAB.childTabArea.regional.id, label: CUSTOM_TAB.childTabArea.regional.label,
@@ -224,7 +240,10 @@ const DashboardContent = () => {
                                                   description={CUSTOM_CHART.tableChart.tableChartArea.description}
                                                   showSTT={CUSTOM_CHART.tableChart.tableChartArea.STT}
                                                   showPagination={CUSTOM_CHART.tableChart.tableChartArea.pagination}
-                                                  displayName={false} />
+                                                  displayName={false}
+                                                  customCol={CUSTOM_CHART.tableChart.tableChartArea.customColRegional}
+                                                  crossFilter={true}
+                                                  keyChart={'ratingReachPercentTableRegionalData'} />
                                           )},
                                           {id: CUSTOM_TAB.childTabArea.province.id, label: CUSTOM_TAB.childTabArea.province.label,
                                             content: (
@@ -237,14 +256,17 @@ const DashboardContent = () => {
                                                   description={CUSTOM_CHART.tableChart.tableChartArea.description}
                                                   showSTT={CUSTOM_CHART.tableChart.tableChartArea.STT}
                                                   showPagination={CUSTOM_CHART.tableChart.tableChartArea.pagination}
-                                                  displayName={false} />
+                                                  displayName={false}
+                                                  customCol={CUSTOM_CHART.tableChart.tableChartArea.customColProvince}
+                                                  crossFilter={true}
+                                                  keyChart={'ratingReachPercentTableProvinceData'} />
                                             )}
                                         ]}/>
                                       </div>
                                     </div>
                                   </div>
                                   <div className='w-full grid grid-cols-2 max-md:flex-wrap max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4'>
-                                      <div className={`p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
+                                      <div className={`p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
                                         <NameChart nameChart={CUSTOM_CHART.barChart.barChartArea.rating.name} description={METRICS.rating.description} opacity={true} />
                                         <ChildTabs tabs={[
                                           {id: CUSTOM_TAB.childTabArea.regional.id, label: CUSTOM_TAB.childTabArea.regional.label,
@@ -261,6 +283,8 @@ const DashboardContent = () => {
                                               orientation={CUSTOM_CHART.barChart.barChartArea.orientation}
                                               displayName={false}
                                               colorZoom={CUSTOM_CHART.barChart.barChartArea.rating.colorZoom}
+                                              crossFilter='regionals'
+                                              keyChart='ratingBarRegionalData'
                                             />
                                           )},
                                           {id: CUSTOM_TAB.childTabArea.key_city.id, label: CUSTOM_TAB.childTabArea.key_city.label,
@@ -277,6 +301,8 @@ const DashboardContent = () => {
                                               orientation={CUSTOM_CHART.barChart.barChartArea.orientation}
                                               displayName={false}
                                               colorZoom={CUSTOM_CHART.barChart.barChartArea.rating.colorZoom}
+                                              crossFilter='keyCities'
+                                              keyChart='ratingBarKeyCityData'
                                             />
                                           )},
                                           {id: CUSTOM_TAB.childTabArea.province.id, label: CUSTOM_TAB.childTabArea.province.label,
@@ -293,6 +319,8 @@ const DashboardContent = () => {
                                               orientation={CUSTOM_CHART.barChart.barChartArea.orientation}
                                               displayName={false}
                                               colorZoom={CUSTOM_CHART.barChart.barChartArea.rating.colorZoom}
+                                              crossFilter='provinces'
+                                              keyChart='ratingBarProvinceData'
                                             />
                                           )},
                                           {id: CUSTOM_TAB.childTabArea.others.id, label: CUSTOM_TAB.childTabArea.others.label,
@@ -313,7 +341,7 @@ const DashboardContent = () => {
                                           )}
                                           ]} />
                                       </div>
-                                      <div className={`p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
+                                      <div className={`p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
                                         <NameChart nameChart={CUSTOM_CHART.barChart.barChartArea.aveReach.name} description={METRICS.ave_reach.description} opacity={true} />
                                         <ChildTabs tabs={[
                                           {id: CUSTOM_TAB.childTabArea.regional.id, label: CUSTOM_TAB.childTabArea.regional.label,
@@ -330,6 +358,8 @@ const DashboardContent = () => {
                                               orientation={CUSTOM_CHART.barChart.barChartArea.orientation}
                                               displayName={false}
                                               colorZoom={CUSTOM_CHART.barChart.barChartArea.aveReach.colorZoom}
+                                              crossFilter='regionals'
+                                              keyChart='aveReachBarRegionalData'
                                             />
                                           )},
                                           {id: CUSTOM_TAB.childTabArea.key_city.id, label: CUSTOM_TAB.childTabArea.key_city.label,
@@ -346,6 +376,8 @@ const DashboardContent = () => {
                                               orientation={CUSTOM_CHART.barChart.barChartArea.orientation}
                                               displayName={false}
                                               colorZoom={CUSTOM_CHART.barChart.barChartArea.aveReach.colorZoom}
+                                              crossFilter='keyCities'
+                                              keyChart='aveReachBarKeyCityData'
                                             />
                                           )},
                                           {id: CUSTOM_TAB.childTabArea.province.id, label: CUSTOM_TAB.childTabArea.province.label,
@@ -362,6 +394,8 @@ const DashboardContent = () => {
                                               orientation={CUSTOM_CHART.barChart.barChartArea.orientation}
                                               displayName={false}
                                               colorZoom={CUSTOM_CHART.barChart.barChartArea.aveReach.colorZoom}
+                                              crossFilter='provinces'
+                                              keyChart='aveReachBarProvinceData'
                                             />
                                           )},
                                           {id: CUSTOM_TAB.childTabArea.others.id, label: CUSTOM_TAB.childTabArea.others.label,
@@ -409,7 +443,7 @@ const DashboardContent = () => {
                           {id: 'channel', label: 'Kênh', icon: !stateGlobals.darkMode ? iconChannel : iconChannelDark, iconActive: iconChannelActive,
                             content: (
                               <section className='bg-background-dashboard dark:bg-background-dashboard-dark transiton-all duration-300' id="target_capture_channel">
-                                <InforTab inforTab={"Kênh - P4+ toàn quốc"} />
+                                <InforTab inforTab={"Kênh - P4+ toàn quốc"} maxInsert={dashboard?.maxInsertData?.data?.[0]?.['MAX(check_time)']} />
                                 <InforFilter filters={scopeFilterData} />
                                 <div className='px-6 max-lg:px-5 max-md:px-4 py-6 max-lg:py-5 max-md:py-4'>
                                   <div className='px-6 max-lg:px-5 max-md:px-0 pt-4 max-lg:pt-3 max-md:pt-0 bg-background-black-4 max-md:bg-background-dashboard dark:bg-background-dark max-md:dark:bg-background-dashboard-dark rounded-2xl'>
@@ -451,6 +485,8 @@ const DashboardContent = () => {
                                                         stack={CUSTOM_CHART.lineChart.stack}
                                                         showTopNSeries={CUSTOM_CHART.lineChart.lineChartPercentTimebandChannel.showTopNSeries}
                                                         xAxisTitle={CUSTOM_CHART.lineChart.xAxisTitle}
+                                                        crossFilter={'channels'}
+                                                        keyChart={'ratingPercentLineTimebandChannelData'}
                                               />
                                             </div>
                                             <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
@@ -468,6 +504,8 @@ const DashboardContent = () => {
                                                         areaStyle={CUSTOM_CHART.lineChart.areaStyle}
                                                         stack={CUSTOM_CHART.lineChart.stack}
                                                         showTopNSeries={CUSTOM_CHART.lineChart.showTopNSeries}
+                                                        crossFilter={'channels'}
+                                                        keyChart={'aveReachPercentLineDateChannelData'}
                                               />
                                             </div>
                                             <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
@@ -485,6 +523,8 @@ const DashboardContent = () => {
                                                         areaStyle={CUSTOM_CHART.lineChart.areaStyle}
                                                         stack={CUSTOM_CHART.lineChart.stack}
                                                         showTopNSeries={CUSTOM_CHART.lineChart.showTopNSeries}
+                                                        crossFilter={'channels'}
+                                                        keyChart={'ratingPercentLineDateChannelData'}
                                               />
                                             </div>
                                             <div className='w-full pb-6 max-lg:pb-5 max-md:pb-0'>
@@ -496,6 +536,8 @@ const DashboardContent = () => {
                                                             nameChart={CUSTOM_CHART.treeMapChart.treeMapChartPercentChannel.name}
                                                             description={CUSTOM_CHART.treeMapChart.treeMapChartPercentChannel.description}
                                                             colors={CUSTOM_CHART.treeMapChart.colorChannel}
+                                                            crossFilter={'channels'}
+                                                            keyChart={'aveReachPercentTreemapChannelData'}
                                               />
                                             </div>
                                           </>
@@ -539,6 +581,8 @@ const DashboardContent = () => {
                                                         stack={CUSTOM_CHART.lineChart.stack}
                                                         showTopNSeries={CUSTOM_CHART.lineChart.lineChartTimebandChannel.showTopNSeries}
                                                         xAxisTitle={CUSTOM_CHART.lineChart.xAxisTitle}
+                                                        crossFilter={'channels'}
+                                                        keyChart={'ratingLineTimebandChannelData'}
                                               />
                                             </div>
                                             <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
@@ -557,6 +601,8 @@ const DashboardContent = () => {
                                                         stack={CUSTOM_CHART.lineChart.stack}
                                                         showTopNSeries={CUSTOM_CHART.lineChart.lineChartTimebandChannel.showTopNSeries}
                                                         xAxisTitle={CUSTOM_CHART.lineChart.xAxisTitle}
+                                                        crossFilter={'channels'}
+                                                        keyChart={'aveReachLineTimebandChannelData'}
                                               />
                                             </div>
                                             <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
@@ -574,6 +620,8 @@ const DashboardContent = () => {
                                                         areaStyle={CUSTOM_CHART.lineChart.areaStyle}
                                                         stack={CUSTOM_CHART.lineChart.stack}
                                                         showTopNSeries={CUSTOM_CHART.lineChart.showTopNSeries}
+                                                        crossFilter={'channels'}
+                                                        keyChart={'ratingLineDateChannelData'}
                                               />
                                             </div>
                                             <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
@@ -591,6 +639,8 @@ const DashboardContent = () => {
                                                         areaStyle={CUSTOM_CHART.lineChart.areaStyle}
                                                         stack={CUSTOM_CHART.lineChart.stack}
                                                         showTopNSeries={CUSTOM_CHART.lineChart.showTopNSeries}
+                                                        crossFilter={'channels'}
+                                                        keyChart={'aveReachLineDateChannelData'}
                                               />
                                             </div>
                                             <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
@@ -648,6 +698,8 @@ const DashboardContent = () => {
                                                         showTopNSeries={CUSTOM_CHART.lineChart.lineChartTimebandRegional.showTopNSeries}
                                                         left={CUSTOM_CHART.lineChart.lineChartTimebandRegional.left}
                                                         xAxisTitle={CUSTOM_CHART.lineChart.xAxisTitle}
+                                                        crossFilter={'regionals'}
+                                                        keyChart={'aveReachLineTimebandRegionalData'}
                                               />
                                             </div>
                                             <div className='w-full pb-6 max-lg:pb-5 max-md:pb-0'>
@@ -659,6 +711,8 @@ const DashboardContent = () => {
                                                             nameChart={CUSTOM_CHART.treeMapChart.treeMapChartChannel.name}
                                                             description={CUSTOM_CHART.treeMapChart.treeMapChartChannel.description}
                                                             colors={CUSTOM_CHART.treeMapChart.colorChannel}
+                                                            crossFilter={'channels'}
+                                                            keyChart={'ratingTreemapChannelData'}
                                               />
                                             </div>
                                           </>
@@ -676,7 +730,7 @@ const DashboardContent = () => {
                           {id: 'program', label: 'Chương trình', icon: !stateGlobals.darkMode ? iconProgram : iconProgramDark, iconActive: iconProgramActive,
                             content: (
                               <section className='bg-background-dashboard dark:bg-background-dashboard-dark transiton-all duration-300' id="target_capture_program">
-                                <InforTab inforTab={"Chương trình - P4+ toàn quốc"} />
+                                <InforTab inforTab={"Chương trình - P4+ toàn quốc"} maxInsert={dashboard?.maxInsertData?.data?.[0]?.['MAX(check_time)']} />
                                 <InforFilter filters={scopeFilterData} />
                                 <div className='px-6 max-lg:px-5 max-md:px-4'>
                                   <div className='w-full grid grid-cols-2 max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4 py-6 max-lg:py-5 max-md:py-4'>
@@ -690,6 +744,8 @@ const DashboardContent = () => {
                                               colors={CUSTOM_CHART.pieChart.colorFirstLevel}
                                               donut={CUSTOM_CHART.pieChart.donut}
                                               innerRadius={CUSTOM_CHART.pieChart.innerRadius}
+                                              crossFilter='firstLevels'
+                                              keyChart='totalEventDurationPieFirstLevelData'
                                     />
                                     <PieChart data={!dashboard.isLoading.totalViewDurationPieFirstLevelData ? transformPieChartData(dashboard.totalViewDurationPieFirstLevelData?.data, dashboard.totalViewDurationPieFirstLevelData?.colnames) : 'isLoading'}
                                               height={CUSTOM_CHART.pieChart.height}
@@ -701,6 +757,8 @@ const DashboardContent = () => {
                                               colors={CUSTOM_CHART.pieChart.colorFirstLevel}
                                               donut={CUSTOM_CHART.pieChart.donut}
                                               innerRadius={CUSTOM_CHART.pieChart.innerRadius}
+                                              crossFilter='firstLevels'
+                                              keyChart='totalViewDurationPieFirstLevelData'
                                     />
                                   </div>
                                   <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
@@ -714,7 +772,9 @@ const DashboardContent = () => {
                                                 showSTT={CUSTOM_CHART.tableChart.tableProgramChannel.STT}
                                                 showPagination={CUSTOM_CHART.tableChart.tableProgramChannel.pagination}
                                                 fullScreen={true}
-                                                customCol={CUSTOM_CHART.tableChart.tableProgramChannel.customCol} />
+                                                customCol={CUSTOM_CHART.tableChart.tableProgramChannel.customCol}
+                                                crossFilter={true}
+                                                keyChart={'allTableRankData'} />
                                   </div>
                                   <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
                                     <TableChart data={!dashboard.isLoading.allTableDetailData ? transformTableChartData(dashboard.allTableDetailData?.data, dashboard.allTableDetailData?.colnames, CUSTOM_CHART.tableChart.tableProgramChannel.programDetail.columnSort) : 'isLoading'}
@@ -727,7 +787,9 @@ const DashboardContent = () => {
                                                 showSTT={CUSTOM_CHART.tableChart.tableProgramChannel.STT}
                                                 showPagination={CUSTOM_CHART.tableChart.tableProgramChannel.pagination}
                                                 fullScreen={true}
-                                                customCol={CUSTOM_CHART.tableChart.tableProgramChannel.programDetail.customCol} />
+                                                customCol={CUSTOM_CHART.tableChart.tableProgramChannel.programDetail.customCol}
+                                                crossFilter={true}
+                                                keyChart={'allTableDetailData'} />
                                   </div>
                                   <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
                                     <TableChart data={!dashboard.isLoading.allTableEventData ? transformTableChartData(dashboard.allTableEventData?.data, dashboard.allTableEventData?.colnames, CUSTOM_CHART.tableChart.tableProgramChannel.programEvent.columnSort) : 'isLoading'}
@@ -740,7 +802,9 @@ const DashboardContent = () => {
                                                 showSTT={CUSTOM_CHART.tableChart.tableProgramChannel.STT}
                                                 showPagination={CUSTOM_CHART.tableChart.tableProgramChannel.pagination}
                                                 fullScreen={true}
-                                                customCol={CUSTOM_CHART.tableChart.tableProgramChannel.customCol} />
+                                                customCol={CUSTOM_CHART.tableChart.tableProgramChannel.customCol}
+                                                crossFilter={true}
+                                                keyChart={'allTableEventData'} />
                                   </div>
                                 </div>
                                 <div className='px-6 max-lg:px-5 max-md:px-4 pb-6 max-lg:pb-5 max-md:pb-19 bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300'>
@@ -752,7 +816,7 @@ const DashboardContent = () => {
                           ((!userLoading && user?.username !== 'vtvguest') ? {id: 'rating_by_minute', label: !stateGlobals.screen_md ? 'Rating theo phút' : 'Rating phút', icon: !stateGlobals.darkMode ? iconRatingByMinute : iconRatingByMinuteDark, iconActive: iconRatingByMinuteActive,
                             content: (
                               <section className='bg-background-dashboard dark:bg-background-dashboard-dark transiton-all duration-300' id="target_capture_rating_by_minute">
-                                <InforTab inforTab={"Rating theo phút - P4+ toàn quốc"} />
+                                <InforTab inforTab={"Rating theo phút - P4+ toàn quốc"} maxInsert={dashboard?.maxInsertData?.data?.[0]?.['MAX(check_time)']} />
                                 <InforFilter filters={scopeFilterData} />
                                 <div className='px-6 max-lg:px-5 max-md:px-4'>
                                   <div className='w-full py-6 max-lg:py-5 max-md:pb-4'>
@@ -773,6 +837,8 @@ const DashboardContent = () => {
                                               legendTop={CUSTOM_CHART.lineChart.lineChartMinuteChannel.legendTop}
                                               xAxisTitle={CUSTOM_CHART.lineChart.xAxisTitleMinute}
                                               fullScreen={true}
+                                              crossFilter={'channels'}
+                                              keyChart={'ratingLineMinuteChannelData'}
                                     />
                                   </div>
                                   <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
@@ -794,6 +860,8 @@ const DashboardContent = () => {
                                               xAxisTitle={CUSTOM_CHART.lineChart.xAxisTitleMinute}
                                               fullScreen={true}
                                               textOverflow={true}
+                                              crossFilter={'programs'}
+                                              keyChart={'ratingLineMinuteChannelOneDateData'}
                                     />
                                   </div>
                                   <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>

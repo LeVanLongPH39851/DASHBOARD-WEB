@@ -206,6 +206,9 @@ export const getAllTableChartDevice = (appliedFilters) =>
 export const getAllTableChartMonitoring = (appliedFilters) =>
   postChart(payloads.allTableChartMonitoringPayload, appliedFilters, ['provinceFilters', 'regionalFilters', 'keyCityFilters']);
 
+export const getMaxInsert = () =>
+  axiosClient.post(apiRoute, payloads.maxInsertPayload)
+
 export const getFilterProvince = () =>
   axiosClient.post(apiRoute, payloads.filterProvincePayload)
 

@@ -82,6 +82,8 @@ const HOOKS = [
   { hook: useCallApi.useAllTableChartDeviceReturnApi, dataKey: 'allTableDeviceData' },
   { hook: useCallApi.useAllTableChartMonitoringReturnApi, dataKey: 'allTableMonitoringData' },
 
+  { hook: useCallApi.useMaxInsertReturnApi, dataKey: 'maxInsertData' },
+  
   { hook: useCallApi.useFilterProvinceReturnApi, dataKey: 'filterProvinceData' },
   { hook: useCallApi.useFilterProgramReturnApi, dataKey: 'filterProgramData' },
   { hook: useCallApi.useFilterProductReturnApi, dataKey: 'filterProductData' },

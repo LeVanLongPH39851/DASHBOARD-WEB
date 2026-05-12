@@ -2,7 +2,7 @@ import React, { memo, useRef, useCallback } from 'react';
 import ReactECharts from 'echarts-for-react';
 import NameChart from '../layouts/components/NameChart';
 import Loading from '../commons/Loading';
-import { useDashboardStateGlobals } from '../../context/DashboardFilterContext';
+import { useDashboardFilters, useDashboardStateGlobals, useDashboardCrossFilters } from '../../context/DashboardFilterContext';
 import { formatKMB } from '../../utils/formatNumber';
 import NoData from '../commons/NoData';
 import { LABEL_METRIC } from '../../utils/label';
@@ -28,21 +28,26 @@ const BarChart = ({
   overflow=false,
   formatterValue = 0,
   heightPlus=0,
-  showPercent = false
+  showPercent = false,
+  crossFilter = false,
+  keyChart = false,
+  stack = false
 }) => {
   
   const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
+  const { appliedFilters, setAppliedFilters } = useDashboardFilters();
+  const { crossFilters, setCrossFilters } = useDashboardCrossFilters();
   
   if(data==='isLoading') {
     return (
-      <div className={`${displayName ? 'p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : ''}`}>
+      <div className={`${displayName ? 'p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : ''}`}>
         <NameChart nameChart={nameChart} description={description} display={displayName} />
         <Loading height={ (!stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : 300 : 220) + heightPlus } />
       </div>
     );
   } else if (!data) {
     return (
-      <div className={`${displayName ? 'p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : ''}`}>
+      <div className={`${displayName ? 'p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : ''}`}>
         <NameChart nameChart={nameChart} description={description} display={displayName} />
         <NoData height={ (!stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : 300 : 220) + heightPlus } />
       </div>
@@ -222,6 +227,75 @@ const BarChart = ({
     return { first, last };
   };
 
+  const [activeBar, setActiveBar] = React.useState('');
+  const [inActiveBar, setInActiveBar] = React.useState(false);
+  const [click, setClick] = React.useState(false);
+  
+  const onEvents = {
+    click: (params) => {
+      if (params.componentType === 'series' && crossFilter) {
+        if (stack) {
+          var crossFilterValue = params.seriesName;
+        } else {
+          var crossFilterValue = params.name.replace("\n", ' ');
+        }
+        const crossFilterValues = [crossFilterValue];
+        if (appliedFilters?.[crossFilter]?.[0] !== crossFilterValues[0]) {
+          const transformed = {...appliedFilters, [crossFilter]: crossFilterValues};
+          setAppliedFilters(transformed);
+          
+          if (keyChart) {
+            if (crossFilters) {
+              setCrossFilters({
+                ...crossFilters,
+                [keyChart]: crossFilter.slice(0, -1) + 'Filters',
+                main: keyChart,
+                skipNext: null
+              });
+            } else {
+              setCrossFilters({
+                [keyChart]: crossFilter.slice(0, -1) + 'Filters',
+                main: keyChart,
+                skipNext: null
+              });
+            }
+          }
+          setClick(true);
+          setActiveBar(prev => (prev === crossFilterValue ? '' : crossFilterValue));
+          setInActiveBar(prev => (activeBar === crossFilterValue ? false : true));
+        } else if(click) {
+          setClick(false);
+          const { [crossFilter]: removed, ...rest } = appliedFilters || {};
+          setAppliedFilters(rest);
+          if (keyChart) {
+            if (crossFilters) {
+              const { [keyChart]: _, main: __, ...rest } = crossFilters;
+              setCrossFilters({...rest, skipNext: keyChart});
+            }
+          }
+          setActiveBar(prev => (prev === crossFilterValue ? '' : crossFilterValue));
+          setInActiveBar(prev => (activeBar === crossFilterValue ? false : true));
+        }
+      }
+    }
+  };
+
+  const legendData = sortedSeries.map((s) => {
+    const isActive = activeBar === s.name;
+    const isDim = inActiveBar && crossFilters?.main === keyChart;
+
+    return {
+      name: s.name,
+      icon: 'circle',
+      itemStyle: {
+        opacity: isActive ? 1 : isDim ? 0.5 : 1
+      },
+      textStyle: {
+        opacity: isActive ? 1 : isDim ? 0.5 : 1
+      }
+    };
+  });
+
 
 
   // ECHARTS OPTION
@@ -340,14 +414,15 @@ const BarChart = ({
       itemWidth: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? 14 : 12 : 10,
       itemHeight: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? 14 : 12 : 10,
       itemGap: 10,
+      data: legendData,
       textStyle: { 
         fontSize:  !stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.legend : '11px' : '10.5px',
         color: !stateGlobals.darkMode ? 'rgba(30, 27, 57, 1)' : 'rgba(255, 255, 255, 0.8)',
         fontWeight: fontWeight.legend,
         letterSpacing: '0.1px',
-        fontFamily: fontFamily
+        fontFamily: fontFamily,
       },
-      icon: 'circle',
+      icon: 'circle'
     },
 
 
@@ -458,9 +533,12 @@ const BarChart = ({
         color: getSeriesColor(s, idx)
       },
       data: s.data.map((value, dataIndex) => {
+        const activeSeries = stack ? s.name : sortedLabels[dataIndex].replace("\n", ' ');
+        
         const { first, last } = getVisibleEdgeIndexes(dataIndex);
         const numValue = Number(value || 0);
-
+        const isActive = activeBar === activeSeries;
+        
         let barBorderRadius = [0, 0, 0, 0];
 
         if (numValue > 0) {
@@ -476,7 +554,20 @@ const BarChart = ({
         return {
           value: numValue,
           itemStyle: {
-            barBorderRadius
+            barBorderRadius,
+            borderWidth: isActive ? stack ? 1 : 2 : 0,
+            borderColor: isActive ? 'rgba(255, 255, 255, 1)': 'transparent',
+            shadowBlur: isActive ? 15 : 0,
+            shadowColor: isActive ? !stateGlobals.darkMode ? 'rgba(0,0,0,0.15)' : 'rgba(255,255,255,0.2)' : 'transparent',
+            opacity: isActive ? 1 : (inActiveBar && crossFilters?.main === keyChart) ? 0.5 : 1
+          },
+          label: {
+            opacity: isActive ? 1 : (inActiveBar && crossFilters?.main === keyChart) ? 0.5 : 1
+          },
+          emphasis: {
+            label: {
+              opacity: 1
+            }
           }
         };
       }),
@@ -546,17 +637,18 @@ const BarChart = ({
         shadowColor: !stateGlobals.darkMode ? 'rgba(0, 0, 0, 0.1)' : 'rgba(0, 0, 0, 4)',
       }
     }))
-  };
+  }; 
 
 
 
 
   return (
-    <div className={`${displayName ? 'p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : ''}`}>
+    <div className={`${displayName ? 'p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : ''}`}>
       <NameChart nameChart={nameChart} description={description} display={displayName} getChartData={getEChartsData} />
       <ReactECharts 
         ref={chartRef}
-        option={option} 
+        option={option}
+        onEvents={onEvents}
         style={{ height: (!stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : 300 : 220) + heightPlus, width: '100%' }}
         opts={{
           renderer: 'canvas',

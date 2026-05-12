@@ -103,6 +103,9 @@ export const getSpendVNDNumberChart = (appliedFilters) =>
 export const getAllTableChartMonitoring = (appliedFilters) =>
   postChart(payloads.allTableChartMonitoringPayload, appliedFilters);
 
+export const getMaxInsert = () =>
+  axiosClient.post(apiRoute, payloads.maxInsertPayload)
+
 export const getFilterProvince = () =>
   axiosClient.post(apiRoute, payloads.filterProvincePayload)
 

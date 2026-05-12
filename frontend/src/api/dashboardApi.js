@@ -156,6 +156,9 @@ export const getRatingLineChartMinuteChannelOneDate = (appliedFilters) =>
 export const getRatingLineChartMinuteChannelDates = (appliedFilters) =>
   postChart(payloads.ratingLineChartMinuteChannelDatesPayload, appliedFilters, ['eventFilters', 'timebandFilters', 'firstLevelFilters', 'startTimeFilters', 'overwriteChannelFilters'])
 
+export const getMaxInsert = () =>
+  axiosClient.post(apiRoute, payloads.maxInsertPayload)
+
 export const getFilterProvince = () =>
   axiosClient.post(apiRoute, payloads.filterProvincePayload)
 

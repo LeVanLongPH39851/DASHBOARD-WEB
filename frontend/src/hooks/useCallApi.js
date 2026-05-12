@@ -1,10 +1,18 @@
 import { useApi } from './useApi';
 import * as getChart from '../api/dashboardApi';
-import { useDashboardFilters } from '../context/DashboardFilterContext';
+import { useDashboardFilters, useDashboardCrossFilters } from '../context/DashboardFilterContext';
 
-const createChartHook = (apiFn) => () => {
+const createChartHook = (apiFn, keyMain = '') => () => {
   const { appliedFilters } = useDashboardFilters();
-  return useApi(apiFn, [appliedFilters]);
+  const { crossFilters } = useDashboardCrossFilters();
+
+  const shouldSkip = crossFilters?.skipNext === keyMain || (crossFilters?.main && keyMain === crossFilters.main);
+
+  return useApi(
+    apiFn,
+    [appliedFilters, crossFilters],
+    { shouldSkip }
+  );
 };
 
 export const useRatingPercentTrendNumberReturnApi = () =>
@@ -23,49 +31,49 @@ export const useAveReachPercentNumberChartReturnApi = () =>
   createChartHook(getChart.getAveReachPercentNumberChart)()
 
 export const useRatingBarChartChannelEventReturnApi = () =>
-  createChartHook(getChart.getRatingBarChartChannelEvent)()
+  createChartHook(getChart.getRatingBarChartChannelEvent, 'barChannelEventData')()
 
 export const useAveReachBarChartChannelEventReturnApi = () =>
-  createChartHook(getChart.getAveReachBarChartChannelEvent)()
+  createChartHook(getChart.getAveReachBarChartChannelEvent, 'barChannelEventData')()
 
 export const useRatingBarChartDayEventReturnApi = () =>
-  createChartHook(getChart.getRatingBarChartDayEvent)()
+  createChartHook(getChart.getRatingBarChartDayEvent, 'barDayEventData')()
 
 export const useAveReachBarChartDayEventReturnApi = () =>
-  createChartHook(getChart.getAveReachBarChartDayEvent)()
+  createChartHook(getChart.getAveReachBarChartDayEvent, 'barDayEventData')()
 
 export const useAllTableChartChannelReturnApi = () =>
-  createChartHook(getChart.getAllTableChartChannel)()
+  createChartHook(getChart.getAllTableChartChannel, 'allTableChannelData')()
 
 export const useAllTableChartChannelEventReturnApi = () =>
-  createChartHook(getChart.getAllTableChartChannelEvent)()
+  createChartHook(getChart.getAllTableChartChannelEvent, 'allTableChannelData')()
 
 export const useRatingReachPercentTableChartRegionalReturnApi = () =>
-  createChartHook(getChart.getRatingReachPercentTableChartRegional)()
+  createChartHook(getChart.getRatingReachPercentTableChartRegional, 'ratingReachPercentTableRegionalData')()
 
 export const useRatingReachPercentTableChartProvinceReturnApi = () =>
-  createChartHook(getChart.getRatingReachPercentTableChartProvince)()
+  createChartHook(getChart.getRatingReachPercentTableChartProvince, 'ratingReachPercentTableProvinceData')()
 
 export const useRatingBarChartRegionalReturnApi = () =>
-  createChartHook(getChart.getRatingBarChartRegional)()
+  createChartHook(getChart.getRatingBarChartRegional, 'ratingBarRegionalData')()
 
 export const useRatingBarChartKeyCityReturnApi = () =>
-  createChartHook(getChart.getRatingBarChartKeyCity)()
+  createChartHook(getChart.getRatingBarChartKeyCity, 'ratingBarKeyCityData')()
 
 export const useRatingBarChartProvinceReturnApi = () =>
-  createChartHook(getChart.getRatingBarChartProvince)()
+  createChartHook(getChart.getRatingBarChartProvince, 'ratingBarProvinceData')()
 
 export const useRatingBarChartOthersReturnApi = () =>
   createChartHook(getChart.getRatingBarChartOthers)()
 
 export const useAveReachBarChartRegionalReturnApi = () =>
-  createChartHook(getChart.getAveReachBarChartRegional)()
+  createChartHook(getChart.getAveReachBarChartRegional, 'aveReachBarRegionalData')()
 
 export const useAveReachBarChartKeyCityReturnApi = () =>
-  createChartHook(getChart.getAveReachBarChartKeyCity)()
+  createChartHook(getChart.getAveReachBarChartKeyCity, 'aveReachBarKeyCityData')()
 
 export const useAveReachBarChartProvinceReturnApi = () =>
-  createChartHook(getChart.getAveReachBarChartProvince)()
+  createChartHook(getChart.getAveReachBarChartProvince, 'aveReachBarProvinceData')()
 
 export const useAveReachBarChartOthersReturnApi = () =>
   createChartHook(getChart.getAveReachBarChartOthers)()
@@ -77,31 +85,31 @@ export const useRatingReachPercentMixedChartTimebandReturnApi = () =>
   createChartHook(getChart.getRatingReachPercentMixedChartTimeband)()
 
 export const useRatingPercentLineChartTimebandChannelReturnApi = () =>
-  createChartHook(getChart.getRatingPercentLineChartTimebandChannel)()
+  createChartHook(getChart.getRatingPercentLineChartTimebandChannel, 'ratingPercentLineTimebandChannelData')()
 
 export const useAveReachPercentLineChartDateChannelReturnApi = () =>
-  createChartHook(getChart.getAveReachPercentLineChartDateChannel)()
+  createChartHook(getChart.getAveReachPercentLineChartDateChannel, 'aveReachPercentLineDateChannelData')()
 
 export const useRatingPercentLineChartDateChannelReturnApi = () =>
-  createChartHook(getChart.getRatingPercentLineChartDateChannel)()
+  createChartHook(getChart.getRatingPercentLineChartDateChannel, 'ratingPercentLineDateChannelData')()
 
 export const useAveReachPercentTreemapChartChannelReturnApi = () =>
-  createChartHook(getChart.getAveReachPercentTreemapChartChannel)()
+  createChartHook(getChart.getAveReachPercentTreemapChartChannel, 'aveReachPercentTreemapChannelData')()
 
 export const useRatingReachMixedChartTimebandReturnApi = () =>
   createChartHook(getChart.getRatingReachMixedChartTimeband)()
 
 export const useRatingLineChartTimebandChannelReturnApi = () =>
-  createChartHook(getChart.getRatingLineChartTimebandChannel)()
+  createChartHook(getChart.getRatingLineChartTimebandChannel, 'ratingLineTimebandChannelData')()
 
 export const useAveReachLineChartTimebandChannelReturnApi = () =>
-  createChartHook(getChart.getAveReachLineChartTimebandChannel)()
+  createChartHook(getChart.getAveReachLineChartTimebandChannel, 'aveReachLineTimebandChannelData')()
 
 export const useRatingLineChartDateChannelReturnApi = () =>
-  createChartHook(getChart.getRatingLineChartDateChannel)()
+  createChartHook(getChart.getRatingLineChartDateChannel, 'ratingLineDateChannelData')()
 
 export const useAveReachLineChartDateChannelReturnApi = () =>
-  createChartHook(getChart.getAveReachLineChartDateChannel)()
+  createChartHook(getChart.getAveReachLineChartDateChannel, 'aveReachLineDateChannelData')()
 
 export const useRatingLineChartTimebandDayReturnApi = () =>
   createChartHook(getChart.getRatingLineChartTimebandDay)()
@@ -110,34 +118,38 @@ export const useAveReachLineChartTimebandDayReturnApi = () =>
   createChartHook(getChart.getAveReachLineChartTimebandDay)()
 
 export const useAveReachLineChartTimebandRegionalReturnApi = () =>
-  createChartHook(getChart.getAveReachLineChartTimebandRegional)()
+  createChartHook(getChart.getAveReachLineChartTimebandRegional, 'aveReachLineTimebandRegionalData')()
 
 export const useRatingTreemapChartChannelReturnApi = () =>
-  createChartHook(getChart.getRatingTreemapChartChannel)()
+  createChartHook(getChart.getRatingTreemapChartChannel, 'ratingTreemapChannelData')()
 
 export const useTotalEventDurationPieChartFirstLevelReturnApi = () =>
-  createChartHook(getChart.getTotalEventDurationPieChartFirstLevel)()
+  createChartHook(getChart.getTotalEventDurationPieChartFirstLevel, 'totalEventDurationPieFirstLevelData')()
 
 export const useTotalViewDurationPieChartFirstLevelReturnApi = () =>
-  createChartHook(getChart.getTotalViewDurationPieChartFirstLevel)()
+  createChartHook(getChart.getTotalViewDurationPieChartFirstLevel, 'totalViewDurationPieFirstLevelData')()
 
 export const useAllTableChartRankReturnApi = () =>
-  createChartHook(getChart.getAllTableChartRank)()
+  createChartHook(getChart.getAllTableChartRank, 'allTableRankData')()
 
 export const useAllTableChartDetailReturnApi = () =>
-  createChartHook(getChart.getAllTableChartDetail)()
+  createChartHook(getChart.getAllTableChartDetail, 'allTableDetailData')()
 
 export const useAllTableChartEventReturnApi = () =>
-  createChartHook(getChart.getAllTableChartEvent)()
+  createChartHook(getChart.getAllTableChartEvent, 'allTableEventData')()
 
 export const useRatingLineChartMinuteChannelReturnApi = () =>
-  createChartHook(getChart.getRatingLineChartMinuteChannel)()
+  createChartHook(getChart.getRatingLineChartMinuteChannel, 'ratingLineMinuteChannelData')()
 
 export const useRatingLineChartMinuteChannelOneDateReturnApi = () =>
-  createChartHook(getChart.getRatingLineChartMinuteChannelOneDate)()
+  createChartHook(getChart.getRatingLineChartMinuteChannelOneDate, 'ratingLineMinuteChannelOneDateData')()
 
 export const useRatingLineChartMinuteChannelDatesReturnApi = () =>
   createChartHook(getChart.getRatingLineChartMinuteChannelDates)()
+
+export const useMaxInsertReturnApi = () => {
+  return useApi(getChart.getMaxInsert);
+};
 
 export const useFilterProvinceReturnApi = () => {
   return useApi(getChart.getFilterProvince);

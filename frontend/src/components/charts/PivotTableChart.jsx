@@ -212,7 +212,7 @@ const PivotTableChart = ({
   // ✅ Return theo điều kiện sau khi tất cả hook đã chạy xong
   if (isLoading) {
     return (
-      <div className={`${displayName ? 'p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : ''}`} style={{ fontFamily }}>
+      <div className={`${displayName ? 'p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : ''}`} style={{ fontFamily }}>
         <NameChart nameChart={nameChart} description={description} display={displayName} fullScreen={fullScreen} />
         <div className='h-13 max-lg:h-1 max-md:h-9.25'></div>
         <Loading height={!stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : '320px' : '240px'} />
@@ -222,7 +222,7 @@ const PivotTableChart = ({
 
   if (isEmptyData) {
     return (
-      <div className={`${displayName ? 'p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : ''}`} style={{ fontFamily }}>
+      <div className={`${displayName ? 'p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : ''}`} style={{ fontFamily }}>
         <NameChart nameChart={nameChart} description={description} display={displayName} fullScreen={fullScreen} />
         <div className='h-13 max-lg:h-1 max-md:h-9.25'></div>
         <NoData height={!stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : '320px' : '240px'} />
@@ -232,7 +232,7 @@ const PivotTableChart = ({
 
   // ✅ JSX table view - giữ nguyên 100%
   return (
-    <div className={`${displayName ? 'p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : ''}`} style={{ fontFamily }}>
+    <div className={`${displayName ? 'p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : ''}`} style={{ fontFamily }}>
       <NameChart nameChart={nameChart} description={description} display={displayName} getChartData={getPivotChartData} table='pivot' fullScreen={fullScreen} />
 
       <div className="flex justify-between items-center mb-3 max-lg:mb-2 max-md:mb-1 searchTable">

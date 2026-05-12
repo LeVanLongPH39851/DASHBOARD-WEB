@@ -94,6 +94,10 @@ export const useSpendVNDNumberChartReturnApi = () =>
 export const useAllTableChartMonitoringReturnApi = () =>
   createChartHook(getChart.getAllTableChartMonitoring)();
 
+export const useMaxInsertReturnApi = () => {
+  return useApi(getChart.getMaxInsert);
+};
+
 export const useFilterProvinceReturnApi = () => {
   return useApi(getChart.getFilterProvince);
 };

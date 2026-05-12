@@ -26,6 +26,7 @@ export { frequencyNumberChartPayload } from "./frequencyNumberChartPayload";
 export { reachNumberChartPayload } from "./reachNumberChartPayload";
 export { spendVNDNumberChartPayload } from "./spendVNDNumberChartPayload";
 
+export { maxInsertPayload } from './maxInsertPayload';
 export { filterProvincePayload } from './filterProvincePayload';
 export { filterProgramPayload } from './filterProgramPayload';
 export { filterProductPayload } from './filterProductPayload';

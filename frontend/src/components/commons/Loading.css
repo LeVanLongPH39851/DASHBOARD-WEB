@@ -10,7 +10,6 @@
   width: 20px;
   height: 10px;
   margin: 0 5px;
-  background-color: #20a7c9;
   border-radius: 5px;
   animation: loading-wave-animation 1s ease-in-out infinite;
 }

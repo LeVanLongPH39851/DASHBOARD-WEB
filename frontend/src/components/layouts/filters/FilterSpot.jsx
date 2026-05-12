@@ -11,7 +11,7 @@ import iconReset from '../../../assets/icon_reset.png';
 import iconResetDark from '../../../assets/icon_reset_dark.png';
 import GroupFilter from './components/GroupFilter';
 import RangeFilter from './components/RangeFilter';
-import { useDashboardFilters, useDashboardFilterValues, useDashboardStateGlobals } from '../../../context/DashboardFilterContext';
+import { useDashboardFilters, useDashboardFilterValues, useDashboardStateGlobals, useDashboardCrossFilters } from '../../../context/DashboardFilterContext';
 
 const ALL_CHANNELS = [
   { value: "VTV1", label: "VTV1" },
@@ -133,12 +133,12 @@ const FilterSpot = ({ filters, horizontalFixed=false
   const ALL_BRANDS = toOptions(filters?.filterBrand, 'brand');
   const ALL_ADVERTISERS = toOptions(filters?.filterAdvertiser, 'advertiser');
   const ALL_ADCODES = toOptions(filters?.filterAdcode, 'ads_code');
-  const FILTER_SESSION_KEY = 'dashboard_filter_spots';
-  const FILTER_SESSION_VALUE = 'filter_values_spots';
+  const FILTER_SESSION_KEY = 'dashboard_filters_spots';
 
   const { appliedFilters, setAppliedFilters} = useDashboardFilters();
   const { filterValues, setFilterValues } = useDashboardFilterValues();
   const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
+  const { crossFilters, setCrossFilters } = useDashboardCrossFilters();
 
   useEffect(() => {
     const filterId = document.getElementById('filter');
@@ -231,6 +231,8 @@ const FilterSpot = ({ filters, horizontalFixed=false
       campaigns: ALL_CAMPAIGNS
     };
 
+    sessionStorage.setItem(FILTER_SESSION_KEY, JSON.stringify(appliedFilters));
+
     const transformed = {
       ...filterValues,
       startDate: appliedFilters.startDate || getDayBeforeYesterday(),
@@ -246,7 +248,6 @@ const FilterSpot = ({ filters, horizontalFixed=false
       )
     };
     setFilterValues(transformed);
-    sessionStorage.setItem(FILTER_SESSION_VALUE, JSON.stringify(transformed));
   }, [appliedFilters]);
 
   const handleDateRangeChange = ({ startDate: s, endDate: e }) => {
@@ -317,8 +318,8 @@ const FilterSpot = ({ filters, horizontalFixed=false
   const onReset = () => {
     setAppliedFilters(null);
     setFilterValues(null);
+    setCrossFilters(null);
     sessionStorage.removeItem(FILTER_SESSION_KEY);
-    sessionStorage.removeItem(FILTER_SESSION_VALUE);
 
     if(stateGlobals.screen_md) {
       setStateGlobals(prev => ({...prev, isOpen: !prev.isOpen}))

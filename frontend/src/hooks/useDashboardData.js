@@ -46,6 +46,7 @@ const HOOKS = [
   { hook: useCallApi.useRatingLineChartMinuteChannelReturnApi, dataKey: 'ratingLineMinuteChannelData' },
   { hook: useCallApi.useRatingLineChartMinuteChannelOneDateReturnApi, dataKey: 'ratingLineMinuteChannelOneDateData' },
   { hook: useCallApi.useRatingLineChartMinuteChannelDatesReturnApi, dataKey: 'ratingLineMinuteChannelDatesData' },
+  { hook: useCallApi.useMaxInsertReturnApi, dataKey: 'maxInsertData' },
   { hook: useCallApi.useFilterProvinceReturnApi, dataKey: 'filterProvinceData' },
   { hook: useCallApi.useFilterProgramReturnApi, dataKey: 'filterProgramData' }
 ];

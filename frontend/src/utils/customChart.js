@@ -123,12 +123,11 @@ export const CUSTOM_CHART = {
         STT: false,
         pagination: false,
         customColChannel: {
-          'KÊNH': {justify: 'justify-center', align: 'text-center', minSize: 0, maxSize: 60},
-          'Live/TSV': {justify: 'justify-center', align: 'text-center'},
+          'KÊNH': {justify: 'justify-center', align: 'text-center', minSize: 0, maxSize: 60, crossFilter: 'channels'}
         },
         customColChannelEvent: {
-          'KÊNH': {justify: 'justify-center', align: 'text-center'},
-          'Live/TSV': {justify: 'justify-center', align: 'text-center'},
+          'KÊNH': {justify: 'justify-center', align: 'text-center', crossFilter: 'channels'},
+          'Live/TSV': {justify: 'justify-center', align: 'text-center', crossFilter: 'events'},
         }
     },
     tableChartArea: {
@@ -136,7 +135,13 @@ export const CUSTOM_CHART = {
         name: 'Rating (%) và Ave.Reach (%) theo thị trường',
         description: 'Tỉ lệ khán giả (không trùng lặp) trung bình mỗi ngày (Reach) và trung bình mỗi phút (Rating) tính trên dân số từ 4-80 tuổi của từng thị trường',
         STT: false,
-        pagination: false
+        pagination: false,
+        customColRegional: {
+          'VÙNG': {crossFilter: 'regionals'}
+        },
+        customColProvince: {
+          'TỈNH/TP': {crossFilter: 'provinces'}
+        }
     },
     tableProgramChannel: {
         height: '585px',
@@ -150,12 +155,10 @@ export const CUSTOM_CHART = {
           description: false,
           columnSort: ['program_name', 'description', 'NGÀY PHÁT', 'start_time', 'end_time', 'channel_name_tvd', 'rating', 'rating%', 'ave_reach', 'reach%', 'minute_user_program'],
           customCol: {
-            'CHƯƠNG TRÌNH': {weight: 600, sticky: true, minSize: 70, maxSize: 180},
-            'KÊNH': {minSize: 0, maxSize: 30, align: 'text-center', justify: 'justify-center'},
+            'CHƯƠNG TRÌNH': {weight: 600, sticky: true, minSize: 70, maxSize: 180, crossFilter: 'programs'},
+            'KÊNH': {minSize: 0, maxSize: 30, align: 'text-center', justify: 'justify-center', crossFilter: 'channels'},
             'THỜI GIAN\nBẮT ĐẦU': {align: 'text-center', justify: 'justify-center'},
-            'THỜI GIAN\nKẾT THÚC': {align: 'text-center', justify: 'justify-center'},
-            'MÔ TẢ': {minSize: 70},
-            'THỂ LOẠI': {minSize: 70}
+            'THỜI GIAN\nKẾT THÚC': {align: 'text-center', justify: 'justify-center'}
           }
         },
         programEvent: {
@@ -166,10 +169,10 @@ export const CUSTOM_CHART = {
         STT: true,
         pagination: true,
         customCol: {
-          'CHƯƠNG TRÌNH': {weight: 600, sticky: true, minSize: 70, maxSize: 180},
-          'KÊNH': {minSize: 0, maxSize: 30},
+          'CHƯƠNG TRÌNH': {weight: 600, sticky: true, minSize: 70, maxSize: 180, crossFilter: 'programs'},
+          'KÊNH': {minSize: 0, maxSize: 30, crossFilter: 'channels'},
           'MÔ TẢ': {minSize: 70},
-          'THỂ LOẠI': {minSize: 70}
+          'THỂ LOẠI': {minSize: 70, crossFilter: 'firstLevels'}
         }
     }
   },

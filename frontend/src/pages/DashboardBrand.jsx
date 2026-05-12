@@ -77,7 +77,7 @@ const DashboardContent = () => {
                           {id: 'overview', label: 'Báo cáo cho nhãn hàng', icon: !stateGlobals.darkMode ? iconOverview : iconOverviewDark, iconActive: iconOverviewActive,
                             content: (
                               <section className='bg-background-dashboard dark:bg-background-dashboard-dark transiton-all duration-300' id="target_capture_overview">
-                                <InforTab inforTab={"Báo cáo cho nhãn hàng"} />
+                                <InforTab inforTab={"Báo cáo cho nhãn hàng"} maxInsert={dashboard?.maxInsertData?.data?.[0]?.['MAX(check_time)']} />
                                 <InforFilter filters={scopeFilterData} FilterComponent={FilterSpot} nameFilter='FilterSpot' />
                                 <div className='px-6 max-lg:px-5 max-md:px-4 pt-6 max-lg:pt-5 max-md:pt-4'>
                                     <div className='w-full grid grid-cols-3 max-md:grid-cols-2 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4'>
@@ -361,7 +361,7 @@ const DashboardContent = () => {
                           {id: 'ad_monitoring_report', label: !stateGlobals.screen_md ? 'Ad monitoring report' : 'Ad monitoring', icon: !stateGlobals.darkMode ? iconRatingByMinute : iconRatingByMinuteDark, iconActive: iconRatingByMinuteActive,
                             content: (
                               <section className='bg-background-dashboard dark:bg-background-dashboard-dark transiton-all duration-300' id="target_capture_ad_monitoring_report">
-                                <InforTab inforTab={"Ad monitoring report"} />
+                                <InforTab inforTab={"Ad monitoring report"} maxInsert={dashboard?.maxInsertData?.data?.[0]?.['MAX(check_time)']} />
                                 <InforFilter filters={scopeFilterData} FilterComponent={FilterSpot} nameFilter='FilterSpot' />
                                 <div className='px-6 max-lg:px-5 max-md:px-4'>
                                   <div className='w-full py-6 max-lg:py-5 max-md:py-4'>

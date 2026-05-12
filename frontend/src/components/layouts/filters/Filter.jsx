@@ -11,7 +11,7 @@ import iconReset from '../../../assets/icon_reset.png';
 import iconResetDark from '../../../assets/icon_reset_dark.png';
 import GroupFilter from './components/GroupFilter';
 import RangeFilter from './components/RangeFilter';
-import { useDashboardFilters, useDashboardFilterValues, useDashboardStateGlobals } from '../../../context/DashboardFilterContext';
+import { useDashboardFilters, useDashboardFilterValues, useDashboardStateGlobals, useDashboardCrossFilters } from '../../../context/DashboardFilterContext';
 
 const ALL_CHANNELS = [
   { value: "VTV1", label: "VTV1" },
@@ -114,12 +114,12 @@ const Filter = ({ filters, horizontalFixed=false
 
   const ALL_PROVINCES = toOptions(filters?.filterProvince, 'province');
   const ALL_PROGRAMS = toOptions(filters?.filterProgram, 'program_name');
-  const FILTER_SESSION_KEY = 'dashboard_filters';
-  const FILTER_SESSION_VALUE = 'filter_values';
+  const FILTER_SESSION_KEY = 'dashboard_filters_ratings';
 
   const { appliedFilters, setAppliedFilters} = useDashboardFilters();
   const { filterValues, setFilterValues } = useDashboardFilterValues();
   const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
+  const { crossFilters, setCrossFilters } = useDashboardCrossFilters();
 
   useEffect(() => {
     const filterId = document.getElementById('filter');
@@ -205,6 +205,8 @@ const Filter = ({ filters, horizontalFixed=false
       programs: ALL_PROGRAMS
     };
 
+    sessionStorage.setItem(FILTER_SESSION_KEY, JSON.stringify(appliedFilters));
+
     const transformed = {
       ...filterValues,
       startDate: appliedFilters.startDate || getYesterday(),
@@ -222,7 +224,6 @@ const Filter = ({ filters, horizontalFixed=false
       startMinutes: appliedFilters.startMinutes || { min: 0, max: 59 }
     };
     setFilterValues(transformed);
-    sessionStorage.setItem(FILTER_SESSION_VALUE, JSON.stringify(transformed));
   }, [appliedFilters]);
 
   const handleDateRangeChange = ({ startDate: s, endDate: e }) => {
@@ -279,13 +280,10 @@ const Filter = ({ filters, horizontalFixed=false
           key,
           (filterValues[key] || []).map(item => item.value)
         ])
-      ),
-      startHours: filterValues.startHours || { min: 0, max: 23 },
-      startMinutes: filterValues.startMinutes || { min: 0, max: 59 }
+      )
     };
 
     setAppliedFilters(transformed);
-    sessionStorage.setItem(FILTER_SESSION_KEY, JSON.stringify(transformed));
 
     if(stateGlobals.screen_md) {
       setStateGlobals(prev => ({...prev, isOpen: !prev.isOpen}))
@@ -295,8 +293,8 @@ const Filter = ({ filters, horizontalFixed=false
   const onReset = () => {
     setAppliedFilters(null);
     setFilterValues(null);
+    setCrossFilters(null);
     sessionStorage.removeItem(FILTER_SESSION_KEY);
-    sessionStorage.removeItem(FILTER_SESSION_VALUE);
 
     if(stateGlobals.screen_md) {
       setStateGlobals(prev => ({...prev, isOpen: !prev.isOpen}))

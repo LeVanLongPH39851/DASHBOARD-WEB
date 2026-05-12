@@ -4,7 +4,7 @@ import ReactECharts from 'echarts-for-react';
 import NameChart from '../layouts/components/NameChart';
 import Loading from '../commons/Loading';
 import { formatKMB } from '../../utils/formatNumber';
-import { useDashboardStateGlobals } from '../../context/DashboardFilterContext';
+import { useDashboardFilters ,useDashboardStateGlobals, useDashboardCrossFilters } from '../../context/DashboardFilterContext';
 import NoData from '../commons/NoData';
 
 const LineChart = ({
@@ -30,21 +30,25 @@ const LineChart = ({
   KMB=true,
   xAxisTitle=false,
   fullScreen=false,
-  textOverflow=false
+  textOverflow=false,
+  crossFilter = false,
+  keyChart = false
 }) => {
 
+  const { appliedFilters, setAppliedFilters } = useDashboardFilters();
   const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
+  const { crossFilters, setCrossFilters } = useDashboardCrossFilters();
   
   if(data==='isLoading') {
     return (
-      <div className='p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
+      <div className='p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
         <NameChart nameChart={nameChart} description={description} fullScreen={fullScreen} />
         <Loading height={!stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : 350 : 240} />
       </div>
     );
   } else if (!data.labels.length > 0) {
     return (
-      <div className='p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
+      <div className='p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
         <NameChart nameChart={nameChart} description={description} fullScreen={fullScreen} />
         <NoData height={!stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : 350 : 240} />
       </div>
@@ -169,6 +173,74 @@ const LineChart = ({
       chart.off('legendselectchanged', handleLegendSelectChanged);
     };
   }, []);
+
+  const [activeLine, setActiveLine] = React.useState('');
+  const [inActiveLine, setInActiveLine] = React.useState(false);
+  const [click, setClick] = React.useState(false);
+  
+  const onEvents = {
+    click: (params) => {
+      if (params.componentType === 'series' && crossFilter) {
+        const crossFilterValue = params.seriesName;
+        const crossFilterValues = [crossFilterValue];
+        if (appliedFilters?.[crossFilter]?.[0] !== crossFilterValues[0]) {
+          const transformed = {...appliedFilters, [crossFilter]: crossFilterValues};
+          setAppliedFilters(transformed);
+          
+          if (keyChart) {
+            if (crossFilters) {
+              setCrossFilters({
+                ...crossFilters,
+                [keyChart]: crossFilter.slice(0, -1) + 'Filters',
+                main: keyChart,
+                skipNext: null
+              });
+            } else {
+              setCrossFilters({
+                [keyChart]: crossFilter.slice(0, -1) + 'Filters',
+                main: keyChart,
+                skipNext: null
+              });
+            }
+          }
+          setClick(true);
+          setActiveLine(prev => (prev === crossFilterValue ? '' : crossFilterValue));
+          setInActiveLine(prev => (activeLine === crossFilterValue ? false : true));
+        } else if(click) {
+          setClick(false);
+          const { [crossFilter]: removed, ...rest } = appliedFilters || {};
+          setAppliedFilters(rest);
+          if (keyChart) {
+            if (crossFilters) {
+              const { [keyChart]: _, main: __, ...rest } = crossFilters;
+              setCrossFilters({...rest, skipNext: keyChart});
+            }
+          }
+          setActiveLine(prev => (prev === crossFilterValue ? '' : crossFilterValue));
+          setInActiveLine(prev => (activeLine === crossFilterValue ? false : true));
+        }
+      }
+    }
+  };
+
+  const legendDatas = legendData.map((name) => {
+    
+    const isActive = activeLine === name;
+    
+    const isDim = inActiveLine && crossFilters?.main === keyChart;
+
+    return {
+      name: name,
+      icon: 'circle',
+      itemStyle: {
+        opacity: isActive ? 1 : isDim ? 0.5 : 1,
+        color: colorMap[name]
+      },
+      textStyle: {
+        opacity: isActive ? 1 : isDim ? 0.5 : 1
+      }
+    };
+  });
 
   const option = {
     color: legendData.map(name => {
@@ -295,6 +367,7 @@ const LineChart = ({
       lineHeight: 10, 
       icon: 'circle',
       itemGap: !legendTop ? 8 : 10,
+      data: legendDatas,
       textStyle: { 
         fontSize: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.legend : '11px' : '10.5px',
         color: !stateGlobals.darkMode ? 'rgba(30, 27, 57, 1)' : 'rgba(255, 255, 255, 0.8)',
@@ -321,12 +394,6 @@ const LineChart = ({
         fontFamily: fontFamily,
         fontSize: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.legend : '11px' : '10.5px'
       },
-      data: legendData.map(name => ({
-        name,
-        itemStyle: {
-          color: colorMap[name]
-        }
-      })),
       selected: selectedSeries
     },
 
@@ -394,10 +461,13 @@ const LineChart = ({
       
       // ✅ Logic show label theo showTopNSeries
       const isTopSeries = !topSeriesNames || topSeriesNames.has(s.name);
+
+      const isActive = activeLine === s.name;
       
       return {
         name: s.name,
         type: 'line',
+        triggerLineEvent: true,
         data: s.data,
         smooth: smooth,
         symbol: 'circle',
@@ -405,8 +475,8 @@ const LineChart = ({
         // showSymbol: isTopSeries,
         lineStyle: {
           color: color,
-          width: lineWidth,
-          opacity: 1  // ✅ Luôn đậm ban đầu
+          width: isActive ? lineWidth + 1 : lineWidth,
+          opacity: isActive ? 1 : inActiveLine ? 0.2 : 1  // ✅ Luôn đậm ban đầu
         },
         itemStyle: {
           color: labelLength===0 ? color : 'transparent',
@@ -453,28 +523,31 @@ const LineChart = ({
             padding: [4, 8],
             borderRadius: 4,
             borderColor: color,
-            borderWidth: 1
+            borderWidth: 1,
+            opacity: 1
           }
         },
         label: {
-          show: showLabel && isTopSeries,  // ✅ Logic hoàn chỉnh
+          show: (showLabel && isTopSeries && !inActiveLine) || (isActive && !stateGlobals.screen_md),  // ✅ Logic hoàn chỉnh
           position: 'top',
           offset: [0, labelOffset],
           formatter: (params) => params.value ? nameChart.includes('%') ? params.value.toLocaleString(undefined, { maximumFractionDigits: (nameChart.includes('%') ? 2 : 0) }) : !stateGlobals.screen_md && !KMB ? params.value.toLocaleString(undefined, { maximumFractionDigits: (nameChart.includes('%') ? 2 : 0) }) : formatKMB(params.value) : '',
           fontSize: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.dataLabel : '11px' : '10.5px',
           fontWeight: fontWeight.dataLabel,
           fontFamily: fontFamily,
-          color: color
+          color: color,
+          opacity: isActive ? 1 : inActiveLine ? 0.2 : 1
         }
       };
     })
   };
 
   return (
-    <div className='p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
+    <div className='p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
       <NameChart nameChart={nameChart} description={description} getChartData={getEChartsData} fullScreen={fullScreen} />
         <ReactECharts 
           ref={chartRef}
+          onEvents={onEvents}
           option={option} 
           style={{ height: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : 350 : 240, width: '100%' }}
           opts={{

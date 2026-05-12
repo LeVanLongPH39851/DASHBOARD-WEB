@@ -42,5 +42,6 @@ export { allTableChartEventPayload } from './allTableChartEventPayload';
 export { ratingLineChartMinuteChannelPayload } from './ratingLineChartMinuteChannelPayload';
 export { ratingLineChartMinuteChannelOneDatePayload } from './ratingLineChartMinuteChannelOneDatePayload';
 export { ratingLineChartMinuteChannelDatesPayload } from './ratingLineChartMinuteChannelDatesPayload';
+export { maxInsertPayload } from './maxInsertPayload';
 export { filterProvincePayload } from './filterProvincePayload';
 export { filterProgramPayload } from './filterProgramPayload';

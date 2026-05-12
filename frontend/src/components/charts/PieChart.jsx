@@ -2,7 +2,7 @@ import React, { memo, useRef, useCallback } from 'react';
 import ReactECharts from 'echarts-for-react';
 import NameChart from '../layouts/components/NameChart';
 import Loading from '../commons/Loading';
-import { useDashboardStateGlobals } from '../../context/DashboardFilterContext';
+import { useDashboardStateGlobals, useDashboardFilters, useDashboardCrossFilters } from '../../context/DashboardFilterContext';
 import NoData from '../commons/NoData';
 
 const PieChart = ({
@@ -22,21 +22,25 @@ const PieChart = ({
   border = true,
   suffix='',
   legendHorizontal=false,
-  center=false
+  center=false,
+  crossFilter=false,
+  keyChart=false
 }) => {
 
   const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
+  const { appliedFilters, setAppliedFilters } = useDashboardFilters();
+  const { crossFilters, setCrossFilters } = useDashboardCrossFilters();
 
   if(data==='isLoading') {
     return (
-      <div className='p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
+      <div className='p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
         <NameChart nameChart={nameChart} description={description} />
         <Loading height={!stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : 250 : 210} />
       </div>
     );
   } else if (!data) {
     return (
-      <div className='p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
+      <div className='p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
         <NameChart nameChart={nameChart} description={description} />
         <NoData height={!stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : 250 : 210} />
       </div>
@@ -121,6 +125,73 @@ const PieChart = ({
         return '{b|{b}}\n{c|{d}%}';  // ✅ Chỉ 1 backslash
     }
   };
+
+  const [activePie, setActivePie] = React.useState('');
+  const [inActivePie, setInActivePie] = React.useState(false);
+  const [click, setClick] = React.useState(false);
+  
+  const onEvents = {
+    click: (params) => {
+      if (params.componentType === 'series' && crossFilter) {
+        const crossFilterValue = params.name;
+        
+        const crossFilterValues = [crossFilterValue];
+        if (appliedFilters?.[crossFilter]?.[0] !== crossFilterValues[0]) {
+          const transformed = {...appliedFilters, [crossFilter]: crossFilterValues};
+          setAppliedFilters(transformed);
+          
+          if (keyChart) {
+            if (crossFilters) {
+              setCrossFilters({
+                ...crossFilters,
+                [keyChart]: crossFilter.slice(0, -1) + 'Filters',
+                main: keyChart,
+                skipNext: null
+              });
+            } else {
+              setCrossFilters({
+                [keyChart]: crossFilter.slice(0, -1) + 'Filters',
+                main: keyChart,
+                skipNext: null
+              });
+            }
+          }
+          setClick(true);
+          setActivePie(prev => (prev === crossFilterValue ? '' : crossFilterValue));
+          setInActivePie(prev => (activePie === crossFilterValue ? false : true));
+        } else if(click) {
+          setClick(false);
+          const { [crossFilter]: removed, ...rest } = appliedFilters || {};
+          setAppliedFilters(rest);
+          if (keyChart) {
+            if (crossFilters) {
+              const { [keyChart]: _, main: __, ...rest } = crossFilters;
+              setCrossFilters({...rest, skipNext: keyChart});
+            }
+          }
+          setActivePie(prev => (prev === crossFilterValue ? '' : crossFilterValue));
+          setInActivePie(prev => (activePie === crossFilterValue ? false : true));
+        }
+      }
+    }
+  };
+
+  const legendData = pieSeriesData.map((s) => {
+    
+    const isActive = activePie === s.name;
+    const isDim = inActivePie && crossFilters?.main === keyChart;
+
+    return {
+      name: s.name,
+      icon: 'circle',
+      itemStyle: {
+        opacity: isActive ? 1 : isDim ? 0.5 : 1
+      },
+      textStyle: {
+        opacity: isActive ? 1 : isDim ? 0.5 : 1
+      }
+    };
+  });
   
   const option = {
     tooltip: {
@@ -157,6 +228,7 @@ const PieChart = ({
       itemHeight: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? 13 : 12 : 10,
       icon: 'circle',
       itemGap: 8,
+      data: legendData,
       textStyle: {
         fontSize: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize?.legend : '11px' : '10.5px',
         color: !stateGlobals.darkMode ? 'rgba(30, 27, 57, 1)' : 'rgba(225, 225, 225, 0.9)',
@@ -222,27 +294,41 @@ const PieChart = ({
         borderColor: 'rgba(255, 255, 255, 1)',
         borderWidth: border ? 2 : 0
       },
-      data: pieSeriesData.map((item, idx) => ({
-        ...item,
-        itemStyle: {
-          color: getColorForItem(item.name, idx),
-        },
-        label: {
-          rich: {
-            c: {
-              color: getColorForItem(item.name, idx)
+      data: pieSeriesData.map((item, idx) => {
+        const isActive = activePie === item.name;
+        
+        return {
+          ...item,
+          itemStyle: {
+            color: getColorForItem(item.name, idx),
+            shadowBlur: isActive ? 15 : 0,
+            shadowColor: isActive ? !stateGlobals.darkMode ? 'rgba(0,0,0,0.2)' : 'rgba(225,225,225,225.2)' : 'transparent',
+            opacity: isActive ? 1 : (inActivePie && crossFilters?.main === keyChart) ? 0.5 : 1
+          },
+          label: {
+            rich: {
+              c: {
+                color: getColorForItem(item.name, idx)
+              }
+            }
+          },
+          labelLine: {
+            lineStyle: {
+              width: isActive ? 4 : 2,
+              opacity: isActive ? 1 : (inActivePie && crossFilters?.main === keyChart) ? 0.5 : 1
             }
           }
         }
-      })),
+      }),
     }],
   };
 
   return (
-    <div className='p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
+    <div className='p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
       <NameChart nameChart={nameChart} description={description} getChartData={getEChartsData} />
       <ReactECharts
         ref={chartRef}
+        onEvents={onEvents}
         option={option}
         style={{ height: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : 250 : 210, width: '100%' }}
         opts={{

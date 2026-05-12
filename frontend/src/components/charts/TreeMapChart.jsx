@@ -5,7 +5,7 @@ import NameChart from '../layouts/components/NameChart';
 import Loading from '../commons/Loading';
 import { formatKMB, formatNumber } from '../../utils/formatNumber';
 import NoData from '../commons/NoData';
-import { useDashboardStateGlobals } from '../../context/DashboardFilterContext';
+import { useDashboardStateGlobals, useDashboardCrossFilters, useDashboardFilters } from '../../context/DashboardFilterContext';
 
 const TreeMapChart = ({
   data,
@@ -18,21 +18,25 @@ const TreeMapChart = ({
   colors,
   colorSaturation = [0.3, 0.6],
   visibleMin = 300,
-  childrenVisibleMin = 100
+  childrenVisibleMin = 100,
+  crossFilter=false,
+  keyChart=false
 }) => {
 
   const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
+  const { appliedFilters, setAppliedFilters } = useDashboardFilters();
+  const { crossFilters, setCrossFilters } = useDashboardCrossFilters();
   
   if(data==='isLoading') {
     return (
-      <div className='p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
+      <div className='p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
         <NameChart nameChart={nameChart} description={description} />
         <Loading height={!stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : 290 : 240} />
       </div>
     );
   } else if (!data) {
     return (
-      <div className='p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
+      <div className='p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
         <NameChart nameChart={nameChart} description={description} />
         <NoData height={!stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : 290 : 240} />
       </div>
@@ -97,7 +101,9 @@ const TreeMapChart = ({
   ];
 
   const colorPalette = Object.keys(colors).length > 0 ? colors : defaultColors;
-
+  const [activeTree, setActiveTree] = React.useState('');
+  const [inActiveTree, setInActiveTree] = React.useState(false);
+  const [click, setClick] = React.useState(false);
   // Transform data format
   const transformData = (inputData) => {
     const { labels = [], series = [] } = inputData;
@@ -106,13 +112,30 @@ const TreeMapChart = ({
 
     // Nếu data đơn giản: 1 series với labels
     if (series.length === 1) {
-      return labels.map((label, index) => ({
-        name: label,
-        value: series[0].data[index] || 0,
-        itemStyle: {
-          color: colorPalette[label] || defaultColors[index % defaultColors.length]
+      return labels.map((label, index) => {
+        const isActive = activeTree === label;
+        return {
+          name: label,
+          value: series[0].data[index] || 0,
+          itemStyle: {
+            color: colorPalette[label] || defaultColors[index % defaultColors.length],
+            shadowBlur: isActive ? 10 : 0,
+            shadowColor: isActive ? !stateGlobals.darkMode ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.3)' : ''
+          },
+          label: {
+            opacity: isActive ? 1 : inActiveTree ? 0.5 : 1,
+            fontSize: isActive ? (!stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.label : 11 : 10.5) + 2 : (!stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.label : 11 : 10.5),
+            rich: {
+              name: {
+                fontSize: isActive ? (!stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.label : 11 : 10.5) + 2 : (!stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.label : 11 : 10.5)
+              },
+              value: {
+                fontSize: isActive ? (!stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.label : 11 : 10.5) + 2 : (!stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.label : 11 : 10.5)
+              }
+            }
+          }
         }
-      }));
+      });
     }
 
     // Nếu data phức tạp: nested structure
@@ -133,6 +156,52 @@ const TreeMapChart = ({
     }
     return sum + (item.value || 0);
   }, 0);
+  
+  const onEvents = {
+    click: (params) => {
+      if (params.componentType === 'series' && crossFilter) {
+        const crossFilterValue = params.name;
+        
+        const crossFilterValues = [crossFilterValue];
+        if (appliedFilters?.[crossFilter]?.[0] !== crossFilterValues[0]) {
+          const transformed = {...appliedFilters, [crossFilter]: crossFilterValues};
+          setAppliedFilters(transformed);
+          
+          if (keyChart) {
+            if (crossFilters) {
+              setCrossFilters({
+                ...crossFilters,
+                [keyChart]: crossFilter.slice(0, -1) + 'Filters',
+                main: keyChart,
+                skipNext: null
+              });
+            } else {
+              setCrossFilters({
+                [keyChart]: crossFilter.slice(0, -1) + 'Filters',
+                main: keyChart,
+                skipNext: null
+              });
+            }
+          }
+          setClick(true);
+          setActiveTree(prev => (prev === crossFilterValue ? '' : crossFilterValue));
+          setInActiveTree(prev => (activeTree === crossFilterValue ? false : true));
+        } else if(click) {
+          setClick(false);
+          const { [crossFilter]: removed, ...rest } = appliedFilters || {};
+          setAppliedFilters(rest);
+          if (keyChart) {
+            if (crossFilters) {
+              const { [keyChart]: _, main: __, ...rest } = crossFilters;
+              setCrossFilters({...rest, skipNext: keyChart});
+            }
+          }
+          setActiveTree(prev => (prev === crossFilterValue ? '' : crossFilterValue));
+          setInActiveTree(prev => (activeTree === crossFilterValue ? false : true));
+        }
+      }
+    }
+  };
   
   const option = {
     tooltip: {
@@ -254,11 +323,12 @@ const TreeMapChart = ({
   };
 
   return (
-    <div className='p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
+    <div className='p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
       <NameChart nameChart={nameChart} description={description} getChartData={getEChartsData} />
       <ReactECharts
         ref={chartRef}
         option={option}
+        onEvents={onEvents}
         style={{ height: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : 290 : 240, width: '100%' }}
         opts={{
           renderer: 'canvas',

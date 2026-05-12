@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
 export const useApi = (apiFn, params = [], options = {}) => {
-  const { enabled = true } = options;
+  const { enabled = true, shouldSkip = false } = options;
 
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(enabled);
@@ -9,7 +9,7 @@ export const useApi = (apiFn, params = [], options = {}) => {
 
   // ✅ THÊM: refetch manual (backup cho trường hợp cần)
   const refetch = useCallback(() => {
-    if (!enabled) return;
+    if (!enabled || shouldSkip) return Promise.resolve(null);
     setLoading(true);
     setError(null);
     return apiFn(...params)
@@ -24,13 +24,13 @@ export const useApi = (apiFn, params = [], options = {}) => {
       .finally(() => {
         setLoading(false);
       });
-  }, [enabled, apiFn, ...params]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [enabled, shouldSkip, apiFn, ...params]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ✅ SỬA: auto call khi params thay đổi
   useEffect(() => {
-    if (!enabled) return;
+    if (!enabled || shouldSkip) return;
     refetch(); // dùng refetch thay vì duplicate logic
-  }, [refetch]); // chỉ dep vào refetch → clean & safe
+  }, [refetch, enabled, shouldSkip]); // chỉ dep vào refetch → clean & safe
 
   return { data, loading, error, refetch };
 };

@@ -77,7 +77,7 @@ const DashboardContent = () => {
                           {id: 'overview', label: 'Tổng quan', icon: !stateGlobals.darkMode ? iconOverview : iconOverviewDark, iconActive: iconOverviewActive,
                             content: (
                               <section className='bg-background-dashboard dark:bg-background-dashboard-dark transiton-all duration-300' id="target_capture_overview">
-                                <InforTab inforTab={"Tổng quan"} />
+                                <InforTab inforTab={"Tổng quan"} maxInsert={dashboard?.maxInsertData?.data?.[0]?.['MAX(check_time)']} />
                                 <InforFilter filters={scopeFilterData} FilterComponent={FilterSpot} nameFilter='FilterSpot' />
                                 <div className='px-6 max-lg:px-5 max-md:px-4 pt-6 max-lg:pt-5 max-md:pt-4'>
                                     <div className='w-full grid grid-cols-4 max-lg:grid-cols-4 max-md:grid-cols-2 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4'>
@@ -122,7 +122,7 @@ const DashboardContent = () => {
                                       />
                                     </div>
                                     <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
-                                      <div className={`p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
+                                      <div className={`p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
                                           <NameChart nameChart={'Xu hướng quảng cáo THEO NGÀY'} description={false} opacity={true} />
                                           <ChildTabs tabs={[
                                           {id: 'vnd', label: 'Triệu VND',
@@ -277,7 +277,7 @@ const DashboardContent = () => {
                                         ]} />
                                     </div>
                                     <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
-                                      <div className={`p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
+                                      <div className={`p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
                                           <NameChart nameChart={'Top 20 nhà quảng cáo'} description={false} opacity={true} />
                                           <ChildTabs tabs={[
                                           {id: 'vnd', label: 'Triệu VND',
@@ -336,7 +336,7 @@ const DashboardContent = () => {
                                       </div>
                                     </div>
                                     <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
-                                      <div className={`p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
+                                      <div className={`p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
                                           <NameChart nameChart={'Top 20 nhà quảng cáo - phân bổ theo kênh'} description={false} opacity={true} />
                                           <ChildTabs tabs={[
                                           {id: 'vnd', label: 'Triệu VND',
@@ -447,7 +447,7 @@ const DashboardContent = () => {
                           {id: 'revenue', label: 'Doanh thu', icon: !stateGlobals.darkMode ? iconChannel : iconChannelDark, iconActive: iconChannelActive,
                             content: (
                               <section className='bg-background-dashboard dark:bg-background-dashboard-dark transiton-all duration-300' id="target_capture_revenue">
-                                <InforTab inforTab={"Doanh thu"} />
+                                <InforTab inforTab={"Doanh thu"} maxInsert={dashboard?.maxInsertData?.data?.[0]?.['MAX(check_time)']} />
                                 <InforFilter filters={scopeFilterData} FilterComponent={FilterSpot} nameFilter='FilterSpot' />
                                 <div className='px-6 max-lg:px-5 max-md:px-4 py-6 max-lg:py-5 max-md:py-4'>
                                   <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
@@ -596,11 +596,11 @@ const DashboardContent = () => {
                           {id: 'effective', label: 'Hiệu quả', icon: !stateGlobals.darkMode ? iconProgram : iconProgramDark, iconActive: iconProgramActive,
                             content: (
                               <section className='bg-background-dashboard dark:bg-background-dashboard-dark transiton-all duration-300' id="target_capture_effective">
-                                <InforTab inforTab={"Hiệu quả"} />
+                                <InforTab inforTab={"Hiệu quả"} maxInsert={dashboard?.maxInsertData?.data?.[0]?.['MAX(check_time)']} />
                                 <InforFilter filters={scopeFilterData} FilterComponent={FilterSpot} nameFilter='FilterSpot' />
                                 <div className='px-6 max-lg:px-5 max-md:px-4'>
                                   <div className='w-full py-6 max-lg:py-5 max-md:py-4'>
-                                    <div className={`p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
+                                    <div className={`p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
                                       <NameChart nameChart={'Top 20 nhà quảng cáo'} description={false} opacity={true} />
                                       <ChildTabs tabs={[
                                       {id: 'grp', label: 'GRP',
@@ -898,7 +898,7 @@ const DashboardContent = () => {
                           {id: 'ad_monitoring_report', label: !stateGlobals.screen_md ? 'Ad monitoring report' : 'Ad monitoring', icon: !stateGlobals.darkMode ? iconRatingByMinute : iconRatingByMinuteDark, iconActive: iconRatingByMinuteActive,
                             content: (
                               <section className='bg-background-dashboard dark:bg-background-dashboard-dark transiton-all duration-300' id="target_capture_ad_monitoring_report">
-                                <InforTab inforTab={"Ad monitoring report"} />
+                                <InforTab inforTab={"Ad monitoring report"} maxInsert={dashboard?.maxInsertData?.data?.[0]?.['MAX(check_time)']} />
                                 <InforFilter filters={scopeFilterData} FilterComponent={FilterSpot} nameFilter='FilterSpot' />
                                 <div className='px-6 max-lg:px-5 max-md:px-4'>
                                   <div className='w-full py-6 max-lg:py-5 max-md:py-4'>

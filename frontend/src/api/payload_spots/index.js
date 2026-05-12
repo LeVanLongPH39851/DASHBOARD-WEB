@@ -70,6 +70,7 @@ export { reachPieChartAdvertiserPayload } from "./reachPieChartAdvertiserPayload
 
 export { allTableChartMonitoringPayload } from "./allTableChartMonitoringPayload";
 
+export { maxInsertPayload } from './maxInsertPayload';
 export { filterProvincePayload } from './filterProvincePayload';
 export { filterProgramPayload } from './filterProgramPayload';
 export { filterProductPayload } from './filterProductPayload';

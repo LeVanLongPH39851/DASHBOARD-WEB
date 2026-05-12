@@ -4,10 +4,10 @@ import React, { createContext, useContext, useMemo, useState } from 'react';
 const DashboardFilterContext = createContext(null);
 const FilterValueContext = createContext(null);
 const StateGlobalContext = createContext(null);
+const CrossFilterContext = createContext(null);
 
 const SESSION_KEYS = {
-  appliedFilters: 'dashboard_filters',
-  filterValues: 'filter_values'
+  appliedFilters: 'dashboard_filters'
 };
 
 const isRatingPage = () => {
@@ -18,9 +18,18 @@ const isRatingPage = () => {
   }
 };
 
+const isSpotPage = () => {
+  try {
+    const isSpot = window.location.pathname.includes('/spot') || window.location.pathname.includes('/brand');
+    return isSpot
+  } catch {
+    return false;
+  }
+};
+
 const getSessionValue = (key, fallback = null) => {
   try {
-    if (!isRatingPage()) return fallback;
+    if (!isRatingPage() && !isSpotPage()) return fallback;
     const raw = sessionStorage.getItem(key);
     return raw ? JSON.parse(raw) : fallback;
   } catch (error) {
@@ -31,19 +40,22 @@ const getSessionValue = (key, fallback = null) => {
 
 export const DashboardFilterProvider = ({ children }) => {
   const [appliedFilters, setAppliedFilters] = useState(() =>
-    getSessionValue(SESSION_KEYS.appliedFilters, null)
+    getSessionValue(SESSION_KEYS.appliedFilters + `${isRatingPage() ? '_ratings' : isSpotPage() ? '_spots' : ''}`, null)
   );
-  const [filterValues, setFilterValues] = useState(() =>
-    getSessionValue(SESSION_KEYS.filterValues, null)
-  );
-  const [stateGlobals, setStateGlobals] = useState({isOpen: true, horizontal: false, isInfor: true, currentTab: 'overview', darkMode: false, screen_md: false, screen_lg: false});
+  const [filterValues, setFilterValues] = useState(null);
+  const [stateGlobals, setStateGlobals] = useState({isOpen: true, horizontal: false, isInfor: true, currentTab: 'overview', darkMode: true, screen_md: false, screen_lg: false});
+  const [crossFilters, setCrossFilters] = useState(null);
+  
   const appliedValue = useMemo(() => ({ appliedFilters, setAppliedFilters }), [appliedFilters]);
   const filterValue = useMemo(() => ({ filterValues, setFilterValues }), [filterValues]);
   const stateGlobalValue = useMemo(() => ({ stateGlobals, setStateGlobals }), [stateGlobals]);
+  const crossFilterValue = useMemo(() => ({ crossFilters, setCrossFilters }), [crossFilters]);
   return <DashboardFilterContext.Provider value={appliedValue}>
           <FilterValueContext.Provider value={filterValue}>
             <StateGlobalContext.Provider value={stateGlobalValue}>
-            {children}
+              <CrossFilterContext.Provider value={crossFilterValue}>
+                {children}
+              </CrossFilterContext.Provider>
             </StateGlobalContext.Provider>
           </FilterValueContext.Provider>
          </DashboardFilterContext.Provider>;
@@ -64,5 +76,11 @@ export const useDashboardFilterValues = () => {
 export const useDashboardStateGlobals = () => {
   const ctx = useContext(StateGlobalContext);
   if (!ctx) throw new Error('useDashboardStateGlobals must be used within StateGlobalProvider');
+  return ctx;
+};
+
+export const useDashboardCrossFilters = () => {
+  const ctx = useContext(CrossFilterContext);
+  if (!ctx) throw new Error('CrossFilterContext must be used within StateGlobalProvider');
   return ctx;
 };

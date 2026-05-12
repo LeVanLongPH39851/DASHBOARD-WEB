@@ -53,12 +53,12 @@ const Header = ({ username }) => {
     useEffect(() => {
         const savedTheme = localStorage.getItem('theme');
         
-        if (savedTheme && savedTheme === 'dark') {
-            setStateGlobals(prev => ({...prev, darkMode: true}));
-            document.documentElement.classList.add('dark');
-        } else {
+        if (savedTheme && savedTheme === 'light') {
             setStateGlobals(prev => ({...prev, darkMode: false}));
             document.documentElement.classList.remove('dark');
+        } else {
+            setStateGlobals(prev => ({...prev, darkMode: true}));
+            document.documentElement.classList.add('dark');
         }
     }, []);
 

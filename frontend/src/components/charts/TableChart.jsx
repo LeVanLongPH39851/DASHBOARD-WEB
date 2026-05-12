@@ -21,7 +21,7 @@ import iconArrowRightGrayDark from '../../assets/icon_arrow_right_gray_dark.png'
 import { formatNumber } from '../../utils/formatNumber';
 import Loading from '../commons/Loading';
 import { formatKMB } from '../../utils/formatNumber';
-import { useDashboardStateGlobals } from '../../context/DashboardFilterContext';
+import { useDashboardStateGlobals, useDashboardCrossFilters, useDashboardFilters } from '../../context/DashboardFilterContext';
 import NoData from '../commons/NoData';
 
 
@@ -45,14 +45,18 @@ const TableChart = ({
   showPagination,
   displayName=true,
   fullScreen=false,
-  customCol=false
+  customCol=false,
+  crossFilter=false,
+  keyChart=false
 }) => {
 
   const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
+  const { appliedFilters, setAppliedFilters } = useDashboardFilters();
+  const { crossFilters, setCrossFilters } = useDashboardCrossFilters();
   
   if(data==='isLoading') {
     return (
-      <div className={`${displayName ? 'p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : '' }`} style={{ fontFamily }}>
+      <div className={`${displayName ? 'p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : '' }`} style={{ fontFamily }}>
         <NameChart nameChart={nameChart} description={description} display={displayName} fullScreen={fullScreen} />
         <div className='h-13 max-lg:h-11 max-md:h-9.25'></div>
         <Loading height={!stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : stateGlobals.currentTab == 'program' ? '400px' : stateGlobals.currentTab == 'ad_monitoring_report' ? '500px' : '350px' : stateGlobals.currentTab == 'program' ? '300px' : stateGlobals.currentTab == 'ad_monitoring_report' ? '600px' : '240px'} />
@@ -60,7 +64,7 @@ const TableChart = ({
     );
   } else if (!data) {
     return (
-      <div className={`${displayName ? 'p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : '' }`} style={{ fontFamily }}>
+      <div className={`${displayName ? 'p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : '' }`} style={{ fontFamily }}>
         <NameChart nameChart={nameChart} description={description} display={displayName} fullScreen={fullScreen} />
         <div className='h-13 max-lg:h-11 max-md:h-9.25'></div>
         <NoData height={!stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : stateGlobals.currentTab == 'program' ? '400px' : stateGlobals.currentTab == 'ad_monitoring_report' ? '500px' : '350px' : stateGlobals.currentTab == 'program' ? '300px' : stateGlobals.currentTab == 'ad_monitoring_report' ? '600px' : '240px'} />
@@ -331,8 +335,56 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
     };
   }, []);
 
+  const [activeTable, setActiveTable] = React.useState('');
+  const [inActiveTable, setInActiveTable] = React.useState(false);
+  const [click, setClick] = React.useState(false);
+
+  const onEvents = (params) => {
+    if (crossFilter && params.name && params.crossFilter) {
+      var crossFilterValue = params.name;
+      var crossFilterName = params.crossFilter;
+      const crossFilterValues = [crossFilterValue];
+      if (appliedFilters?.[crossFilterName]?.[0] !== crossFilterValues[0]) {
+        const transformed = {...appliedFilters, [crossFilterName]: crossFilterValues};
+        setAppliedFilters(transformed);
+        
+        if (keyChart) {
+          if (crossFilters) {
+            setCrossFilters({
+              ...crossFilters,
+              [keyChart]: crossFilterName.slice(0, -1) + 'Filters',
+              main: keyChart,
+              skipNext: null
+            });
+          } else {
+            setCrossFilters({
+              [keyChart]: crossFilterName.slice(0, -1) + 'Filters',
+              main: keyChart,
+              skipNext: null
+            });
+          }
+        }
+        setClick(true);
+        setActiveTable(prev => (prev === crossFilterValue ? '' : crossFilterValue));
+        setInActiveTable(prev => (activeTable === crossFilterValue ? false : true));
+      } else if(click) {
+        setClick(false);
+        const { [crossFilterName]: removed, ...rest } = appliedFilters || {};
+        setAppliedFilters(rest);
+        if (keyChart) {
+          if (crossFilters) {
+            const { [keyChart]: _, main: __, ...rest } = crossFilters;
+            setCrossFilters({...rest, skipNext: keyChart});
+          }
+        }
+        setActiveTable(prev => (prev === crossFilterValue ? '' : crossFilterValue));
+        setInActiveTable(prev => (activeTable === crossFilterValue ? false : true));
+      }
+    }
+  };
+
   return (
-    <div className={`${displayName ? `p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-transparent transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component` : '' }`} style={{ fontFamily }}>
+    <div className={`${displayName ? `p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component` : '' }`} style={{ fontFamily }}>
       <NameChart nameChart={nameChart} description={description} display={displayName} getChartData={getEChartsData} table={true} fullScreen={fullScreen} />
       <div className="flex justify-between items-center mb-3 max-lg:mb-2 max-md:mb-1 searchTable">
         <div className='flex items-center gap-2 max-lg:gap-1.5 max-md:gap-1'>
@@ -484,14 +536,15 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
                         return (
                           <td
                             key={cell.id}
-                            className={`border-b ${customCol[columnName]?.sticky && stateGlobals.screen_md ? 'program-border-right' : ''} border-border-black-10 dark:border-background-white-15 px-2 max-lg:px-1.5 max-md:px-1 py-3 max-lg:py-2.5 max-md:py-2 text-color-black-100 dark:text-color-white-90 transition-all duration-300 ${customCol[columnName]?.sticky ? `max-md:sticky max-md:left-0 max-md:z-1 max-md:bg-background-light max-md:dark:bg-background-chart-dark max-md:before:content-[''] max-md:before:inset-0 max-md:before:absolute max-md:before:-z-2 ${idx%2===0 ? 'max-md:before:bg-background-black-4 max-md:dark:before:bg-background-white-8' : 'max-md:before:bg-background-light max-md:dark:before:bg-background-chart-dark'}` : ''} ${
+                            onClick={customCol[columnName]?.crossFilter ? () => onEvents({crossFilter: customCol[columnName]?.crossFilter, name: rawValue}) : undefined}
+                            className={`border-b ${customCol[columnName]?.sticky && stateGlobals.screen_md ? 'program-border-right' : ''} ${customCol[columnName]?.crossFilter ? 'cursor-pointer' : ''} border-border-black-10 dark:border-background-white-15 px-2 max-lg:px-1.5 max-md:px-1 py-3 max-lg:py-2.5 max-md:py-2 ${activeTable && activeTable === rawValue ? 'opacity-100 text-color-neotam dark:text-background-primary' : (inActiveTable  && crossFilters?.main === keyChart) ? 'opacity-50 text-color-black-100 dark:text-color-white-90' : 'opacity-100 text-color-black-100 dark:text-color-white-90'} transition-all duration-300 ${customCol[columnName]?.sticky ? `max-md:sticky max-md:left-0 max-md:z-1 max-md:bg-background-light max-md:dark:bg-background-chart-dark max-md:before:content-[''] max-md:before:inset-0 max-md:before:absolute max-md:before:-z-2 ${idx%2===0 ? 'max-md:before:bg-background-black-4 max-md:dark:before:bg-background-white-8' : 'max-md:before:bg-background-light max-md:dark:before:bg-background-chart-dark'}` : ''} ${
                               isNumericColumn 
                                 ? `overflow-hidden text-ellipsis whitespace-nowrap ${customCol && customCol[columnName]?.align ? customCol[columnName]?.align : 'text-right'}`
                                 : `whitespace-normal ${customCol && customCol[columnName]?.align ? customCol[columnName]?.align : !rawValue ? 'text-center' : 'text-left'}`
                             }`}
                             style={{
                               fontSize: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.td : '12px' : '10.5px',
-                              fontWeight: customCol[columnName]?.weight ? 600 : fontWeight.td,
+                              fontWeight: activeTable === rawValue || customCol[columnName]?.weight ? 600 : fontWeight.td,
                               minWidth: `${stateGlobals.screen_md || customCol[columnName]?.overflow ? cell.column.getSize() + (customCol[columnName]?.minSize - (customCol[columnName]?.overflow && stateGlobals.screen_md ? customCol[columnName]?.minSize*0.3 : 0) || 0) : cell.column.getSize() - 40}px`,
                               maxWidth: `${cell.column.getSize() + (customCol[columnName]?.maxSize - (customCol[columnName]?.overflow && stateGlobals.screen_md ? customCol[columnName]?.maxSize*0.3 : 0) || 100)}px`,
                               // backgroundColor: bgColor,

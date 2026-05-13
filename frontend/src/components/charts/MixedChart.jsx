@@ -116,14 +116,34 @@ const MixedChart = ({
             <div style="font-weight: 500; font-size: ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '13' : '12' : '11'}px; color: rgba(0, 0, 0, 0.7);">
               ${params[0].name}
             </div>
-            ${params.map(p => `
+            ${params.map(p => {
+              const isLine = p.seriesType === 'line';
+              const markerStyle = isLine
+                ? `
+                  display:inline-block;
+                  width:10px;
+                  height:10px;
+                  border-radius:50%;
+                  background-color:${Array.isArray(p.color) ? p.color[0] : p.color || '#999'};
+                  margin-right:6px;
+                  flex-shrink:0;
+                `
+                : `
+                  display:inline-block;
+                  width:10px;
+                  height:10px;
+                  border-radius:2.5px;
+                  background-color:${Array.isArray(p.color) ? p.color[0] : p.color || '#999'};
+                  margin-right:6px;
+                  flex-shrink:0;
+                `;
+              return `
               <div style="margin: 2px 0; display: flex; align-items: center;">
-                ${p.marker}
+                <span style="${markerStyle}"></span>
                 <span style="font-weight: 500; font-size: ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '12' : '11' : '10.5'}px; margin-right: 4px; color: rgba(0, 0, 0, 0.7);">${p.seriesName}:</span> 
                 <span style="font-size: ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '12' : '11' : '10.5'}px; font-weight: 400; color: rgba(0, 0, 0, 0.7);">${typeof p.value === 'number' ? formatNumber(p.value, { isPercent: p.seriesName.includes('%') }) : (p.value || '-')}
                 </span>
-              </div>
-            `).join('')}
+              </div>`}).join('')}
           </div>
         `;
       }

@@ -175,10 +175,19 @@ const LineChart = ({
   }, []);
 
   const [activeLine, setActiveLine] = React.useState('');
+  const [hoverLine, setHoverLine] = React.useState('');
   const [inActiveLine, setInActiveLine] = React.useState(false);
   const [click, setClick] = React.useState(false);
   
   const onEvents = {
+    mouseover: (params) => {
+      if (params.componentType === 'series') {
+        setHoverLine(params.seriesName);
+      }
+    },
+    globalout: () => {
+      setHoverLine('');
+    },
     click: (params) => {
       if (params.componentType === 'series' && crossFilter) {
         const crossFilterValue = params.seriesName;
@@ -276,6 +285,7 @@ const LineChart = ({
             </div>
             ${visibleParams.map(p => {
               const percent = total > 0 ? (p.value / total * 100).toFixed(2) : 0;
+              const bold = hoverLine === p.seriesName;
               
               return `
                 <div style="margin: 2px 0; display: flex; align-items: center;">
@@ -287,8 +297,8 @@ const LineChart = ({
                     margin-right: 6px;
                     flex-shrink: 0;
                   "></span>
-                  <span style="font-weight: 500; font-size: ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '12' : '11' : '10.5'}px; margin-right: 4px; color: rgba(0, 0, 0, 0.7);">${p.seriesName}:</span> 
-                  <span style="font-size: ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '12' : '11' : '10.5'}px; font-weight: 400; color: rgba(0, 0, 0, 0.7);">
+                  <span style="font-weight: ${bold ? '700' : '500'}; font-size: ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '12' : '11' : '10.5'}px; margin-right: 4px; color: rgba(0, 0, 0, 0.7);">${p.seriesName}:</span> 
+                  <span style="font-size: ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '12' : '11' : '10.5'}px; font-weight: ${bold ? '600' : '400'}; color: rgba(0, 0, 0, 0.7);">
                     ${p.value.toLocaleString(undefined, { maximumFractionDigits: (nameChart.includes('%') ? 2 : 0) })} <span style="font-size: ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '11' : '10.5' : '10'}px;">(${percent}%)</span>
                   </span>
                 </div>

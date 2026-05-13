@@ -172,7 +172,8 @@ export const CUSTOM_CHART = {
           'CHƯƠNG TRÌNH': {weight: 600, sticky: true, minSize: 70, maxSize: 180, crossFilter: 'programs'},
           'KÊNH': {minSize: 0, maxSize: 30, crossFilter: 'channels'},
           'MÔ TẢ': {minSize: 70},
-          'THỂ LOẠI': {minSize: 70, crossFilter: 'firstLevels'}
+          'THỂ LOẠI': {minSize: 70, crossFilter: 'firstLevels'},
+          'Live/TSV': {crossFilter: 'events'}
         }
     }
   },

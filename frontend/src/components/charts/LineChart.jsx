@@ -175,18 +175,18 @@ const LineChart = ({
   }, []);
 
   const [activeLine, setActiveLine] = React.useState('');
-  const [hoverLine, setHoverLine] = React.useState('');
+  const hoverLineRef = React.useRef('');
   const [inActiveLine, setInActiveLine] = React.useState(false);
   const [click, setClick] = React.useState(false);
   
   const onEvents = {
     mouseover: (params) => {
       if (params.componentType === 'series') {
-        setHoverLine(params.seriesName);
+        hoverLineRef.current = params.seriesName;
       }
     },
     globalout: () => {
-      setHoverLine('');
+      hoverLineRef.current = '';
     },
     click: (params) => {
       if (params.componentType === 'series' && crossFilter) {
@@ -285,7 +285,7 @@ const LineChart = ({
             </div>
             ${visibleParams.map(p => {
               const percent = total > 0 ? (p.value / total * 100).toFixed(2) : 0;
-              const bold = hoverLine === p.seriesName;
+              const bold = hoverLineRef.current === p.seriesName;
               
               return `
                 <div style="margin: 2px 0; display: flex; align-items: center;">

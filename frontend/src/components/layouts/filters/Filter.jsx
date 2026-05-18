@@ -296,7 +296,7 @@ const Filter = ({ filters, horizontalFixed=false
       setStateGlobals(prev => ({...prev, isOpen: !prev.isOpen}))
     }
 
-    setCrossFilters({...crossFilters, skipNext: null});
+    setCrossFilters({...crossFilters, main: null, skipNext: null});
   };
 
   const onReset = () => {

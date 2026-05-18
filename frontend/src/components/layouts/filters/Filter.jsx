@@ -288,6 +288,8 @@ const Filter = ({ filters, horizontalFixed=false
     if(stateGlobals.screen_md) {
       setStateGlobals(prev => ({...prev, isOpen: !prev.isOpen}))
     }
+
+    setCrossFilters({...crossFilters, skipNext: null});
   };
 
   const onReset = () => {

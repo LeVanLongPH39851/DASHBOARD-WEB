@@ -1,28 +1,36 @@
 import { useApi } from './useApi';
 import * as getChart from '../api/dashboardApiSpot';
-import { useDashboardFilters } from '../context/DashboardFilterContext';
+import { useDashboardFilters, useDashboardCrossFilters } from '../context/DashboardFilterContext';
 
-const createChartHook = (apiFn) => () => {
+const createChartHook = (apiFn, keyMain = '') => () => {
   const { appliedFilters } = useDashboardFilters();
-  return useApi(apiFn, [appliedFilters]);
+  const { crossFilters } = useDashboardCrossFilters();
+
+  const shouldSkip = crossFilters?.skipNext === keyMain || (crossFilters?.main && keyMain === crossFilters.main);
+
+  return useApi(
+    apiFn,
+    [appliedFilters, crossFilters],
+    { shouldSkip }
+  );
 };
 
 // ===== TOP 10 =====
 export const useTop10AllTableChartProductReturnApi = () =>
-  createChartHook(getChart.getTop10AllTableChartProduct)();
+  createChartHook(getChart.getTop10AllTableChartProduct, 'top10ProductData')();
 
 export const useTop10AllTableChartCampaignReturnApi = () =>
-  createChartHook(getChart.getTop10AllTableChartCampaign)();
+  createChartHook(getChart.getTop10AllTableChartCampaign, 'top10CampaignData')();
 
 export const useTop10AllTableChartBrandReturnApi = () =>
-  createChartHook(getChart.getTop10AllTableChartBrand)();
+  createChartHook(getChart.getTop10AllTableChartBrand, 'top10BrandData')();
 
 // ===== SPEND VND =====
 export const useSpendVNDPieChartFirstLevelReturnApi = () =>
-  createChartHook(getChart.getSpendVNDPieChartFirstLevel)();
+  createChartHook(getChart.getSpendVNDPieChartFirstLevel, 'pieFirstLevelData')();
 
 export const useSpendVNDPieChartChannelReturnApi = () =>
-  createChartHook(getChart.getSpendVNDPieChartChannel)();
+  createChartHook(getChart.getSpendVNDPieChartChannel, 'pieChannelData')();
 
 export const useSpendVNDNumberChartReturnApi = () =>
   createChartHook(getChart.getSpendVNDNumberChart)();
@@ -31,10 +39,10 @@ export const useSpendVNDBarChartDateReturnApi = () =>
   createChartHook(getChart.getSpendVNDBarChartDate)();
 
 export const useSpendVNDBarChartAdvertiserReturnApi = () =>
-  createChartHook(getChart.getSpendVNDBarChartAdvertiser)();
+  createChartHook(getChart.getSpendVNDBarChartAdvertiser, 'barAdvertiserData')();
 
 export const useSpendVNDBarChartAdvertiserChannelReturnApi = () =>
-  createChartHook(getChart.getSpendVNDBarChartAdvertiserChannel)();
+  createChartHook(getChart.getSpendVNDBarChartAdvertiserChannel, 'barAdvertiserChannelData')();
 
 // ===== SPEND USD =====
 export const useSpendUSDNumberChartReturnApi = () =>
@@ -44,61 +52,61 @@ export const useSpendUSDBarChartDateReturnApi = () =>
   createChartHook(getChart.getSpendUSDBarChartDate)();
 
 export const useSpendUSDBarChartAdvertiserReturnApi = () =>
-  createChartHook(getChart.getSpendUSDBarChartAdvertiser)();
+  createChartHook(getChart.getSpendUSDBarChartAdvertiser, 'barAdvertiserData')();
 
 export const useSpendUSDBarChartAdvertiserChannelReturnApi = () =>
-  createChartHook(getChart.getSpendUSDBarChartAdvertiserChannel)();
+  createChartHook(getChart.getSpendUSDBarChartAdvertiserChannel, 'barAdvertiserChannelData')();
 
 // ===== GRP =====
 export const useGRPPieChartChannelReturnApi = () =>
-  createChartHook(getChart.getGRPPieChartChannel)();
+  createChartHook(getChart.getGRPPieChartChannel, 'pieChannelData')();
 
 // ===== DURATION SPOT =====
 export const useDurationSpotPieChartLenghtReturnApi = () =>
   createChartHook(getChart.getDurationSpotPieChartLenght)();
 
 export const useDurationSpotPieChartFirstLevelReturnApi = () =>
-  createChartHook(getChart.getDurationSpotPieChartFirstLevel)();
+  createChartHook(getChart.getDurationSpotPieChartFirstLevel, 'pieFirstLevelData')();
 
 export const useDurationSpotPieChartChannelReturnApi = () =>
-  createChartHook(getChart.getDurationSpotPieChartChannel)();
+  createChartHook(getChart.getDurationSpotPieChartChannel, 'pieChannelData')();
 
 export const useDurationSpotNumberChartReturnApi = () =>
   createChartHook(getChart.getDurationSpotNumberChart)();
 
 // ===== COUNT SPOT =====
 export const useCountSpotPieChartFirstLevelReturnApi = () =>
-  createChartHook(getChart.getCountSpotPieChartFirstLevel)();
+  createChartHook(getChart.getCountSpotPieChartFirstLevel, 'pieFirstLevelData')();
 
 export const useCountSpotPieChartChannelReturnApi = () =>
-  createChartHook(getChart.getCountSpotPieChartChannel)();
+  createChartHook(getChart.getCountSpotPieChartChannel, 'pieChannelData')();
 
 export const useCountSpotNumberChartReturnApi = () =>
   createChartHook(getChart.getCountSpotNumberChart)();
 
 export const useCountSpotBarChartAdvertiserReturnApi = () =>
-  createChartHook(getChart.getCountSpotBarChartAdvertiser)();
+  createChartHook(getChart.getCountSpotBarChartAdvertiser, 'barAdvertiserData')();
 
 export const useCountSpotBarChartAdvertiserChannelReturnApi = () =>
-  createChartHook(getChart.getCountSpotBarChartAdvertiserChannel)();
+  createChartHook(getChart.getCountSpotBarChartAdvertiserChannel, 'barAdvertiserChannelData')();
 
 export const useAdcodeTableChartProductReturnApi = () =>
-  createChartHook(getChart.getAdcodeTableChartProduct)();
+  createChartHook(getChart.getAdcodeTableChartProduct, 'adcodeProductData')();
 
 export const useAdcodeTableChartProgramReturnApi = () =>
-  createChartHook(getChart.getAdcodeTableChartProgram)();
+  createChartHook(getChart.getAdcodeTableChartProgram, 'adcodeProgramData')();
 
 export const useCountPieChartTimebandReturnApi = () =>
   createChartHook(getChart.getCountPieChartTimeband)();
 
 export const useSpendVNDBarChartChannelReturnApi = () =>
-  createChartHook(getChart.getSpendVNDBarChartChannel)();
+  createChartHook(getChart.getSpendVNDBarChartChannel, 'spendVNDBarChannelData')();
 
 export const useSpendVNDBarChartProgramReturnApi = () =>
-  createChartHook(getChart.getSpendVNDBarChartProgram)();
+  createChartHook(getChart.getSpendVNDBarChartProgram, 'spendVNDBarProgramData')();
 
 export const useSpendVNDBarChartTimebandReturnApi = () =>
-  createChartHook(getChart.getSpendVNDBarChartTimeband)();
+  createChartHook(getChart.getSpendVNDBarChartTimeband, 'spendVNDBarTimebandData')();
 
 export const useSpendVNDPivotTableChartChannelFirstLevelReturnApi = () =>
   createChartHook(getChart.getSpendVNDPivotTableChartChannelFirstLevel)();
@@ -107,7 +115,7 @@ export const useSpendVNDPivotTableChartChannelTimebandReturnApi = () =>
   createChartHook(getChart.getSpendVNDPivotTableChartChannelTimeband)();
 
 export const useSpendVNDTableChartAdvertiserReturnApi = () =>
-  createChartHook(getChart.getSpendVNDTableChartAdvertiser)();
+  createChartHook(getChart.getSpendVNDTableChartAdvertiser, 'spendVNDTableAdvertiserData')();
 
 // ===== COUNT PIVOT =====
 export const useCountPivotTableChartCampaignWeekReturnApi = () =>
@@ -115,10 +123,10 @@ export const useCountPivotTableChartCampaignWeekReturnApi = () =>
 
 // ===== GRP =====
 export const useGrpBarChartWeekBrandReturnApi = () =>
-  createChartHook(getChart.getGrpBarChartWeekBrand)();
+  createChartHook(getChart.getGrpBarChartWeekBrand, 'grpBarWeekBrandData')();
 
 export const useGrpBarChartRegionalBrandReturnApi = () =>
-  createChartHook(getChart.getGrpBarChartRegionalBrand)();
+  createChartHook(getChart.getGrpBarChartRegionalBrand, 'grpBarRegionalBrandData')();
 
 export const useGrpPivotTableChartCampaignWeekReturnApi = () =>
   createChartHook(getChart.getGrpPivotTableChartCampaignWeek)();
@@ -132,10 +140,10 @@ export const useReachPivotTableChartCampaignWeekReturnApi = () =>
 
 // ===== SPEND VND (BRAND) =====
 export const useSpendVNDBarChartBrandChannelReturnApi = () =>
-  createChartHook(getChart.getSpendVNDBarChartBrandChannel)();
+  createChartHook(getChart.getSpendVNDBarChartBrandChannel, 'barBrandChannelData')();
 
 export const useSpendVNDBarChartBrandFirstLevelReturnApi = () =>
-  createChartHook(getChart.getSpendVNDBarChartBrandFirstLevel)();
+  createChartHook(getChart.getSpendVNDBarChartBrandFirstLevel, 'barBrandFirstLevelData')();
 
 export const useSpendVNDBarChartBrandTimebandReturnApi = () =>
   createChartHook(getChart.getSpendVNDBarChartBrandTimeband)();
@@ -145,10 +153,10 @@ export const useSpendVNDPieChartAdvertiserReturnApi = () =>
   createChartHook(getChart.getSpendVNDPieChartAdvertiser)();
 
 export const useGrpBarChartBrandChannelReturnApi = () =>
-  createChartHook(getChart.getGrpBarChartBrandChannel)();
+  createChartHook(getChart.getGrpBarChartBrandChannel, 'barBrandChannelData')();
 
 export const useGrpBarChartBrandFirstLevelReturnApi = () =>
-  createChartHook(getChart.getGrpBarChartBrandFirstLevel)();
+  createChartHook(getChart.getGrpBarChartBrandFirstLevel, 'barBrandFirstLevelData')();
 
 export const useGrpBarChartBrandTimebandReturnApi = () =>
   createChartHook(getChart.getGrpBarChartBrandTimeband)();
@@ -157,10 +165,10 @@ export const useGrpPieChartAdvertiserReturnApi = () =>
   createChartHook(getChart.getGrpPieChartAdvertiser)();
 
 export const useReachBarChartBrandChannelReturnApi = () =>
-  createChartHook(getChart.getReachBarChartBrandChannel)();
+  createChartHook(getChart.getReachBarChartBrandChannel, 'barBrandChannelData')();
 
 export const useReachBarChartBrandFirstLevelReturnApi = () =>
-  createChartHook(getChart.getReachBarChartBrandFirstLevel)();
+  createChartHook(getChart.getReachBarChartBrandFirstLevel, 'barBrandFirstLevelData')();
 
 export const useReachBarChartBrandTimebandReturnApi = () =>
   createChartHook(getChart.getReachBarChartBrandTimeband)();
@@ -170,16 +178,16 @@ export const useReachPieChartAdvertiserReturnApi = () =>
 
 // ===== ALL TABLE =====
 export const useAllTableChartBrandReturnApi = () =>
-  createChartHook(getChart.getAllTableChartBrand)();
+  createChartHook(getChart.getAllTableChartBrand, 'allTableBrandData')();
 
 export const useAllTableChartBrandProgramReturnApi = () =>
-  createChartHook(getChart.getAllTableChartBrandProgram)();
+  createChartHook(getChart.getAllTableChartBrandProgram, 'allTableBrandProgramData')();
 
 export const useAllTableChartDeviceReturnApi = () =>
   createChartHook(getChart.getAllTableChartDevice)();
 
 export const useAllTableChartMonitoringReturnApi = () =>
-  createChartHook(getChart.getAllTableChartMonitoring)();
+  createChartHook(getChart.getAllTableChartMonitoring, 'allTableMonitoringData')();
 
 export const useMaxInsertReturnApi = () => {
   return useApi(getChart.getMaxInsert);

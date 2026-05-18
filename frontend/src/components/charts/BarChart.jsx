@@ -239,7 +239,7 @@ const BarChart = ({
         } else {
           var crossFilterValue = params.name.replace("\n", ' ');
         }
-        const crossFilterValues = [crossFilterValue];
+        const crossFilterValues = [crossFilter === 'timebands' ? crossFilterValue.replace(/(\d{1,2})\s*-\s*(\d{1,2})/g, (_, a, b) => `${String(a).padStart(2, '0')}h - ${String(b).padStart(2, '0')}h`) : crossFilterValue];
         if (appliedFilters?.[crossFilter]?.[0] !== crossFilterValues[0]) {
           const transformed = {...appliedFilters, [crossFilter]: crossFilterValues};
           setAppliedFilters(transformed);
@@ -555,7 +555,7 @@ const BarChart = ({
           value: numValue,
           itemStyle: {
             barBorderRadius,
-            borderWidth: isActive ? stack ? 1 : 2 : 0,
+            borderWidth: isActive && numValue > 0 ? stack ? 1 : 2 : 0,
             borderColor: isActive ? 'rgba(255, 255, 255, 1)': 'transparent',
             shadowBlur: isActive ? 15 : 0,
             shadowColor: isActive ? !stateGlobals.darkMode ? 'rgba(0,0,0,0.15)' : 'rgba(255,255,255,0.2)' : 'transparent',

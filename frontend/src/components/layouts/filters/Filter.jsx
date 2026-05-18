@@ -112,9 +112,16 @@ const Filter = ({ filters, horizontalFixed=false
     label: item[field],
   }));
 
-  const ALL_PROVINCES = toOptions(filters?.filterProvince, 'province');
-  const ALL_PROGRAMS = toOptions(filters?.filterProgram, 'program_name');
   const FILTER_SESSION_KEY = 'dashboard_filters_ratings';
+  const FILTERS = 'filter_sessions_ratings';
+
+  var filterSessions = JSON.parse(sessionStorage.getItem(FILTERS)) || {};
+  const ALL_PROVINCES = toOptions(filters?.filterProvince, 'province');
+  if (ALL_PROVINCES[0].value) filterSessions.provinces = ALL_PROVINCES;
+  const ALL_PROGRAMS = toOptions(filters?.filterProgram, 'program_name');
+  if (ALL_PROGRAMS[0].value) filterSessions.programs = ALL_PROGRAMS;
+  
+  sessionStorage.setItem(FILTERS, JSON.stringify(filterSessions))
 
   const { appliedFilters, setAppliedFilters} = useDashboardFilters();
   const { filterValues, setFilterValues } = useDashboardFilterValues();
@@ -197,14 +204,14 @@ const Filter = ({ filters, horizontalFixed=false
       days: ALL_DAYS,
       channels: ALL_CHANNELS,
       events: ALL_EVENTS,
-      provinces: ALL_PROVINCES,
+      provinces: ALL_PROVINCES[0].value ? ALL_PROVINCES : sessionStorage.getItem(FILTERS) !== '{}' ? JSON.parse(sessionStorage.getItem(FILTERS)).provinces : ALL_PROVINCES,
       regionals: ALL_REGIONALS,
       keyCities: ALL_KEY_CITIES,
       timebands: ALL_TIMEBANDS,
       firstLevels: ALL_FIRST_LEVELS,
-      programs: ALL_PROGRAMS
+      programs: ALL_PROGRAMS[0].value ? ALL_PROGRAMS : sessionStorage.getItem(FILTERS) !== '{}' ? JSON.parse(sessionStorage.getItem(FILTERS)).programs : ALL_PROGRAMS
     };
-
+    
     sessionStorage.setItem(FILTER_SESSION_KEY, JSON.stringify(appliedFilters));
 
     const transformed = {
@@ -297,6 +304,7 @@ const Filter = ({ filters, horizontalFixed=false
     setFilterValues(null);
     setCrossFilters(null);
     sessionStorage.removeItem(FILTER_SESSION_KEY);
+    sessionStorage.removeItem(FILTERS);
 
     if(stateGlobals.screen_md) {
       setStateGlobals(prev => ({...prev, isOpen: !prev.isOpen}))

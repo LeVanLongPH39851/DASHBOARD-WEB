@@ -7,7 +7,7 @@ const ClearSet = (setFilterValues, setAppliedFilters, setCrossFilters, keyFilter
   setFilterValues(prev => ({ ...prev, [keyFilter]: [] }));
   setAppliedFilters(prev => ({ ...prev, [keyFilter]: [] }));
   setCrossFilters(prev => {
-    const { [keyFilter]: _, main: __, ...rest } = prev || {};
+    const { [keyFilter]: _, main: __, skipNext: ___, ...rest } = prev || {};
     return rest;
     });
 };

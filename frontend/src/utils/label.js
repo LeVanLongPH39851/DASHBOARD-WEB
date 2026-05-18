@@ -134,7 +134,7 @@ export const FILTER_LABEL = {
   'timebands': 'Khung giờ',
   'days': 'Nhóm ngày',
   'programs': 'Chương trình',
-  'adCodes': 'Adscode',
+  'adCodes': 'Adcode',
   'spotTypes': 'Loại spot',
   'groups': 'Ngành hàng',
   'advertisers': 'Nhà quảng cáo',

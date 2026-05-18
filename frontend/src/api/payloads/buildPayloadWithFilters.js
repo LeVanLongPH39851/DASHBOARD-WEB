@@ -19,19 +19,21 @@ const buildQueriesFilters = ({ column, values }) => {
 };
 
 const buildQueriesRangeFilters = ({ column, startHours, startMinutes, op='<=' }) => {
+  if (!startHours && !startMinutes) return null;
   if (startHours?.min === 0 && startHours?.max === 23 && startMinutes?.min === 0 && startMinutes?.max === 59) return null;
-  
+
   return [{
     col: column,
     op: '>=',
-    val: startHours?.min.toString().padStart(2, '0') + ':' + startMinutes?.min.toString().padStart(2, '0')
+    val: (startHours?.min ? startHours?.min.toString().padStart(2, '0') : '00') + ':' + (startMinutes?.min ? startMinutes?.min.toString().padStart(2, '0') : '00')
   },
   {
     col: column,
     op: op,
-    val: startHours?.max.toString().padStart(2, '0') + ':' + startMinutes?.max.toString().padStart(2, '0')
+    val: (startHours?.max ? startHours?.max.toString().padStart(2, '0') : '23') + ':' + (startMinutes?.max ? startMinutes?.max.toString().padStart(2, '0') : '59')
   }];
 };
+
 
 const appendAllFilters = (queries, filterState, disabledFilters) => {
   if (!queries || !filterState) return queries;

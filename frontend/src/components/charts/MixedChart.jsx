@@ -98,6 +98,10 @@ const MixedChart = ({
       trigger: 'axis',
       axisPointer: { 
         type: 'cross',
+        label: {
+          backgroundColor: 'rgba(255, 56, 60, 1)',
+          color: 'rgba(255, 255, 255, 0.9)'
+        },
         crossStyle: {
           color: !stateGlobals.darkMode ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255, 255, 255, 0.5)'
         }

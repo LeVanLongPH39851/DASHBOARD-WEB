@@ -5,16 +5,15 @@ import iconArrowUpGrayDark from '../../../../assets/icon_arrow_up_gray_dark.png'
 import { useDashboardStateGlobals } from '../../../../context/DashboardFilterContext';
 
 const RangeFilter = ({
-  value = { min: '', max: '' },
+  value = { min: 0, max: 1439 },
   onChange,
   label,
   min = 0,
-  max = 60,
+  max = 1439,
   step = 1,
   disabled = false,
   marginBottom,
   horizontalFixed=false,
-  formatValue = (v) => v?.toLocaleString?.() ?? v,
   minGap = 0
 }) => {
   const { stateGlobals } = useDashboardStateGlobals();
@@ -22,20 +21,33 @@ const RangeFilter = ({
   const openFilter = sessionStorage.getItem('open_filters') ? JSON.parse(sessionStorage.getItem('open_filters')).includes(label) : false;
   const [isOpenFilter, setIsOpenFilter] = useState(openFilter);
 
-  const normalizeInt = (val, fallback) => {
-    if (val === '') return '';
-    const parsed = parseInt(val, 10);
-    return Number.isNaN(parsed) ? fallback : parsed;
+  const clamp = (val, minVal, maxVal) => Math.min(Math.max(val, minVal), maxVal);
+
+  const toTime = (minutes) => {
+    if (minutes === '' || minutes === null || minutes === undefined) return '';
+    const m = Number(minutes);
+    if (Number.isNaN(m)) return '';
+    const hh = String(Math.floor(m / 60)).padStart(2, '0');
+    const mm = String(m % 60).padStart(2, '0');
+    return `${hh}:${mm}`;
   };
 
-  const clamp = (val, minVal, maxVal) => Math.min(Math.max(val, minVal), maxVal);
+  const timeToSlider = (time) => {
+  if (!time || !/^\d{2}:\d{2}$/.test(time)) return null;
+    const [hh, mm] = time.split(':').map(Number);
+    return hh * 60 + mm;
+  };
+
+  const defaultFormatValue = (v) => toTime(v);
 
   const [localMin, setLocalMin] = useState(value?.min ?? min);
   const [localMax, setLocalMax] = useState(value?.max ?? max);
+  const [localMinText, setLocalMinText] = useState(toTime(value?.min ?? min));
+  const [localMaxText, setLocalMaxText] = useState(toTime(value?.max ?? max));
 
   useEffect(() => {
-    const nextMinRaw = normalizeInt(value?.min, min);
-    const nextMaxRaw = normalizeInt(value?.max, max);
+    const nextMinRaw = value?.min ?? min;
+    const nextMaxRaw = value?.max ?? max;
 
     let nextMin = clamp(nextMinRaw, min, max - minGap);
     let nextMax = clamp(nextMaxRaw, min + minGap, max);
@@ -50,10 +62,12 @@ const RangeFilter = ({
 
     setLocalMin(nextMin);
     setLocalMax(nextMax);
-  }, [value, min, max]);
+    setLocalMinText(toTime(nextMin));
+    setLocalMaxText(toTime(nextMax));
+  }, [value, min, max, minGap]);
 
-  const safeMin = normalizeInt(localMin, min);
-  const safeMax = normalizeInt(localMax, max);
+  const safeMin = Number(localMin);
+  const safeMax = Number(localMax);
 
   const minPercent = useMemo(
     () => ((safeMin - min) / (max - min)) * 100,
@@ -76,6 +90,7 @@ const RangeFilter = ({
     const parsedMin = parseInt(newMin, 10);
     const nextMin = Math.min(parsedMin, safeMax - minGap);
     setLocalMin(nextMin);
+    setLocalMinText(toTime(nextMin));
     onChange?.({ min: nextMin, max: safeMax });
   };
 
@@ -90,7 +105,46 @@ const RangeFilter = ({
     const parsedMax = parseInt(newMax, 10);
     const nextMax = Math.max(parsedMax, safeMin + minGap);
     setLocalMax(nextMax);
+    setLocalMaxText(toTime(nextMax));
     onChange?.({ min: safeMin, max: nextMax });
+  };
+
+  const handleMinInputText = (newMin) => {
+    if (disabled) return;
+    if (newMin.length > 5 || (newMin[0] && !/^[0-2]/.test(newMin[0])) || (newMin[1] && (newMin[0] < 2 ? !/\d/.test(newMin[1]) : !/^[0-4]/.test(newMin[1]))) || (newMin[2] && newMin[2] !== ':') || (newMin[3] && !/^[0-5]/.test(newMin[3])) || (newMin[4] && !/\d/.test(newMin[4]))) return;
+    const nextMin = timeToSlider(newMin);
+    const currentMax = timeToSlider(localMaxText);
+    if (nextMin !== null && currentMax !== null && nextMin > currentMax) return;
+    setLocalMinText(newMin);
+    if (newMin.length == 5) {
+      const parsedMin = parseInt(nextMin, 10);
+      const nextMinFinal = Math.min(parsedMin, safeMax - minGap);
+      if (nextMin !== null) setLocalMin(nextMinFinal);
+      if (nextMin !== null) onChange?.({ min: nextMinFinal, max: safeMax });
+    }
+  };
+
+  const handleMaxInputText = (newMax) => {
+    if (disabled) return;
+    if (newMax.length > 5 || (newMax[0] && !/^[0-2]/.test(newMax[0])) || (newMax[1] && (newMax[0] < 2 ? !/\d/.test(newMax[1]) : !/^[0-4]/.test(newMax[1]))) || (newMax[2] && newMax[2] !== ':') || (newMax[3] && !/^[0-5]/.test(newMax[3])) || (newMax[4] && !/\d/.test(newMax[4]))) return;
+    const nextMax = timeToSlider(newMax);
+    const currentMin = timeToSlider(localMinText);
+    if (nextMax !== null && currentMin !== null && nextMax < currentMin) return;
+    setLocalMaxText(newMax);
+    if (newMax.length == 5) {
+      const parsedMax = parseInt(nextMax, 10);
+      const nextMaxFinal = Math.max(parsedMax, safeMin + minGap);
+      if (nextMax !== null) setLocalMax(nextMaxFinal);
+      if (nextMax !== null) onChange?.({ min: safeMin, max: nextMaxFinal });
+    }
+  };
+
+  const next = (newValue, state) => {
+    if (disabled) return;
+  };
+
+  const prev = (newValue, state) => {
+    if (disabled) return;
   };
 
   return (
@@ -105,28 +159,32 @@ const RangeFilter = ({
       <div className={!horizontalFixed ? 'transition-all duration-300 relative filter-relative overflow-hidden' : ''} data-initial-height="match">
         <div className={!horizontalFixed ? `transition-all duration-300 absolute w-full left-0 filter-absolute ${isOpenFilter ? 'visible opacity-100 top-0' : 'invisible opacity-0 -top-1/2'}` : ''}>
           {!horizontalFixed && (<div className='flex items-center gap-2 max-lg:gap-1.5 mb-1'>
-                                    <input
-                                    type='number'
-                                    value={localMin === '' ? '' : localMin}
-                                    min={min}
-                                    max={safeMax - minGap}
-                                    required
-                                    step={step}
-                                    disabled={disabled}
-                                    onChange={(e) => handleMinInput(e.target.value)}
-                                    className='w-1/2 px-3 py-2 max-lg:py-1.75 max-md:py-1.5 text-sm max-lg:text-[13px] max-md:text-xs rounded-xl border border-background-line-gray dark:border-background-white-15 bg-background-light dark:bg-background-white-8 outline-none text-color-black-50 dark:text-color-white-50 transition-all duration-300'
-                                    />
-                                    <input
-                                    type='number'
-                                    value={localMax === '' ? '' : localMax}
-                                    min={safeMin + minGap}
-                                    max={max}
-                                    required
-                                    step={step}
-                                    disabled={disabled}
-                                    onChange={(e) => handleMaxInput(e.target.value)}
-                                    className='w-1/2 px-3 py-2 max-lg:py-1.75 max-md:py-1.5 text-sm max-lg:text-[13px] max-md:text-xs rounded-xl border border-background-line-gray dark:border-background-white-15 bg-background-light dark:bg-background-white-8 outline-none text-color-black-50 dark:text-color-white-50 transition-all duration-300'
-                                    />
+                                    <div className='w-1/2 relative'>
+                                      <input
+                                      type='text'
+                                      value={localMinText}
+                                      placeholder='HH:mm'
+                                      required
+                                      disabled={disabled}
+                                      onChange={(e) => handleMinInputText(e.target.value)}
+                                      className='w-full px-3 py-2 max-lg:py-1.75 max-md:py-1.5 text-sm max-lg:text-[13px] max-md:text-xs rounded-xl border border-background-line-gray dark:border-background-white-15 bg-background-light dark:bg-background-white-8 outline-none text-color-black-50 dark:text-color-white-50 transition-all duration-300'
+                                      />
+                                      <figure className={`cursor-pointer transition-all duration-300 absolute top-2.5 max-lg:top-2.25 max-md:top-2 px-1 right-2`}><img src={!stateGlobals.darkMode ? iconArrowUpGray : iconArrowUpGrayDark} className='w-2 max-lg:w-1.75 max-md:w-1.5' alt="Icon Arrow Up Gray" /></figure>
+                                      <figure className={`cursor-pointer transition-all duration-300 absolute bottom-2.5 max-lg:bottom-2.25 px-1 max-md:bottom-2 right-2 rotate-180`}><img src={!stateGlobals.darkMode ? iconArrowUpGray : iconArrowUpGrayDark} className='w-2 max-lg:w-1.75 max-md:w-1.5' alt="Icon Arrow Up Gray" /></figure>
+                                    </div>
+                                    <div className='w-1/2 relative'>
+                                      <input
+                                      type='text'
+                                      value={localMaxText}
+                                      placeholder='HH:mm'
+                                      required
+                                      disabled={disabled}
+                                      onChange={(e) => handleMaxInputText(e.target.value)}
+                                      className='w-full px-3 py-2 max-lg:py-1.75 max-md:py-1.5 text-sm max-lg:text-[13px] max-md:text-xs rounded-xl border border-background-line-gray dark:border-background-white-15 bg-background-light dark:bg-background-white-8 outline-none text-color-black-50 dark:text-color-white-50 transition-all duration-300'
+                                      />
+                                      <figure className={`cursor-pointer transition-all duration-300 absolute top-2.5 max-lg:top-2.25 max-md:top-2 px-1 right-2`}><img src={!stateGlobals.darkMode ? iconArrowUpGray : iconArrowUpGrayDark} className='w-2 max-lg:w-1.75 max-md:w-1.5' alt="Icon Arrow Up Gray" /></figure>
+                                      <figure className={`cursor-pointer transition-all duration-300 absolute bottom-2.5 max-lg:bottom-2.25 px-1 max-md:bottom-2 right-2 rotate-180`}><img src={!stateGlobals.darkMode ? iconArrowUpGray : iconArrowUpGrayDark} className='w-2 max-lg:w-1.75 max-md:w-1.5' alt="Icon Arrow Up Gray" /></figure>
+                                    </div>
                                 </div>)}
           <div className={`relative h-6 max-lg:h-5.5 max-md:h-5 flex items-center ${horizontalFixed ? 'w-34 max-lg:w-32 max-md:w-full' : ''}`}>
             <div className={`absolute w-full h-1.25 max-lg:h-1 max-md:h-1 rounded-full bg-background-black-4 dark:bg-background-white-15`} />
@@ -159,8 +217,8 @@ const RangeFilter = ({
             />
           </div>
           <div className='flex justify-between mt-1 max-lg:mt-0.75 max-md:mt-0 text-xs max-lg:text-[11px] max-md:text-[10px] text-color-black-50 dark:text-color-white-50 transition-all duration-300'>
-            <span>{formatValue(min)}</span>
-            <span>{formatValue(max)}</span>
+            <span>{defaultFormatValue(min)}</span>
+            <span>{defaultFormatValue(max)}</span>
           </div>
         </div>
       </div>

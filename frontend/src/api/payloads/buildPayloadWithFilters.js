@@ -9,6 +9,15 @@ const toTimeRangeString = (startDate, endDate) => {
   return `${start} : ${end}`;
 };
 
+const toTime = (minutes) => {
+  if (minutes === '' || minutes === null || minutes === undefined) return '';
+  const m = Number(minutes);
+  if (Number.isNaN(m)) return '';
+  const hh = String(Math.floor(m / 60)).padStart(2, '0');
+  const mm = String(m % 60).padStart(2, '0');
+  return `${hh}:${mm}`;
+};
+
 const buildQueriesFilters = ({ column, values }) => {
   if (!values || values.length === 0) return null;
   return [{
@@ -18,19 +27,19 @@ const buildQueriesFilters = ({ column, values }) => {
   }];
 };
 
-const buildQueriesRangeFilters = ({ column, startHours, startMinutes, op='<=' }) => {
-  if (!startHours && !startMinutes) return null;
-  if (startHours?.min === 0 && startHours?.max === 23 && startMinutes?.min === 0 && startMinutes?.max === 59) return null;
+const buildQueriesRangeFilters = ({ column1, column2, startHours, op='<=' }) => {
+  if (!startHours) return null;
+  if (startHours?.min === 0 && startHours?.max === 1439) return null;
 
   return [{
-    col: column,
+    col: column1,
     op: '>=',
-    val: (startHours?.min ? startHours?.min.toString().padStart(2, '0') : '00') + ':' + (startMinutes?.min ? startMinutes?.min.toString().padStart(2, '0') : '00')
+    val: toTime(startHours?.min)
   },
   {
-    col: column,
+    col: column2,
     op: op,
-    val: (startHours?.max ? startHours?.max.toString().padStart(2, '0') : '23') + ':' + (startMinutes?.max ? startMinutes?.max.toString().padStart(2, '0') : '59')
+    val: toTime(startHours?.max)
   }];
 };
 
@@ -121,9 +130,9 @@ const appendAllFilters = (queries, filterState, disabledFilters) => {
       key: 'startTime',
       disabledKey: 'startTimeFilters',
       build: () => buildQueriesRangeFilters({
-        column: 'start_time',
-        startHours: filterState.startHours,
-        startMinutes: filterState.startMinutes
+        column1: 'start_time',
+        column2: 'end_time',
+        startHours: filterState.startHours
       }),
     }
   ];

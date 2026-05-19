@@ -227,8 +227,7 @@ const Filter = ({ filters, horizontalFixed=false
           ).filter(Boolean)
         ])
       ),
-      startHours: appliedFilters.startHours || { min: 0, max: 23 },
-      startMinutes: appliedFilters.startMinutes || { min: 0, max: 59 }
+      startHours: appliedFilters.startHours || { min: 0, max: 1439 }
     };
     setFilterValues(transformed);
   }, [appliedFilters]);
@@ -447,23 +446,12 @@ const Filter = ({ filters, horizontalFixed=false
           /></>)}
           
           {stateGlobals.currentTab == DISABLE_TABS.program && <RangeFilter
-            label="Giờ bắt đầu"
+            label="Giờ phát sóng"
             min={0}
-            max={23}
+            max={1439}
             step={1}
-            value={filterValues?.startHours || { min: 0, max: 23 }}
+            value={filterValues?.startHours || { min: 0, max: 1439 }}
             onChange={(selected) => handleFilterChange('startHours', selected)}
-            marginBottom={"mb-4 max-lg:mb-3 max-md:mb-2"}
-            horizontalFixed={horizontalFixed}
-          />}
-
-          {stateGlobals.currentTab == DISABLE_TABS.program && <RangeFilter
-            label="Phút bắt đầu"
-            min={0}
-            max={59}
-            step={1}
-            value={filterValues?.startMinutes || { min: 0, max: 59 }}
-            onChange={(selected) => handleFilterChange('startMinutes', selected)}
             marginBottom={"mb-4 max-lg:mb-3 max-md:mb-2"}
             horizontalFixed={horizontalFixed}
           />}

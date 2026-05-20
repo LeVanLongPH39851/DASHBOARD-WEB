@@ -129,6 +129,18 @@ export const useTotalEventDurationPieChartFirstLevelReturnApi = () =>
 export const useTotalViewDurationPieChartFirstLevelReturnApi = () =>
   createChartHook(getChart.getTotalViewDurationPieChartFirstLevel, 'totalViewDurationPieFirstLevelData')()
 
+export const useRatingReachTableChartRegionalReturnApi = () =>
+  createChartHook(getChart.getRatingReachTableChartRegional, 'ratingReachTableData')()
+
+export const useRatingReachTableChartKeyCityReturnApi = () =>
+  createChartHook(getChart.getRatingReachTableChartKeyCity, 'ratingReachTableData')()
+
+export const useRatingReachTableChartProvinceReturnApi = () =>
+  createChartHook(getChart.getRatingReachTableChartProvince, 'ratingReachTableData')()
+
+export const useRatingReachTableChartOthersReturnApi = () =>
+  createChartHook(getChart.getRatingReachTableChartOthers, 'ratingReachTableData')()
+
 export const useAllTableChartRankReturnApi = () =>
   createChartHook(getChart.getAllTableChartRank, 'allTableRankData')()
 

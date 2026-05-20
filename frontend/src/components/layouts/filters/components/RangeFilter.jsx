@@ -139,12 +139,16 @@ const RangeFilter = ({
     }
   };
 
-  const next = (newValue, state) => {
+  const nextPrev = (state, setState, setStateText, next, start) => {
     if (disabled) return;
-  };
-
-  const prev = (newValue, state) => {
-    if (disabled) return;
+    var newValue = next ? state + 60 : state - 60;
+    newValue = next ? Math.min(newValue, 1439) : Math.max(newValue, 0);
+    const con = start && next ? newValue <= safeMax : !start && !next ? newValue >= safeMin : true;
+    if (con) {
+      setState(newValue);
+      setStateText(toTime(newValue));
+      onChange?.({ min: start ? newValue : safeMin, max: start ? safeMax : newValue});
+    }
   };
 
   return (
@@ -164,29 +168,31 @@ const RangeFilter = ({
                                       type='text'
                                       value={localMinText}
                                       placeholder='HH:mm'
+                                      minLength="5"
                                       required
                                       disabled={disabled}
                                       onChange={(e) => handleMinInputText(e.target.value)}
                                       className='w-full px-3 py-2 max-lg:py-1.75 max-md:py-1.5 text-sm max-lg:text-[13px] max-md:text-xs rounded-xl border border-background-line-gray dark:border-background-white-15 bg-background-light dark:bg-background-white-8 outline-none text-color-black-50 dark:text-color-white-50 transition-all duration-300'
                                       />
-                                      <figure className={`cursor-pointer transition-all duration-300 absolute top-2.5 max-lg:top-2.25 max-md:top-2 px-1 right-2`}><img src={!stateGlobals.darkMode ? iconArrowUpGray : iconArrowUpGrayDark} className='w-2 max-lg:w-1.75 max-md:w-1.5' alt="Icon Arrow Up Gray" /></figure>
-                                      <figure className={`cursor-pointer transition-all duration-300 absolute bottom-2.5 max-lg:bottom-2.25 px-1 max-md:bottom-2 right-2 rotate-180`}><img src={!stateGlobals.darkMode ? iconArrowUpGray : iconArrowUpGrayDark} className='w-2 max-lg:w-1.75 max-md:w-1.5' alt="Icon Arrow Up Gray" /></figure>
+                                      <figure onClick={() => nextPrev(localMin, setLocalMin, setLocalMinText, true, true)} className={`cursor-pointer transition-all duration-300 absolute top-2.5 max-lg:top-2.25 max-md:top-2 px-1 right-2`}><img src={!stateGlobals.darkMode ? iconArrowUpGray : iconArrowUpGrayDark} className='w-2 max-lg:w-1.75 max-md:w-1.5' alt="Icon Arrow Up Gray" /></figure>
+                                      <figure onClick={() => nextPrev(localMin, setLocalMin, setLocalMinText, false, true)} className={`cursor-pointer transition-all duration-300 absolute bottom-2.5 max-lg:bottom-2.25 px-1 max-md:bottom-2 right-2 rotate-180`}><img src={!stateGlobals.darkMode ? iconArrowUpGray : iconArrowUpGrayDark} className='w-2 max-lg:w-1.75 max-md:w-1.5' alt="Icon Arrow Up Gray" /></figure>
                                     </div>
                                     <div className='w-1/2 relative'>
                                       <input
                                       type='text'
                                       value={localMaxText}
+                                      minLength="5"
                                       placeholder='HH:mm'
                                       required
                                       disabled={disabled}
                                       onChange={(e) => handleMaxInputText(e.target.value)}
                                       className='w-full px-3 py-2 max-lg:py-1.75 max-md:py-1.5 text-sm max-lg:text-[13px] max-md:text-xs rounded-xl border border-background-line-gray dark:border-background-white-15 bg-background-light dark:bg-background-white-8 outline-none text-color-black-50 dark:text-color-white-50 transition-all duration-300'
                                       />
-                                      <figure className={`cursor-pointer transition-all duration-300 absolute top-2.5 max-lg:top-2.25 max-md:top-2 px-1 right-2`}><img src={!stateGlobals.darkMode ? iconArrowUpGray : iconArrowUpGrayDark} className='w-2 max-lg:w-1.75 max-md:w-1.5' alt="Icon Arrow Up Gray" /></figure>
-                                      <figure className={`cursor-pointer transition-all duration-300 absolute bottom-2.5 max-lg:bottom-2.25 px-1 max-md:bottom-2 right-2 rotate-180`}><img src={!stateGlobals.darkMode ? iconArrowUpGray : iconArrowUpGrayDark} className='w-2 max-lg:w-1.75 max-md:w-1.5' alt="Icon Arrow Up Gray" /></figure>
+                                      <figure onClick={() => nextPrev(localMax, setLocalMax, setLocalMaxText, true, false)} className={`cursor-pointer transition-all duration-300 absolute top-2.5 max-lg:top-2.25 max-md:top-2 px-1 right-2`}><img src={!stateGlobals.darkMode ? iconArrowUpGray : iconArrowUpGrayDark} className='w-2 max-lg:w-1.75 max-md:w-1.5' alt="Icon Arrow Up Gray" /></figure>
+                                      <figure onClick={() => nextPrev(localMax, setLocalMax, setLocalMaxText, false, false)} className={`cursor-pointer transition-all duration-300 absolute bottom-2.5 max-lg:bottom-2.25 px-1 max-md:bottom-2 right-2 rotate-180`}><img src={!stateGlobals.darkMode ? iconArrowUpGray : iconArrowUpGrayDark} className='w-2 max-lg:w-1.75 max-md:w-1.5' alt="Icon Arrow Up Gray" /></figure>
                                     </div>
                                 </div>)}
-          <div className={`relative h-6 max-lg:h-5.5 max-md:h-5 flex items-center ${horizontalFixed ? 'w-34 max-lg:w-32 max-md:w-full' : ''}`}>
+          <div className={`range-slider relative h-6 max-lg:h-5.5 max-md:h-5 flex items-center ${horizontalFixed ? 'w-34 max-lg:w-32 max-md:w-full' : ''}`}>
             <div className={`absolute w-full h-1.25 max-lg:h-1 max-md:h-1 rounded-full bg-background-black-4 dark:bg-background-white-15`} />
             <div
               className={`absolute h-1.25 max-lg:h-1 max-md:h-1 rounded-full bg-color-neotam dark:bg-color-primary-700`}
@@ -203,7 +209,7 @@ const RangeFilter = ({
               value={localMin}
               disabled={disabled}
               onChange={(e) => handleMinInput(e.target.value)}
-              className={`absolute w-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-3.5 [&::-webkit-slider-thumb]:w-3.5 max-md:[&::-webkit-slider-thumb]:h-3 max-md:[&::-webkit-slider-thumb]:w-3 max-lg:[&::-webkit-slider-thumb]:h-3.25 max-lg:[&::-webkit-slider-thumb]:w-3.25 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-color-neotam dark:[&::-webkit-slider-thumb]:bg-color-primary-700 [&::-webkit-slider-thumb]:cursor-pointer`}
+              className={`range-input range-input-min absolute w-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-3.5 [&::-webkit-slider-thumb]:w-3.5 max-md:[&::-webkit-slider-thumb]:h-3 max-md:[&::-webkit-slider-thumb]:w-3 max-lg:[&::-webkit-slider-thumb]:h-3.25 max-lg:[&::-webkit-slider-thumb]:w-3.25 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-color-neotam dark:[&::-webkit-slider-thumb]:bg-color-primary-700 [&::-webkit-slider-thumb]:cursor-pointer`}
             />
             <input
               type='range'
@@ -213,7 +219,7 @@ const RangeFilter = ({
               value={localMax}
               disabled={disabled}
               onChange={(e) => handleMaxInput(e.target.value)}
-              className={`absolute w-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-3.5 [&::-webkit-slider-thumb]:w-3.5 max-md:[&::-webkit-slider-thumb]:h-3 max-md:[&::-webkit-slider-thumb]:w-3 max-lg:[&::-webkit-slider-thumb]:h-3.25 max-lg:[&::-webkit-slider-thumb]:w-3.25 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-color-neotam dark:[&::-webkit-slider-thumb]:bg-color-primary-700 [&::-webkit-slider-thumb]:cursor-pointer`}
+              className={`range-input range-input-max absolute w-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-3.5 [&::-webkit-slider-thumb]:w-3.5 max-md:[&::-webkit-slider-thumb]:h-3 max-md:[&::-webkit-slider-thumb]:w-3 max-lg:[&::-webkit-slider-thumb]:h-3.25 max-lg:[&::-webkit-slider-thumb]:w-3.25 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-color-neotam dark:[&::-webkit-slider-thumb]:bg-color-primary-700 [&::-webkit-slider-thumb]:cursor-pointer`}
             />
           </div>
           <div className='flex justify-between mt-1 max-lg:mt-0.75 max-md:mt-0 text-xs max-lg:text-[11px] max-md:text-[10px] text-color-black-50 dark:text-color-white-50 transition-all duration-300'>

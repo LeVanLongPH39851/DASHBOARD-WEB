@@ -136,6 +136,18 @@ export const getTotalEventDurationPieChartFirstLevel = (appliedFilters) =>
 export const getTotalViewDurationPieChartFirstLevel = (appliedFilters) =>
   postChart(payloads.totalViewDurationPieChartFirstLevelPayload, appliedFilters, ['timebandFilters'])
 
+export const getRatingReachTableChartRegional = (appliedFilters) =>
+  postChart(payloads.ratingReachTableChartRegionalPayload, appliedFilters, ['timebandFilters'])
+
+export const getRatingReachTableChartKeyCity = (appliedFilters) =>
+  postChart(payloads.ratingReachTableChartKeyCityPayload, appliedFilters, ['timebandFilters'])
+
+export const getRatingReachTableChartProvince = (appliedFilters) =>
+  postChart(payloads.ratingReachTableChartProvincePayload, appliedFilters, ['timebandFilters'])
+
+export const getRatingReachTableChartOthers = (appliedFilters) =>
+  postChart(payloads.ratingReachTableChartOthersPayload, appliedFilters, ['timebandFilters'])
+
 export const getAllTableChartRank = (appliedFilters) =>
   postChart(payloads.allTableChartRankPayload, appliedFilters, ['timebandFilters'])
 

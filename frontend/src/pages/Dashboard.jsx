@@ -762,6 +762,81 @@ const DashboardContent = () => {
                                     />
                                   </div>
                                   <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
+                                    <div className={`p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
+                                      <NameChart nameChart={'Rating và Ave.Reach của thể loại theo thị trường'} description={false} opacity={true} />
+                                      <ChildTabs tabs={[
+                                        {id: CUSTOM_TAB.childTabArea.regional.id, label: CUSTOM_TAB.childTabArea.regional.label,
+                                        content: (
+                                          <TableChart data={!dashboard.isLoading.ratingReachTableRegionalData ? transformTableChartData(dashboard.ratingReachTableRegionalData?.data, dashboard.ratingReachTableRegionalData?.colnames) : 'isLoading'}
+                                                      height={'450px'}
+                                                      fontSize={CUSTOM_CHART.tableChart.fontSize}
+                                                      fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                                      fontWeight={CUSTOM_CHART.tableChart.fontWeight}
+                                                      nameChart={'Rating và Ave.Reach của thể loại theo thị trường'}
+                                                      description={false}
+                                                      displayName={false}
+                                                      showSTT={false}
+                                                      showPagination={true}
+                                                      fullScreen={true}
+                                                      customCol={CUSTOM_CHART.tableChart.tableProgramChannel.programArea.customCol}
+                                                      crossFilter={true}
+                                                      keyChart={'ratingReachTableData'} />
+                                        )},
+                                        {id: CUSTOM_TAB.childTabArea.key_city.id, label: CUSTOM_TAB.childTabArea.key_city.label,
+                                        content: (
+                                          <TableChart data={!dashboard.isLoading.ratingReachTableKeyCityData ? transformTableChartData(dashboard.ratingReachTableKeyCityData?.data, dashboard.ratingReachTableKeyCityData?.colnames) : 'isLoading'}
+                                                      height={'450px'}
+                                                      fontSize={CUSTOM_CHART.tableChart.fontSize}
+                                                      fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                                      fontWeight={CUSTOM_CHART.tableChart.fontWeight}
+                                                      nameChart={'Rating và Ave.Reach của thể loại theo thị trường'}
+                                                      description={false}
+                                                      displayName={false}
+                                                      showSTT={false}
+                                                      showPagination={true}
+                                                      fullScreen={true}
+                                                      customCol={CUSTOM_CHART.tableChart.tableProgramChannel.programArea.customCol}
+                                                      crossFilter={true}
+                                                      keyChart={'ratingReachTableData'} />
+                                        )},
+                                        {id: CUSTOM_TAB.childTabArea.province.id, label: CUSTOM_TAB.childTabArea.province.label,
+                                        content: (
+                                          <TableChart data={!dashboard.isLoading.ratingReachTableProvinceData ? transformTableChartData(dashboard.ratingReachTableProvinceData?.data, dashboard.ratingReachTableProvinceData?.colnames) : 'isLoading'}
+                                                      height={'450px'}
+                                                      fontSize={CUSTOM_CHART.tableChart.fontSize}
+                                                      fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                                      fontWeight={CUSTOM_CHART.tableChart.fontWeight}
+                                                      nameChart={'Rating và Ave.Reach của thể loại theo thị trường'}
+                                                      description={false}
+                                                      displayName={false}
+                                                      showSTT={false}
+                                                      showPagination={true}
+                                                      fullScreen={true}
+                                                      customCol={CUSTOM_CHART.tableChart.tableProgramChannel.programArea.customCol}
+                                                      crossFilter={true}
+                                                      keyChart={'ratingReachTableData'} />
+                                        )},
+                                        {id: CUSTOM_TAB.childTabArea.others.id, label: CUSTOM_TAB.childTabArea.others.label,
+                                        content: (
+                                          <TableChart data={!dashboard.isLoading.ratingReachTableOthersData ? transformTableChartData(dashboard.ratingReachTableOthersData?.data, dashboard.ratingReachTableOthersData?.colnames) : 'isLoading'}
+                                                      height={'450px'}
+                                                      fontSize={CUSTOM_CHART.tableChart.fontSize}
+                                                      fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                                      fontWeight={CUSTOM_CHART.tableChart.fontWeight}
+                                                      nameChart={'Rating và Ave.Reach của thể loại theo thị trường'}
+                                                      description={false}
+                                                      displayName={false}
+                                                      showSTT={false}
+                                                      showPagination={true}
+                                                      fullScreen={true}
+                                                      customCol={CUSTOM_CHART.tableChart.tableProgramChannel.programArea.customCol}
+                                                      crossFilter={true}
+                                                      keyChart={'ratingReachTableData'} />
+                                        )}
+                                        ]} />
+                                    </div>
+                                  </div>
+                                  <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
                                     <TableChart data={!dashboard.isLoading.allTableRankData ? transformTableChartData(dashboard.allTableRankData?.data, dashboard.allTableRankData?.colnames, CUSTOM_CHART.tableChart.tableProgramChannel.programRank.columnSort) : 'isLoading'}
                                                 height={CUSTOM_CHART.tableChart.tableProgramChannel.height}
                                                 fontSize={CUSTOM_CHART.tableChart.fontSize}

@@ -36,6 +36,10 @@ export { aveReachLineChartTimebandRegionalPayload } from './aveReachLineChartTim
 export { ratingTreemapChartChannelPayload } from './ratingTreemapChartChannelPayload';
 export { totalEventDurationPieChartFirstLevelPayload } from './totalEventDurationPieChartFirstLevelPayload';
 export { totalViewDurationPieChartFirstLevelPayload } from './totalViewDurationPieChartFirstLevelPayload';
+export { ratingReachTableChartRegionalPayload } from './ratingReachTableChartRegionalPayload';
+export { ratingReachTableChartKeyCityPayload } from './ratingReachTableChartKeyCityPayload';
+export { ratingReachTableChartProvincePayload } from './ratingReachTableChartProvincePayload';
+export { ratingReachTableChartOthersPayload } from './ratingReachTableChartOthersPayload';
 export { allTableChartRankPayload } from './allTableChartRankPayload';
 export { allTableChartDetailPayload } from './allTableChartDetailPayload';
 export { allTableChartEventPayload } from './allTableChartEventPayload';

@@ -166,6 +166,16 @@ export const CUSTOM_CHART = {
           description: false,
           columnSort: ['program_name', 'channel_name_tvd', 'event_category_name', 'rating', 'rating%', 'ave_reach', 'reach%', 'minute_user_program']
         },
+        programArea: {
+          customCol: {
+            'VÙNG': {weight: 600, sticky: true, minSize: 70, maxSize: 160, crossFilter: 'regionals'},
+            'THÀNH PHỐ LỚN': {weight: 600, sticky: true, minSize: 70, maxSize: 160, crossFilter: 'keyCities'},
+            'TỈNH/TP': {weight: 600, sticky: true, minSize: 70, maxSize: 160, crossFilter: 'provinces'},
+            'TOÀN QUỐC': {weight: 600, sticky: true, minSize: 70, maxSize: 160},
+            'KÊNH': {minSize: 0, maxSize: 30, crossFilter: 'channels'},
+            'THỂ LOẠI': {minSize: 80, crossFilter: 'firstLevels'},
+          }
+        },
         STT: true,
         pagination: true,
         customCol: {

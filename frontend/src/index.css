@@ -184,3 +184,36 @@ html.dark body::-webkit-scrollbar-thumb, html.dark #filter::-webkit-scrollbar-th
 input[type="date"]::-webkit-calendar-picker-indicator {
   opacity: 0;
 }
+
+/* Firefox track */
+.range-slider .range-input::-moz-range-track {
+  height: 5px;
+  background: transparent;
+  border: none;
+  border-radius: 9999px;
+}
+
+/* Firefox thumb */
+.range-slider .range-input::-moz-range-thumb {
+  pointer-events: auto;
+  width: 14px;
+  height: 14px;
+  border-radius: 9999px;
+  border: none;
+  background: #2fc4c6;
+  cursor: pointer;
+}
+
+/* Fix Firefox focus */
+.range-slider .range-input::-moz-focus-outer {
+  border: 0;
+}
+
+/* Optional z-index để 2 thumb không đè nhau khó kéo */
+.range-slider .range-input-min {
+  z-index: 2;
+}
+
+.range-slider .range-input-max {
+  z-index: 3;
+}

@@ -49,9 +49,10 @@ export const LABEL = {
   'Nhãn hàng/ Brand': 'Nhãn hàng',
   'Nhãn': 'Nhãn hàng',
   'Dòng sản phẩm': 'Sản phẩm',
-  'others': 'Thời lượng khác',
+  'others': 'TOÀN QUỐC',
   'Tổng user truy cập VTVgo': 'Tổng user',
-  'Thời lượng (phút)': 'Thời lượng'
+  'Thời lượng (phút)': 'Thời lượng',
+  'key_city': 'THÀNH PHỐ LỚN'
 };
 
 export const LABEL_SPOT = {
@@ -108,7 +109,7 @@ export const LABEL_SPOT = {
   'others': 'Thời lượng khác',
   'Tổng user truy cập VTVgo': 'Tổng user',
   'Thời lượng (phút)': 'Thời lượng',
-  'reach': 'Reach',
+  'reach': 'Reach'
 };
 
 export const LABEL_METRIC = {

@@ -547,6 +547,9 @@ const DashboardContent = () => {
                                         fontWeight={CUSTOM_CHART.tableChart.fontWeight}
                                         labelTables={LABEL_SPOT}
                                         fullScreen={true}
+                                        customCol={{'channel_name_tvd': {crossFilter: 'channels'}}}
+                                        crossFilter={true}
+                                        keyChart='spendVNDPivotChannelFirstLevelData'
                                       />
                                     </div>
                                     <div className='col-span-4 max-md:col-span-10 grid'>
@@ -617,6 +620,9 @@ const DashboardContent = () => {
                                         sortColTimeband={true}
                                         labelTables={LABEL_SPOT}
                                         fullScreen={true}
+                                        customCol={{'channel_name_tvd': {crossFilter: 'channels'}}}
+                                        crossFilter={true}
+                                        keyChart='spendVNDPivotChannelTimebandData'
                                       />
                                   </div>
                                   <div className='w-full'>
@@ -667,6 +673,9 @@ const DashboardContent = () => {
                                           fontWeight={CUSTOM_CHART.tableChart.fontWeight}
                                           formatterValue={2}
                                           suffixHeader='Tuần'
+                                          customCol={{'campaign_name': {crossFilter: 'campaigns'}}}
+                                          crossFilter={true}
+                                          keyChart='pivotCampaignWeekData'
                                         />
                                       )},
                                       {id: 'reach', label: 'REACH',
@@ -685,6 +694,9 @@ const DashboardContent = () => {
                                           fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                           fontWeight={CUSTOM_CHART.tableChart.fontWeight}
                                           suffixHeader='Tuần'
+                                          customCol={{'campaign_name': {crossFilter: 'campaigns'}}}
+                                          crossFilter={true}
+                                          keyChart='pivotCampaignWeekData'
                                         />
                                       )},
                                       {id: 'spot', label: 'SPOT',
@@ -703,6 +715,9 @@ const DashboardContent = () => {
                                           fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                           fontWeight={CUSTOM_CHART.tableChart.fontWeight}
                                           suffixHeader='Tuần'
+                                          customCol={{'campaign_name': {crossFilter: 'campaigns'}}}
+                                          crossFilter={true}
+                                          keyChart='pivotCampaignWeekData'
                                         />
                                       )}
                                       ]} />

@@ -109,17 +109,17 @@ export const useSpendVNDBarChartTimebandReturnApi = () =>
   createChartHook(getChart.getSpendVNDBarChartTimeband, 'spendVNDBarTimebandData')();
 
 export const useSpendVNDPivotTableChartChannelFirstLevelReturnApi = () =>
-  createChartHook(getChart.getSpendVNDPivotTableChartChannelFirstLevel)();
+  createChartHook(getChart.getSpendVNDPivotTableChartChannelFirstLevel, 'spendVNDPivotChannelFirstLevelData')();
 
 export const useSpendVNDPivotTableChartChannelTimebandReturnApi = () =>
-  createChartHook(getChart.getSpendVNDPivotTableChartChannelTimeband)();
+  createChartHook(getChart.getSpendVNDPivotTableChartChannelTimeband, 'spendVNDPivotChannelTimebandData')();
 
 export const useSpendVNDTableChartAdvertiserReturnApi = () =>
   createChartHook(getChart.getSpendVNDTableChartAdvertiser, 'spendVNDTableAdvertiserData')();
 
 // ===== COUNT PIVOT =====
 export const useCountPivotTableChartCampaignWeekReturnApi = () =>
-  createChartHook(getChart.getCountPivotTableChartCampaignWeek)();
+  createChartHook(getChart.getCountPivotTableChartCampaignWeek, 'pivotCampaignWeekData')();
 
 // ===== GRP =====
 export const useGrpBarChartWeekBrandReturnApi = () =>
@@ -129,11 +129,11 @@ export const useGrpBarChartRegionalBrandReturnApi = () =>
   createChartHook(getChart.getGrpBarChartRegionalBrand, 'grpBarRegionalBrandData')();
 
 export const useGrpPivotTableChartCampaignWeekReturnApi = () =>
-  createChartHook(getChart.getGrpPivotTableChartCampaignWeek)();
+  createChartHook(getChart.getGrpPivotTableChartCampaignWeek, 'pivotCampaignWeekData')();
 
 // ===== REACH =====
 export const useReachPivotTableChartCampaignWeekReturnApi = () =>
-  createChartHook(getChart.getReachPivotTableChartCampaignWeek)();
+  createChartHook(getChart.getReachPivotTableChartCampaignWeek, 'pivotCampaignWeekData')();
 
 // export const useReachTableChartCampaignBrandReturnApi = () =>
 //   createChartHook(getChart.getReachTableChartCampaignBrand)();

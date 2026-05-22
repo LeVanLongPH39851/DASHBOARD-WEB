@@ -22,7 +22,7 @@ import iconArrowLeftGrayDark from '../../assets/icon_arrow_left_gray_dark.png';
 import iconArrowRightGrayDark from '../../assets/icon_arrow_right_gray_dark.png';
 import { formatNumber } from '../../utils/formatNumber';
 import { LABEL } from '../../utils/label';
-import { useDashboardStateGlobals } from '../../context/DashboardFilterContext';
+import { useDashboardStateGlobals, useDashboardFilters, useDashboardCrossFilters } from '../../context/DashboardFilterContext';
 
 const aggregateValue = (items, valueField, aggType) => {
   const values = items
@@ -103,9 +103,14 @@ const PivotTableChart = ({
   sortColTimeband=false,
   labelTables = LABEL,
   suffixHeader = '',
-  fullScreen=false
+  fullScreen=false,
+  customCol=false,
+  crossFilter=false,
+  keyChart=false
 }) => {
   const { stateGlobals } = useDashboardStateGlobals();
+  const { appliedFilters, setAppliedFilters } = useDashboardFilters();
+  const { crossFilters, setCrossFilters } = useDashboardCrossFilters();
   const [sorting, setSorting] = useState([]);
   const [columnFilters, setColumnFilters] = useState([]);
   const [columnVisibility, setColumnVisibility] = useState({});
@@ -208,6 +213,62 @@ const PivotTableChart = ({
       nameChart
     };
   }, [pivotRows, colKeys, rowField, valueField, aggType, nameChart]);
+
+  const [activeTable, setActiveTable] = React.useState('');
+  const [inActiveTable, setInActiveTable] = React.useState(false);
+  const [click, setClick] = React.useState(false);
+
+  useEffect(() => {
+    if (isLoading || isEmptyData) {
+      setActiveTable('');
+      setInActiveTable(false);
+      setClick(false);
+    }
+  }, [isLoading, isEmptyData]);
+
+  const onEvents = (params) => {
+    if (crossFilter && params.name && params.crossFilter) {
+      var crossFilterValue = params.name;
+      var crossFilterName = params.crossFilter;
+      const crossFilterValues = [crossFilterValue];
+      if (appliedFilters?.[crossFilterName]?.[0] !== crossFilterValues[0]) {
+        const transformed = {...appliedFilters, [crossFilterName]: crossFilterValues};
+        setAppliedFilters(transformed);
+        
+        if (keyChart) {
+          if (crossFilters) {
+            setCrossFilters({
+              ...crossFilters,
+              [keyChart]: crossFilterName.slice(0, -1) + 'Filters',
+              main: keyChart,
+              skipNext: null
+            });
+          } else {
+            setCrossFilters({
+              [keyChart]: crossFilterName.slice(0, -1) + 'Filters',
+              main: keyChart,
+              skipNext: null
+            });
+          }
+        }
+        setClick(true);
+        setActiveTable(prev => (prev === crossFilterValue ? '' : crossFilterValue));
+        setInActiveTable(prev => (activeTable === crossFilterValue ? false : true));
+      } else if(click) {
+        setClick(false);
+        const { [crossFilterName]: removed, ...rest } = appliedFilters || {};
+        setAppliedFilters(rest);
+        if (keyChart) {
+          if (crossFilters) {
+            const { [keyChart]: _, main: __, ...rest } = crossFilters;
+            setCrossFilters({...rest, skipNext: keyChart});
+          }
+        }
+        setActiveTable(prev => (prev === crossFilterValue ? '' : crossFilterValue));
+        setInActiveTable(prev => (activeTable === crossFilterValue ? false : true));
+      }
+    }
+  };
 
   // ✅ Return theo điều kiện sau khi tất cả hook đã chạy xong
   if (isLoading) {
@@ -355,7 +416,8 @@ const PivotTableChart = ({
                       return (
                         <td
                           key={cell.id}
-                          className={`border-b border-r border-border-black-10 dark:border-background-white-15 px-2 max-lg:px-1.5 max-md:px-1 py-3 max-lg:py-2.5 max-md:py-2 text-color-black-100 dark:text-color-white-90 transition-all duration-300 ${cellIdx === 0 ? `sticky left-0 z-1 bg-background-light dark:bg-background-chart-dark before:content-[''] before:inset-0 before:absolute before:-z-2 ${idx%2===0 ? 'before:bg-background-black-4 dark:before:bg-background-white-8' : 'before:bg-background-light dark:before:bg-background-chart-dark'}` : ''} ${isNumeric || !rawValue ? 'text-right' : 'text-left'}`}
+                          onClick={customCol[columnName]?.crossFilter ? () => onEvents({crossFilter: customCol[columnName]?.crossFilter, name: rawValue}) : undefined}
+                          className={`${customCol[columnName]?.crossFilter ? 'cursor-pointer' : ''} border-b border-r border-border-black-10 dark:border-background-white-15 px-2 max-lg:px-1.5 max-md:px-1 py-3 max-lg:py-2.5 max-md:py-2 ${activeTable && activeTable === rawValue ? 'opacity-100 text-color-neotam dark:text-background-primary' : (inActiveTable  && crossFilters?.main === keyChart) ? 'opacity-50 text-color-black-100 dark:text-color-white-90' : 'opacity-100 text-color-black-100 dark:text-color-white-90'} transition-all duration-300 ${cellIdx === 0 ? `sticky left-0 z-1 bg-background-light dark:bg-background-chart-dark before:content-[''] before:inset-0 before:absolute before:-z-2 ${idx%2===0 ? 'before:bg-background-black-4 dark:before:bg-background-white-8' : 'before:bg-background-light dark:before:bg-background-chart-dark'}` : ''} ${isNumeric || !rawValue ? 'text-right' : 'text-left'}`}
                           style={{
                             fontSize: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.td : '12px' : '10.5px',
                             fontWeight: cellIdx === 0 ? 600 : fontWeight.td,

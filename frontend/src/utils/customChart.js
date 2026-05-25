@@ -53,7 +53,7 @@ var variableCustoms = {
 }
 
 export const CUSTOM_CHART = {
-  domain: 'https://ratings.vtv.vn',
+  domain: import.meta.env.VITE_API_DOMAIN,
   allChart: {
     fontFamily: variableCustoms.fontFamily
   },

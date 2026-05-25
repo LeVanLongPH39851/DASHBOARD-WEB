@@ -59,6 +59,5 @@
   } catch (error) {
     console.error('❌ Lỗi kết nối:', error.message);
     console.log('\n💡 Đảm bảo server đang chạy: node server.js');
-    console.log(12132);
   }
 })();

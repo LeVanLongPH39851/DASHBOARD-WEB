@@ -11,10 +11,12 @@ import iconExcel from '../../../assets/icon_excel.png';
 import iconIMG from '../../../assets/icon_img.png';
 import iconList from '../../../assets/icon_list.png';
 import iconListDark from '../../../assets/icon_list_dark.png';
-import { useDashboardStateGlobals } from '../../../context/DashboardFilterContext';
+import { useDashboardStateGlobals, useDashboardFilters } from '../../../context/DashboardFilterContext';
 import { useCurrentUser } from '../../../hooks/useCurrentUser';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faExpand } from '@fortawesome/free-solid-svg-icons';
+import { getYesterday, formatDate } from '../../../helpers/helper';
+import { FILTER_LABEL } from '../../../utils/label';
 
 const NameChart = ({ nameChart, description, icon=false, width='', height='', backgound='', display=true, opacity=false, getChartData=null, table=false, fullScreen=false }) => {
 
@@ -22,6 +24,9 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
   const { user, userLoading } = useCurrentUser();
   const dropdownRef = useRef(null);
   const buttonRef = useRef(null);
+
+  const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
+  const { appliedFilters, setAppliedFilters } = useDashboardFilters();
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -193,9 +198,24 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
       const timeStr = `Thời gian export: ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')} ${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
       const totalCols = 1 + 1 + series.length + (series.length > 1 ? 1 : 0);
       const timeRow = worksheet.addRow([timeStr]);
+
+      const resultFilter = Object.entries(appliedFilters || {})
+        .filter(([_, value]) => Array.isArray(value) && value.length > 0)
+        .map(([key, value]) => {
+          const label = FILTER_LABEL[key] || key;
+          return `${label}: ${value.join(", ")}`;
+        })
+        .join("; ");
+
+      const finalResultFilter = resultFilter ? `; ${resultFilter}` : "";
+      
+      const inforFilter = worksheet.addRow([`Ngày: ${formatDate(appliedFilters?.startDate || getYesterday())} - ${formatDate(appliedFilters?.endDate || getYesterday())} ${finalResultFilter}`]);
+      
       worksheet.mergeCells(1, 1, 1, totalCols);
       timeRow.getCell(1).font = { italic: true, color: { argb: 'AFF383C' } };
       timeRow.getCell(1).alignment = { horizontal: 'left', vertical: 'middle' };
+      inforFilter.getCell(1).font = { italic: true, color: { argb: 'AFF383C' } };
+      inforFilter.getCell(1).alignment = { horizontal: 'left', vertical: 'middle' };
 
       // ✅ HEADER ROW: Label | Series1 | Series2 | ... | Tổng
       const headerRow = worksheet.addRow([
@@ -349,9 +369,24 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
         const timeStr = `Thời gian export: ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')} ${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
         const totalCols = 1 + series.length; // ✅ +1 cho cột STT
         const timeRow = worksheet.addRow([timeStr]);
+
+        const resultFilter = Object.entries(appliedFilters || {})
+          .filter(([_, value]) => Array.isArray(value) && value.length > 0)
+          .map(([key, value]) => {
+            const label = FILTER_LABEL[key] || key;
+            return `${label}: ${value.join(", ")}`;
+          })
+          .join("; ");
+
+        const finalResultFilter = resultFilter ? `; ${resultFilter}` : "";
+        
+        const inforFilter = worksheet.addRow([`Ngày: ${formatDate(appliedFilters?.startDate || getYesterday())} - ${formatDate(appliedFilters?.endDate || getYesterday())} ${finalResultFilter}`]);
+
         worksheet.mergeCells(1, 1, 1, totalCols);
         timeRow.getCell(1).font = { italic: true, color: { argb: 'AFF383C' } };
         timeRow.getCell(1).alignment = { horizontal: 'left', vertical: 'middle' };
+        inforFilter.getCell(1).font = { italic: true, color: { argb: 'AFF383C' } };
+        inforFilter.getCell(1).alignment = { horizontal: 'left', vertical: 'middle' };
 
         // ✅ HEADER ROW: STT + các series name
         const headerRow = worksheet.addRow(['STT', ...series.map(s => s.name || 'Value')]);
@@ -460,9 +495,24 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
 
       const totalCols = 2 + colKeys.length + (colKeys.length > 1 ? 1 : 0);
       const timeRow = worksheet.addRow([timeStr]);
+      
+      const resultFilter = Object.entries(appliedFilters || {})
+        .filter(([_, value]) => Array.isArray(value) && value.length > 0)
+        .map(([key, value]) => {
+          const label = FILTER_LABEL[key] || key;
+          return `${label}: ${value.join(", ")}`;
+        })
+        .join("; ");
+
+      const finalResultFilter = resultFilter ? `; ${resultFilter}` : "";
+      
+      const inforFilter = worksheet.addRow([`Ngày: ${formatDate(appliedFilters?.startDate || getYesterday())} - ${formatDate(appliedFilters?.endDate || getYesterday())} ${finalResultFilter}`]);
+
       worksheet.mergeCells(1, 1, 1, totalCols);
       timeRow.getCell(1).font = { italic: true, color: { argb: 'AFF383C' } };
       timeRow.getCell(1).alignment = { horizontal: 'left', vertical: 'middle' };
+      inforFilter.getCell(1).font = { italic: true, color: { argb: 'AFF383C' } };
+      inforFilter.getCell(1).alignment = { horizontal: 'left', vertical: 'middle' };
 
       const headerRow = worksheet.addRow([
         'STT',
@@ -601,8 +651,6 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
       setIsDropdownOpen(false);
     }
   };
-
-  const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
 
   return (
       <div className={`${opacity ? 'opacity-0 invisible' : ''} pb-6 max-lg:pb-5 max-md:pb-4 text-[16px] max-lg:text-sm max-md:text-xs font-semibold text-color-black-100 dark:text-color-white-90 transition-all duration-300 flex justify-between items-center ${!display ? 'absolute top-0 left-0 w-full p-6 max-lg:p-5 max-md:p-4' : ''}`}>

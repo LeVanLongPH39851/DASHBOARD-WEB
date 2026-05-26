@@ -148,46 +148,65 @@ const BarChart = ({
     ? Math.round((maxVisibleItems / sortedLabels.length) * 100) 
     : 100) : 100;
 
+  // ✅ SỬA ĐOẠN NÀY
   const getEChartsData = useCallback(() => {
-    if (chartRef.current) {
-      try {
-        const instance = chartRef.current.getEchartsInstance();
-        const option = instance.getOption();
-        
-        // ✅ Lấy legend selected state
-        const legendSelected = option.legend?.[0]?.selected || {};
-        
-        // ✅ Lấy dataZoom range để filter labels
-        const dataZoom = option.dataZoom?.[0] || {};
-        const start = dataZoom.start || 0;
-        const end = dataZoom.end || 100;
-        
-        let visibleLabels = sortedLabels;
-        let startIndex = 0;
-        let endIndex = sortedLabels.length;
-        
-        // Tính index theo orientation (horizontal = yAxis, vertical = xAxis)
-        if (needsScroll && option.dataZoom?.length > 0) {
-          startIndex = Math.floor((start / 100) * sortedLabels.length);
-          endIndex = Math.floor((end / 100) * sortedLabels.length);
-          visibleLabels = sortedLabels.slice(startIndex, endIndex);
-        }
-        
-        return {
-          labels: visibleLabels,  // ✅ Chỉ labels đang zoom
-          series: (option.series || sortedSeries)
-            .filter(s => legendSelected[s.name] !== false)  // ✅ Chỉ series đang visible
-            .map(s => ({
-              name: s.name,
-              data: visibleLabels.map((_, i) => s.data[startIndex + i] || 0)  // ✅ Data theo zoom range
-            }))
-        };
-      } catch (error) {
-        console.error('Lỗi lấy BarChart data:', error);
-        return { labels: sortedLabels, series: sortedSeries };
-      }
+    if (!chartRef.current) {
+      return { labels: sortedLabels, series: sortedSeries };
     }
-    return { labels: sortedLabels, series: sortedSeries };
+
+    try {
+      const instance = chartRef.current.getEchartsInstance();
+      const option = instance.getOption();
+
+      // ✅ lấy trạng thái legend hiện tại
+      const legendSelected = option.legend?.[0]?.selected || {};
+
+      // ✅ lấy dataZoom hiện tại
+      const dataZoom = option.dataZoom?.[0];
+
+      let startIndex = 0;
+      let endIndex = sortedLabels.length;
+
+      // ✅ tính range đúng theo zoom
+      if (needsScroll && dataZoom) {
+        const start = dataZoom.start ?? 0;
+        const end = dataZoom.end ?? 100;
+
+        startIndex = Math.floor((start / 100) * sortedLabels.length);
+
+        // ✅ FIX: phải ceil để không bị mất item cuối
+        endIndex = Math.ceil((end / 100) * sortedLabels.length);
+
+        // ✅ FIX: không vượt quá length
+        endIndex = Math.min(endIndex, sortedLabels.length);
+      }
+
+      // ✅ labels đang hiển thị
+      const visibleLabels = sortedLabels.slice(startIndex, endIndex);
+
+      // ✅ FIX: lấy data từ sortedSeries gốc thay vì option.series
+      const visibleSeries = sortedSeries
+        .filter(seriesItem => legendSelected[seriesItem.name] !== false)
+        .map(seriesItem => ({
+          name: seriesItem.name,
+
+          // ✅ FIX: slice đúng range zoom
+          data: seriesItem.data.slice(startIndex, endIndex)
+        }));
+
+      return {
+        labels: visibleLabels,
+        series: visibleSeries
+      };
+
+    } catch (error) {
+      console.error('Lỗi lấy BarChart data:', error);
+
+      return {
+        labels: sortedLabels,
+        series: sortedSeries
+      };
+    }
   }, [sortedLabels, sortedSeries, needsScroll]);
 
   const DEFAULT_COLORS = [

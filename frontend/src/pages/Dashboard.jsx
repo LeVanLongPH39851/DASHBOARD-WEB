@@ -777,7 +777,6 @@ const DashboardContent = () => {
                                                       displayName={false}
                                                       showSTT={false}
                                                       showPagination={true}
-                                                      fullScreen={true}
                                                       customCol={CUSTOM_CHART.tableChart.tableProgramChannel.programArea.customCol}
                                                       crossFilter={true}
                                                       keyChart={'ratingReachTableData'} />
@@ -794,7 +793,6 @@ const DashboardContent = () => {
                                                       displayName={false}
                                                       showSTT={false}
                                                       showPagination={true}
-                                                      fullScreen={true}
                                                       customCol={CUSTOM_CHART.tableChart.tableProgramChannel.programArea.customCol}
                                                       crossFilter={true}
                                                       keyChart={'ratingReachTableData'} />
@@ -811,7 +809,6 @@ const DashboardContent = () => {
                                                       displayName={false}
                                                       showSTT={false}
                                                       showPagination={true}
-                                                      fullScreen={true}
                                                       customCol={CUSTOM_CHART.tableChart.tableProgramChannel.programArea.customCol}
                                                       crossFilter={true}
                                                       keyChart={'ratingReachTableData'} />
@@ -828,7 +825,6 @@ const DashboardContent = () => {
                                                       displayName={false}
                                                       showSTT={false}
                                                       showPagination={true}
-                                                      fullScreen={true}
                                                       customCol={CUSTOM_CHART.tableChart.tableProgramChannel.programArea.customCol}
                                                       crossFilter={true}
                                                       keyChart={'ratingReachTableData'} />

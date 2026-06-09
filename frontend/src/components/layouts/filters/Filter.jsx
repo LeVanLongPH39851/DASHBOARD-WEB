@@ -19,6 +19,7 @@ const ALL_CHANNELS = [
   { value: "VTV3", label: "VTV3" },
   { value: "VTV4", label: "VTV4" },
   { value: "VTV5", label: "VTV5" },
+  { value: "VTV6", label: "VTV6" },
   { value: "VTV5 Tây Nam Bộ", label: "VTV5 Tây Nam Bộ" },
   { value: "VTV5 Tây Nguyên", label: "VTV5 Tây Nguyên" },
   { value: "VTV7", label: "VTV7" },

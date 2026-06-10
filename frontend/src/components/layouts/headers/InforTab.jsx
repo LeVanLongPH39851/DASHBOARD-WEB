@@ -21,7 +21,7 @@ const InforTab = ({ inforTab, maxInsert=false }) => {
         <div className='w-px h-5 rounded-full bg-background-line-gray max-md:hidden'></div>
         <span className='text-color-black-50 font-normal text-sm max-lg:text-[13px] dark:text-color-white-50 transition-all duration-300 max-md:text-xs text-nowrap max-md:hidden'>Ngày xử lý {maxInsert ? formatDateTime(maxInsert) : formatDate(new Date()) + ' 09:00'}</span>
         <span className='text-color-black-50 font-normal text-sm dark:text-color-white-50 transition-all duration-300 max-md:text-xs text-nowrap hidden max-md:inline'>{formatDate(new Date())} 09:00</span>
-        <div className='flex-1 flex justify-end pr-1'><figure className='p-1 cursor-pointer' onClick={() => setStateGlobals(prev => ({...prev, isInfor: !prev.isInfor}))}><img src={!stateGlobals.darkMode ? iconArrowDown : iconArrowDownDark} className={`w-2.25 max-md:w-2 ${stateGlobals.isInfor ? 'rotate-180' : ''} transition-all duration-300`} alt="Icon Arrow Down" /></figure></div>
+        <div className='flex-1 flex justify-end pr-1'><figure className='p-1 cursor-pointer' onClick={() => {document.getElementById('inforFilterRelative').classList.replace('duration-0', 'duration-300'); setStateGlobals(prev => ({...prev, isInfor: !prev.isInfor}));}}><img src={!stateGlobals.darkMode ? iconArrowDown : iconArrowDownDark} className={`w-2.25 max-md:w-2 ${stateGlobals.isInfor ? 'rotate-180' : ''} transition-all duration-300`} alt="Icon Arrow Down" /></figure></div>
         <span id='exportTime' className='absolute top-1/2 -translate-y-1/2 right-20 text-color-error font-semibold text-sm max-lg:text-[13px] max-md:hidden'></span>
     </section>
   );

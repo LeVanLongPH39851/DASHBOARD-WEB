@@ -118,9 +118,9 @@ const Filter = ({ filters, horizontalFixed=false
 
   var filterSessions = JSON.parse(sessionStorage.getItem(FILTERS)) || {};
   const ALL_PROVINCES = toOptions(filters?.filterProvince, 'province');
-  if (ALL_PROVINCES[0].value) filterSessions.provinces = ALL_PROVINCES;
+  if (ALL_PROVINCES[0]?.value) filterSessions.provinces = ALL_PROVINCES;
   const ALL_PROGRAMS = toOptions(filters?.filterProgram, 'program_name');
-  if (ALL_PROGRAMS[0].value) filterSessions.programs = ALL_PROGRAMS;
+  if (ALL_PROGRAMS[0]?.value) filterSessions.programs = ALL_PROGRAMS;
   
   sessionStorage.setItem(FILTERS, JSON.stringify(filterSessions))
 
@@ -299,7 +299,7 @@ const Filter = ({ filters, horizontalFixed=false
     setCrossFilters({...crossFilters, main: null, skipNext: null});
   };
 
-  const onReset = () => {
+  const onReset = async () => {
     setAppliedFilters(null);
     setFilterValues(null);
     setCrossFilters(null);

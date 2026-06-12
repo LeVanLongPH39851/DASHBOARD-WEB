@@ -10,7 +10,12 @@ const postChart = async (basePayload, appliedFilters, disibledFilters = []) => {
     : basePayload;
 
   try {
-    return await axiosClient.post(apiRoute, finalPayload);
+    const userId = sessionStorage.getItem('user_id');
+    const requestBody = {
+      ...finalPayload,
+      user_id: userId
+    };
+    return await axiosClient.post(apiRoute, requestBody);
   } catch (error) {
     return { data: {} };
   }

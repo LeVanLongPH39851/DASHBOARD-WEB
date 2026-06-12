@@ -34,3 +34,10 @@ export const getDayBeforeYesterday = () => {
   yesterday.setDate(today.getDate() - 2);
   return yesterday.toISOString().split('T')[0];
 };
+
+export const generateRandomId = (length = 6) => {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const randomPart = Array.from({ length }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+  const timestamp = Date.now();
+  return `${randomPart}_${timestamp}`;
+};

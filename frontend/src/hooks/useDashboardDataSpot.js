@@ -75,15 +75,15 @@ const HOOKS = [
   { hook: useCallApi.useReachBarChartBrandFirstLevelReturnApi, dataKey: 'reachBarBrandFirstLevelData' },
   { hook: useCallApi.useReachBarChartBrandTimebandReturnApi, dataKey: 'reachBarBrandTimebandData' },
   { hook: useCallApi.useReachPieChartAdvertiserReturnApi, dataKey: 'reachPieAdvertiserData' },
-  
-    // ===== ALL TABLE =====
+
+  // ===== ALL TABLE =====
   { hook: useCallApi.useAllTableChartBrandReturnApi, dataKey: 'allTableBrandData' },
   { hook: useCallApi.useAllTableChartBrandProgramReturnApi, dataKey: 'allTableBrandProgramData' },
   { hook: useCallApi.useAllTableChartDeviceReturnApi, dataKey: 'allTableDeviceData' },
   { hook: useCallApi.useAllTableChartMonitoringReturnApi, dataKey: 'allTableMonitoringData' },
 
   { hook: useCallApi.useMaxInsertReturnApi, dataKey: 'maxInsertData' },
-  
+
   { hook: useCallApi.useFilterProvinceReturnApi, dataKey: 'filterProvinceData' },
   { hook: useCallApi.useFilterProgramReturnApi, dataKey: 'filterProgramData' },
   { hook: useCallApi.useFilterProductReturnApi, dataKey: 'filterProductData' },
@@ -97,7 +97,7 @@ const HOOKS = [
 export const useDashboardData = () => {
   const hookResults = HOOKS.map(({ hook }) => hook());
   const hasLoggedRef = useRef(false);
-  
+
   const data = {};
   const isLoading = {};
   const hasError = {};

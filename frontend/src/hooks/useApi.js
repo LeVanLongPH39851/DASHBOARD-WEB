@@ -32,5 +32,15 @@ export const useApi = (apiFn, params = [], options = {}) => {
     refetch(); // dùng refetch thay vì duplicate logic
   }, [refetch, enabled, shouldSkip]); // chỉ dep vào refetch → clean & safe
 
+  // ✅ THÊM: lắng nghe event 'api-killed' để reset loading ngay khi kill request
+  useEffect(() => {
+    const handleKilled = () => {
+      setLoading(true);
+      setError(null);
+    };
+    window.addEventListener('api-killed', handleKilled);
+    return () => window.removeEventListener('api-killed', handleKilled);
+  }, []);
+
   return { data, loading, error, refetch };
 };

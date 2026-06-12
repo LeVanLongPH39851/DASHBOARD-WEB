@@ -4,7 +4,7 @@ import DateRangeFilter from './components/DataRangeFilter';
 import ButtonFilter from './components/ButtonFilter';
 import SelectMultiFilter from './components/SelectMultiFilter';
 import CheckboxMultiFilter from './components/CheckboxMultiFilter';
-import { getYesterday } from '../../../helpers/helper';
+import { getYesterday, getDayBeforeYesterday, generateRandomId } from '../../../helpers/helper';
 import iconXBlack from '../../../assets/icon_x_black.png';
 import iconXBlackDark from '../../../assets/icon_x_black_dark.png';
 import iconReset from '../../../assets/icon_reset.png';
@@ -104,14 +104,14 @@ const DISABLE_TABS = {
   rating_by_minute: 'rating_by_minute'
 }
 
-const Filter = ({ filters, horizontalFixed=false
-               }) => {
+const Filter = ({ filters, horizontalFixed = false
+}) => {
 
   const toOptions = (items = [], field) =>
-  items.map(item => ({
-    value: item[field],
-    label: item[field],
-  }));
+    items.map(item => ({
+      value: item[field],
+      label: item[field],
+    }));
 
   const FILTER_SESSION_KEY = 'dashboard_filters_ratings';
   const FILTERS = 'filter_sessions_ratings';
@@ -121,17 +121,17 @@ const Filter = ({ filters, horizontalFixed=false
   if (ALL_PROVINCES[0]?.value) filterSessions.provinces = ALL_PROVINCES;
   const ALL_PROGRAMS = toOptions(filters?.filterProgram, 'program_name');
   if (ALL_PROGRAMS[0]?.value) filterSessions.programs = ALL_PROGRAMS;
-  
+
   sessionStorage.setItem(FILTERS, JSON.stringify(filterSessions))
 
-  const { appliedFilters, setAppliedFilters} = useDashboardFilters();
+  const { appliedFilters, setAppliedFilters } = useDashboardFilters();
   const { filterValues, setFilterValues } = useDashboardFilterValues();
   const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
   const { crossFilters, setCrossFilters } = useDashboardCrossFilters();
 
   useEffect(() => {
     const filterId = document.getElementById('filter');
-    
+
     if (!filterId) return;
 
     let wasSticky = false;
@@ -169,8 +169,8 @@ const Filter = ({ filters, horizontalFixed=false
 
         const updateHeight = () => {
           const isVisible = absolute.classList.contains('visible')
-                        && absolute.classList.contains('opacity-100')
-                        && absolute.classList.contains('top-0');
+            && absolute.classList.contains('opacity-100')
+            && absolute.classList.contains('top-0');
 
           relative.style.height = isVisible ? `${absolute.offsetHeight}px` : '0px';
         };
@@ -212,7 +212,7 @@ const Filter = ({ filters, horizontalFixed=false
       firstLevels: ALL_FIRST_LEVELS,
       programs: ALL_PROGRAMS[0].value ? ALL_PROGRAMS : sessionStorage.getItem(FILTERS) !== '{}' ? JSON.parse(sessionStorage.getItem(FILTERS)).programs : ALL_PROGRAMS
     };
-    
+
     sessionStorage.setItem(FILTER_SESSION_KEY, JSON.stringify(appliedFilters));
 
     const transformed = {
@@ -223,7 +223,7 @@ const Filter = ({ filters, horizontalFixed=false
       ...Object.fromEntries(
         Object.entries(lookups).map(([field, options]) => [
           field,
-          (appliedFilters[field] || []).map(val => 
+          (appliedFilters[field] || []).map(val =>
             options.find(item => item.value === val)
           ).filter(Boolean)
         ])
@@ -234,11 +234,11 @@ const Filter = ({ filters, horizontalFixed=false
   }, [appliedFilters]);
 
   const handleDateRangeChange = ({ startDate: s, endDate: e }) => {
-    setFilterValues(prev => ({...prev, startDate: s, endDate: e}));
+    setFilterValues(prev => ({ ...prev, startDate: s, endDate: e }));
   };
 
   const handleDaysChange = (selectedDays) => {
-    
+
     const normalizedDays = [];
     const groupMap = new Map();
 
@@ -256,7 +256,7 @@ const Filter = ({ filters, horizontalFixed=false
         normalizedDays.push(day);
       }
     });
-    
+
     setFilterValues((prev) => ({
       ...prev,
       days: normalizedDays,
@@ -276,7 +276,7 @@ const Filter = ({ filters, horizontalFixed=false
     }
 
     // ✅ Extract keys động từ filterValues (tự động tất cả array fields)
-    const arrayFields = Object.keys(filterValues).filter(key => 
+    const arrayFields = Object.keys(filterValues).filter(key =>
       Array.isArray(filterValues[key])  // Chỉ array mới map .value
     );
 
@@ -292,205 +292,229 @@ const Filter = ({ filters, horizontalFixed=false
 
     setAppliedFilters(transformed);
 
-    if(stateGlobals.screen_md) {
-      setStateGlobals(prev => ({...prev, isOpen: !prev.isOpen}))
+    if (stateGlobals.screen_md) {
+      setStateGlobals(prev => ({ ...prev, isOpen: !prev.isOpen }))
     }
 
-    setCrossFilters({...crossFilters, main: null, skipNext: null});
+    setCrossFilters({ ...crossFilters, main: null, skipNext: null });
   };
 
   const onReset = async () => {
+
+    // THEN reset filters
     setAppliedFilters(null);
     setFilterValues(null);
     setCrossFilters(null);
     sessionStorage.removeItem(FILTER_SESSION_KEY);
     sessionStorage.removeItem(FILTERS);
 
-    if(stateGlobals.screen_md) {
-      setStateGlobals(prev => ({...prev, isOpen: !prev.isOpen}))
+    // Call Doris endpoint FIRST to kill old queries
+    const userId = sessionStorage.getItem('user_id');
+    // Set new session ID
+    const newUserId = generateRandomId(6);
+    sessionStorage.setItem('user_id', newUserId);
+
+    if (userId) {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/doris/processlist`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ user_id: userId })
+        });
+        const result = await response.json();
+        console.log('✅ Doris endpoint called on reset:', result);
+        // ✅ Báo cho tất cả useApi hooks reset loading về false
+        window.dispatchEvent(new CustomEvent('api-killed'));
+      } catch (error) {
+        console.error('❌ Lỗi gọi Doris endpoint:', error);
+      }
+    }
+
+    if (stateGlobals.screen_md) {
+      setStateGlobals(prev => ({ ...prev, isOpen: !prev.isOpen }))
     }
   };
 
   return (
     <>
-    <aside className={`${horizontalFixed ? 'w-full' : `${!stateGlobals.isOpen || stateGlobals.horizontal ? 'w-0' : 'w-[16%] max-md:w-0'} h-full`} transition-all duration-300`}>
-      <div id='filter' className={`${horizontalFixed ? 'w-full' : `bg-background-light dark:bg-background-dark border-r border-background-line-gray dark:border-background-white-15 w-[16%] max-md:w-[65%] max-md:z-9999 overflow-y-auto fixed left-0 ${!stateGlobals.isOpen || stateGlobals.horizontal ? '-translate-x-full' : ''} top-15 max-lg:top-13 max-md:top-10 max-md:px-4 max-lg:px-5 px-6 pt-4 max-lg:pt-3 max-md:pt-2 pb-20 transition-all duration-300 h-full`}`}>
-        {!horizontalFixed && (<div className='flex justify-between items-center h-10.5 max-lg:h-9 max-md:h-8 mb-2 max-lg:mb-1.5 max-md:mb-1'>
-          <span className='text-background-black-child-tab dark:text-color-white-90 transition-all duration-300 text-[16px] max-lg:text-sm max-md:text-xs font-semibold'>Bộ lọc</span><figure className='cursor-pointer transition-all duration-300 hover:rotate-180' onClick={() => setStateGlobals(prev => ({...prev, isOpen: !prev.isOpen}))}><img src={!stateGlobals.darkMode ? iconXBlack : iconXBlackDark} className='w-3.25 max-lg:w-2.75 max-md:w-2.5' alt="Icon X Black" /></figure>
-        </div>)}
-        <form className={`${horizontalFixed ? 'flex flex-wrap gap-2 max-lg:gap-1.5 max-md:gap-1.5 max-md:grid max-md:grid-cols-2 items-center' : ''}`} onSubmit={onSubmit} onReset={onReset}>
-          <div className='max-md:col-span-2'>
-            <DateRangeFilter
-              startDate={filterValues?.startDate || getYesterday()}
-              endDate={filterValues?.endDate || getYesterday()}
-              onChange={handleDateRangeChange}
+      <aside className={`${horizontalFixed ? 'w-full' : `${!stateGlobals.isOpen || stateGlobals.horizontal ? 'w-0' : 'w-[16%] max-md:w-0'} h-full`} transition-all duration-300`}>
+        <div id='filter' className={`${horizontalFixed ? 'w-full' : `bg-background-light dark:bg-background-dark border-r border-background-line-gray dark:border-background-white-15 w-[16%] max-md:w-[65%] max-md:z-9999 overflow-y-auto fixed left-0 ${!stateGlobals.isOpen || stateGlobals.horizontal ? '-translate-x-full' : ''} top-15 max-lg:top-13 max-md:top-10 max-md:px-4 max-lg:px-5 px-6 pt-4 max-lg:pt-3 max-md:pt-2 pb-20 transition-all duration-300 h-full`}`}>
+          {!horizontalFixed && (<div className='flex justify-between items-center h-10.5 max-lg:h-9 max-md:h-8 mb-2 max-lg:mb-1.5 max-md:mb-1'>
+            <span className='text-background-black-child-tab dark:text-color-white-90 transition-all duration-300 text-[16px] max-lg:text-sm max-md:text-xs font-semibold'>Bộ lọc</span><figure className='cursor-pointer transition-all duration-300 hover:rotate-180' onClick={() => setStateGlobals(prev => ({ ...prev, isOpen: !prev.isOpen }))}><img src={!stateGlobals.darkMode ? iconXBlack : iconXBlackDark} className='w-3.25 max-lg:w-2.75 max-md:w-2.5' alt="Icon X Black" /></figure>
+          </div>)}
+          <form className={`${horizontalFixed ? 'flex flex-wrap gap-2 max-lg:gap-1.5 max-md:gap-1.5 max-md:grid max-md:grid-cols-2 items-center' : ''}`} onSubmit={onSubmit} onReset={onReset}>
+            <div className='max-md:col-span-2'>
+              <DateRangeFilter
+                startDate={filterValues?.startDate || getYesterday()}
+                endDate={filterValues?.endDate || getYesterday()}
+                onChange={handleDateRangeChange}
+                horizontalFixed={horizontalFixed}
+              />
+            </div>
+
+            {!stateGlobals.horizontal ?
+              (<CheckboxMultiFilter
+                label="Nhóm ngày"
+                placeholder="Chọn ngày..."
+                options={ALL_DAYS}
+                value={filterValues?.days || []}
+                onChange={handleDaysChange}
+                marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
+              />) :
+              (<SelectMultiFilter
+                label="Nhóm ngày"
+                placeholder="Chọn ngày..."
+                options={ALL_DAYS}
+                value={filterValues?.days || []}
+                onChange={handleDaysChange}
+                marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
+                horizontalFixed={horizontalFixed}
+              />)}
+
+            {!stateGlobals.horizontal ?
+              (<CheckboxMultiFilter
+                label="Kênh"
+                placeholder="Chọn kênh..."
+                options={ALL_CHANNELS}
+                value={filterValues?.channels || []}
+                onChange={(selected) => handleFilterChange('channels', selected)}
+                marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
+              />) :
+              (<SelectMultiFilter
+                label="Kênh"
+                placeholder="Chọn kênh..."
+                options={ALL_CHANNELS}
+                value={filterValues?.channels || []}
+                onChange={(selected) => handleFilterChange('channels', selected)}
+                marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
+                horizontalFixed={horizontalFixed}
+              />)}
+
+            {stateGlobals.currentTab == DISABLE_TABS.channel && (<SelectMultiFilter
+              label="Khung giờ"
+              placeholder="Chọn khung giờ..."
+              options={ALL_TIMEBANDS}
+              value={filterValues?.timebands || []}
+              onChange={(selected) => handleFilterChange('timebands', selected)}
+              marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
               horizontalFixed={horizontalFixed}
-            />
-          </div>
-          
-          {!stateGlobals.horizontal ?
-          (<CheckboxMultiFilter
-            label="Nhóm ngày"
-            placeholder="Chọn ngày..."
-            options={ALL_DAYS}
-            value={filterValues?.days || []}
-            onChange={handleDaysChange}
-            marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
-          />) :
-          (<SelectMultiFilter
-            label="Nhóm ngày"
-            placeholder="Chọn ngày..."
-            options={ALL_DAYS}
-            value={filterValues?.days || []}
-            onChange={handleDaysChange}
-            marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
-            horizontalFixed={horizontalFixed}
-          />)}
+            />)}
 
-          {!stateGlobals.horizontal ?
-          (<CheckboxMultiFilter
-            label="Kênh"
-            placeholder="Chọn kênh..."
-            options={ALL_CHANNELS}
-            value={filterValues?.channels || []}
-            onChange={(selected) => handleFilterChange('channels', selected)}
-            marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
-          />) :
-          (<SelectMultiFilter
-            label="Kênh"
-            placeholder="Chọn kênh..."
-            options={ALL_CHANNELS}
-            value={filterValues?.channels || []}
-            onChange={(selected) => handleFilterChange('channels', selected)}
-            marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
-            horizontalFixed={horizontalFixed}
-          />)}
+            {stateGlobals.currentTab != DISABLE_TABS.rating_by_minute && (!stateGlobals.horizontal ? (<CheckboxMultiFilter
+              label="Live/TSV"
+              placeholder="Chọn event..."
+              options={ALL_EVENTS}
+              value={filterValues?.events || []}
+              onChange={(selected) => handleFilterChange('events', selected)}
+              marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
+            />) : (<SelectMultiFilter
+              label="Live/TSV"
+              placeholder="Chọn event..."
+              options={ALL_EVENTS}
+              value={filterValues?.events || []}
+              onChange={(selected) => handleFilterChange('events', selected)}
+              marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
+              horizontalFixed={horizontalFixed}
+            />))}
 
-          {stateGlobals.currentTab==DISABLE_TABS.channel && (<SelectMultiFilter
-            label="Khung giờ"
-            placeholder="Chọn khung giờ..."
-            options={ALL_TIMEBANDS}
-            value={filterValues?.timebands || []}
-            onChange={(selected) => handleFilterChange('timebands', selected)}
-            marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
-            horizontalFixed={horizontalFixed}
-          />)}
+            {!stateGlobals.horizontal && (<GroupFilter title={'Khu vực'} components={[<CheckboxMultiFilter
+              label="Vùng"
+              placeholder="Chọn vùng"
+              options={ALL_REGIONALS}
+              value={filterValues?.regionals || []}
+              onChange={(selected) => handleFilterChange('regionals', selected)}
+              marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
+            />, <CheckboxMultiFilter
+              label="Thành phố lớn"
+              placeholder="Chọn TP lớn"
+              options={ALL_KEY_CITIES}
+              value={filterValues?.keyCities || []}
+              onChange={(selected) => handleFilterChange('keyCities', selected)}
+              marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
+              isSearch={false}
+            />, <SelectMultiFilter
+              label="Tỉnh/TP"
+              placeholder="Chọn Tỉnh/TP"
+              options={ALL_PROVINCES}
+              value={filterValues?.provinces || []}
+              onChange={(selected) => handleFilterChange('provinces', selected)}
+              marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
+              horizontalFixed={horizontalFixed}
+            />]} />)}
 
-          {stateGlobals.currentTab != DISABLE_TABS.rating_by_minute && (!stateGlobals.horizontal ? (<CheckboxMultiFilter
-            label="Live/TSV"
-            placeholder="Chọn event..."
-            options={ALL_EVENTS}
-            value={filterValues?.events || []}
-            onChange={(selected) => handleFilterChange('events', selected)}
-            marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
-          />) : (<SelectMultiFilter
-            label="Live/TSV"
-            placeholder="Chọn event..."
-            options={ALL_EVENTS}
-            value={filterValues?.events || []}
-            onChange={(selected) => handleFilterChange('events', selected)}
-            marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
-            horizontalFixed={horizontalFixed}
-          />))}
+            {stateGlobals.horizontal &&
+              (<><SelectMultiFilter
+                label="Vùng"
+                placeholder="Chọn vùng"
+                options={ALL_REGIONALS}
+                value={filterValues?.regionals || []}
+                onChange={(selected) => handleFilterChange('regionals', selected)}
+                marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
+                horizontalFixed={horizontalFixed}
+              /> <SelectMultiFilter
+                  label="Thành phố lớn"
+                  placeholder="Chọn TP lớn"
+                  options={ALL_KEY_CITIES}
+                  value={filterValues?.keyCities || []}
+                  onChange={(selected) => handleFilterChange('keyCities', selected)}
+                  marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
+                  horizontalFixed={horizontalFixed}
+                />
+                <SelectMultiFilter
+                  label="Tỉnh/TP"
+                  placeholder="Chọn Tỉnh/TP"
+                  options={ALL_PROVINCES}
+                  value={filterValues?.provinces || []}
+                  onChange={(selected) => handleFilterChange('provinces', selected)}
+                  marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
+                  horizontalFixed={horizontalFixed}
+                /></>)}
 
-          {!stateGlobals.horizontal && (<GroupFilter title={'Khu vực'} components={[<CheckboxMultiFilter
-            label="Vùng"
-            placeholder="Chọn vùng"
-            options={ALL_REGIONALS}
-            value={filterValues?.regionals || []}
-            onChange={(selected) => handleFilterChange('regionals', selected)}
-            marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
-          />, <CheckboxMultiFilter
-            label="Thành phố lớn"
-            placeholder="Chọn TP lớn"
-            options={ALL_KEY_CITIES}
-            value={filterValues?.keyCities || []}
-            onChange={(selected) => handleFilterChange('keyCities', selected)}
-            marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
-            isSearch={false}
-          />, <SelectMultiFilter
-            label="Tỉnh/TP"
-            placeholder="Chọn Tỉnh/TP"
-            options={ALL_PROVINCES}
-            value={filterValues?.provinces || []}
-            onChange={(selected) => handleFilterChange('provinces', selected)}
-            marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
-            horizontalFixed={horizontalFixed}
-          />]} />)}
+            {stateGlobals.currentTab == DISABLE_TABS.program && <RangeFilter
+              label="Giờ phát sóng"
+              min={0}
+              max={1439}
+              step={1}
+              value={filterValues?.startHours || { min: 0, max: 1439 }}
+              onChange={(selected) => handleFilterChange('startHours', selected)}
+              marginBottom={"mb-4 max-lg:mb-3 max-md:mb-2"}
+              horizontalFixed={horizontalFixed}
+            />}
 
-          {stateGlobals.horizontal &&
-          (<><SelectMultiFilter
-            label="Vùng"
-            placeholder="Chọn vùng"
-            options={ALL_REGIONALS}
-            value={filterValues?.regionals || []}
-            onChange={(selected) => handleFilterChange('regionals', selected)}
-            marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
-            horizontalFixed={horizontalFixed}
-          /> <SelectMultiFilter
-            label="Thành phố lớn"
-            placeholder="Chọn TP lớn"
-            options={ALL_KEY_CITIES}
-            value={filterValues?.keyCities || []}
-            onChange={(selected) => handleFilterChange('keyCities', selected)}
-            marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
-            horizontalFixed={horizontalFixed}
-          />
-          <SelectMultiFilter
-            label="Tỉnh/TP"
-            placeholder="Chọn Tỉnh/TP"
-            options={ALL_PROVINCES}
-            value={filterValues?.provinces || []}
-            onChange={(selected) => handleFilterChange('provinces', selected)}
-            marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
-            horizontalFixed={horizontalFixed}
-          /></>)}
-          
-          {stateGlobals.currentTab == DISABLE_TABS.program && <RangeFilter
-            label="Giờ phát sóng"
-            min={0}
-            max={1439}
-            step={1}
-            value={filterValues?.startHours || { min: 0, max: 1439 }}
-            onChange={(selected) => handleFilterChange('startHours', selected)}
-            marginBottom={"mb-4 max-lg:mb-3 max-md:mb-2"}
-            horizontalFixed={horizontalFixed}
-          />}
+            {stateGlobals.currentTab == DISABLE_TABS.program && (!stateGlobals.horizontal ? (<CheckboxMultiFilter
+              label="Thể loại"
+              placeholder="Chọn thể loại"
+              options={ALL_FIRST_LEVELS}
+              value={filterValues?.firstLevels || []}
+              onChange={(selected) => handleFilterChange('firstLevels', selected)}
+              marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
+            />) :
+              (<SelectMultiFilter
+                label="Thể loại"
+                placeholder="Chọn thể loại"
+                options={ALL_FIRST_LEVELS}
+                value={filterValues?.firstLevels || []}
+                onChange={(selected) => handleFilterChange('firstLevels', selected)}
+                marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
+                horizontalFixed={horizontalFixed}
+              />))}
 
-          {stateGlobals.currentTab == DISABLE_TABS.program && (!stateGlobals.horizontal ? (<CheckboxMultiFilter
-            label="Thể loại"
-            placeholder="Chọn thể loại"
-            options={ALL_FIRST_LEVELS}
-            value={filterValues?.firstLevels || []}
-            onChange={(selected) => handleFilterChange('firstLevels', selected)}
-            marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
-          />) :
-          (<SelectMultiFilter
-            label="Thể loại"
-            placeholder="Chọn thể loại"
-            options={ALL_FIRST_LEVELS}
-            value={filterValues?.firstLevels || []}
-            onChange={(selected) => handleFilterChange('firstLevels', selected)}
-            marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
-            horizontalFixed={horizontalFixed}
-          />))}
+            {[DISABLE_TABS.program, DISABLE_TABS.rating_by_minute].includes(stateGlobals.currentTab) && (<SelectMultiFilter
+              label="Chương trình"
+              placeholder="Chọn chương trình"
+              options={ALL_PROGRAMS}
+              value={filterValues?.programs || []}
+              onChange={(selected) => handleFilterChange('programs', selected)}
+              marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
+              horizontalFixed={horizontalFixed} />)}
 
-          {[DISABLE_TABS.program, DISABLE_TABS.rating_by_minute].includes(stateGlobals.currentTab) && (<SelectMultiFilter
-            label="Chương trình"
-            placeholder="Chọn chương trình"
-            options={ALL_PROGRAMS}
-            value={filterValues?.programs || []}
-            onChange={(selected) => handleFilterChange('programs', selected)}
-            marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
-            horizontalFixed={horizontalFixed} />)}
-
-          <div className={`flex justify-center items-center transition-all duration-700 bg-background-light ${!horizontalFixed ? `dark:bg-background-dark fixed bottom-0 left-0 w-[16%] max-md:w-[65%] border-r border-background-line-gray dark:border-background-white-15 ${!stateGlobals.isOpen || stateGlobals.horizontal ? '-translate-x-full' : ''} shadow-2xl shadow-color-black-50 dark:shadow-color-white-90 py-3 max-lg:py-2.5 max-lg:gap-2 gap-4` : 'gap-1 dark:bg-background-chart-dark max-md:justify-start max-md:col-span-2'}`}>
-            <ButtonFilter text={'Áp dụng bộ lọc'} background={'bg-background-primary'} color={'text-background-check-box'} type={'submit'} />
-            <ButtonFilter text={'Đặt lại'} background={'bg-background-light dark:bg-transparent'} color={'text-background-black-90 dark:text-color-white-50'} type={'reset'} src={!stateGlobals.darkMode ? iconReset : iconResetDark} alt={'Icon Reset'} width={'w-3 max-lg:w-2.75 max-md:w-2.5'} />
-          </div>
-        </form>
-      </div>
-    </aside>
+            <div className={`flex justify-center items-center transition-all duration-700 bg-background-light ${!horizontalFixed ? `dark:bg-background-dark fixed bottom-0 left-0 w-[16%] max-md:w-[65%] border-r border-background-line-gray dark:border-background-white-15 ${!stateGlobals.isOpen || stateGlobals.horizontal ? '-translate-x-full' : ''} shadow-2xl shadow-color-black-50 dark:shadow-color-white-90 py-3 max-lg:py-2.5 max-lg:gap-2 gap-4` : 'gap-1 dark:bg-background-chart-dark max-md:justify-start max-md:col-span-2'}`}>
+              <ButtonFilter text={'Áp dụng bộ lọc'} background={'bg-background-primary'} color={'text-background-check-box'} type={'submit'} />
+              <ButtonFilter text={'Đặt lại'} background={'bg-background-light dark:bg-transparent'} color={'text-background-black-90 dark:text-color-white-50'} type={'reset'} src={!stateGlobals.darkMode ? iconReset : iconResetDark} alt={'Icon Reset'} width={'w-3 max-lg:w-2.75 max-md:w-2.5'} />
+            </div>
+          </form>
+        </div>
+      </aside>
     </>
   );
 };

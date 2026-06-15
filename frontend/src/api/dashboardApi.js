@@ -173,11 +173,15 @@ export const getRatingLineChartMinuteChannelOneDate = (appliedFilters) =>
 export const getRatingLineChartMinuteChannelDates = (appliedFilters) =>
   postChart(payloads.ratingLineChartMinuteChannelDatesPayload, appliedFilters, ['eventFilters', 'timebandFilters', 'firstLevelFilters', 'startTimeFilters', 'overwriteChannelFilters'])
 
-export const getMaxInsert = () =>
-  axiosClient.post(apiRoute, payloads.maxInsertPayload)
+export const getMaxInsert = () => {
+  const userId = sessionStorage.getItem('user_id');
+  return axiosClient.post(apiRoute, { ...payloads.maxInsertPayload, user_id: userId });
+}
 
-export const getFilterProvince = () =>
-  axiosClient.post(apiRoute, payloads.filterProvincePayload)
+export const getFilterProvince = () => {
+  const userId = sessionStorage.getItem('user_id');
+  return axiosClient.post(apiRoute, { ...payloads.filterProvincePayload, user_id: userId });
+}
 
 export const getFilterProgram = (appliedFilters) =>
   postChart(payloads.filterProgramPayload, appliedFilters, ['allFilters'])

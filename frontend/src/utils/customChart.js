@@ -1,19 +1,19 @@
 var variableCustoms = {
-    fontFamily: '"Be Vietnam Pro", sans-serif',
-    colorLive: 'rgba(91, 214, 216, 1)',
-    colorTimeshift: '#fe9273',
-    colorRating: 'rgba(255, 56, 60, 1)',
-    colorAveReach: 'rgba(255, 204, 0, 1)',
-    metricRating: ['rating', 'rating_timeband'],
-    metricAveReach: ['ave_reach', 'ave_reach_timeband'],
-    metricRatingPercent: 'rating_timeband%',
-    metricAveReachPercent: 'reach_timeband%',
-    colorChannel: {
+  fontFamily: '"Be Vietnam Pro", sans-serif',
+  colorLive: 'rgba(91, 214, 216, 1)',
+  colorTimeshift: '#fe9273',
+  colorRating: 'rgba(255, 56, 60, 1)',
+  colorAveReach: 'rgba(255, 204, 0, 1)',
+  metricRating: ['rating', 'rating_timeband'],
+  metricAveReach: ['ave_reach', 'ave_reach_timeband'],
+  metricRatingPercent: 'rating_timeband%',
+  metricAveReachPercent: 'reach_timeband%',
+  colorChannel: {
     "VTV1": "rgba(217, 31, 38, 1)",
     "VTV2": "rgba(86, 154, 255, 1)",
     "VTV3": "rgba(128, 212, 27, 1)",
     "VTV5": "rgba(2, 147, 113, 1)",
-    "VTV6": "rgba(140, 160, 90, 1)",
+    "VTV6": "#ff44cc",
     "VTV Cần Thơ": "rgba(253, 147, 242, 1)",
     "VTV4": "rgba(255, 146, 64, 1)",
     "VTV9": "rgba(158, 121, 65, 1)",
@@ -22,8 +22,8 @@ var variableCustoms = {
     "VTV7": "rgba(99, 234, 255, 1)",
     "VTV5 Tây Nguyên": "rgba(238, 245, 60, 1)",
     "VTV10": "rgba(253, 147, 242, 1)"
-    },
-    colorFirstLevel: {
+  },
+  colorFirstLevel: {
     "Thời sự - Chính luận": "#6BD3B3",
     "Phim điện ảnh": "#FCC550",
     "Phim dài tập": "#FCC550",
@@ -38,19 +38,19 @@ var variableCustoms = {
     "Quảng bá": "#8c564a",
     "Phim truyện": "#C9BBAB",
     "Quảng cáo": "#B17BAA"
-    },
-    colorDuration: {
+  },
+  colorDuration: {
     "15s": "#6BD3B3",
     "30s": "#FCC550",
     "5s": "#EE5960",
     "Others": "#408184"
-    },
-    colorTimeband: {
+  },
+  colorTimeband: {
     "1.Sáng (00h - 11h)": "rgba(217, 31, 38, 1)",
     "2.Trưa (11h - 14h)": "rgba(86, 154, 255, 1)",
     "3.Chiều (14h - 18h)": "rgba(128, 212, 27, 1)",
     "4.Tối (18h - 24h)": "rgba(2, 147, 113, 1)"
-    }
+  }
 }
 
 export const CUSTOM_CHART = {
@@ -60,132 +60,132 @@ export const CUSTOM_CHART = {
   },
   numberWithTrendChart: {
     fontSize: {
-        tooltip: 12
+      tooltip: 12
     },
     fontWeight: {
-        tooltip: 500
+      tooltip: 500
     }
   },
   barChart: {
     height: 332,
     fontSize: {
-        legend: 12, tooltip: 12, axisLabel: 12, dataLabel: 12
+      legend: 12, tooltip: 12, axisLabel: 12, dataLabel: 12
     },
     barChartChannelEvent: {
-        colors: {'Live': variableCustoms.colorLive, 'TSV': variableCustoms.colorTimeshift},
-        ratingNameChart: 'Lượng khán giả bình quân mỗi ngày',
-        aveReachNameChart: 'Lượng khán giả bình quân mỗi ngày',
-        description: 'Các chỉ số Reach và Rating trung bình của từng kênh trong thời gian đã lựa chọn',
-        orientation: 'horizontal'
+      colors: { 'Live': variableCustoms.colorLive, 'TSV': variableCustoms.colorTimeshift },
+      ratingNameChart: 'Lượng khán giả bình quân mỗi ngày',
+      aveReachNameChart: 'Lượng khán giả bình quân mỗi ngày',
+      description: 'Các chỉ số Reach và Rating trung bình của từng kênh trong thời gian đã lựa chọn',
+      orientation: 'horizontal'
     },
     barChartDayEvent: {
-        colors: {'Live': variableCustoms.colorLive, 'TSV': variableCustoms.colorTimeshift},
-        ratingNameChart: 'Lượng khán giả bình quân mỗi ngày',
-        aveReachNameChart: 'Lượng khán giả bình quân mỗi ngày',
-        description: 'Các chỉ số Reach và Rating trung bình trong thời gian đã lựa chọn, chia thành hai nhóm: ngày trong tuần và ngày cuối tuần',
-        orientation: ''
+      colors: { 'Live': variableCustoms.colorLive, 'TSV': variableCustoms.colorTimeshift },
+      ratingNameChart: 'Lượng khán giả bình quân mỗi ngày',
+      aveReachNameChart: 'Lượng khán giả bình quân mỗi ngày',
+      description: 'Các chỉ số Reach và Rating trung bình trong thời gian đã lựa chọn, chia thành hai nhóm: ngày trong tuần và ngày cuối tuần',
+      orientation: ''
     },
     barChartArea: {
-        aveReach: {
-            color: [variableCustoms.colorAveReach],
-            name: 'Ave.Reach (000) theo thị trường',
-            colorZoom: 'yellow',
-            description: 'Số lượng khán giả (không trùng lặp) trung bình mỗi ngày của từng thị trường'
-        },
-        rating: {
-            color: [variableCustoms.colorRating],
-            name: 'Rating (000) theo thị trường',
-            colorZoom: 'red',
-            description: 'Lượng khán giả trung bình mỗi phút của từng thị trường'
-        },
-        orientation: 'horizontal'
+      aveReach: {
+        color: [variableCustoms.colorAveReach],
+        name: 'Ave.Reach (000) theo thị trường',
+        colorZoom: 'yellow',
+        description: 'Số lượng khán giả (không trùng lặp) trung bình mỗi ngày của từng thị trường'
+      },
+      rating: {
+        color: [variableCustoms.colorRating],
+        name: 'Rating (000) theo thị trường',
+        colorZoom: 'red',
+        description: 'Lượng khán giả trung bình mỗi phút của từng thị trường'
+      },
+      orientation: 'horizontal'
     },
     colorChannel: variableCustoms.colorChannel,
     colorFirstLevel: variableCustoms.colorFirstLevel,
     colorDuration: variableCustoms.colorDuration,
     colorTimeband: variableCustoms.colorTimeband,
     fontWeight: {
-        legend: 500, tooltip: 500, axisLabel: 400, dataLabel: 400
+      legend: 500, tooltip: 500, axisLabel: 400, dataLabel: 400
     }
   },
   tableChart: {
     fontSize: {
-        label: 14,
-        td: 14
+      label: 14,
+      td: 14
     },
     fontWeight: {
-        label: 600,
-        td: 400
+      label: 600,
+      td: 400
     },
     tableChartChannel: {
-        height: '400px',
-        name: 'Chỉ số đo lường kênh',
-        description: false,
-        STT: false,
-        pagination: false,
-        customColChannel: {
-          'KÊNH': {justify: 'justify-center', align: 'text-center', minSize: 0, maxSize: 60, crossFilter: 'channels'}
-        },
-        customColChannelEvent: {
-          'KÊNH': {justify: 'justify-center', align: 'text-center', crossFilter: 'channels'},
-          'Live/TSV': {justify: 'justify-center', align: 'text-center', crossFilter: 'events'},
-        }
+      height: '400px',
+      name: 'Chỉ số đo lường kênh',
+      description: false,
+      STT: false,
+      pagination: false,
+      customColChannel: {
+        'KÊNH': { justify: 'justify-center', align: 'text-center', minSize: 0, maxSize: 60, crossFilter: 'channels' }
+      },
+      customColChannelEvent: {
+        'KÊNH': { justify: 'justify-center', align: 'text-center', crossFilter: 'channels' },
+        'Live/TSV': { justify: 'justify-center', align: 'text-center', crossFilter: 'events' },
+      }
     },
     tableChartArea: {
-        height: '400px',
-        name: 'Rating (%) và Ave.Reach (%) theo thị trường',
-        description: 'Tỉ lệ khán giả (không trùng lặp) trung bình mỗi ngày (Reach) và trung bình mỗi phút (Rating) tính trên dân số từ 4-80 tuổi của từng thị trường',
-        STT: false,
-        pagination: false,
-        customColRegional: {
-          'VÙNG': {crossFilter: 'regionals'}
-        },
-        customColProvince: {
-          'TỈNH/TP': {crossFilter: 'provinces'}
-        }
+      height: '400px',
+      name: 'Rating (%) và Ave.Reach (%) theo thị trường',
+      description: 'Tỉ lệ khán giả (không trùng lặp) trung bình mỗi ngày (Reach) và trung bình mỗi phút (Rating) tính trên dân số từ 4-80 tuổi của từng thị trường',
+      STT: false,
+      pagination: false,
+      customColRegional: {
+        'VÙNG': { crossFilter: 'regionals' }
+      },
+      customColProvince: {
+        'TỈNH/TP': { crossFilter: 'provinces' }
+      }
     },
     tableProgramChannel: {
-        height: '585px',
-        programRank: {
-          name: 'XẾP HẠNG chương trình theo các chỉ số',
-          description: false,
-          columnSort: ['program_name', 'channel_name_tvd', 'firstlevel_vn', 'name_vn', 'rating', 'rating%', 'ave_reach', 'reach%', 'minute_user_program']
-        },
-        programDetail: {
-          name: 'Chỉ số đo lường chi tiết từng chương trình',
-          description: false,
-          columnSort: ['program_name', 'description', 'NGÀY PHÁT', 'start_time', 'end_time', 'channel_name_tvd', 'rating', 'rating%', 'ave_reach', 'reach%', 'minute_user_program'],
-          customCol: {
-            'CHƯƠNG TRÌNH': {weight: 600, sticky: true, minSize: 70, maxSize: 180, crossFilter: 'programs'},
-            'KÊNH': {minSize: 0, maxSize: 30, align: 'text-center', justify: 'justify-center', crossFilter: 'channels'},
-            'THỜI GIAN\nBẮT ĐẦU': {align: 'text-center', justify: 'justify-center'},
-            'THỜI GIAN\nKẾT THÚC': {align: 'text-center', justify: 'justify-center'}
-          }
-        },
-        programEvent: {
-          name: 'Chỉ số đo lường chương trình theo Live/TimeShift',
-          description: false,
-          columnSort: ['program_name', 'channel_name_tvd', 'event_category_name', 'rating', 'rating%', 'ave_reach', 'reach%', 'minute_user_program']
-        },
-        programArea: {
-          customCol: {
-            'VÙNG': {weight: 600, sticky: true, minSize: 70, maxSize: 160, crossFilter: 'regionals'},
-            'THÀNH PHỐ LỚN': {weight: 600, sticky: true, minSize: 70, maxSize: 160, crossFilter: 'keyCities'},
-            'TỈNH/TP': {weight: 600, sticky: true, minSize: 70, maxSize: 160, crossFilter: 'provinces'},
-            'TOÀN QUỐC': {weight: 600, sticky: true, minSize: 70, maxSize: 160},
-            'KÊNH': {minSize: 0, maxSize: 30, crossFilter: 'channels'},
-            'THỂ LOẠI': {minSize: 80, crossFilter: 'firstLevels'},
-          }
-        },
-        STT: true,
-        pagination: true,
+      height: '585px',
+      programRank: {
+        name: 'XẾP HẠNG chương trình theo các chỉ số',
+        description: false,
+        columnSort: ['program_name', 'channel_name_tvd', 'firstlevel_vn', 'name_vn', 'rating', 'rating%', 'ave_reach', 'reach%', 'minute_user_program']
+      },
+      programDetail: {
+        name: 'Chỉ số đo lường chi tiết từng chương trình',
+        description: false,
+        columnSort: ['program_name', 'description', 'NGÀY PHÁT', 'start_time', 'end_time', 'channel_name_tvd', 'rating', 'rating%', 'ave_reach', 'reach%', 'minute_user_program'],
         customCol: {
-          'CHƯƠNG TRÌNH': {weight: 600, sticky: true, minSize: 70, maxSize: 180, crossFilter: 'programs'},
-          'KÊNH': {minSize: 0, maxSize: 30, crossFilter: 'channels'},
-          'MÔ TẢ': {minSize: 70},
-          'THỂ LOẠI': {minSize: 70, crossFilter: 'firstLevels'},
-          'Live/TSV': {crossFilter: 'events'}
+          'CHƯƠNG TRÌNH': { weight: 600, sticky: true, minSize: 70, maxSize: 180, crossFilter: 'programs' },
+          'KÊNH': { minSize: 0, maxSize: 30, align: 'text-center', justify: 'justify-center', crossFilter: 'channels' },
+          'THỜI GIAN\nBẮT ĐẦU': { align: 'text-center', justify: 'justify-center' },
+          'THỜI GIAN\nKẾT THÚC': { align: 'text-center', justify: 'justify-center' }
         }
+      },
+      programEvent: {
+        name: 'Chỉ số đo lường chương trình theo Live/TimeShift',
+        description: false,
+        columnSort: ['program_name', 'channel_name_tvd', 'event_category_name', 'rating', 'rating%', 'ave_reach', 'reach%', 'minute_user_program']
+      },
+      programArea: {
+        customCol: {
+          'VÙNG': { weight: 600, sticky: true, minSize: 70, maxSize: 160, crossFilter: 'regionals' },
+          'THÀNH PHỐ LỚN': { weight: 600, sticky: true, minSize: 70, maxSize: 160, crossFilter: 'keyCities' },
+          'TỈNH/TP': { weight: 600, sticky: true, minSize: 70, maxSize: 160, crossFilter: 'provinces' },
+          'TOÀN QUỐC': { weight: 600, sticky: true, minSize: 70, maxSize: 160 },
+          'KÊNH': { minSize: 0, maxSize: 30, crossFilter: 'channels' },
+          'THỂ LOẠI': { minSize: 80, crossFilter: 'firstLevels' },
+        }
+      },
+      STT: true,
+      pagination: true,
+      customCol: {
+        'CHƯƠNG TRÌNH': { weight: 600, sticky: true, minSize: 70, maxSize: 180, crossFilter: 'programs' },
+        'KÊNH': { minSize: 0, maxSize: 30, crossFilter: 'channels' },
+        'MÔ TẢ': { minSize: 70 },
+        'THỂ LOẠI': { minSize: 70, crossFilter: 'firstLevels' },
+        'Live/TSV': { crossFilter: 'events' }
+      }
     }
   },
   mixedChart: {
@@ -300,28 +300,28 @@ export const CUSTOM_CHART = {
       showTopNSeries: 3,
     },
     lineChartTimebandRegional: {
-        name: 'Biến động Ave.Reach (000) vùng theo khung giờ',
-        description: false,
-        showTopNSeries: 3,
-        left: 210
+      name: 'Biến động Ave.Reach (000) vùng theo khung giờ',
+      description: false,
+      showTopNSeries: 3,
+      left: 210
     },
     lineChartMinuteChannel: {
-        name: 'Xu hướng Rating (000) CÁC KÊNH',
-        description: false,
-        legendTop: true,
-        textOverflow: true
+      name: 'Xu hướng Rating (000) CÁC KÊNH',
+      description: false,
+      legendTop: true,
+      textOverflow: true
     },
     lineChartMinuteDay: {
-        name: 'RATING (000) KÊNH TRONG NGÀY',
-        description: false,
-        legendTop: true,
-        textOverflow: true
+      name: 'RATING (000) KÊNH TRONG NGÀY',
+      description: false,
+      legendTop: true,
+      textOverflow: true
     },
     lineChartMinuteDays: {
-        name: 'RATING (000) CHƯƠNG TRÌNH theo phút',
-        description: false,
-        legendTop: true,
-        textOverflow: true
+      name: 'RATING (000) CHƯƠNG TRÌNH theo phút',
+      description: false,
+      legendTop: true,
+      textOverflow: true
     },
     colorChannel: variableCustoms.colorChannel,
     smooth: true,
@@ -349,8 +349,8 @@ export const CUSTOM_CHART = {
   },
   pieChart: {
     height: 320,
-    fontSize: { tooltip: 12, legend: 12 , dataLabel: 12 },
-    fontWeight: { tooltip: 500, legend: 500 , dataLabel: 500 },
+    fontSize: { tooltip: 12, legend: 12, dataLabel: 12 },
+    fontWeight: { tooltip: 500, legend: 500, dataLabel: 500 },
     pieChartFirstLevel: {
       totalEvent: {
         name: 'Tỉ lệ THỜI LƯỢNG PHÁT các thể loại',

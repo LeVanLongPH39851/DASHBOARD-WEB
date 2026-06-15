@@ -14,11 +14,11 @@ import iconListDark from '../../../assets/icon_list_dark.png';
 import { useDashboardStateGlobals, useDashboardFilters } from '../../../context/DashboardFilterContext';
 import { useCurrentUser } from '../../../hooks/useCurrentUser';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faExpand } from '@fortawesome/free-solid-svg-icons';
+import { faExpand, faClockRotateLeft } from '@fortawesome/free-solid-svg-icons';
 import { getYesterday, formatDate } from '../../../helpers/helper';
 import { FILTER_LABEL } from '../../../utils/label';
 
-const NameChart = ({ nameChart, description, icon=false, width='', height='', backgound='', display=true, opacity=false, getChartData=null, table=false, fullScreen=false }) => {
+const NameChart = ({ nameChart, description, icon = false, width = '', height = '', backgound = '', display = true, opacity = false, getChartData = null, table = false, fullScreen = false }) => {
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { user, userLoading } = useCurrentUser();
@@ -31,7 +31,7 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target) &&
-          buttonRef.current && !buttonRef.current.contains(event.target)) {
+        buttonRef.current && !buttonRef.current.contains(event.target)) {
         setIsDropdownOpen(false);
       }
     };
@@ -96,9 +96,9 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
     searchTable?.classList.add('hidden');
 
     const dataUrl = await toPng(chartParent, {
-        quality: 1,
-        pixelRatio: 2,
-        backgroundColor: null
+      quality: 1,
+      pixelRatio: 2,
+      backgroundColor: null
     });
 
     const link = document.createElement('a');
@@ -208,9 +208,9 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
         .join("; ");
 
       const finalResultFilter = resultFilter ? `; ${resultFilter}` : "";
-      
+
       const inforFilter = worksheet.addRow([`Ngày: ${formatDate(appliedFilters?.startDate || getYesterday())} - ${formatDate(appliedFilters?.endDate || getYesterday())} ${finalResultFilter}`]);
-      
+
       worksheet.mergeCells(1, 1, 1, totalCols);
       timeRow.getCell(1).font = { italic: true, color: { argb: 'AFF383C' } };
       timeRow.getCell(1).alignment = { horizontal: 'left', vertical: 'middle' };
@@ -318,11 +318,11 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
 
       if (series.length > 1) {
         const lastColNum = 2 + series.length + 1;  // STT + Label + series + Tổng
-        
+
         worksheet.eachRow((row, rowNumber) => {
           if (rowNumber === 2) return;  // ✅ Bỏ qua HEADER row (màu trắng)
           if (rowNumber === 1) return;  // Bỏ qua timeStr
-          
+
           const lastCell = row.getCell(lastColNum);
           if (lastCell.value !== null && lastCell.value !== undefined) {
             lastCell.font = { bold: true };
@@ -345,7 +345,7 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
     } catch (error) {
       console.error('Excel export error:', error);
     } finally {
-        setIsDropdownOpen(false);
+      setIsDropdownOpen(false);
     }
   };
 
@@ -353,120 +353,120 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
     if (!event.currentTarget) return;
 
     try {
-        // ✅ Lấy data từ ECharts
-        if (typeof getChartData !== 'function') return;
-        const chartData = getChartData();
+      // ✅ Lấy data từ ECharts
+      if (typeof getChartData !== 'function') return;
+      const chartData = getChartData();
 
-        const labels = chartData.labels || [];
-        const series = chartData.series || [];
+      const labels = chartData.labels || [];
+      const series = chartData.series || [];
 
-        const ExcelJS = (await import('exceljs')).default;
-        const workbook = new ExcelJS.Workbook();
-        const safeNameChart = nameChart.replace(/[\\/:*?"<>|]/g, '_');
-        const worksheet = workbook.addWorksheet(safeNameChart);
+      const ExcelJS = (await import('exceljs')).default;
+      const workbook = new ExcelJS.Workbook();
+      const safeNameChart = nameChart.replace(/[\\/:*?"<>|]/g, '_');
+      const worksheet = workbook.addWorksheet(safeNameChart);
 
-        const now = new Date();
-        const timeStr = `Thời gian export: ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')} ${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
-        const totalCols = 1 + series.length; // ✅ +1 cho cột STT
-        const timeRow = worksheet.addRow([timeStr]);
+      const now = new Date();
+      const timeStr = `Thời gian export: ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')} ${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
+      const totalCols = 1 + series.length; // ✅ +1 cho cột STT
+      const timeRow = worksheet.addRow([timeStr]);
 
-        const resultFilter = Object.entries(appliedFilters || {})
-          .filter(([_, value]) => Array.isArray(value) && value.length > 0)
-          .map(([key, value]) => {
-            const label = FILTER_LABEL[key] || key;
-            return `${label}: ${value.join(", ")}`;
-          })
-          .join("; ");
+      const resultFilter = Object.entries(appliedFilters || {})
+        .filter(([_, value]) => Array.isArray(value) && value.length > 0)
+        .map(([key, value]) => {
+          const label = FILTER_LABEL[key] || key;
+          return `${label}: ${value.join(", ")}`;
+        })
+        .join("; ");
 
-        const finalResultFilter = resultFilter ? `; ${resultFilter}` : "";
-        
-        const inforFilter = worksheet.addRow([`Ngày: ${formatDate(appliedFilters?.startDate || getYesterday())} - ${formatDate(appliedFilters?.endDate || getYesterday())} ${finalResultFilter}`]);
+      const finalResultFilter = resultFilter ? `; ${resultFilter}` : "";
 
-        worksheet.mergeCells(1, 1, 1, totalCols);
-        timeRow.getCell(1).font = { italic: true, color: { argb: 'AFF383C' } };
-        timeRow.getCell(1).alignment = { horizontal: 'left', vertical: 'middle' };
-        inforFilter.getCell(1).font = { italic: true, color: { argb: 'AFF383C' } };
-        inforFilter.getCell(1).alignment = { horizontal: 'left', vertical: 'middle' };
+      const inforFilter = worksheet.addRow([`Ngày: ${formatDate(appliedFilters?.startDate || getYesterday())} - ${formatDate(appliedFilters?.endDate || getYesterday())} ${finalResultFilter}`]);
 
-        // ✅ HEADER ROW: STT + các series name
-        const headerRow = worksheet.addRow(['STT', ...series.map(s => s.name || 'Value')]);
+      worksheet.mergeCells(1, 1, 1, totalCols);
+      timeRow.getCell(1).font = { italic: true, color: { argb: 'AFF383C' } };
+      timeRow.getCell(1).alignment = { horizontal: 'left', vertical: 'middle' };
+      inforFilter.getCell(1).font = { italic: true, color: { argb: 'AFF383C' } };
+      inforFilter.getCell(1).alignment = { horizontal: 'left', vertical: 'middle' };
 
-        // Style header: bold + background
-        headerRow.eachCell(cell => {
-            cell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
-            cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1E3A5F' } };
-            cell.alignment = { horizontal: 'center', vertical: 'middle' };
-            cell.border = {
-                top: { style: 'thin' }, left: { style: 'thin' },
-                bottom: { style: 'thin' }, right: { style: 'thin' }
-            };
+      // ✅ HEADER ROW: STT + các series name
+      const headerRow = worksheet.addRow(['STT', ...series.map(s => s.name || 'Value')]);
+
+      // Style header: bold + background
+      headerRow.eachCell(cell => {
+        cell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1E3A5F' } };
+        cell.alignment = { horizontal: 'center', vertical: 'middle' };
+        cell.border = {
+          top: { style: 'thin' }, left: { style: 'thin' },
+          bottom: { style: 'thin' }, right: { style: 'thin' }
+        };
+      });
+
+      // ✅ DATA ROWS: STT + label + data
+      labels.forEach((label, i) => {
+        const rowValues = [label + 1]; // ✅ Cột STT (label)
+
+        series.forEach(s => {
+          const valRaw = s.data?.[i];
+          const val =
+            typeof valRaw === 'number'
+              ? Math.round((valRaw + Number.EPSILON) * 100) / 100
+              : (valRaw ?? 0);
+          rowValues.push(val);
         });
 
-        // ✅ DATA ROWS: STT + label + data
-        labels.forEach((label, i) => {
-            const rowValues = [label + 1]; // ✅ Cột STT (label)
+        const dataRow = worksheet.addRow(rowValues);
 
-            series.forEach(s => {
-                const valRaw = s.data?.[i];
-                const val =
-                  typeof valRaw === 'number'
-                    ? Math.round((valRaw + Number.EPSILON) * 100) / 100
-                    : (valRaw ?? 0);
-                rowValues.push(val);
-            });
+        // Style data row
+        dataRow.eachCell((cell, colNumber) => {
+          cell.alignment = { horizontal: colNumber === 1 ? 'left' : 'right', vertical: 'middle' };
+          cell.border = {
+            top: { style: 'thin', color: { argb: 'FFE0E0E0' } },
+            left: { style: 'thin', color: { argb: 'FFE0E0E0' } },
+            bottom: { style: 'thin', color: { argb: 'FFE0E0E0' } },
+            right: { style: 'thin', color: { argb: 'FFE0E0E0' } }
+          };
 
-            const dataRow = worksheet.addRow(rowValues);
-
-            // Style data row
-            dataRow.eachCell((cell, colNumber) => {
-                cell.alignment = { horizontal: colNumber === 1 ? 'left' : 'right', vertical: 'middle' };
-                cell.border = {
-                    top: { style: 'thin', color: { argb: 'FFE0E0E0' } },
-                    left: { style: 'thin', color: { argb: 'FFE0E0E0' } },
-                    bottom: { style: 'thin', color: { argb: 'FFE0E0E0' } },
-                    right: { style: 'thin', color: { argb: 'FFE0E0E0' } }
-                };
-                
-                if (colNumber === 1) {
-                  cell.font = { bold: true };
-                }
-            });
+          if (colNumber === 1) {
+            cell.font = { bold: true };
+          }
         });
+      });
 
-        // ✅ Auto width cột
-        const colWidths = [];
-        worksheet.eachRow((row, rowNumber) => {
-            if (rowNumber === 1) return;  // Bỏ qua dòng timeStr
+      // ✅ Auto width cột
+      const colWidths = [];
+      worksheet.eachRow((row, rowNumber) => {
+        if (rowNumber === 1) return;  // Bỏ qua dòng timeStr
 
-            row.eachCell({ includeEmpty: true }, (cell, colNumber) => {
-                const len = cell.value ? cell.value.toString().length : 0;
-                colWidths[colNumber] = Math.max(colWidths[colNumber] || 8, len);
-            });
+        row.eachCell({ includeEmpty: true }, (cell, colNumber) => {
+          const len = cell.value ? cell.value.toString().length : 0;
+          colWidths[colNumber] = Math.max(colWidths[colNumber] || 8, len);
         });
+      });
 
-        colWidths.forEach((width, colNumber) => {
-            if (colNumber > 0) {
-                worksheet.getColumn(colNumber).width = Math.min(width + 2, 40);
-            }
-        });
+      colWidths.forEach((width, colNumber) => {
+        if (colNumber > 0) {
+          worksheet.getColumn(colNumber).width = Math.min(width + 2, 40);
+        }
+      });
 
-        // ✅ Export file
-        const buffer = await workbook.xlsx.writeBuffer();
-        const blob = new Blob([buffer], {
-            type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-        });
-        const dateStr = `${String(now.getDate()).padStart(2, '0')}-${String(now.getMonth() + 1).padStart(2, '0')}-${now.getFullYear()} ${String(now.getHours()).padStart(2, '0')}h${String(now.getMinutes()).padStart(2, '0')}m${String(now.getSeconds()).padStart(2, '0')}s`;
-        const link = document.createElement('a');
-        link.download = `${safeNameChart} ${dateStr}.xlsx`;
-        link.href = URL.createObjectURL(blob);
-        link.click();
-        URL.revokeObjectURL(link.href);
+      // ✅ Export file
+      const buffer = await workbook.xlsx.writeBuffer();
+      const blob = new Blob([buffer], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      });
+      const dateStr = `${String(now.getDate()).padStart(2, '0')}-${String(now.getMonth() + 1).padStart(2, '0')}-${now.getFullYear()} ${String(now.getHours()).padStart(2, '0')}h${String(now.getMinutes()).padStart(2, '0')}m${String(now.getSeconds()).padStart(2, '0')}s`;
+      const link = document.createElement('a');
+      link.download = `${safeNameChart} ${dateStr}.xlsx`;
+      link.href = URL.createObjectURL(blob);
+      link.click();
+      URL.revokeObjectURL(link.href);
 
     } catch (error) {
-        console.error('Excel export error:', error);
+      console.error('Excel export error:', error);
 
     } finally {
-        setIsDropdownOpen(false);
+      setIsDropdownOpen(false);
     }
   };
 
@@ -495,7 +495,7 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
 
       const totalCols = 2 + colKeys.length + (colKeys.length > 1 ? 1 : 0);
       const timeRow = worksheet.addRow([timeStr]);
-      
+
       const resultFilter = Object.entries(appliedFilters || {})
         .filter(([_, value]) => Array.isArray(value) && value.length > 0)
         .map(([key, value]) => {
@@ -505,7 +505,7 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
         .join("; ");
 
       const finalResultFilter = resultFilter ? `; ${resultFilter}` : "";
-      
+
       const inforFilter = worksheet.addRow([`Ngày: ${formatDate(appliedFilters?.startDate || getYesterday())} - ${formatDate(appliedFilters?.endDate || getYesterday())} ${finalResultFilter}`]);
 
       worksheet.mergeCells(1, 1, 1, totalCols);
@@ -538,8 +538,8 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
 
         const valueCells = colKeys.map((key) => {
           const val = typeof row[key] === 'number'
-                      ? Math.round((row[key] + Number.EPSILON) * 100) / 100
-                      : (row[key] ?? 0);
+            ? Math.round((row[key] + Number.EPSILON) * 100) / 100
+            : (row[key] ?? 0);
           rowTotal += val;
           return val;
         });
@@ -653,59 +653,62 @@ const NameChart = ({ nameChart, description, icon=false, width='', height='', ba
   };
 
   return (
-      <div className={`${opacity ? 'opacity-0 invisible' : ''} pb-6 max-lg:pb-5 max-md:pb-4 text-[16px] max-lg:text-sm max-md:text-xs font-semibold text-color-black-100 dark:text-color-white-90 transition-all duration-300 flex justify-between items-center ${!display ? 'absolute top-0 left-0 w-full p-6 max-lg:p-5 max-md:p-4' : ''}`}>
-        <div className='flex items-center gap-2 max-lg:gap-1.5 max-md:gap-1 text-nowrap'>
-          {icon && <div className={`w-8 h-8 max-lg:w-7.5 max-lg:h-7.5 max-md:w-7 max-md:h-7 max-md:hidden flex justify-center items-center rounded-lg ${backgound} transition-all duration-300`}><figure><img src={icon} className={`${width+' '+height}`} /></figure></div>}
-          <span>{nameChart}</span>
-          {description && <IconInfor description={description} />}
-        </div>
-        <div className='flex gap-1 items-center div-hideen max-md:hidden'>
-          {(!userLoading && user?.username !== 'vtvguest' && fullScreen) &&
-            (
-              <figure className='p-2 cursor-pointer' onClick={handlefullScreen}>
-                <FontAwesomeIcon icon={faExpand} fontSize={!stateGlobals.screen_lg ? 15 : 14} color={!stateGlobals.darkMode ? 'rgba(31, 31, 31, 1)' : 'rgba(255, 255, 255, 0.8)'} />
-              </figure>
-            )
-          }
-          {(!userLoading && user?.username !== 'vtvguest') &&
-          (<figure ref={!stateGlobals.screen_md ? buttonRef : undefined} className='p-2 cursor-pointer relative' onClick={handleToggle}>
-            <img src={!stateGlobals.darkMode ? iconDownloadDark : iconDownloadDarkDark} alt="Icon Download" className='w-3.25 max-lg:w-3' />
+    <div className={`${opacity ? 'opacity-0 invisible' : ''} pb-6 max-lg:pb-5 max-md:pb-4 text-[16px] max-lg:text-sm max-md:text-xs font-semibold text-color-black-100 dark:text-color-white-90 transition-all duration-300 flex justify-between items-center ${!display ? 'absolute top-0 left-0 w-full p-6 max-lg:p-5 max-md:p-4' : ''}`}>
+      <div className='flex items-center gap-2 max-lg:gap-1.5 max-md:gap-1 text-nowrap'>
+        {icon && <div className={`w-8 h-8 max-lg:w-7.5 max-lg:h-7.5 max-md:w-7 max-md:h-7 max-md:hidden flex justify-center items-center rounded-lg ${backgound} transition-all duration-300`}><figure><img src={icon} className={`${width + ' ' + height}`} /></figure></div>}
+        <span>{nameChart}</span>
+        {description && <IconInfor description={description} />}
+      </div>
+      <div className='flex gap-1 items-center div-hideen max-md:hidden'>
+        {(!userLoading && user?.username !== 'vtvguest' && fullScreen) &&
+          (
+            <figure className='p-2 cursor-pointer transition-all duration-300 hover:scale-110' title='Phóng to' onClick={handlefullScreen}>
+              <FontAwesomeIcon icon={faExpand} fontSize={!stateGlobals.screen_lg ? 15 : 14} color={!stateGlobals.darkMode ? 'rgba(31, 31, 31, 1)' : 'rgba(255, 255, 255, 0.8)'} />
+            </figure>
+          )
+        }
+        {(!userLoading && user?.username !== 'vtvguest') &&
+          (<figure ref={!stateGlobals.screen_md ? buttonRef : undefined} className='p-2 cursor-pointer relative group' title='Tải xuống' onClick={handleToggle}>
+            <img src={!stateGlobals.darkMode ? iconDownloadDark : iconDownloadDarkDark} alt="Icon Download" className='w-3.25 max-lg:w-3 transition-all duration-300 group-hover:scale-110' />
             <div ref={!stateGlobals.screen_md ? dropdownRef : undefined} className={`${isDropdownOpen ? 'scale-100 opacity-100 origin-top' : 'scale-0 opacity-0 origin-top'} left-1/2 -translate-x-1/2 transition-all duration-300 absolute z-20 top-full bg-background-light dark:bg-background-dark dark:border-background-white-15 flex flex-col border border-border-black-10 rounded-xl w-28 overflow-hidden`}>
-                <div onClick={!isFirefox ? handleChartCapture : handleChartCaptureFireFox} className='hover:bg-background-black-4 dark:hover:bg-background-hover-dark transition-all duration-300'>
-                    <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-90'} src={iconIMG}
-                            widthImage='w-4 max-lg:w-3.75 max-md:w-3.75' alt='Icon Instruct' text={'Tải Ảnh'} />
-                </div>
-                <div onClick={table ? table === true ? handleChartExcelTable : handleChartExcelPivot : handleChartExcel} className='hover:bg-background-black-4 dark:hover:bg-background-hover-dark transition-all duration-300'>
-                    <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-90'} src={iconExcel}
-                    widthImage='w-4 max-lg:w-3.75 max-md:w-3.75' alt='Icon Instruct' text={'Tải Excel'} />
-                </div>
+              <div onClick={!isFirefox ? handleChartCapture : handleChartCaptureFireFox} className='hover:bg-background-black-4 dark:hover:bg-background-hover-dark transition-all duration-300'>
+                <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-90'} src={iconIMG}
+                  widthImage='w-4 max-lg:w-3.75 max-md:w-3.75' alt='Icon Instruct' text={'Tải Ảnh'} />
+              </div>
+              <div onClick={table ? table === true ? handleChartExcelTable : handleChartExcelPivot : handleChartExcel} className='hover:bg-background-black-4 dark:hover:bg-background-hover-dark transition-all duration-300'>
+                <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-90'} src={iconExcel}
+                  widthImage='w-4 max-lg:w-3.75 max-md:w-3.75' alt='Icon Instruct' text={'Tải Excel'} />
+              </div>
             </div>
           </figure>)}
-          <figure className='p-2 cursor-pointer'><img src={!stateGlobals.darkMode ? iconEyeHidden : iconEyeHiddenDark} alt="Icon Eye Hidden" className='w-4.5 max-lg:w-4' onClick={handleHideChart} /></figure>
-        </div>
-        <div className='hidden div-hideen max-md:block'>
-          <figure ref={stateGlobals.screen_md ? buttonRef : undefined} className='p-2 max-md:px-0 cursor-pointer relative' onClick={handleToggle}>
-            <img src={!stateGlobals.darkMode ? iconList : iconListDark} alt="Icon List" className='w-2.75' />
-            <div ref={stateGlobals.screen_md ? dropdownRef : undefined} className={`${isDropdownOpen ? 'scale-100 opacity-100 origin-top max-md:origin-top-right' : 'scale-0 opacity-0 origin-top max-md:origin-top-right'} left-1/2 -translate-x-1/2 max-md:left-auto max-md:translate-x-0 max-md:right-0 transition-all duration-300 absolute z-20 top-full bg-background-light dark:bg-background-dark dark:border-background-white-15 flex flex-col border border-border-black-10 rounded-xl w-28 overflow-hidden`}>
-                {(!userLoading && user?.username !== 'vtvguest') &&
-                (<div onClick={!isFirefox ? handleChartCapture : handleChartCaptureFireFox} className='hover:bg-background-black-4 dark:hover:bg-background-hover-dark transition-all duration-300'>
-                    <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-90'} src={iconIMG}
-                            widthImage='w-4 max-md:w-3.5' alt='Icon Instruct' text={'Tải Ảnh'} />
-                </div>)}
-                {(!userLoading && user?.username !== 'vtvguest') &&
-                (<div onClick={table ? table === true ? handleChartExcelTable : handleChartExcelPivot : handleChartExcel} className='hover:bg-background-black-4 dark:hover:bg-background-hover-dark transition-all duration-300'>
-                    <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-90'} src={iconExcel}
-                    widthImage='w-4 max-md:w-3.5' alt='Icon Instruct' text={'Tải Excel'} />
-                </div>)}
-                <div className='hover:bg-background-black-4 dark:hover:bg-background-hover-dark transition-all duration-300'>
-                    <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-90'} src={!stateGlobals.darkMode ? iconEyeHidden : iconEyeHiddenDark}
-                    widthImage='w-4.5 max-md:w-3.5' alt='Icon Eye Hidden' text={'Ẩn biểu đồ'} click={handleHideChart} />
-                </div>
-            </div>
-          </figure>
-        </div>
-        <span className='text-color-error font-semibold text-xs max-lg:text-[11px] hidden max-md:hidden'></span>
+        <figure className='p-2 cursor-pointer transition-all duration-300 hover:scale-110' title='Làm mới' onClick={undefined}>
+          <FontAwesomeIcon icon={faClockRotateLeft} fontSize={!stateGlobals.screen_lg ? 15 : 14} color={!stateGlobals.darkMode ? 'rgba(31, 31, 31, 1)' : 'rgba(255, 255, 255, 0.8)'} />
+        </figure>
+        {/* <figure className='p-2 cursor-pointer'><img src={!stateGlobals.darkMode ? iconEyeHidden : iconEyeHiddenDark} alt="Icon Eye Hidden" className='w-4.5 max-lg:w-4' onClick={handleHideChart} /></figure> */}
       </div>
+      <div className='hidden div-hideen max-md:block'>
+        <figure ref={stateGlobals.screen_md ? buttonRef : undefined} className='p-2 max-md:px-0 cursor-pointer relative' onClick={handleToggle}>
+          <img src={!stateGlobals.darkMode ? iconList : iconListDark} alt="Icon List" className='w-2.75' />
+          <div ref={stateGlobals.screen_md ? dropdownRef : undefined} className={`${isDropdownOpen ? 'scale-100 opacity-100 origin-top max-md:origin-top-right' : 'scale-0 opacity-0 origin-top max-md:origin-top-right'} left-1/2 -translate-x-1/2 max-md:left-auto max-md:translate-x-0 max-md:right-0 transition-all duration-300 absolute z-20 top-full bg-background-light dark:bg-background-dark dark:border-background-white-15 flex flex-col border border-border-black-10 rounded-xl w-28 overflow-hidden`}>
+            {(!userLoading && user?.username !== 'vtvguest') &&
+              (<div onClick={!isFirefox ? handleChartCapture : handleChartCaptureFireFox} className='hover:bg-background-black-4 dark:hover:bg-background-hover-dark transition-all duration-300'>
+                <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-90'} src={iconIMG}
+                  widthImage='w-4 max-md:w-3.5' alt='Icon Instruct' text={'Tải Ảnh'} />
+              </div>)}
+            {(!userLoading && user?.username !== 'vtvguest') &&
+              (<div onClick={table ? table === true ? handleChartExcelTable : handleChartExcelPivot : handleChartExcel} className='hover:bg-background-black-4 dark:hover:bg-background-hover-dark transition-all duration-300'>
+                <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-90'} src={iconExcel}
+                  widthImage='w-4 max-md:w-3.5' alt='Icon Instruct' text={'Tải Excel'} />
+              </div>)}
+            <div className='hover:bg-background-black-4 dark:hover:bg-background-hover-dark transition-all duration-300'>
+              <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-90'} src={!stateGlobals.darkMode ? iconEyeHidden : iconEyeHiddenDark}
+                widthImage='w-4.5 max-md:w-3.5' alt='Icon Eye Hidden' text={'Ẩn biểu đồ'} click={handleHideChart} />
+            </div>
+          </div>
+        </figure>
+      </div>
+      <span className='text-color-error font-semibold text-xs max-lg:text-[11px] hidden max-md:hidden'></span>
+    </div>
   );
 };
 

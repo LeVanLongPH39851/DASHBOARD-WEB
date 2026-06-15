@@ -211,11 +211,15 @@ export const getAllTableChartDevice = (appliedFilters) =>
 export const getAllTableChartMonitoring = (appliedFilters) =>
   postChart(payloads.allTableChartMonitoringPayload, appliedFilters, ['provinceFilters', 'regionalFilters', 'keyCityFilters']);
 
-export const getMaxInsert = () =>
-  axiosClient.post(apiRoute, payloads.maxInsertPayload)
+export const getMaxInsert = () => {
+  const userId = sessionStorage.getItem('user_id');
+  return axiosClient.post(apiRoute, { ...payloads.maxInsertPayload, user_id: userId });
+}
 
-export const getFilterProvince = () =>
-  axiosClient.post(apiRoute, payloads.filterProvincePayload)
+export const getFilterProvince = () => {
+  const userId = sessionStorage.getItem('user_id');
+  return axiosClient.post(apiRoute, { ...payloads.filterProvincePayload, user_id: userId });
+}
 
 export const getFilterProgram = (appliedFilters) =>
   postChart(payloads.filterProgramPayload, appliedFilters, ['allFilters']);
@@ -235,5 +239,7 @@ export const getFilterBrand = (appliedFilters) =>
 export const getFilterAdvertiser = (appliedFilters) =>
   postChart(payloads.filterAdvertiserPayload, appliedFilters, ['allFilters']);
 
-export const getFilterAdcode = () =>
-  axiosClient.post(apiRoute, payloads.filterAdcodePayload)
+export const getFilterAdcode = () => {
+  const userId = sessionStorage.getItem('user_id');
+  return axiosClient.post(apiRoute, { ...payloads.filterAdcodePayload, user_id: userId });
+}

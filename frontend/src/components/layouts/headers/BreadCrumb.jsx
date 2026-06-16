@@ -23,7 +23,7 @@ import { CUSTOM_CHART } from '../../../utils/customChart';
 import { useCurrentUser } from '../../../hooks/useCurrentUser';
 import { LABEL_TABS } from '../../../utils/label';
 
-const BreadCrumb = ({ dashboardName='Kênh truyền hình VTV'}) => {
+const BreadCrumb = ({ dashboardName = 'Kênh truyền hình VTV', icon = false, widthIcon = '' }) => {
     const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
     const { user, userLoading } = useCurrentUser();
 
@@ -31,54 +31,54 @@ const BreadCrumb = ({ dashboardName='Kênh truyền hình VTV'}) => {
     const sleep = ms => new Promise(r => setTimeout(r, ms));
 
     const prepareCaptureLayout = () => {
-    const inforTabSticky = document.getElementById('inforTabSticky');
-    const inforFilterSticky = document.getElementById('inforFilterSticky');
-    const divTables = document.querySelectorAll('.divTable');
-    const exportTime = document.getElementById('exportTime');
-    const clearAll = document?.getElementById('clearAll');
-    const inforFilterBtn = document.querySelector('#inforFilter div:first-child');
+        const inforTabSticky = document.getElementById('inforTabSticky');
+        const inforFilterSticky = document.getElementById('inforFilterSticky');
+        const divTables = document.querySelectorAll('.divTable');
+        const exportTime = document.getElementById('exportTime');
+        const clearAll = document?.getElementById('clearAll');
+        const inforFilterBtn = document.querySelector('#inforFilter div:first-child');
 
-    inforFilterBtn.classList.add('hidden');
-    sleep(300);
-    inforTabSticky?.classList.replace('transition-all', 'transition-delete');
-    inforFilterSticky?.classList.replace('transition-all', 'transition-delete');
-    inforTabSticky?.classList.replace('duration-300', 'duration-delete');
-    inforFilterSticky?.classList.replace('duration-300', 'duration-delete');
-    inforTabSticky?.classList.replace('top-29.25', 'top-0');
-    inforTabSticky.classList.replace('max-lg:top-[93.56px]', 'max-lg:top-0');
-    inforTabSticky?.classList.replace('max-md:top-12.25', 'max-md:top-0');
-    inforFilterSticky?.classList.replace('top-41.25', 'top-12');
-    inforFilterSticky.classList.replace('max-lg:top-[137.56px]', 'max-lg:top-11');
-    inforFilterSticky?.classList.replace('max-md:top-22.25', 'max-md:top-10');
-    if (clearAll) clearAll.classList.add('hidden');
-    divTables.forEach(table => table?.classList.replace('overflow-auto', 'overflow-hidden'));
+        inforFilterBtn.classList.add('hidden');
+        sleep(300);
+        inforTabSticky?.classList.replace('transition-all', 'transition-delete');
+        inforFilterSticky?.classList.replace('transition-all', 'transition-delete');
+        inforTabSticky?.classList.replace('duration-300', 'duration-delete');
+        inforFilterSticky?.classList.replace('duration-300', 'duration-delete');
+        inforTabSticky?.classList.replace('top-29.25', 'top-0');
+        inforTabSticky.classList.replace('max-lg:top-[93.56px]', 'max-lg:top-0');
+        inforTabSticky?.classList.replace('max-md:top-12.25', 'max-md:top-0');
+        inforFilterSticky?.classList.replace('top-41.25', 'top-12');
+        inforFilterSticky.classList.replace('max-lg:top-[137.56px]', 'max-lg:top-11');
+        inforFilterSticky?.classList.replace('max-md:top-22.25', 'max-md:top-10');
+        if (clearAll) clearAll.classList.add('hidden');
+        divTables.forEach(table => table?.classList.replace('overflow-auto', 'overflow-hidden'));
 
-    const now = new Date();
-    const timeStr = `Thời gian export: ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')} ${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
-    if (exportTime) exportTime.textContent = timeStr;
+        const now = new Date();
+        const timeStr = `Thời gian export: ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')} ${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
+        if (exportTime) exportTime.textContent = timeStr;
 
-    return { inforTabSticky, inforFilterSticky, clearAll, divTables, exportTime, inforFilterBtn, now };
+        return { inforTabSticky, inforFilterSticky, clearAll, divTables, exportTime, inforFilterBtn, now };
     };
 
     const restoreCaptureLayout = ({ inforTabSticky, inforFilterSticky, clearAll, divTables, exportTime, inforFilterBtn }) => {
-    inforTabSticky?.classList.replace('transition-delete', 'transition-all');
-    inforFilterSticky?.classList.replace('transition-delete', 'transition-all');
-    inforTabSticky?.classList.replace('duration-delete', 'duration-300');
-    inforFilterSticky?.classList.replace('duration-delete', 'duration-300');
-    inforTabSticky?.classList.replace('top-0', 'top-29.25');
-    inforTabSticky.classList.replace('max-lg:top-0', 'max-lg:top-[93.56px]');
-    inforTabSticky?.classList.replace('max-md:top-0', 'max-md:top-12.25');
-    inforFilterSticky?.classList.replace('top-12', 'top-41.25');
-    inforFilterSticky.classList.replace('max-lg:top-11', 'max-lg:top-[137.56px]');
-    inforFilterSticky?.classList.replace('max-md:top-10', 'max-md:top-22.25');
-    inforFilterBtn.classList.remove('hidden');
-    if (clearAll) clearAll.classList.remove('hidden');
-    divTables?.forEach(table => table?.classList.replace('overflow-hidden', 'overflow-auto'));
-    if (exportTime) exportTime.textContent = '';
+        inforTabSticky?.classList.replace('transition-delete', 'transition-all');
+        inforFilterSticky?.classList.replace('transition-delete', 'transition-all');
+        inforTabSticky?.classList.replace('duration-delete', 'duration-300');
+        inforFilterSticky?.classList.replace('duration-delete', 'duration-300');
+        inforTabSticky?.classList.replace('top-0', 'top-29.25');
+        inforTabSticky.classList.replace('max-lg:top-0', 'max-lg:top-[93.56px]');
+        inforTabSticky?.classList.replace('max-md:top-0', 'max-md:top-12.25');
+        inforFilterSticky?.classList.replace('top-12', 'top-41.25');
+        inforFilterSticky.classList.replace('max-lg:top-11', 'max-lg:top-[137.56px]');
+        inforFilterSticky?.classList.replace('max-md:top-10', 'max-md:top-22.25');
+        inforFilterBtn.classList.remove('hidden');
+        if (clearAll) clearAll.classList.remove('hidden');
+        divTables?.forEach(table => table?.classList.replace('overflow-hidden', 'overflow-auto'));
+        if (exportTime) exportTime.textContent = '';
     };
 
     const waitForNextPaint = () =>
-    new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+        new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
 
     const handleCapture = async () => {
         const target = document.getElementById(`target_capture_${stateGlobals.currentTab}`);
@@ -90,7 +90,7 @@ const BreadCrumb = ({ dashboardName='Kênh truyền hình VTV'}) => {
         const exportTime = document?.getElementById('exportTime');
         const clearAll = document?.getElementById('clearAll');
         const inforFilterBtn = document.querySelector('#inforFilter div:first-child');
-        
+
         inforTabSticky.classList.replace('transition-all', 'transition-delete');
         inforFilterSticky.classList.replace('transition-all', 'transition-delete');
         inforTabSticky.classList.replace('duration-300', 'duration-delete');
@@ -242,11 +242,11 @@ const BreadCrumb = ({ dashboardName='Kênh truyền hình VTV'}) => {
         try {
             await waitForNextPaint();
             const canvas = await html2canvas(target, {
-            scale: isFirefox ? 1.5 : 2,
-            backgroundColor: '#ffffff',
-            useCORS: true,
-            allowTaint: false,
-            logging: false
+                scale: isFirefox ? 1.5 : 2,
+                backgroundColor: '#ffffff',
+                useCORS: true,
+                allowTaint: false,
+                logging: false
             });
             const dataUrl = canvas.toDataURL('image/png');
             const { now } = layoutState;
@@ -274,11 +274,11 @@ const BreadCrumb = ({ dashboardName='Kênh truyền hình VTV'}) => {
             await waitForNextPaint();
 
             const canvas = await html2canvas(target, {
-            scale: isFirefox ? 1.5 : 2,
-            backgroundColor: '#ffffff',
-            useCORS: true,
-            allowTaint: false,
-            logging: false
+                scale: isFirefox ? 1.5 : 2,
+                backgroundColor: '#ffffff',
+                useCORS: true,
+                allowTaint: false,
+                logging: false
             });
 
             const imgData = canvas.toDataURL('image/png');
@@ -313,23 +313,23 @@ const BreadCrumb = ({ dashboardName='Kênh truyền hình VTV'}) => {
             pdf.addImage(imgData, 'PNG', x, y, renderWidth, renderHeight);
 
             const dateStr =
-            `${String(now.getDate()).padStart(2, '0')}-${String(now.getMonth() + 1).padStart(2, '0')}-${now.getFullYear()} ` +
-            `${String(now.getHours()).padStart(2, '0')}h${String(now.getMinutes()).padStart(2, '0')}m${String(now.getSeconds()).padStart(2, '0')}s`;
+                `${String(now.getDate()).padStart(2, '0')}-${String(now.getMonth() + 1).padStart(2, '0')}-${now.getFullYear()} ` +
+                `${String(now.getHours()).padStart(2, '0')}h${String(now.getMinutes()).padStart(2, '0')}m${String(now.getSeconds()).padStart(2, '0')}s`;
 
             const fileName = `Report Dashboard VTVRatings ${LABEL_TABS[stateGlobals.currentTab]} ${dateStr}.pdf`;
 
             if (isFirefox) {
-            const blob = pdf.output('blob');
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = fileName;
-            document.body.appendChild(link);
-            link.click();
-            link.remove();
-            setTimeout(() => URL.revokeObjectURL(url), 1000);
+                const blob = pdf.output('blob');
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = fileName;
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+                setTimeout(() => URL.revokeObjectURL(url), 1000);
             } else {
-            pdf.save(fileName);
+                pdf.save(fileName);
             }
         } catch (error) {
             console.error('Lỗi tạo PDF:', error);
@@ -344,10 +344,10 @@ const BreadCrumb = ({ dashboardName='Kênh truyền hình VTV'}) => {
 
     useEffect(() => {
         const handleClickOutside = (event) => {
-        if (dropdownRef.current && !dropdownRef.current.contains(event.target) &&
-            buttonRef.current && !buttonRef.current.contains(event.target)) {
-            setIsDropdownOpen(false);
-        }
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target) &&
+                buttonRef.current && !buttonRef.current.contains(event.target)) {
+                setIsDropdownOpen(false);
+            }
         };
 
         document.addEventListener('mousedown', handleClickOutside);
@@ -357,9 +357,9 @@ const BreadCrumb = ({ dashboardName='Kênh truyền hình VTV'}) => {
     // ✅ ESC key close
     useEffect(() => {
         const handleEsc = (event) => {
-        if (event.key === 'Escape') {
-            setIsDropdownOpen(false);
-        }
+            if (event.key === 'Escape') {
+                setIsDropdownOpen(false);
+            }
         };
         document.addEventListener('keydown', handleEsc);
         return () => document.removeEventListener('keydown', handleEsc);
@@ -370,8 +370,8 @@ const BreadCrumb = ({ dashboardName='Kênh truyền hình VTV'}) => {
     };
 
     return (
-    <nav className='px-6 max-lg:px-5 max-md:px-4 bg-background-light dark:bg-background-dark border-b border-border-black-10 dark:border-transparent transition-all duration-300 pt-2 pb-1 sticky top-0' style={{zIndex: 300}}>
-        {/* <div className='flex items-center gap-2 max-lg:gap-1 max-md:hidden'>
+        <nav className='px-6 max-lg:px-5 max-md:px-4 bg-background-light dark:bg-background-dark border-b border-border-black-10 dark:border-transparent transition-all duration-300 pt-2 pb-1 sticky top-0' style={{ zIndex: 300 }}>
+            {/* <div className='flex items-center gap-2 max-lg:gap-1 max-md:hidden'>
             <figure><img src={!stateGlobals.darkMode ? iconHome : iconHomeDark} className='w-3 max-lg:w-2.5 h-3 max-lg:h-2.5' alt="Icon Home" /></figure>
                 <span className='text-sm max-lg:text-[13px] font-normal text-color-black-50 dark:text-color-white-50 transition-all duration-300'>
                     <a href={`${CUSTOM_CHART.domain}/superset/welcome/`}>Trang chủ</a>
@@ -379,67 +379,68 @@ const BreadCrumb = ({ dashboardName='Kênh truyền hình VTV'}) => {
             <figure><img src={iconArrowRight} className='h-2.75 max-lg:h-2.5' alt="Icon Arrow Right" /></figure>
             <span className='text-sm max-lg:text-[13px] font-medium text-color-black-100 dark:text-color-white-90 transition-all duration-300 uppercase'>{dashboardName}</span>
         </div> */}
-        <div className='pt-2 flex justify-between items-center'>
-            <div className='flex items-center'>
-                <a href={`${CUSTOM_CHART.domain}/superset/welcome/`}><figure className='cursor-pointer p-2 pl-0 mr-2 hidden max-md:block'><img src={!stateGlobals.darkMode ? iconArrowLeft2 : iconArrowLeft2Dark} className='w-3.5' alt="Icon Arrow Left 2" /></figure></a>
-                <h1 className='text-[32px] max-lg:text-2xl max-md:text-lg font-semibold text-color-black-100 dark:text-color-white-90 transition-all duration-300 uppercase'>{dashboardName}</h1>
-            </div>
-            <div className='flex items-center gap-4 max-md:hidden'>
-                {/* <Button background={'bg-background-black-4 dark:bg-background-white-15'} color={'text-color-black-100 dark:text-color-white-80'} src={!stateGlobals.darkMode ? iconDisplay : iconDisplayDark}
+            <div className='pt-2 flex justify-between items-center'>
+                <div className='flex items-center'>
+                    <a href={`${CUSTOM_CHART.domain}/superset/welcome/`}><figure className='cursor-pointer p-2 pl-0 mr-2 hidden max-md:block'><img src={!stateGlobals.darkMode ? iconArrowLeft2 : iconArrowLeft2Dark} className='w-3.5' alt="Icon Arrow Left 2" /></figure></a>
+                    {icon && <figure className='mr-1'><img src={icon} className={`${widthIcon}`} alt="Icon BreadCrumb" /></figure>}
+                    <h1 className='text-[32px] max-lg:text-2xl max-md:text-lg font-semibold text-color-black-100 dark:text-color-white-90 transition-all duration-300 uppercase'>{dashboardName}</h1>
+                </div>
+                <div className='flex items-center gap-4 max-md:hidden'>
+                    {/* <Button background={'bg-background-black-4 dark:bg-background-white-15'} color={'text-color-black-100 dark:text-color-white-80'} src={!stateGlobals.darkMode ? iconDisplay : iconDisplayDark}
                             widthImage='w-3.75' heightImage='h-3.75' alt='Icon Display' text={'Quản lý hiển thị'} /> */}
-                <a href="https://ratings.vtv.vn/huongdan/" target='_blank'>
-                    <Button background={'bg-background-black-4 dark:bg-background-white-15'} color={'text-color-black-100 dark:text-color-white-80'} src={!stateGlobals.darkMode ? iconInstruct : iconInstructDark}
+                    <a href="https://ratings.vtv.vn/huongdan/" target='_blank'>
+                        <Button background={'bg-background-black-4 dark:bg-background-white-15'} color={'text-color-black-100 dark:text-color-white-80'} src={!stateGlobals.darkMode ? iconInstruct : iconInstructDark}
                             widthImage='w-4 max-lg:w-3.5' heightImage='h-4 max-lg:h-3.5' alt='Icon Instruct' text={'Hướng dẫn'} src2={iconSucces}
                             widthImage2='w-3.5 max-lg:w-3' alt2='Icon Succes' />
-                </a>
-                {(!userLoading && user?.username !== 'vtvguest') &&
-                (<div className='relative'>
-                    <div ref={!stateGlobals.screen_md ? buttonRef : undefined}>
-                        <Button background={'bg-color-black-100 dark:bg-background-primary'} color={'text-color-white-90 dark:text-color-black-100'} src={!stateGlobals.darkMode ? iconDownload : iconDownloadDark}
-                            widthImage='w-3.5 max-lg:w-3' heightImage='h-3.5 max-lg:h-3' alt='Icon Download' text={'Tải xuống'} click={handleToggle}/>
-                    </div>
-                    <div ref={!stateGlobals.screen_md ? dropdownRef : undefined} className={`${isDropdownOpen ? 'scale-100 opacity-100 origin-top' : 'scale-0 opacity-0 origin-top'} transition-all duration-300 absolute top-full left-0 bg-background-light dark:bg-background-dark flex flex-col border border-border-black-10 dark:border-background-white-15 rounded-xl w-full overflow-hidden`}>
-                            <div onClick={!isFirefox ? handleCapture : handleCaptureFireFox} className='hover:bg-background-black-4 dark:hover:bg-color-black-70 transition-all duration-300'>
-                                <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-80'} src={iconIMG}
+                    </a>
+                    {(!userLoading && user?.username !== 'vtvguest') &&
+                        (<div className='relative'>
+                            <div ref={!stateGlobals.screen_md ? buttonRef : undefined}>
+                                <Button background={'bg-color-black-100 dark:bg-background-primary'} color={'text-color-white-90 dark:text-color-black-100'} src={!stateGlobals.darkMode ? iconDownload : iconDownloadDark}
+                                    widthImage='w-3.5 max-lg:w-3' heightImage='h-3.5 max-lg:h-3' alt='Icon Download' text={'Tải xuống'} click={handleToggle} />
+                            </div>
+                            <div ref={!stateGlobals.screen_md ? dropdownRef : undefined} className={`${isDropdownOpen ? 'scale-100 opacity-100 origin-top' : 'scale-0 opacity-0 origin-top'} transition-all duration-300 absolute top-full left-0 bg-background-light dark:bg-background-dark flex flex-col border border-border-black-10 dark:border-background-white-15 rounded-xl w-full overflow-hidden`}>
+                                <div onClick={!isFirefox ? handleCapture : handleCaptureFireFox} className='hover:bg-background-black-4 dark:hover:bg-color-black-70 transition-all duration-300'>
+                                    <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-80'} src={iconIMG}
                                         widthImage='w-4 max-lg:w-3.75' alt='Icon Instruct' text={'Tải Ảnh'} />
+                                </div>
+                                <div onClick={!isFirefox ? handlePDF : handlePDFFireFox} className='hover:bg-background-black-4 dark:hover:bg-color-black-70 transition-all duration-300'>
+                                    <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-80'} src={iconPDF}
+                                        widthImage='w-4 max-lg:w-3.75' alt='Icon Instruct' text={'Tải PDF'} />
+                                </div>
                             </div>
-                            <div onClick={!isFirefox ? handlePDF : handlePDFFireFox} className='hover:bg-background-black-4 dark:hover:bg-color-black-70 transition-all duration-300'>
-                                <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-80'} src={iconPDF}
-                                widthImage='w-4 max-lg:w-3.75' alt='Icon Instruct' text={'Tải PDF'} />
-                            </div>
-                    </div>
-                </div>)}
-            </div>
-            <div className='hidden max-md:block relative'>
-                <figure ref={stateGlobals.screen_md ? buttonRef : undefined} className='cursor-pointer p-2' onClick={handleToggle}>
-                    <img src={!stateGlobals.darkMode ? iconList : iconListDark} className='w-3.5' alt="Icon List" />
-                </figure>
-                <div ref={stateGlobals.screen_md ? dropdownRef : undefined} className={`${isDropdownOpen ? 'scale-100 opacity-100 origin-top-right' : 'scale-0 opacity-0 origin-top-right'} transition-all duration-300 absolute top-full right-0 bg-background-light dark:bg-background-dark flex flex-col border border-border-black-10 dark:border-background-white-15 rounded-xl w-33.75 overflow-hidden`}>
+                        </div>)}
+                </div>
+                <div className='hidden max-md:block relative'>
+                    <figure ref={stateGlobals.screen_md ? buttonRef : undefined} className='cursor-pointer p-2' onClick={handleToggle}>
+                        <img src={!stateGlobals.darkMode ? iconList : iconListDark} className='w-3.5' alt="Icon List" />
+                    </figure>
+                    <div ref={stateGlobals.screen_md ? dropdownRef : undefined} className={`${isDropdownOpen ? 'scale-100 opacity-100 origin-top-right' : 'scale-0 opacity-0 origin-top-right'} transition-all duration-300 absolute top-full right-0 bg-background-light dark:bg-background-dark flex flex-col border border-border-black-10 dark:border-background-white-15 rounded-xl w-33.75 overflow-hidden`}>
                         {/* <div className='hover:bg-background-black-4 dark:hover:bg-color-black-70 transition-all duration-300'>
                             <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-80'} src={!stateGlobals.darkMode ? iconDisplay : iconDisplayDark}
                             widthImage='w-3.75 max-md:w-3' heightImage='h-3.75 max-md:h-3' alt='Icon Display' text={'Quản lý hiển thị'} />
                         </div> */}
                         {(!userLoading && user?.username !== 'vtvguest') &&
-                        (<div className='hover:bg-background-black-4 dark:hover:bg-color-black-70 transition-all duration-300'>
-                            <a href="https://ratings.vtv.vn/huongdan/" target='_blank'>
-                                <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-80'} src={!stateGlobals.darkMode ? iconInstruct : iconInstructDark}
+                            (<div className='hover:bg-background-black-4 dark:hover:bg-color-black-70 transition-all duration-300'>
+                                <a href="https://ratings.vtv.vn/huongdan/" target='_blank'>
+                                    <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-80'} src={!stateGlobals.darkMode ? iconInstruct : iconInstructDark}
                                         widthImage='w-4 max-md:w-3' heightImage='h-4 max-md:h-3' alt='Icon Instruct' text={'Hướng dẫn'} src2={iconSucces}
                                         widthImage2='w-3.5 max-md:w-2.5' alt2='Icon Succes' />
-                            </a>
-                        </div>)}
+                                </a>
+                            </div>)}
                         {(!userLoading && user?.username !== 'vtvguest') &&
-                        (<div onClick={!isFirefox ? handleCapture : handleCaptureFireFox} className='hover:bg-background-black-4 dark:hover:bg-color-black-70 transition-all duration-300'>
-                            <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-80'} src={iconIMG}
-                                        widthImage='w-4 max-md:w-3.5' alt='Icon Instruct' text={'Tải Ảnh'} />
-                        </div>)}
+                            (<div onClick={!isFirefox ? handleCapture : handleCaptureFireFox} className='hover:bg-background-black-4 dark:hover:bg-color-black-70 transition-all duration-300'>
+                                <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-80'} src={iconIMG}
+                                    widthImage='w-4 max-md:w-3.5' alt='Icon Instruct' text={'Tải Ảnh'} />
+                            </div>)}
                         <div onClick={!isFirefox ? handlePDF : handlePDFFireFox} className='hover:bg-background-black-4 dark:hover:bg-color-black-70 transition-all duration-300'>
                             <Button background={'bg-transparent'} color={'text-color-black-100 dark:text-color-white-80'} src={iconPDF}
                                 widthImage='w-4 max-md:w-3.5' alt='Icon Instruct' text={'Tải PDF'} click={!isFirefox ? handlePDF : handlePDFFireFox} />
                         </div>
+                    </div>
                 </div>
             </div>
-        </div>
-        {/* <div className='items-center gap-2 hidden max-md:flex mt-2'>
+            {/* <div className='items-center gap-2 hidden max-md:flex mt-2'>
             <figure><img src={!stateGlobals.darkMode ? iconHome : iconHomeDark} className='w-3 h-3 max-md:w-2.5 max-md:h-2.5' alt="Icon Home" /></figure>
                 <span className='text-sm max-md:text-xs font-normal text-color-black-50 dark:text-color-white-50 transition-all duration-300'>
                     <a href={`${CUSTOM_CHART.domain}/superset/welcome/`}>Trang chủ</a>
@@ -447,7 +448,7 @@ const BreadCrumb = ({ dashboardName='Kênh truyền hình VTV'}) => {
             <figure><img src={iconArrowRight} className='h-2.75' alt="Icon Arrow Right" /></figure>
             <span className='text-sm max-md:text-xs font-medium text-color-black-100 dark:text-color-white-90 transition-all duration-300 uppercase'>{dashboardName}</span>
         </div> */}
-    </nav>
+        </nav>
     );
 };
 

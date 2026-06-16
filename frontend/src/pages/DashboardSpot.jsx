@@ -53,7 +53,7 @@ const DashboardContent = () => {
   const { user, userLoading } = useCurrentUser();
 
   const scopeFilterData = {
-    filterProvince: dashboard.isLoading.filterProvinceData ? [{'Loading': 'Loading'}] : dashboard.filterProvinceData?.data,
+    filterProvince: dashboard.isLoading.filterProvinceData ? [{ 'Loading': 'Loading' }] : dashboard.filterProvinceData?.data,
     filterProgram: dashboard.isLoading.filterProgramData ? [{ 'Loading': 'Loading' }] : dashboard.filterProgramData?.data,
     filterProduct: dashboard.isLoading.filterProductData ? [{ 'Loading': 'Loading' }] : dashboard.filterProductData?.data,
     filterGroup: dashboard.isLoading.filterGroupData ? [{ 'Loading': 'Loading' }] : dashboard.filterGroupData?.data,
@@ -62,7 +62,7 @@ const DashboardContent = () => {
     filterAdvertiser: dashboard.isLoading.filterAdvertiserData ? [{ 'Loading': 'Loading' }] : dashboard.filterAdvertiserData?.data,
     filterAdcode: dashboard.isLoading.filterAdcodeData ? [{ 'Loading': 'Loading' }] : dashboard.filterAdcodeData?.data
   }
-  
+
   return (
     <main className='font-family-be-vietnam-pro w-full h-full tracking-[0.1px] overflow-x-clip'>
       <Header username={user?.username} />
@@ -72,961 +72,1007 @@ const DashboardContent = () => {
           <BreadCrumb dashboardName='GIÁM SÁT QUẢNG CÁO' />
           <div className='bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300'>
             <ParentTabs uniqueId='dashboard'
-                        defaultTab='overview'
-                        tabs={[
-                          {id: 'overview', label: 'Tổng quan', icon: !stateGlobals.darkMode ? iconOverview : iconOverviewDark, iconActive: iconOverviewActive,
-                            content: (
-                              <section className='bg-background-dashboard dark:bg-background-dashboard-dark transiton-all duration-300' id="target_capture_overview">
-                                <InforTab inforTab={"Tổng quan"} maxInsert={dashboard?.maxInsertData?.data?.[0]?.['MAX(check_time)']} />
-                                <InforFilter filters={scopeFilterData} FilterComponent={FilterSpot} nameFilter='FilterSpot' />
-                                <div className='px-6 max-lg:px-5 max-md:px-4 pt-6 max-lg:pt-5 max-md:pt-4'>
-                                    <div className='w-full grid grid-cols-4 max-lg:grid-cols-4 max-md:grid-cols-2 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4'>
-                                      {/* <div className='col-span-2 max-lg:col-span-3'>
+              defaultTab='overview'
+              tabs={[
+                {
+                  id: 'overview', label: 'Tổng quan', icon: !stateGlobals.darkMode ? iconOverview : iconOverviewDark, iconActive: iconOverviewActive,
+                  content: (
+                    <section className='bg-background-dashboard dark:bg-background-dashboard-dark transiton-all duration-300' id="target_capture_overview">
+                      <InforTab inforTab={"Tổng quan"} maxInsert={dashboard?.maxInsertData?.data?.[0]?.['MAX(check_time)']} />
+                      <InforFilter filters={scopeFilterData} FilterComponent={FilterSpot} nameFilter='FilterSpot' />
+                      <div className='px-6 max-lg:px-5 max-md:px-4 pt-6 max-lg:pt-5 max-md:pt-4'>
+                        <div className='w-full grid grid-cols-4 max-lg:grid-cols-4 max-md:grid-cols-2 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4'>
+                          {/* <div className='col-span-2 max-lg:col-span-3'>
                                         <NumberWithTrendChart nameChart={'Chi phí (Triệu VND)'} description={false} data={!dashboard.isLoading.spendVNDNumberData ? transformNumberWithTrendData(dashboard.spendVNDNumberData?.data, dashboard.spendVNDNumberData?.colnames) : 'isLoading'} fontFamily={CUSTOM_CHART.allChart.fontFamily} fontSize={CUSTOM_CHART.numberWithTrendChart.fontSize} fontWeight={CUSTOM_CHART.numberWithTrendChart.fontWeight} icon={METRIC_SPOTS.spend_vnd.icon} />
                                       </div>
                                       <div className='col-span-2 max-lg:col-span-3'>
                                         <NumberWithTrendChart nameChart={'Chi phí (USD)'} description={false} data={!dashboard.isLoading.spendUSDNumberData ? transformNumberWithTrendData(dashboard.spendUSDNumberData?.data, dashboard.spendUSDNumberData?.colnames) : 'isLoading'} fontFamily={CUSTOM_CHART.allChart.fontFamily} fontSize={CUSTOM_CHART.numberWithTrendChart.fontSize} fontWeight={CUSTOM_CHART.numberWithTrendChart.fontWeight} icon={METRIC_SPOTS.spend_usd.icon} suffix='$' />
                                       </div> */}
-                                      <NumberCard
-                                          title={'Chi phí (Triệu VND)'}
-                                          description={false}
-                                          value={!dashboard.isLoading.spendVNDNumberData ? dashboard.spendVNDNumberData?.data ? formatNumber(dashboard.spendVNDNumberData?.data[0].price, { isPercent: false }) : '-' : 'isLoading'}
-                                          icon={METRIC_SPOTS.spend_vnd.icon}
-                                          background={METRIC_SPOTS.spend_vnd.background}
-                                          widthIcon={METRIC_SPOTS.spend_vnd.widthIcon}
-                                      />
-                                      <NumberCard
-                                          title={'Chi phí (USD)'}
-                                          description={false}
-                                          value={!dashboard.isLoading.spendUSDNumberData ? dashboard.spendUSDNumberData?.data ? formatNumber(dashboard.spendUSDNumberData?.data[0].price_usd, { isPercent: false }) : '-' : 'isLoading'}
-                                          icon={METRIC_SPOTS.spend_usd.icon}
-                                          background={METRIC_SPOTS.spend_usd.background}
-                                          widthIcon={METRIC_SPOTS.spend_usd.widthIcon}
-                                      />
-                                      <NumberCard
-                                          title={'Số lượng Spot'}
-                                          description={false}
-                                          value={!dashboard.isLoading.countNumberData ? dashboard.countNumberData?.data ? formatNumber(dashboard.countNumberData?.data[0].count, { isPercent: false }) : '-' : 'isLoading'}
-                                          icon={METRIC_SPOTS.count.icon}
-                                          background={METRIC_SPOTS.count.background}
-                                          widthIcon={METRIC_SPOTS.count.widthIcon}
-                                      />
-                                      <NumberCard
-                                          title={'Thời lượng Spot'}
-                                          description={false}
-                                          value={!dashboard.isLoading.durationNumberData ? dashboard.durationNumberData?.data ? dashboard.durationNumberData?.data[0]?.total_duration?.toLocaleString(undefined, { maximumFractionDigits: 2 }) : '-' : 'isLoading'}
-                                          icon={METRIC_SPOTS.duration.icon}
-                                          background={METRIC_SPOTS.duration.background}
-                                          widthIcon={METRIC_SPOTS.duration.widthIcon}
-                                          suffix='phút'
-                                      />
-                                    </div>
-                                    <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
-                                      <div className={`p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
-                                          <NameChart nameChart={'Xu hướng quảng cáo THEO NGÀY'} description={false} opacity={true} />
-                                          <ChildTabs tabs={[
-                                          {id: 'vnd', label: 'Triệu VND',
-                                          content: (
-                                              <BarChart 
-                                                  data={!dashboard.isLoading.spendVNDBarDateData ? transformBarChartData(dashboard.spendVNDBarDateData?.data, dashboard.spendVNDBarDateData?.colnames) : 'isLoading'}
-                                                  height={CUSTOM_CHART.barChart.height}
-                                                  fontSize={CUSTOM_CHART.barChart.fontSize}
-                                                  fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                  colors={['rgba(255, 204, 0, 1)']}
-                                                  fontWeight={CUSTOM_CHART.barChart.fontWeight}
-                                                  nameChart={'Xu hướng quảng cáo THEO NGÀY'}
-                                                  description={false}
-                                                  orientation={''}
-                                                  displayName={false}
-                                              />
-                                          )},
-                                          {id: 'usd', label: 'USD',
-                                          content: (
-                                              <BarChart 
-                                                  data={!dashboard.isLoading.spendUSDBarDateData ? transformBarChartData(dashboard.spendUSDBarDateData?.data, dashboard.spendUSDBarDateData?.colnames) : 'isLoading'}
-                                                  height={CUSTOM_CHART.barChart.height}
-                                                  fontSize={CUSTOM_CHART.barChart.fontSize}
-                                                  fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                  colors={['rgba(255, 204, 0, 1)']}
-                                                  fontWeight={CUSTOM_CHART.barChart.fontWeight}
-                                                  nameChart={'Xu hướng quảng cáo THEO NGÀY'}
-                                                  description={false}
-                                                  orientation={''}
-                                                  displayName={false}
-                                                  suffix={'$'}
-                                              />
-                                          )}
-                                          ]} />
-                                      </div>
-                                    </div>
-                                    <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
-                                        <ChildTabs tabs={[
-                                        {id: 'spend', label: 'Share of spend',
-                                        content: (
-                                            <div className='grid grid-cols-2 max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4'>
-                                                <PieChart data={!dashboard.isLoading.spendVNDPieChannelData ? transformPieChartData(dashboard.spendVNDPieChannelData?.data, dashboard.spendVNDPieChannelData?.colnames) : 'isLoading'}
-                                                          height={CUSTOM_CHART.pieChart.height}
-                                                          fontSize={CUSTOM_CHART.pieChart.fontSize}
-                                                          fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                          fontWeight={CUSTOM_CHART.pieChart.fontWeight}
-                                                          nameChart={'Phân bổ chi phí quảng cáo theo kênh'}
-                                                          description={false}
-                                                          colors={CUSTOM_CHART.pieChart.colorChannel}
-                                                          donut={CUSTOM_CHART.pieChart.donut}
-                                                          innerRadius={CUSTOM_CHART.pieChart.innerRadius}
-                                                          crossFilter='channels'
-                                                          keyChart='pieChannelData'
-                                                />
-                                                <PieChart data={!dashboard.isLoading.spendVNDPieFirstLevelData ? transformPieChartData(dashboard.spendVNDPieFirstLevelData?.data, dashboard.spendVNDPieFirstLevelData?.colnames) : 'isLoading'}
-                                                          height={CUSTOM_CHART.pieChart.height}
-                                                          fontSize={CUSTOM_CHART.pieChart.fontSize}
-                                                          fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                          fontWeight={CUSTOM_CHART.pieChart.fontWeight}
-                                                          nameChart={'Phân bổ chi phí quảng cáo theo thể loại nội dung'}
-                                                          description={false}
-                                                          colors={CUSTOM_CHART.pieChart.colorFirstLevel}
-                                                          donut={CUSTOM_CHART.pieChart.donut}
-                                                          innerRadius={CUSTOM_CHART.pieChart.innerRadius}
-                                                          crossFilter='firstLevels'
-                                                          keyChart='pieFirstLevelData'
-                                                />
-                                            </div>
-                                        )},
-                                        {id: 'spot', label: 'Share of spot',
-                                        content: (
-                                            <div className='grid grid-cols-2 max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4'>
-                                                <PieChart data={!dashboard.isLoading.countPieChannelData ? transformPieChartData(dashboard.countPieChannelData?.data, dashboard.countPieChannelData?.colnames) : 'isLoading'}
-                                                          height={CUSTOM_CHART.pieChart.height}
-                                                          fontSize={CUSTOM_CHART.pieChart.fontSize}
-                                                          fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                          fontWeight={CUSTOM_CHART.pieChart.fontWeight}
-                                                          nameChart={'Phân bổ số lượng quảng cáo theo kênh'}
-                                                          description={false}
-                                                          colors={CUSTOM_CHART.pieChart.colorChannel}
-                                                          donut={CUSTOM_CHART.pieChart.donut}
-                                                          innerRadius={CUSTOM_CHART.pieChart.innerRadius}
-                                                          crossFilter='channels'
-                                                          keyChart='pieChannelData'
-                                                />
-                                                <PieChart data={!dashboard.isLoading.countPieFirstLevelData ? transformPieChartData(dashboard.countPieFirstLevelData?.data, dashboard.countPieFirstLevelData?.colnames) : 'isLoading'}
-                                                          height={CUSTOM_CHART.pieChart.height}
-                                                          fontSize={CUSTOM_CHART.pieChart.fontSize}
-                                                          fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                          fontWeight={CUSTOM_CHART.pieChart.fontWeight}
-                                                          nameChart={'Phân bổ số lượng quảng cáo theo thể loại nội dung'}
-                                                          description={false}
-                                                          colors={CUSTOM_CHART.pieChart.colorFirstLevel}
-                                                          donut={CUSTOM_CHART.pieChart.donut}
-                                                          innerRadius={CUSTOM_CHART.pieChart.innerRadius}
-                                                          crossFilter='firstLevels'
-                                                          keyChart='pieFirstLevelData'
-                                                />
-                                            </div>
-                                        )},
-                                        {id: 'duration', label: 'Share of airtime',
-                                        content: (
-                                            <div className='grid grid-cols-2 max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4'>
-                                                <PieChart data={!dashboard.isLoading.durationPieChannelData ? transformPieChartData(dashboard.durationPieChannelData?.data, dashboard.durationPieChannelData?.colnames) : 'isLoading'}
-                                                          height={CUSTOM_CHART.pieChart.height}
-                                                          fontSize={CUSTOM_CHART.pieChart.fontSize}
-                                                          fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                          fontWeight={CUSTOM_CHART.pieChart.fontWeight}
-                                                          nameChart={'Phân bổ thời lượng quảng cáo theo kênh'}
-                                                          description={false}
-                                                          colors={CUSTOM_CHART.pieChart.colorChannel}
-                                                          donut={CUSTOM_CHART.pieChart.donut}
-                                                          innerRadius={CUSTOM_CHART.pieChart.innerRadius}
-                                                          suffix='phút'
-                                                          formatterValue={2}
-                                                          crossFilter='channels'
-                                                          keyChart='pieChannelData'
-                                                />
-                                                <PieChart data={!dashboard.isLoading.durationPieFirstLevelData ? transformPieChartData(dashboard.durationPieFirstLevelData?.data, dashboard.durationPieFirstLevelData?.colnames) : 'isLoading'}
-                                                          height={CUSTOM_CHART.pieChart.height}
-                                                          fontSize={CUSTOM_CHART.pieChart.fontSize}
-                                                          fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                          fontWeight={CUSTOM_CHART.pieChart.fontWeight}
-                                                          nameChart={'Phân bổ thời lượng quảng cáo theo thể loại nội dung'}
-                                                          description={false}
-                                                          colors={CUSTOM_CHART.pieChart.colorFirstLevel}
-                                                          donut={CUSTOM_CHART.pieChart.donut}
-                                                          innerRadius={CUSTOM_CHART.pieChart.innerRadius}
-                                                          suffix='phút'
-                                                          formatterValue={2}
-                                                          crossFilter='firstLevels'
-                                                          keyChart='pieFirstLevelData'
-                                                />
-                                            </div>
-                                        )},
-                                        {id: 'length_voice', label: 'Share of spot voice/lengths',
-                                        content: (
-                                            <div className='grid grid-cols-2 max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4'>
-                                                <PieChart data={!dashboard.isLoading.grpPieChannelData ? transformPieChartData(dashboard.grpPieChannelData?.data, dashboard.grpPieChannelData?.colnames) : 'isLoading'}
-                                                          height={CUSTOM_CHART.pieChart.height}
-                                                          fontSize={CUSTOM_CHART.pieChart.fontSize}
-                                                          fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                          fontWeight={CUSTOM_CHART.pieChart.fontWeight}
-                                                          nameChart={'Phân bổ GRP quảng cáo theo kênh'}
-                                                          description={false}
-                                                          colors={CUSTOM_CHART.pieChart.colorChannel}
-                                                          donut={CUSTOM_CHART.pieChart.donut}
-                                                          innerRadius={CUSTOM_CHART.pieChart.innerRadius}
-                                                          formatterValue={2}
-                                                          crossFilter='channels'
-                                                          keyChart='pieChannelData'
-                                                />
-                                                <PieChart data={!dashboard.isLoading.durationPieLengthData ? transformPieChartData(dashboard.durationPieLengthData?.data, dashboard.durationPieLengthData?.colnames) : 'isLoading'}
-                                                          height={CUSTOM_CHART.pieChart.height}
-                                                          fontSize={CUSTOM_CHART.pieChart.fontSize}
-                                                          fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                          fontWeight={CUSTOM_CHART.pieChart.fontWeight}
-                                                          nameChart={'Phân bổ độ dài của quảng cáo theo kênh'}
-                                                          description={false}
-                                                          colors={CUSTOM_CHART.pieChart.colorDuration}
-                                                          donut={CUSTOM_CHART.pieChart.donut}
-                                                          innerRadius={CUSTOM_CHART.pieChart.innerRadius}
-                                                />
-                                            </div>
-                                        )}
-                                        ]} />
-                                    </div>
-                                    <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
-                                      <div className={`p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
-                                          <NameChart nameChart={'Top 20 nhà quảng cáo'} description={false} opacity={true} />
-                                          <ChildTabs tabs={[
-                                          {id: 'vnd', label: 'Triệu VND',
-                                          content: (
-                                              <BarChart 
-                                                  data={!dashboard.isLoading.spendVNDBarAdvertiserData ? transformBarChartData(dashboard.spendVNDBarAdvertiserData?.data, dashboard.spendVNDBarAdvertiserData?.colnames) : 'isLoading'}
-                                                  height={CUSTOM_CHART.barChart.height}
-                                                  fontSize={CUSTOM_CHART.barChart.fontSize}
-                                                  fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                  colors={['rgba(255, 204, 0, 1)']}
-                                                  fontWeight={CUSTOM_CHART.barChart.fontWeight}
-                                                  nameChart={'Top 20 nhà quảng cáo'}
-                                                  description={false}
-                                                  orientation={'horizontal'}
-                                                  displayName={false}
-                                                  overflow={true}
-                                                  heightPlus={35}
-                                                  crossFilter='advertisers'
-                                                  keyChart='barAdvertiserData'
-                                              />
-                                          )},
-                                          {id: 'usd', label: 'USD',
-                                          content: (
-                                              <BarChart 
-                                                  data={!dashboard.isLoading.spendUSDBarAdvertiserData ? transformBarChartData(dashboard.spendUSDBarAdvertiserData?.data, dashboard.spendUSDBarAdvertiserData?.colnames) : 'isLoading'}
-                                                  height={CUSTOM_CHART.barChart.height}
-                                                  fontSize={CUSTOM_CHART.barChart.fontSize}
-                                                  fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                  colors={['rgba(255, 204, 0, 1)']}
-                                                  fontWeight={CUSTOM_CHART.barChart.fontWeight}
-                                                  nameChart={'Top 20 nhà quảng cáo'}
-                                                  description={false}
-                                                  orientation={'horizontal'}
-                                                  displayName={false}
-                                                  suffix={'$'}
-                                                  overflow={true}
-                                                  heightPlus={35}
-                                                  crossFilter='advertisers'
-                                                  keyChart='barAdvertiserData'
-                                              />
-                                          )},
-                                          {id: 'spot', label: 'SPOT',
-                                          content: (
-                                              <BarChart 
-                                                  data={!dashboard.isLoading.countBarAdvertiserData ? transformBarChartData(dashboard.countBarAdvertiserData?.data, dashboard.countBarAdvertiserData?.colnames) : 'isLoading'}
-                                                  height={CUSTOM_CHART.barChart.height}
-                                                  fontSize={CUSTOM_CHART.barChart.fontSize}
-                                                  fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                  colors={['rgba(255, 204, 0, 1)']}
-                                                  fontWeight={CUSTOM_CHART.barChart.fontWeight}
-                                                  nameChart={'Top 20 nhà quảng cáo'}
-                                                  description={false}
-                                                  orientation={'horizontal'}
-                                                  displayName={false}
-                                                  overflow={true}
-                                                  heightPlus={35}
-                                                  crossFilter='advertisers'
-                                                  keyChart='barAdvertiserData'
-                                              />
-                                          )}
-                                          ]} />
-                                      </div>
-                                    </div>
-                                    <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
-                                      <div className={`p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
-                                          <NameChart nameChart={'Top 20 nhà quảng cáo - phân bổ theo kênh'} description={false} opacity={true} />
-                                          <ChildTabs tabs={[
-                                          {id: 'vnd', label: 'Triệu VND',
-                                          content: (
-                                              <BarChart 
-                                                  data={!dashboard.isLoading.spendVNDBarAdvertiserChannelData ? transformBarChartData(dashboard.spendVNDBarAdvertiserChannelData?.data, dashboard.spendVNDBarAdvertiserChannelData?.colnames) : 'isLoading'}
-                                                  height={CUSTOM_CHART.barChart.height}
-                                                  fontSize={CUSTOM_CHART.barChart.fontSize}
-                                                  fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                  colors={CUSTOM_CHART.barChart.colorChannel}
-                                                  fontWeight={CUSTOM_CHART.barChart.fontWeight}
-                                                  nameChart={'Top 20 nhà quảng cáo - phân bổ theo kênh'}
-                                                  description={false}
-                                                  orientation={'horizontal'}
-                                                  displayName={false}
-                                                  overflow={true}
-                                                  heightPlus={50}
-                                                  crossFilter='channels'
-                                                  keyChart='barAdvertiserChannelData'
-                                                  stack={true}
-                                              />
-                                          )},
-                                          {id: 'usd', label: 'USD',
-                                          content: (
-                                              <BarChart 
-                                                  data={!dashboard.isLoading.spendUSDBarAdvertiserChannelData ? transformBarChartData(dashboard.spendUSDBarAdvertiserChannelData?.data, dashboard.spendUSDBarAdvertiserChannelData?.colnames) : 'isLoading'}
-                                                  height={CUSTOM_CHART.barChart.height}
-                                                  fontSize={CUSTOM_CHART.barChart.fontSize}
-                                                  fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                  colors={CUSTOM_CHART.barChart.colorChannel}
-                                                  fontWeight={CUSTOM_CHART.barChart.fontWeight}
-                                                  nameChart={'Top 20 nhà quảng cáo - phân bổ theo kênh'}
-                                                  description={false}
-                                                  orientation={'horizontal'}
-                                                  displayName={false}
-                                                  suffix={'$'}
-                                                  overflow={true}
-                                                  heightPlus={50}
-                                                  crossFilter='channels'
-                                                  keyChart='barAdvertiserChannelData'
-                                                  stack={true}
-                                              />
-                                          )},
-                                          {id: 'spot', label: 'SPOT',
-                                          content: (
-                                              <BarChart 
-                                                  data={!dashboard.isLoading.countBarAdvertiserChannelData ? transformBarChartData(dashboard.countBarAdvertiserChannelData?.data, dashboard.countBarAdvertiserChannelData?.colnames) : 'isLoading'}
-                                                  height={CUSTOM_CHART.barChart.height}
-                                                  fontSize={CUSTOM_CHART.barChart.fontSize}
-                                                  fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                  colors={CUSTOM_CHART.barChart.colorChannel}
-                                                  fontWeight={CUSTOM_CHART.barChart.fontWeight}
-                                                  nameChart={'Top 20 nhà quảng cáo - phân bổ theo kênh'}
-                                                  description={false}
-                                                  orientation={'horizontal'}
-                                                  displayName={false}
-                                                  overflow={true}
-                                                  heightPlus={50}
-                                                  crossFilter='channels'
-                                                  keyChart='barAdvertiserChannelData'
-                                                  stack={true}
-                                              />
-                                          )}
-                                          ]} />
-                                      </div>
-                                    </div>
-                                    <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
-                                        <ChildTabs tabs={[
-                                        {id: 'brand', label: 'Top 10 nhãn',
-                                        content: (
-                                          <TableChart data={!dashboard.isLoading.top10BrandData ? transformTableChartData(dashboard.top10BrandData?.data, dashboard.top10BrandData?.colnames, null, ['percent_price', 'percent_count', 'percent_duration', 'percent_grp']) : 'isLoading'}
-                                                height={CUSTOM_CHART.tableChart.tableChartChannel.height}
-                                                fontSize={CUSTOM_CHART.tableChart.fontSize}
-                                                fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                fontWeight={CUSTOM_CHART.tableChart.fontWeight}
-                                                nameChart={'Top 10 nhãn'}
-                                                description={false}
-                                                showSTT={false}
-                                                showPagination={false}
-                                                crossFilter={true}
-                                                keyChart='top10BrandData'
-                                                customCol={{'Nhãn': {minSize: 100, maxSize: 170, weight: 600, sticky: true, crossFilter: 'brands'}, 'Chi phí (USD)': {suffix: '$'}}} />
-                                        )},
-                                        {id: 'product', label: 'Top 10 dòng sản phẩm',
-                                        content: (
-                                          <TableChart data={!dashboard.isLoading.top10ProductData ? transformTableChartData(dashboard.top10ProductData?.data, dashboard.top10ProductData?.colnames, null, ['percent_price', 'percent_count', 'percent_duration', 'percent_grp']) : 'isLoading'}
-                                                height={CUSTOM_CHART.tableChart.tableChartChannel.height}
-                                                fontSize={CUSTOM_CHART.tableChart.fontSize}
-                                                fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                fontWeight={CUSTOM_CHART.tableChart.fontWeight}
-                                                nameChart={'Top 10 dòng sản phẩm'}
-                                                description={false}
-                                                showSTT={false}
-                                                showPagination={false}
-                                                crossFilter={true}
-                                                keyChart='top10ProductData'
-                                                customCol={{'Sản phẩm': {minSize: 100, maxSize: 170, weight: 600, sticky: true, crossFilter: 'products'}, 'Chi phí (USD)': {suffix: '$'}}} />
-                                        )},
-                                        {id: 'campaign', label: 'Top 10 Chiến dịch',
-                                        content: (
-                                          <TableChart data={!dashboard.isLoading.top10CampaignData ? transformTableChartData(dashboard.top10CampaignData?.data, dashboard.top10CampaignData?.colnames, null, ['percent_price', 'percent_count', 'percent_duration', 'percent_grp']) : 'isLoading'}
-                                            height={CUSTOM_CHART.tableChart.tableChartChannel.height}
-                                            fontSize={CUSTOM_CHART.tableChart.fontSize}
-                                            fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                            fontWeight={CUSTOM_CHART.tableChart.fontWeight}
-                                            nameChart={'Top 10 chiến dịch'}
-                                            description={false}
-                                            showSTT={false}
-                                            showPagination={false}
-                                            crossFilter={true}
-                                            keyChart={'top10CampaignData'}
-                                            customCol={{'Chiến dịch': {minSize: 100, maxSize: 170, weight: 600, sticky: true, crossFilter: 'campaigns'}, 'Chi phí (USD)': {suffix: '$'}}} />
-                                        )}
-                                        ]} />
-                                    </div>
-                                </div>
-                                <div className='px-6 max-lg:px-5 max-md:px-4 pb-6 max-lg:pb-5 max-md:pb-19 bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300'>
-                                  <Footer color='text-color-black-100 dark:text-color-white-90' />
-                                </div>
-                              </section>
-                            )
-                          },
-                          {id: 'revenue', label: 'Doanh thu', icon: !stateGlobals.darkMode ? iconChannel : iconChannelDark, iconActive: iconChannelActive,
-                            content: (
-                              <section className='bg-background-dashboard dark:bg-background-dashboard-dark transiton-all duration-300' id="target_capture_revenue">
-                                <InforTab inforTab={"Doanh thu"} maxInsert={dashboard?.maxInsertData?.data?.[0]?.['MAX(check_time)']} />
-                                <InforFilter filters={scopeFilterData} FilterComponent={FilterSpot} nameFilter='FilterSpot' />
-                                <div className='px-6 max-lg:px-5 max-md:px-4 py-6 max-lg:py-5 max-md:py-4'>
-                                  <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
-                                    <BarChart 
-                                        data={!dashboard.isLoading.spendVNDBarTimebandData ? transformBarChartData(dashboard.spendVNDBarTimebandData?.data, dashboard.spendVNDBarTimebandData?.colnames) : 'isLoading'}
-                                        height={CUSTOM_CHART.barChart.height}
-                                        fontSize={CUSTOM_CHART.barChart.fontSize}
-                                        fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                        colors={['rgba(255, 204, 0, 1)']}
-                                        fontWeight={CUSTOM_CHART.barChart.fontWeight}
-                                        nameChart={'Xu hướng quảng cáo theo khung giờ (Triệu VND)'}
-                                        description={false}
-                                        orientation={''}
-                                        maxVisibleItems={true}
-                                        crossFilter='timebands'
-                                        keyChart='spendVNDBarTimebandData'
-                                    />
-                                  </div>
-                                  <div className='w-full grid grid-cols-10 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4'>
-                                    <div className='col-span-6 max-md:col-span-10'>
-                                      <TableChart data={!dashboard.isLoading.adcodeProgramData ? transformTableChartData(dashboard.adcodeProgramData?.data, dashboard.adcodeProgramData?.colnames, null, [], LABEL_SPOT) : 'isLoading'}
-                                                  height={CUSTOM_CHART.tableChart.tableChartChannel.height}
-                                                  fontSize={CUSTOM_CHART.tableChart.fontSize}
-                                                  fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                  fontWeight={CUSTOM_CHART.tableChart.fontWeight}
-                                                  nameChart={'Chi phí quảng cáo theo Adcode'}
-                                                  description={false}
-                                                  showSTT={false}
-                                                  showPagination={false}
-                                                  crossFilter={true}
-                                                  keyChart='adcodeProgramData'
-                                                  customCol={{'Adcode': {weight: 600, crossFilter: 'adCodes'}, 'Khung giờ': {crossFilter: 'timebands'}, 'Chương trình': {minSize: 100, maxSize: 170, crossFilter: 'programs'}, 'Kênh': {minSize: 0, maxSize: 10, crossFilter: 'channels'}}} />
-                                    </div>
-                                    <div className='col-span-4 max-md:col-span-10'>
-                                      <TableChart data={!dashboard.isLoading.adcodeProductData ? transformTableChartData(dashboard.adcodeProductData?.data, dashboard.adcodeProductData?.colnames) : 'isLoading'}
-                                                  height={CUSTOM_CHART.tableChart.tableChartChannel.height}
-                                                  fontSize={CUSTOM_CHART.tableChart.fontSize}
-                                                  fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                  fontWeight={CUSTOM_CHART.tableChart.fontWeight}
-                                                  nameChart={'Chi phí quảng cáo theo dòng sản phẩm'}
-                                                  description={false}
-                                                  showSTT={false}
-                                                  showPagination={false}
-                                                  crossFilter={true}
-                                                  keyChart='adcodeProductData'
-                                                  customCol={{'Sản phẩm': {weight: 600, crossFilter: 'products'}}} />
-                                    </div>
-                                  </div>
-                                  <div className='w-full grid grid-cols-10 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4'>
-                                    <div className='col-span-6 max-md:col-span-10'>
-                                      <PivotTableChart
-                                        data={!dashboard.isLoading.spendVNDPivotChannelFirstLevelData ? dashboard.spendVNDPivotChannelFirstLevelData?.data : 'isLoading'}
-                                        nameChart="Doanh thu quảng cáo theo kênh (Triệu VND)"
-                                        description={false}
-                                        rowField="channel_name_tvd"
-                                        columnField="firstlevel_vn"
-                                        valueField="price"
-                                        aggType="sum"
-                                        height={CUSTOM_CHART.tableChart.tableChartChannel.height}
-                                        fontSize={CUSTOM_CHART.tableChart.fontSize}
-                                        fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                        fontWeight={CUSTOM_CHART.tableChart.fontWeight}
-                                        labelTables={LABEL_SPOT}
-                                        fullScreen={true}
-                                        customCol={{'channel_name_tvd': {crossFilter: 'channels'}}}
-                                        crossFilter={true}
-                                        keyChart='spendVNDPivotChannelFirstLevelData'
-                                      />
-                                    </div>
-                                    <div className='col-span-4 max-md:col-span-10 grid'>
-                                      <PieChart data={!dashboard.isLoading.countPieTimebandData ? transformPieChartData(dashboard.countPieTimebandData?.data, dashboard.countPieTimebandData?.colnames) : 'isLoading'}
-                                                height={CUSTOM_CHART.pieChart.height}
-                                                fontSize={CUSTOM_CHART.pieChart.fontSize}
-                                                fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                fontWeight={CUSTOM_CHART.pieChart.fontWeight}
-                                                nameChart={'Xu hướng quảng cáo theo khung giờ'}
-                                                description={false}
-                                                colors={{
-                                                "1.Sáng (00h - 11h)": "rgba(217, 31, 38, 1)",
-                                                "2.Trưa (11h - 14h)": "rgba(86, 154, 255, 1)",
-                                                "3.Chiều (14h - 18h)": "rgba(128, 212, 27, 1)",
-                                                "4.Tối (18h - 24h)": "rgba(2, 147, 113, 1)"
-                                                }}
-                                                donut={CUSTOM_CHART.pieChart.donut}
-                                                innerRadius={CUSTOM_CHART.pieChart.innerRadius}
-                                                legendHorizontal={true}
-                                      />
-                                    </div>
-                                  </div>
-                                  <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
-                                    <BarChart 
-                                        data={!dashboard.isLoading.spendVNDBarProgramData ? transformBarChartData(dashboard.spendVNDBarProgramData?.data, dashboard.spendVNDBarProgramData?.colnames) : 'isLoading'}
-                                        height={CUSTOM_CHART.barChart.height}
-                                        fontSize={CUSTOM_CHART.barChart.fontSize}
-                                        fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                        colors={['rgba(255, 204, 0, 1)']}
-                                        fontWeight={CUSTOM_CHART.barChart.fontWeight}
-                                        nameChart={'Top 20 chương trình có doanh thu cao nhất (Triệu VND)'}
-                                        description={false}
-                                        orientation={'horizontal'}
-                                        overflow={true}
-                                        heightPlus={35}
-                                        crossFilter='programs'
-                                        keyChart='spendVNDBarProgramData'
-                                    />
-                                  </div>
-                                  <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
-                                    <BarChart 
-                                      data={!dashboard.isLoading.spendVNDBarChannelData ? transformBarChartData(dashboard.spendVNDBarChannelData?.data, dashboard.spendVNDBarChannelData?.colnames) : 'isLoading'}
-                                      height={CUSTOM_CHART.barChart.height}
-                                      fontSize={CUSTOM_CHART.barChart.fontSize}
-                                      fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                      colors={['rgba(255, 204, 0, 1)']}
-                                      fontWeight={CUSTOM_CHART.barChart.fontWeight}
-                                      nameChart={'Chi phí quảng cáo theo kênh (Triệu VND)'}
-                                      description={false}
-                                      orientation={''}
-                                      crossFilter='channels'
-                                      keyChart='spendVNDBarChannelData'
+                          <NumberCard
+                            title={'Chi phí (Triệu VND)'}
+                            description={false}
+                            value={!dashboard.isLoading.spendVNDNumberData ? dashboard.spendVNDNumberData?.data ? formatNumber(dashboard.spendVNDNumberData?.data[0].price, { isPercent: false }) : '-' : 'isLoading'}
+                            icon={METRIC_SPOTS.spend_vnd.icon}
+                            background={METRIC_SPOTS.spend_vnd.background}
+                            widthIcon={METRIC_SPOTS.spend_vnd.widthIcon}
+                          />
+                          <NumberCard
+                            title={'Chi phí (USD)'}
+                            description={false}
+                            value={!dashboard.isLoading.spendUSDNumberData ? dashboard.spendUSDNumberData?.data ? formatNumber(dashboard.spendUSDNumberData?.data[0].price_usd, { isPercent: false }) : '-' : 'isLoading'}
+                            icon={METRIC_SPOTS.spend_usd.icon}
+                            background={METRIC_SPOTS.spend_usd.background}
+                            widthIcon={METRIC_SPOTS.spend_usd.widthIcon}
+                          />
+                          <NumberCard
+                            title={'Số lượng Spot'}
+                            description={false}
+                            value={!dashboard.isLoading.countNumberData ? dashboard.countNumberData?.data ? formatNumber(dashboard.countNumberData?.data[0].count, { isPercent: false }) : '-' : 'isLoading'}
+                            icon={METRIC_SPOTS.count.icon}
+                            background={METRIC_SPOTS.count.background}
+                            widthIcon={METRIC_SPOTS.count.widthIcon}
+                          />
+                          <NumberCard
+                            title={'Thời lượng Spot'}
+                            description={false}
+                            value={!dashboard.isLoading.durationNumberData ? dashboard.durationNumberData?.data ? dashboard.durationNumberData?.data[0]?.total_duration?.toLocaleString(undefined, { maximumFractionDigits: 2 }) : '-' : 'isLoading'}
+                            icon={METRIC_SPOTS.duration.icon}
+                            background={METRIC_SPOTS.duration.background}
+                            widthIcon={METRIC_SPOTS.duration.widthIcon}
+                            suffix='phút'
+                          />
+                        </div>
+                        <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
+                          <div className={`p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
+                            <NameChart nameChart={'Xu hướng quảng cáo THEO NGÀY'} description={false} opacity={true} />
+                            <ChildTabs tabs={[
+                              {
+                                id: 'vnd', label: 'Triệu VND',
+                                content: (
+                                  <BarChart
+                                    data={!dashboard.isLoading.spendVNDBarDateData ? transformBarChartData(dashboard.spendVNDBarDateData?.data, dashboard.spendVNDBarDateData?.colnames) : 'isLoading'}
+                                    height={CUSTOM_CHART.barChart.height}
+                                    fontSize={CUSTOM_CHART.barChart.fontSize}
+                                    fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                    colors={['rgba(255, 204, 0, 1)']}
+                                    fontWeight={CUSTOM_CHART.barChart.fontWeight}
+                                    nameChart={'Xu hướng quảng cáo THEO NGÀY'}
+                                    description={false}
+                                    orientation={''}
+                                    displayName={false}
                                   />
-                                  </div>
-                                  <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
-                                    <PivotTableChart
-                                        data={!dashboard.isLoading.spendVNDPivotChannelTimebandData ? dashboard.spendVNDPivotChannelTimebandData?.data : 'isLoading'}
-                                        nameChart="Xu hướng quảng cáo theo khung giờ (Triệu VND)"
-                                        description={false}
-                                        rowField="channel_name_tvd"
-                                        columnField="time_band"
-                                        valueField="price"
-                                        aggType="sum"
-                                        height={CUSTOM_CHART.tableChart.tableChartChannel.height}
-                                        fontSize={CUSTOM_CHART.tableChart.fontSize}
-                                        fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                        fontWeight={CUSTOM_CHART.tableChart.fontWeight}
-                                        sortColTimeband={true}
-                                        labelTables={LABEL_SPOT}
-                                        fullScreen={true}
-                                        customCol={{'channel_name_tvd': {crossFilter: 'channels'}}}
-                                        crossFilter={true}
-                                        keyChart='spendVNDPivotChannelTimebandData'
-                                      />
-                                  </div>
-                                  <div className='w-full'>
-                                    <TableChart data={!dashboard.isLoading.spendVNDTableAdvertiserData ? transformTableChartData(dashboard.spendVNDTableAdvertiserData?.data, dashboard.spendVNDTableAdvertiserData?.colnames) : 'isLoading'}
-                                                  height={CUSTOM_CHART.tableChart.tableChartChannel.height}
-                                                  fontSize={CUSTOM_CHART.tableChart.fontSize}
-                                                  fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                  fontWeight={CUSTOM_CHART.tableChart.fontWeight}
-                                                  nameChart={'Chi phí quảng cáo theo nhà quảng cáo'}
-                                                  description={false}
-                                                  showSTT={false}
-                                                  showPagination={false}
-                                                  crossFilter={true}
-                                                  keyChart='spendVNDTableAdvertiserData'
-                                                  customCol={{'Nhà quảng cáo': {weight: 600, crossFilter: 'advertisers'}}} />
-                                  </div>
+                                )
+                              },
+                              {
+                                id: 'usd', label: 'USD',
+                                content: (
+                                  <BarChart
+                                    data={!dashboard.isLoading.spendUSDBarDateData ? transformBarChartData(dashboard.spendUSDBarDateData?.data, dashboard.spendUSDBarDateData?.colnames) : 'isLoading'}
+                                    height={CUSTOM_CHART.barChart.height}
+                                    fontSize={CUSTOM_CHART.barChart.fontSize}
+                                    fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                    colors={['rgba(255, 204, 0, 1)']}
+                                    fontWeight={CUSTOM_CHART.barChart.fontWeight}
+                                    nameChart={'Xu hướng quảng cáo THEO NGÀY'}
+                                    description={false}
+                                    orientation={''}
+                                    displayName={false}
+                                    suffix={'$'}
+                                  />
+                                )
+                              }
+                            ]} />
+                          </div>
+                        </div>
+                        <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
+                          <ChildTabs tabs={[
+                            {
+                              id: 'spend', label: 'Share of spend',
+                              content: (
+                                <div className='grid grid-cols-2 max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4'>
+                                  <PieChart data={!dashboard.isLoading.spendVNDPieChannelData ? transformPieChartData(dashboard.spendVNDPieChannelData?.data, dashboard.spendVNDPieChannelData?.colnames) : 'isLoading'}
+                                    height={CUSTOM_CHART.pieChart.height}
+                                    fontSize={CUSTOM_CHART.pieChart.fontSize}
+                                    fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                    fontWeight={CUSTOM_CHART.pieChart.fontWeight}
+                                    nameChart={'Phân bổ chi phí quảng cáo theo kênh'}
+                                    description={false}
+                                    colors={CUSTOM_CHART.pieChart.colorChannel}
+                                    donut={CUSTOM_CHART.pieChart.donut}
+                                    innerRadius={CUSTOM_CHART.pieChart.innerRadius}
+                                    crossFilter='channels'
+                                    keyChart='pieChannelData'
+                                  />
+                                  <PieChart data={!dashboard.isLoading.spendVNDPieFirstLevelData ? transformPieChartData(dashboard.spendVNDPieFirstLevelData?.data, dashboard.spendVNDPieFirstLevelData?.colnames) : 'isLoading'}
+                                    height={CUSTOM_CHART.pieChart.height}
+                                    fontSize={CUSTOM_CHART.pieChart.fontSize}
+                                    fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                    fontWeight={CUSTOM_CHART.pieChart.fontWeight}
+                                    nameChart={'Phân bổ chi phí quảng cáo theo thể loại nội dung'}
+                                    description={false}
+                                    colors={CUSTOM_CHART.pieChart.colorFirstLevel}
+                                    donut={CUSTOM_CHART.pieChart.donut}
+                                    innerRadius={CUSTOM_CHART.pieChart.innerRadius}
+                                    crossFilter='firstLevels'
+                                    keyChart='pieFirstLevelData'
+                                  />
                                 </div>
-                                <div className='px-6 max-lg:px-5 max-md:px-4 pb-6 max-lg:pb-5 max-md:pb-19 bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300'>
-                                  <Footer color='text-color-black-100 dark:text-color-white-90' />
+                              )
+                            },
+                            {
+                              id: 'spot', label: 'Share of spot',
+                              content: (
+                                <div className='grid grid-cols-2 max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4'>
+                                  <PieChart data={!dashboard.isLoading.countPieChannelData ? transformPieChartData(dashboard.countPieChannelData?.data, dashboard.countPieChannelData?.colnames) : 'isLoading'}
+                                    height={CUSTOM_CHART.pieChart.height}
+                                    fontSize={CUSTOM_CHART.pieChart.fontSize}
+                                    fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                    fontWeight={CUSTOM_CHART.pieChart.fontWeight}
+                                    nameChart={'Phân bổ số lượng quảng cáo theo kênh'}
+                                    description={false}
+                                    colors={CUSTOM_CHART.pieChart.colorChannel}
+                                    donut={CUSTOM_CHART.pieChart.donut}
+                                    innerRadius={CUSTOM_CHART.pieChart.innerRadius}
+                                    crossFilter='channels'
+                                    keyChart='pieChannelData'
+                                  />
+                                  <PieChart data={!dashboard.isLoading.countPieFirstLevelData ? transformPieChartData(dashboard.countPieFirstLevelData?.data, dashboard.countPieFirstLevelData?.colnames) : 'isLoading'}
+                                    height={CUSTOM_CHART.pieChart.height}
+                                    fontSize={CUSTOM_CHART.pieChart.fontSize}
+                                    fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                    fontWeight={CUSTOM_CHART.pieChart.fontWeight}
+                                    nameChart={'Phân bổ số lượng quảng cáo theo thể loại nội dung'}
+                                    description={false}
+                                    colors={CUSTOM_CHART.pieChart.colorFirstLevel}
+                                    donut={CUSTOM_CHART.pieChart.donut}
+                                    innerRadius={CUSTOM_CHART.pieChart.innerRadius}
+                                    crossFilter='firstLevels'
+                                    keyChart='pieFirstLevelData'
+                                  />
                                 </div>
-                              </section>
-                            )
-                          },
-                          {id: 'effective', label: 'Hiệu quả', icon: !stateGlobals.darkMode ? iconProgram : iconProgramDark, iconActive: iconProgramActive,
-                            content: (
-                              <section className='bg-background-dashboard dark:bg-background-dashboard-dark transiton-all duration-300' id="target_capture_effective">
-                                <InforTab inforTab={"Hiệu quả"} maxInsert={dashboard?.maxInsertData?.data?.[0]?.['MAX(check_time)']} />
-                                <InforFilter filters={scopeFilterData} FilterComponent={FilterSpot} nameFilter='FilterSpot' />
-                                <div className='px-6 max-lg:px-5 max-md:px-4'>
-                                  <div className='w-full py-6 max-lg:py-5 max-md:py-4'>
-                                    <div className={`p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
-                                      <NameChart nameChart={'Top 20 nhà quảng cáo'} description={false} opacity={true} />
-                                      <ChildTabs tabs={[
-                                      {id: 'grp', label: 'GRP',
-                                      content: (
-                                        <PivotTableChart
-                                          data={!dashboard.isLoading.grpPivotCampaignWeekData ? dashboard.grpPivotCampaignWeekData?.data : 'isLoading'}
-                                          nameChart={'Chỉ số về hiệu quả chiến dịch (GRP, REACH và SỐ LƯỢNG SPOT)'}
-                                          description={false}
-                                          displayName={false}
-                                          rowField="campaign_name"
-                                          columnField="week"
-                                          valueField="grp"
-                                          aggType="sum"
-                                          height={CUSTOM_CHART.tableChart.tableChartChannel.height}
-                                          fontSize={CUSTOM_CHART.tableChart.fontSize}
-                                          fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                          fontWeight={CUSTOM_CHART.tableChart.fontWeight}
-                                          formatterValue={2}
-                                          suffixHeader='Tuần'
-                                          customCol={{'campaign_name': {crossFilter: 'campaigns'}}}
-                                          crossFilter={true}
-                                          keyChart='pivotCampaignWeekData'
-                                        />
-                                      )},
-                                      {id: 'reach', label: 'REACH',
-                                      content: (
-                                        <PivotTableChart
-                                          data={!dashboard.isLoading.reachPivotCampaignWeekData ? dashboard.reachPivotCampaignWeekData?.data : 'isLoading'}
-                                          nameChart={'Chỉ số về hiệu quả chiến dịch (GRP, REACH và SỐ LƯỢNG SPOT)'}
-                                          description={false}
-                                          displayName={false}
-                                          rowField="campaign_name"
-                                          columnField="week"
-                                          valueField="reach"
-                                          aggType="sum"
-                                          height={CUSTOM_CHART.tableChart.tableChartChannel.height}
-                                          fontSize={CUSTOM_CHART.tableChart.fontSize}
-                                          fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                          fontWeight={CUSTOM_CHART.tableChart.fontWeight}
-                                          suffixHeader='Tuần'
-                                          customCol={{'campaign_name': {crossFilter: 'campaigns'}}}
-                                          crossFilter={true}
-                                          keyChart='pivotCampaignWeekData'
-                                        />
-                                      )},
-                                      {id: 'spot', label: 'SPOT',
-                                      content: (
-                                        <PivotTableChart
-                                          data={!dashboard.isLoading.countPivotCampaignWeekData ? dashboard.countPivotCampaignWeekData?.data : 'isLoading'}
-                                          nameChart={'Chỉ số về hiệu quả chiến dịch (GRP, REACH và SỐ LƯỢNG SPOT)'}
-                                          description={false}
-                                          displayName={false}
-                                          rowField="campaign_name"
-                                          columnField="week"
-                                          valueField="count"
-                                          aggType="sum"
-                                          height={CUSTOM_CHART.tableChart.tableChartChannel.height}
-                                          fontSize={CUSTOM_CHART.tableChart.fontSize}
-                                          fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                          fontWeight={CUSTOM_CHART.tableChart.fontWeight}
-                                          suffixHeader='Tuần'
-                                          customCol={{'campaign_name': {crossFilter: 'campaigns'}}}
-                                          crossFilter={true}
-                                          keyChart='pivotCampaignWeekData'
-                                        />
-                                      )}
-                                      ]} />
-                                    </div>
-                                  </div>
-                                  <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4 flex max-md:flex-wrap gap-6 max-lg:gap-5 max-md:gap-4'>
-                                    <div className='w-[60%] max-md:w-full'>
-                                      <BarChart 
-                                          data={!dashboard.isLoading.grpBarRegionalBrandData ? transformBarChartData(dashboard.grpBarRegionalBrandData?.data, dashboard.grpBarRegionalBrandData?.colnames) : 'isLoading'}
-                                          height={CUSTOM_CHART.barChart.height}
-                                          fontSize={CUSTOM_CHART.barChart.fontSize}
-                                          fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                          fontWeight={CUSTOM_CHART.barChart.fontWeight}
-                                          nameChart={'GRP (%) theo thị trường'}
-                                          description={false}
-                                          orientation={''}
-                                          formatterValue={2}
-                                          stack={true}
-                                          crossFilter='brands'
-                                          keyChart='grpBarRegionalBrandData'
-                                      />
-                                    </div>
-                                    <div className='w-[40%] max-md:w-full'>
-                                      <BarChart 
-                                          data={!dashboard.isLoading.grpBarWeekBrandData ? transformBarChartData(dashboard.grpBarWeekBrandData?.data, dashboard.grpBarWeekBrandData?.colnames) : 'isLoading'}
-                                          height={CUSTOM_CHART.barChart.height}
-                                          fontSize={CUSTOM_CHART.barChart.fontSize}
-                                          fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                          fontWeight={CUSTOM_CHART.barChart.fontWeight}
-                                          nameChart={'GRP (%) trong tuần theo nhà quảng cáo'}
-                                          description={false}
-                                          orientation={''}
-                                          formatterValue={2}
-                                          stack={true}
-                                          crossFilter='brands'
-                                          keyChart='grpBarWeekBrandData'
-                                      />
-                                    </div>
-                                  </div>
-                                  <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
-                                      <ChildTabs tabs={[
-                                      {id: 'spend', label: 'AD SPEND',
-                                      content: (
-                                          <div className='grid grid-cols-2 max-md:grid-cols-1 gap-6 max-md:gap-4'>
-                                              <BarChart 
-                                                  data={!dashboard.isLoading.spendVNDBarBrandChannelData ? transformBarChartData(dashboard.spendVNDBarBrandChannelData?.data, dashboard.spendVNDBarBrandChannelData?.colnames) : 'isLoading'}
-                                                  height={CUSTOM_CHART.barChart.height}
-                                                  fontSize={CUSTOM_CHART.barChart.fontSize}
-                                                  fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                  colors={CUSTOM_CHART.barChart.colorChannel}
-                                                  fontWeight={CUSTOM_CHART.barChart.fontWeight}
-                                                  nameChart={'Phân bổ quảng cáo theo kênh'}
-                                                  description={false}
-                                                  orientation={'horizontal'}
-                                                  colorZoom='red'
-                                                  stack={true}
-                                                  crossFilter='channels'
-                                                  keyChart='barBrandChannelData'
-                                              />
-                                              <BarChart 
-                                                  data={!dashboard.isLoading.spendVNDBarBrandTimebandData ? transformBarChartData(dashboard.spendVNDBarBrandTimebandData?.data, dashboard.spendVNDBarBrandTimebandData?.colnames) : 'isLoading'}
-                                                  height={CUSTOM_CHART.barChart.height}
-                                                  fontSize={CUSTOM_CHART.barChart.fontSize}
-                                                  fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                  colors={CUSTOM_CHART.barChart.colorTimeband}
-                                                  fontWeight={CUSTOM_CHART.barChart.fontWeight}
-                                                  nameChart={'Phân bổ quảng cáo theo khung giờ'}
-                                                  description={false}
-                                                  orientation={'horizontal'}
-                                                  colorZoom='red'
-                                              />
-                                              <BarChart 
-                                                  data={!dashboard.isLoading.spendVNDBarBrandFirstLevelData ? transformBarChartData(dashboard.spendVNDBarBrandFirstLevelData?.data, dashboard.spendVNDBarBrandFirstLevelData?.colnames) : 'isLoading'}
-                                                  height={CUSTOM_CHART.barChart.height}
-                                                  fontSize={CUSTOM_CHART.barChart.fontSize}
-                                                  fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                  colors={CUSTOM_CHART.barChart.colorFirstLevel}
-                                                  fontWeight={CUSTOM_CHART.barChart.fontWeight}
-                                                  nameChart={'Phân bổ quảng cáo theo Thể loại nội dung'}
-                                                  description={false}
-                                                  orientation={'horizontal'}
-                                                  colorZoom='red'
-                                                  stack={true}
-                                                  crossFilter='firstLevels'
-                                                  keyChart='barBrandFirstLevelData'
-                                              />
-                                              <PieChart data={!dashboard.isLoading.spendVNDPieAdvertiserData ? transformPieChartData(dashboard.spendVNDPieAdvertiserData?.data, dashboard.spendVNDPieAdvertiserData?.colnames) : 'isLoading'}
-                                                        height={CUSTOM_CHART.pieChart.height}
-                                                        fontSize={CUSTOM_CHART.pieChart.fontSize}
-                                                        fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                        fontWeight={CUSTOM_CHART.pieChart.fontWeight}
-                                                        nameChart={"Thị phần các nhà quảng cáo"}
-                                                        description={false}
-                                                        donut={CUSTOM_CHART.pieChart.donut}
-                                                        innerRadius={CUSTOM_CHART.pieChart.innerRadius}
-                                                        border={false}
-                                              />
-                                          </div>
-                                      )},
-                                      {id: 'grp', label: 'GRP',
-                                      content: (
-                                          <div className='grid grid-cols-2 max-md:grid-cols-1 gap-6 max-md:gap-4'>
-                                              <BarChart 
-                                                  data={!dashboard.isLoading.grpBarBrandChannelData ? transformBarChartData(dashboard.grpBarBrandChannelData?.data, dashboard.grpBarBrandChannelData?.colnames) : 'isLoading'}
-                                                  height={CUSTOM_CHART.barChart.height}
-                                                  fontSize={CUSTOM_CHART.barChart.fontSize}
-                                                  fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                  colors={CUSTOM_CHART.barChart.colorChannel}
-                                                  fontWeight={CUSTOM_CHART.barChart.fontWeight}
-                                                  nameChart={'Phân bổ quảng cáo theo kênh'}
-                                                  description={false}
-                                                  orientation={'horizontal'}
-                                                  colorZoom='red'
-                                                  formatterValue={2}
-                                                  stack={true}
-                                                  crossFilter='channels'
-                                                  keyChart='barBrandChannelData'
-                                              />
-                                              <BarChart 
-                                                  data={!dashboard.isLoading.grpBarBrandTimebandData ? transformBarChartData(dashboard.grpBarBrandTimebandData?.data, dashboard.grpBarBrandTimebandData?.colnames) : 'isLoading'}
-                                                  height={CUSTOM_CHART.barChart.height}
-                                                  fontSize={CUSTOM_CHART.barChart.fontSize}
-                                                  fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                  colors={CUSTOM_CHART.barChart.colorTimeband}
-                                                  fontWeight={CUSTOM_CHART.barChart.fontWeight}
-                                                  nameChart={'Phân bổ quảng cáo theo khung giờ'}
-                                                  description={false}
-                                                  orientation={'horizontal'}
-                                                  colorZoom='red'
-                                                  formatterValue={2}
-                                              />
-                                              <BarChart 
-                                                  data={!dashboard.isLoading.grpBarBrandFirstLevelData ? transformBarChartData(dashboard.grpBarBrandFirstLevelData?.data, dashboard.grpBarBrandFirstLevelData?.colnames) : 'isLoading'}
-                                                  height={CUSTOM_CHART.barChart.height}
-                                                  fontSize={CUSTOM_CHART.barChart.fontSize}
-                                                  fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                  colors={CUSTOM_CHART.barChart.colorFirstLevel}
-                                                  fontWeight={CUSTOM_CHART.barChart.fontWeight}
-                                                  nameChart={'Phân bổ quảng cáo theo Thể loại nội dung'}
-                                                  description={false}
-                                                  orientation={'horizontal'}
-                                                  colorZoom='red'
-                                                  formatterValue={2}
-                                                  stack={true}
-                                                  crossFilter='firstLevels'
-                                                  keyChart='barBrandFirstLevelData'
-                                              />
-                                              <PieChart data={!dashboard.isLoading.grpPieAdvertiserData ? transformPieChartData(dashboard.grpPieAdvertiserData?.data, dashboard.grpPieAdvertiserData?.colnames) : 'isLoading'}
-                                                        height={CUSTOM_CHART.pieChart.height}
-                                                        fontSize={CUSTOM_CHART.pieChart.fontSize}
-                                                        fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                        fontWeight={CUSTOM_CHART.pieChart.fontWeight}
-                                                        nameChart={"Thị phần các nhà quảng cáo"}
-                                                        description={false}
-                                                        donut={CUSTOM_CHART.pieChart.donut}
-                                                        innerRadius={CUSTOM_CHART.pieChart.innerRadius}
-                                                        border={false}
-                                                        formatterValue={2}
-                                              />
-                                          </div>
-                                      )},
-                                      {id: 'reach', label: 'REACH',
-                                      content: (
-                                          <div className='grid grid-cols-2 max-md:grid-cols-1 gap-6 max-md:gap-4'>
-                                              <BarChart 
-                                                  data={!dashboard.isLoading.reachBarBrandChannelData ? transformBarChartData(dashboard.reachBarBrandChannelData?.data, dashboard.reachBarBrandChannelData?.colnames) : 'isLoading'}
-                                                  height={CUSTOM_CHART.barChart.height}
-                                                  fontSize={CUSTOM_CHART.barChart.fontSize}
-                                                  fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                  colors={CUSTOM_CHART.barChart.colorChannel}
-                                                  fontWeight={CUSTOM_CHART.barChart.fontWeight}
-                                                  nameChart={'Phân bổ quảng cáo theo kênh'}
-                                                  description={false}
-                                                  orientation={'horizontal'}
-                                                  colorZoom='red'
-                                                  stack={true}
-                                                  crossFilter='channels'
-                                                  keyChart='barBrandChannelData'
-                                              />
-                                              <BarChart 
-                                                  data={!dashboard.isLoading.reachBarBrandTimebandData ? transformBarChartData(dashboard.reachBarBrandTimebandData?.data, dashboard.reachBarBrandTimebandData?.colnames) : 'isLoading'}
-                                                  height={CUSTOM_CHART.barChart.height}
-                                                  fontSize={CUSTOM_CHART.barChart.fontSize}
-                                                  fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                  colors={CUSTOM_CHART.barChart.colorTimeband}
-                                                  fontWeight={CUSTOM_CHART.barChart.fontWeight}
-                                                  nameChart={'Phân bổ quảng cáo theo khung giờ'}
-                                                  description={false}
-                                                  orientation={'horizontal'}
-                                                  colorZoom='red'
-                                              />
-                                              <BarChart 
-                                                  data={!dashboard.isLoading.reachBarBrandFirstLevelData ? transformBarChartData(dashboard.reachBarBrandFirstLevelData?.data, dashboard.reachBarBrandFirstLevelData?.colnames) : 'isLoading'}
-                                                  height={CUSTOM_CHART.barChart.height}
-                                                  fontSize={CUSTOM_CHART.barChart.fontSize}
-                                                  fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                  colors={CUSTOM_CHART.barChart.colorFirstLevel}
-                                                  fontWeight={CUSTOM_CHART.barChart.fontWeight}
-                                                  nameChart={'Phân bổ quảng cáo theo Thể loại nội dung'}
-                                                  description={false}
-                                                  orientation={'horizontal'}
-                                                  colorZoom='red'
-                                                  stack={true}
-                                                  crossFilter='firstLevels'
-                                                  keyChart='barBrandFirstLevelData'
-                                              />
-                                              <PieChart data={!dashboard.isLoading.reachPieAdvertiserData ? transformPieChartData(dashboard.reachPieAdvertiserData?.data, dashboard.reachPieAdvertiserData?.colnames) : 'isLoading'}
-                                                        height={CUSTOM_CHART.pieChart.height}
-                                                        fontSize={CUSTOM_CHART.pieChart.fontSize}
-                                                        fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                        fontWeight={CUSTOM_CHART.pieChart.fontWeight}
-                                                        nameChart={"Thị phần các nhà quảng cáo"}
-                                                        description={false}
-                                                        donut={CUSTOM_CHART.pieChart.donut}
-                                                        innerRadius={CUSTOM_CHART.pieChart.innerRadius}
-                                                        border={false}
-                                              />
-                                          </div>
-                                      )}
-                                      ]} />
-                                  </div>
-                                  <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
-                                      <TableChart data={!dashboard.isLoading.allTableBrandData ? transformTableChartData(dashboard.allTableBrandData?.data, dashboard.allTableBrandData?.colnames) : 'isLoading'}
-                                                height={CUSTOM_CHART.tableChart.tableChartChannel.height}
-                                                fontSize={CUSTOM_CHART.tableChart.fontSize}
-                                                fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                fontWeight={CUSTOM_CHART.tableChart.fontWeight}
-                                                nameChart={'Hiệu quả quảng cáo theo nhãn'}
-                                                description={false}
-                                                showSTT={false}
-                                                showPagination={false}
-                                                crossFilter={true}
-                                                keyChart='allTableBrandData'
-                                                customCol={{'Nhãn': {weight: 600, minSize: 100, maxSize: 170, sticky: true, crossFilter: 'brands'}}} />
-                                  </div>
-                                  <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
-                                      <TableChart data={!dashboard.isLoading.allTableBrandProgramData ? transformTableChartData(dashboard.allTableBrandProgramData?.data, dashboard.allTableBrandProgramData?.colnames, null, [], LABEL_SPOT) : 'isLoading'}
-                                                height={CUSTOM_CHART.tableChart.tableChartChannel.height}
-                                                fontSize={CUSTOM_CHART.tableChart.fontSize}
-                                                fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                fontWeight={CUSTOM_CHART.tableChart.fontWeight}
-                                                nameChart={'Hiệu quả quảng cáo của nhãn theo chương trình'}
-                                                description={false}
-                                                showSTT={false}
-                                                showPagination={false}
-                                                crossFilter={true}
-                                                keyChart='allTableBrandProgramData'
-                                                customCol={{'Nhãn': {weight: 600, minSize: 100, maxSize: 170, sticky: true, crossFilter: 'brands'}, 'Chương trình': {minSize: 100, maxSize: 170, crossFilter: 'programs'}}} />
-                                  </div>
-                                  <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
-                                      <TableChart data={!dashboard.isLoading.allTableDeviceData ? transformTableChartData(dashboard.allTableDeviceData?.data, dashboard.allTableDeviceData?.colnames) : 'isLoading'}
-                                                height={CUSTOM_CHART.tableChart.tableChartChannel.height}
-                                                fontSize={CUSTOM_CHART.tableChart.fontSize}
-                                                fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                fontWeight={CUSTOM_CHART.tableChart.fontWeight}
-                                                nameChart={'Tỉ lệ tiếp cận Reach (1+, 2+, 3+) theo ngày'}
-                                                description={false}
-                                                showSTT={false}
-                                                customCol={{'Ngày': {sticky: true}}} />
-                                  </div>
+                              )
+                            },
+                            {
+                              id: 'duration', label: 'Share of airtime',
+                              content: (
+                                <div className='grid grid-cols-2 max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4'>
+                                  <PieChart data={!dashboard.isLoading.durationPieChannelData ? transformPieChartData(dashboard.durationPieChannelData?.data, dashboard.durationPieChannelData?.colnames) : 'isLoading'}
+                                    height={CUSTOM_CHART.pieChart.height}
+                                    fontSize={CUSTOM_CHART.pieChart.fontSize}
+                                    fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                    fontWeight={CUSTOM_CHART.pieChart.fontWeight}
+                                    nameChart={'Phân bổ thời lượng quảng cáo theo kênh'}
+                                    description={false}
+                                    colors={CUSTOM_CHART.pieChart.colorChannel}
+                                    donut={CUSTOM_CHART.pieChart.donut}
+                                    innerRadius={CUSTOM_CHART.pieChart.innerRadius}
+                                    suffix='phút'
+                                    formatterValue={2}
+                                    crossFilter='channels'
+                                    keyChart='pieChannelData'
+                                  />
+                                  <PieChart data={!dashboard.isLoading.durationPieFirstLevelData ? transformPieChartData(dashboard.durationPieFirstLevelData?.data, dashboard.durationPieFirstLevelData?.colnames) : 'isLoading'}
+                                    height={CUSTOM_CHART.pieChart.height}
+                                    fontSize={CUSTOM_CHART.pieChart.fontSize}
+                                    fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                    fontWeight={CUSTOM_CHART.pieChart.fontWeight}
+                                    nameChart={'Phân bổ thời lượng quảng cáo theo thể loại nội dung'}
+                                    description={false}
+                                    colors={CUSTOM_CHART.pieChart.colorFirstLevel}
+                                    donut={CUSTOM_CHART.pieChart.donut}
+                                    innerRadius={CUSTOM_CHART.pieChart.innerRadius}
+                                    suffix='phút'
+                                    formatterValue={2}
+                                    crossFilter='firstLevels'
+                                    keyChart='pieFirstLevelData'
+                                  />
                                 </div>
-                                <div className='px-6 max-lg:px-5 max-md:px-4 pb-6 max-lg:pb-5 max-md:pb-19 bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300'>
-                                  <Footer color='text-color-black-100 dark:text-color-white-90' />
+                              )
+                            },
+                            {
+                              id: 'length_voice', label: 'Share of spot voice/lengths',
+                              content: (
+                                <div className='grid grid-cols-2 max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4'>
+                                  <PieChart data={!dashboard.isLoading.grpPieChannelData ? transformPieChartData(dashboard.grpPieChannelData?.data, dashboard.grpPieChannelData?.colnames) : 'isLoading'}
+                                    height={CUSTOM_CHART.pieChart.height}
+                                    fontSize={CUSTOM_CHART.pieChart.fontSize}
+                                    fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                    fontWeight={CUSTOM_CHART.pieChart.fontWeight}
+                                    nameChart={'Phân bổ GRP quảng cáo theo kênh'}
+                                    description={false}
+                                    colors={CUSTOM_CHART.pieChart.colorChannel}
+                                    donut={CUSTOM_CHART.pieChart.donut}
+                                    innerRadius={CUSTOM_CHART.pieChart.innerRadius}
+                                    formatterValue={2}
+                                    crossFilter='channels'
+                                    keyChart='pieChannelData'
+                                  />
+                                  <PieChart data={!dashboard.isLoading.durationPieLengthData ? transformPieChartData(dashboard.durationPieLengthData?.data, dashboard.durationPieLengthData?.colnames) : 'isLoading'}
+                                    height={CUSTOM_CHART.pieChart.height}
+                                    fontSize={CUSTOM_CHART.pieChart.fontSize}
+                                    fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                    fontWeight={CUSTOM_CHART.pieChart.fontWeight}
+                                    nameChart={'Phân bổ độ dài của quảng cáo theo kênh'}
+                                    description={false}
+                                    colors={CUSTOM_CHART.pieChart.colorDuration}
+                                    donut={CUSTOM_CHART.pieChart.donut}
+                                    innerRadius={CUSTOM_CHART.pieChart.innerRadius}
+                                  />
                                 </div>
-                              </section>
-                            )
-                          },
-                          {id: 'ad_monitoring_report', label: !stateGlobals.screen_md ? 'Ad monitoring report' : 'Ad monitoring', icon: !stateGlobals.darkMode ? iconRatingByMinute : iconRatingByMinuteDark, iconActive: iconRatingByMinuteActive,
-                            content: (
-                              <section className='bg-background-dashboard dark:bg-background-dashboard-dark transiton-all duration-300' id="target_capture_ad_monitoring_report">
-                                <InforTab inforTab={"Ad monitoring report"} maxInsert={dashboard?.maxInsertData?.data?.[0]?.['MAX(check_time)']} />
-                                <InforFilter filters={scopeFilterData} FilterComponent={FilterSpot} nameFilter='FilterSpot' />
-                                <div className='px-6 max-lg:px-5 max-md:px-4'>
-                                  <div className='w-full py-6 max-lg:py-5 max-md:py-4'>
-                                    <TableChart data={!dashboard.isLoading.allTableMonitoringData ? transformTableChartData(dashboard.allTableMonitoringData?.data, dashboard.allTableMonitoringData?.colnames, null, [], LABEL_SPOT) : 'isLoading'}
-                                                height={'600px'}
-                                                fontSize={CUSTOM_CHART.tableChart.fontSize}
-                                                fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                                fontWeight={CUSTOM_CHART.tableChart.fontWeight}
-                                                nameChart={'MONITORING REPORT'}
-                                                description={false}
-                                                showPagination={true}
-                                                fullScreen={true}
-                                                crossFilter={true}
-                                                keyChart='allTableMonitoringData'
-                                                customCol={{
-                                                  'Tuần': {align: 'text-center', justify: 'justify-center'},
-                                                  'Chương trình': {minSize: 200, maxSize: 300, overflow: true, justify: 'justify-center', align: 'text-center', weight: 600, crossFilter: 'programs'},
-                                                  'Thời lượng Spot': {align: 'text-center', justify: 'justify-center'},
-                                                  'Break': {align: 'text-center', justify: 'justify-center'},
-                                                  'Position': {align: 'text-center', justify: 'justify-center'},
-                                                  'Chi phí (Triệu VND)': {align: 'text-center', justify: 'justify-center'},
-                                                  'Reach': {align: 'text-center', justify: 'justify-center'},
-                                                  'Chiến dịch': {minSize: 220, maxSize: 320, overflow: true, crossFilter: 'campaigns'},
-                                                  'Loại Spot': {minSize: 120, maxSize: 150, overflow: true, crossFilter: 'spotTypes'},
-                                                  'Ngành hàng': {minSize: 120, maxSize: 190, overflow: true, crossFilter: 'groups'},
-                                                  'Sản phẩm': {minSize: 120, maxSize: 190, overflow: true, crossFilter: 'products'},
-                                                  'Nhãn hàng': {minSize: 180, maxSize: 240, overflow: true, crossFilter: 'brands'},
-                                                  'Nhà quảng cáo': {minSize: 180, maxSize: 240, overflow: true, crossFilter: 'advertisers'}
-                                                }} />
-                                  </div>
+                              )
+                            }
+                          ]} />
+                        </div>
+                        <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
+                          <div className={`p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
+                            <NameChart nameChart={'Top 20 nhà quảng cáo'} description={false} opacity={true} />
+                            <ChildTabs tabs={[
+                              {
+                                id: 'vnd', label: 'Triệu VND',
+                                content: (
+                                  <BarChart
+                                    data={!dashboard.isLoading.spendVNDBarAdvertiserData ? transformBarChartData(dashboard.spendVNDBarAdvertiserData?.data, dashboard.spendVNDBarAdvertiserData?.colnames) : 'isLoading'}
+                                    height={CUSTOM_CHART.barChart.height}
+                                    fontSize={CUSTOM_CHART.barChart.fontSize}
+                                    fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                    colors={['rgba(255, 204, 0, 1)']}
+                                    fontWeight={CUSTOM_CHART.barChart.fontWeight}
+                                    nameChart={'Top 20 nhà quảng cáo'}
+                                    description={false}
+                                    orientation={'horizontal'}
+                                    displayName={false}
+                                    overflow={true}
+                                    heightPlus={35}
+                                    crossFilter='advertisers'
+                                    keyChart='barAdvertiserData'
+                                  />
+                                )
+                              },
+                              {
+                                id: 'usd', label: 'USD',
+                                content: (
+                                  <BarChart
+                                    data={!dashboard.isLoading.spendUSDBarAdvertiserData ? transformBarChartData(dashboard.spendUSDBarAdvertiserData?.data, dashboard.spendUSDBarAdvertiserData?.colnames) : 'isLoading'}
+                                    height={CUSTOM_CHART.barChart.height}
+                                    fontSize={CUSTOM_CHART.barChart.fontSize}
+                                    fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                    colors={['rgba(255, 204, 0, 1)']}
+                                    fontWeight={CUSTOM_CHART.barChart.fontWeight}
+                                    nameChart={'Top 20 nhà quảng cáo'}
+                                    description={false}
+                                    orientation={'horizontal'}
+                                    displayName={false}
+                                    suffix={'$'}
+                                    overflow={true}
+                                    heightPlus={35}
+                                    crossFilter='advertisers'
+                                    keyChart='barAdvertiserData'
+                                  />
+                                )
+                              },
+                              {
+                                id: 'spot', label: 'SPOT',
+                                content: (
+                                  <BarChart
+                                    data={!dashboard.isLoading.countBarAdvertiserData ? transformBarChartData(dashboard.countBarAdvertiserData?.data, dashboard.countBarAdvertiserData?.colnames) : 'isLoading'}
+                                    height={CUSTOM_CHART.barChart.height}
+                                    fontSize={CUSTOM_CHART.barChart.fontSize}
+                                    fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                    colors={['rgba(255, 204, 0, 1)']}
+                                    fontWeight={CUSTOM_CHART.barChart.fontWeight}
+                                    nameChart={'Top 20 nhà quảng cáo'}
+                                    description={false}
+                                    orientation={'horizontal'}
+                                    displayName={false}
+                                    overflow={true}
+                                    heightPlus={35}
+                                    crossFilter='advertisers'
+                                    keyChart='barAdvertiserData'
+                                  />
+                                )
+                              }
+                            ]} />
+                          </div>
+                        </div>
+                        <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
+                          <div className={`p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
+                            <NameChart nameChart={'Top 20 nhà quảng cáo - phân bổ theo kênh'} description={false} opacity={true} />
+                            <ChildTabs tabs={[
+                              {
+                                id: 'vnd', label: 'Triệu VND',
+                                content: (
+                                  <BarChart
+                                    data={!dashboard.isLoading.spendVNDBarAdvertiserChannelData ? transformBarChartData(dashboard.spendVNDBarAdvertiserChannelData?.data, dashboard.spendVNDBarAdvertiserChannelData?.colnames) : 'isLoading'}
+                                    height={CUSTOM_CHART.barChart.height}
+                                    fontSize={CUSTOM_CHART.barChart.fontSize}
+                                    fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                    colors={CUSTOM_CHART.barChart.colorChannel}
+                                    fontWeight={CUSTOM_CHART.barChart.fontWeight}
+                                    nameChart={'Top 20 nhà quảng cáo - phân bổ theo kênh'}
+                                    description={false}
+                                    orientation={'horizontal'}
+                                    displayName={false}
+                                    overflow={true}
+                                    heightPlus={50}
+                                    crossFilter='channels'
+                                    keyChart='barAdvertiserChannelData'
+                                    stack={true}
+                                  />
+                                )
+                              },
+                              {
+                                id: 'usd', label: 'USD',
+                                content: (
+                                  <BarChart
+                                    data={!dashboard.isLoading.spendUSDBarAdvertiserChannelData ? transformBarChartData(dashboard.spendUSDBarAdvertiserChannelData?.data, dashboard.spendUSDBarAdvertiserChannelData?.colnames) : 'isLoading'}
+                                    height={CUSTOM_CHART.barChart.height}
+                                    fontSize={CUSTOM_CHART.barChart.fontSize}
+                                    fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                    colors={CUSTOM_CHART.barChart.colorChannel}
+                                    fontWeight={CUSTOM_CHART.barChart.fontWeight}
+                                    nameChart={'Top 20 nhà quảng cáo - phân bổ theo kênh'}
+                                    description={false}
+                                    orientation={'horizontal'}
+                                    displayName={false}
+                                    suffix={'$'}
+                                    overflow={true}
+                                    heightPlus={50}
+                                    crossFilter='channels'
+                                    keyChart='barAdvertiserChannelData'
+                                    stack={true}
+                                  />
+                                )
+                              },
+                              {
+                                id: 'spot', label: 'SPOT',
+                                content: (
+                                  <BarChart
+                                    data={!dashboard.isLoading.countBarAdvertiserChannelData ? transformBarChartData(dashboard.countBarAdvertiserChannelData?.data, dashboard.countBarAdvertiserChannelData?.colnames) : 'isLoading'}
+                                    height={CUSTOM_CHART.barChart.height}
+                                    fontSize={CUSTOM_CHART.barChart.fontSize}
+                                    fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                    colors={CUSTOM_CHART.barChart.colorChannel}
+                                    fontWeight={CUSTOM_CHART.barChart.fontWeight}
+                                    nameChart={'Top 20 nhà quảng cáo - phân bổ theo kênh'}
+                                    description={false}
+                                    orientation={'horizontal'}
+                                    displayName={false}
+                                    overflow={true}
+                                    heightPlus={50}
+                                    crossFilter='channels'
+                                    keyChart='barAdvertiserChannelData'
+                                    stack={true}
+                                  />
+                                )
+                              }
+                            ]} />
+                          </div>
+                        </div>
+                        <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
+                          <ChildTabs tabs={[
+                            {
+                              id: 'brand', label: 'Top 10 nhãn',
+                              content: (
+                                <TableChart data={!dashboard.isLoading.top10BrandData ? transformTableChartData(dashboard.top10BrandData?.data, dashboard.top10BrandData?.colnames, null, ['percent_price', 'percent_count', 'percent_duration', 'percent_grp']) : 'isLoading'}
+                                  height={CUSTOM_CHART.tableChart.tableChartChannel.height}
+                                  fontSize={CUSTOM_CHART.tableChart.fontSize}
+                                  fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                  fontWeight={CUSTOM_CHART.tableChart.fontWeight}
+                                  nameChart={'Top 10 nhãn'}
+                                  description={false}
+                                  showSTT={false}
+                                  showPagination={false}
+                                  crossFilter={true}
+                                  keyChart='top10BrandData'
+                                  customCol={{ 'Nhãn': { minSize: 100, maxSize: 170, weight: 600, sticky: true, crossFilter: 'brands' }, 'Chi phí (USD)': { suffix: '$' } }} />
+                              )
+                            },
+                            {
+                              id: 'product', label: 'Top 10 dòng sản phẩm',
+                              content: (
+                                <TableChart data={!dashboard.isLoading.top10ProductData ? transformTableChartData(dashboard.top10ProductData?.data, dashboard.top10ProductData?.colnames, null, ['percent_price', 'percent_count', 'percent_duration', 'percent_grp']) : 'isLoading'}
+                                  height={CUSTOM_CHART.tableChart.tableChartChannel.height}
+                                  fontSize={CUSTOM_CHART.tableChart.fontSize}
+                                  fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                  fontWeight={CUSTOM_CHART.tableChart.fontWeight}
+                                  nameChart={'Top 10 dòng sản phẩm'}
+                                  description={false}
+                                  showSTT={false}
+                                  showPagination={false}
+                                  crossFilter={true}
+                                  keyChart='top10ProductData'
+                                  customCol={{ 'Sản phẩm': { minSize: 100, maxSize: 170, weight: 600, sticky: true, crossFilter: 'products' }, 'Chi phí (USD)': { suffix: '$' } }} />
+                              )
+                            },
+                            {
+                              id: 'campaign', label: 'Top 10 Chiến dịch',
+                              content: (
+                                <TableChart data={!dashboard.isLoading.top10CampaignData ? transformTableChartData(dashboard.top10CampaignData?.data, dashboard.top10CampaignData?.colnames, null, ['percent_price', 'percent_count', 'percent_duration', 'percent_grp']) : 'isLoading'}
+                                  height={CUSTOM_CHART.tableChart.tableChartChannel.height}
+                                  fontSize={CUSTOM_CHART.tableChart.fontSize}
+                                  fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                  fontWeight={CUSTOM_CHART.tableChart.fontWeight}
+                                  nameChart={'Top 10 chiến dịch'}
+                                  description={false}
+                                  showSTT={false}
+                                  showPagination={false}
+                                  crossFilter={true}
+                                  keyChart={'top10CampaignData'}
+                                  customCol={{ 'Chiến dịch': { minSize: 100, maxSize: 170, weight: 600, sticky: true, crossFilter: 'campaigns' }, 'Chi phí (USD)': { suffix: '$' } }} />
+                              )
+                            }
+                          ]} />
+                        </div>
+                      </div>
+                      <div className='px-6 max-lg:px-5 max-md:px-4 pb-6 max-lg:pb-5 max-md:pb-19 bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300'>
+                        <Footer color='text-color-black-100 dark:text-color-white-90' />
+                      </div>
+                    </section>
+                  )
+                },
+                {
+                  id: 'revenue', label: 'Doanh thu', icon: !stateGlobals.darkMode ? iconChannel : iconChannelDark, iconActive: iconChannelActive,
+                  content: (
+                    <section className='bg-background-dashboard dark:bg-background-dashboard-dark transiton-all duration-300' id="target_capture_revenue">
+                      <InforTab inforTab={"Doanh thu"} maxInsert={dashboard?.maxInsertData?.data?.[0]?.['MAX(check_time)']} />
+                      <InforFilter filters={scopeFilterData} FilterComponent={FilterSpot} nameFilter='FilterSpot' />
+                      <div className='px-6 max-lg:px-5 max-md:px-4 py-6 max-lg:py-5 max-md:py-4'>
+                        <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
+                          <BarChart
+                            data={!dashboard.isLoading.spendVNDBarTimebandData ? transformBarChartData(dashboard.spendVNDBarTimebandData?.data, dashboard.spendVNDBarTimebandData?.colnames) : 'isLoading'}
+                            height={CUSTOM_CHART.barChart.height}
+                            fontSize={CUSTOM_CHART.barChart.fontSize}
+                            fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                            colors={['rgba(255, 204, 0, 1)']}
+                            fontWeight={CUSTOM_CHART.barChart.fontWeight}
+                            nameChart={'Xu hướng quảng cáo theo khung giờ (Triệu VND)'}
+                            description={false}
+                            orientation={''}
+                            maxVisibleItems={true}
+                            crossFilter='timebands'
+                            keyChart='spendVNDBarTimebandData'
+                          />
+                        </div>
+                        <div className='w-full grid grid-cols-10 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4'>
+                          <div className='col-span-6 max-md:col-span-10'>
+                            <TableChart data={!dashboard.isLoading.adcodeProgramData ? transformTableChartData(dashboard.adcodeProgramData?.data, dashboard.adcodeProgramData?.colnames, null, [], LABEL_SPOT) : 'isLoading'}
+                              height={CUSTOM_CHART.tableChart.tableChartChannel.height}
+                              fontSize={CUSTOM_CHART.tableChart.fontSize}
+                              fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                              fontWeight={CUSTOM_CHART.tableChart.fontWeight}
+                              nameChart={'Chi phí quảng cáo theo Adcode'}
+                              description={false}
+                              showSTT={false}
+                              showPagination={false}
+                              crossFilter={true}
+                              keyChart='adcodeProgramData'
+                              customCol={{ 'Adcode': { weight: 600, crossFilter: 'adCodes' }, 'Khung giờ': { crossFilter: 'timebands' }, 'Chương trình': { minSize: 100, maxSize: 170, crossFilter: 'programs' }, 'Kênh': { minSize: 0, maxSize: 10, crossFilter: 'channels' } }} />
+                          </div>
+                          <div className='col-span-4 max-md:col-span-10'>
+                            <TableChart data={!dashboard.isLoading.adcodeProductData ? transformTableChartData(dashboard.adcodeProductData?.data, dashboard.adcodeProductData?.colnames) : 'isLoading'}
+                              height={CUSTOM_CHART.tableChart.tableChartChannel.height}
+                              fontSize={CUSTOM_CHART.tableChart.fontSize}
+                              fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                              fontWeight={CUSTOM_CHART.tableChart.fontWeight}
+                              nameChart={'Chi phí quảng cáo theo dòng sản phẩm'}
+                              description={false}
+                              showSTT={false}
+                              showPagination={false}
+                              crossFilter={true}
+                              keyChart='adcodeProductData'
+                              customCol={{ 'Sản phẩm': { weight: 600, crossFilter: 'products' } }} />
+                          </div>
+                        </div>
+                        <div className='w-full grid grid-cols-10 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4'>
+                          <div className='col-span-6 max-md:col-span-10'>
+                            <PivotTableChart
+                              data={!dashboard.isLoading.spendVNDPivotChannelFirstLevelData ? dashboard.spendVNDPivotChannelFirstLevelData?.data : 'isLoading'}
+                              nameChart="Doanh thu quảng cáo theo kênh (Triệu VND)"
+                              description={false}
+                              rowField="channel_name_tvd"
+                              columnField="firstlevel_vn"
+                              valueField="price"
+                              aggType="sum"
+                              height={CUSTOM_CHART.tableChart.tableChartChannel.height}
+                              fontSize={CUSTOM_CHART.tableChart.fontSize}
+                              fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                              fontWeight={CUSTOM_CHART.tableChart.fontWeight}
+                              labelTables={LABEL_SPOT}
+                              fullScreen={true}
+                              customCol={{ 'channel_name_tvd': { crossFilter: 'channels' } }}
+                              crossFilter={true}
+                              keyChart='spendVNDPivotChannelFirstLevelData'
+                            />
+                          </div>
+                          <div className='col-span-4 max-md:col-span-10 grid'>
+                            <PieChart data={!dashboard.isLoading.countPieTimebandData ? transformPieChartData(dashboard.countPieTimebandData?.data, dashboard.countPieTimebandData?.colnames) : 'isLoading'}
+                              height={CUSTOM_CHART.pieChart.height}
+                              fontSize={CUSTOM_CHART.pieChart.fontSize}
+                              fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                              fontWeight={CUSTOM_CHART.pieChart.fontWeight}
+                              nameChart={'Xu hướng quảng cáo theo khung giờ'}
+                              description={false}
+                              colors={{
+                                "1.Sáng (00h - 11h)": "rgba(217, 31, 38, 1)",
+                                "2.Trưa (11h - 14h)": "rgba(86, 154, 255, 1)",
+                                "3.Chiều (14h - 18h)": "rgba(128, 212, 27, 1)",
+                                "4.Tối (18h - 24h)": "rgba(2, 147, 113, 1)"
+                              }}
+                              donut={CUSTOM_CHART.pieChart.donut}
+                              innerRadius={CUSTOM_CHART.pieChart.innerRadius}
+                              legendHorizontal={true}
+                            />
+                          </div>
+                        </div>
+                        <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
+                          <BarChart
+                            data={!dashboard.isLoading.spendVNDBarProgramData ? transformBarChartData(dashboard.spendVNDBarProgramData?.data, dashboard.spendVNDBarProgramData?.colnames) : 'isLoading'}
+                            height={CUSTOM_CHART.barChart.height}
+                            fontSize={CUSTOM_CHART.barChart.fontSize}
+                            fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                            colors={['rgba(255, 204, 0, 1)']}
+                            fontWeight={CUSTOM_CHART.barChart.fontWeight}
+                            nameChart={'Top 20 chương trình có doanh thu cao nhất (Triệu VND)'}
+                            description={false}
+                            orientation={'horizontal'}
+                            overflow={true}
+                            heightPlus={35}
+                            crossFilter='programs'
+                            keyChart='spendVNDBarProgramData'
+                          />
+                        </div>
+                        <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
+                          <BarChart
+                            data={!dashboard.isLoading.spendVNDBarChannelData ? transformBarChartData(dashboard.spendVNDBarChannelData?.data, dashboard.spendVNDBarChannelData?.colnames) : 'isLoading'}
+                            height={CUSTOM_CHART.barChart.height}
+                            fontSize={CUSTOM_CHART.barChart.fontSize}
+                            fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                            colors={['rgba(255, 204, 0, 1)']}
+                            fontWeight={CUSTOM_CHART.barChart.fontWeight}
+                            nameChart={'Chi phí quảng cáo theo kênh (Triệu VND)'}
+                            description={false}
+                            orientation={''}
+                            crossFilter='channels'
+                            keyChart='spendVNDBarChannelData'
+                          />
+                        </div>
+                        <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
+                          <PivotTableChart
+                            data={!dashboard.isLoading.spendVNDPivotChannelTimebandData ? dashboard.spendVNDPivotChannelTimebandData?.data : 'isLoading'}
+                            nameChart="Xu hướng quảng cáo theo khung giờ (Triệu VND)"
+                            description={false}
+                            rowField="channel_name_tvd"
+                            columnField="time_band"
+                            valueField="price"
+                            aggType="sum"
+                            height={CUSTOM_CHART.tableChart.tableChartChannel.height}
+                            fontSize={CUSTOM_CHART.tableChart.fontSize}
+                            fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                            fontWeight={CUSTOM_CHART.tableChart.fontWeight}
+                            sortColTimeband={true}
+                            labelTables={LABEL_SPOT}
+                            fullScreen={true}
+                            customCol={{ 'channel_name_tvd': { crossFilter: 'channels' } }}
+                            crossFilter={true}
+                            keyChart='spendVNDPivotChannelTimebandData'
+                          />
+                        </div>
+                        <div className='w-full'>
+                          <TableChart data={!dashboard.isLoading.spendVNDTableAdvertiserData ? transformTableChartData(dashboard.spendVNDTableAdvertiserData?.data, dashboard.spendVNDTableAdvertiserData?.colnames) : 'isLoading'}
+                            height={CUSTOM_CHART.tableChart.tableChartChannel.height}
+                            fontSize={CUSTOM_CHART.tableChart.fontSize}
+                            fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                            fontWeight={CUSTOM_CHART.tableChart.fontWeight}
+                            nameChart={'Chi phí quảng cáo theo nhà quảng cáo'}
+                            description={false}
+                            showSTT={false}
+                            showPagination={false}
+                            crossFilter={true}
+                            keyChart='spendVNDTableAdvertiserData'
+                            customCol={{ 'Nhà quảng cáo': { weight: 600, crossFilter: 'advertisers' } }} />
+                        </div>
+                      </div>
+                      <div className='px-6 max-lg:px-5 max-md:px-4 pb-6 max-lg:pb-5 max-md:pb-19 bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300'>
+                        <Footer color='text-color-black-100 dark:text-color-white-90' />
+                      </div>
+                    </section>
+                  )
+                },
+                {
+                  id: 'effective', label: 'Hiệu quả', icon: !stateGlobals.darkMode ? iconProgram : iconProgramDark, iconActive: iconProgramActive,
+                  content: (
+                    <section className='bg-background-dashboard dark:bg-background-dashboard-dark transiton-all duration-300' id="target_capture_effective">
+                      <InforTab inforTab={"Hiệu quả"} maxInsert={dashboard?.maxInsertData?.data?.[0]?.['MAX(check_time)']} />
+                      <InforFilter filters={scopeFilterData} FilterComponent={FilterSpot} nameFilter='FilterSpot' />
+                      <div className='px-6 max-lg:px-5 max-md:px-4'>
+                        <div className='w-full py-6 max-lg:py-5 max-md:py-4'>
+                          <div className={`p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
+                            <NameChart nameChart={'Top 20 nhà quảng cáo'} description={false} opacity={true} />
+                            <ChildTabs tabs={[
+                              {
+                                id: 'grp', label: 'GRP',
+                                content: (
+                                  <PivotTableChart
+                                    data={!dashboard.isLoading.grpPivotCampaignWeekData ? dashboard.grpPivotCampaignWeekData?.data : 'isLoading'}
+                                    nameChart={'Chỉ số về hiệu quả chiến dịch (GRP, REACH và SỐ LƯỢNG SPOT)'}
+                                    description={false}
+                                    displayName={false}
+                                    rowField="campaign_name"
+                                    columnField="week"
+                                    valueField="grp"
+                                    aggType="sum"
+                                    height={CUSTOM_CHART.tableChart.tableChartChannel.height}
+                                    fontSize={CUSTOM_CHART.tableChart.fontSize}
+                                    fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                    fontWeight={CUSTOM_CHART.tableChart.fontWeight}
+                                    formatterValue={2}
+                                    suffixHeader='Tuần'
+                                    customCol={{ 'campaign_name': { crossFilter: 'campaigns' } }}
+                                    crossFilter={true}
+                                    keyChart='pivotCampaignWeekData'
+                                  />
+                                )
+                              },
+                              {
+                                id: 'reach', label: 'REACH',
+                                content: (
+                                  <PivotTableChart
+                                    data={!dashboard.isLoading.reachPivotCampaignWeekData ? dashboard.reachPivotCampaignWeekData?.data : 'isLoading'}
+                                    nameChart={'Chỉ số về hiệu quả chiến dịch (GRP, REACH và SỐ LƯỢNG SPOT)'}
+                                    description={false}
+                                    displayName={false}
+                                    rowField="campaign_name"
+                                    columnField="week"
+                                    valueField="reach"
+                                    aggType="sum"
+                                    height={CUSTOM_CHART.tableChart.tableChartChannel.height}
+                                    fontSize={CUSTOM_CHART.tableChart.fontSize}
+                                    fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                    fontWeight={CUSTOM_CHART.tableChart.fontWeight}
+                                    suffixHeader='Tuần'
+                                    customCol={{ 'campaign_name': { crossFilter: 'campaigns' } }}
+                                    crossFilter={true}
+                                    keyChart='pivotCampaignWeekData'
+                                  />
+                                )
+                              },
+                              {
+                                id: 'spot', label: 'SPOT',
+                                content: (
+                                  <PivotTableChart
+                                    data={!dashboard.isLoading.countPivotCampaignWeekData ? dashboard.countPivotCampaignWeekData?.data : 'isLoading'}
+                                    nameChart={'Chỉ số về hiệu quả chiến dịch (GRP, REACH và SỐ LƯỢNG SPOT)'}
+                                    description={false}
+                                    displayName={false}
+                                    rowField="campaign_name"
+                                    columnField="week"
+                                    valueField="count"
+                                    aggType="sum"
+                                    height={CUSTOM_CHART.tableChart.tableChartChannel.height}
+                                    fontSize={CUSTOM_CHART.tableChart.fontSize}
+                                    fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                    fontWeight={CUSTOM_CHART.tableChart.fontWeight}
+                                    suffixHeader='Tuần'
+                                    customCol={{ 'campaign_name': { crossFilter: 'campaigns' } }}
+                                    crossFilter={true}
+                                    keyChart='pivotCampaignWeekData'
+                                  />
+                                )
+                              }
+                            ]} />
+                          </div>
+                        </div>
+                        <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4 flex max-md:flex-wrap gap-6 max-lg:gap-5 max-md:gap-4'>
+                          <div className='w-[60%] max-md:w-full'>
+                            <BarChart
+                              data={!dashboard.isLoading.grpBarRegionalBrandData ? transformBarChartData(dashboard.grpBarRegionalBrandData?.data, dashboard.grpBarRegionalBrandData?.colnames) : 'isLoading'}
+                              height={CUSTOM_CHART.barChart.height}
+                              fontSize={CUSTOM_CHART.barChart.fontSize}
+                              fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                              fontWeight={CUSTOM_CHART.barChart.fontWeight}
+                              nameChart={'GRP (%) theo thị trường'}
+                              description={false}
+                              orientation={''}
+                              formatterValue={2}
+                              stack={true}
+                              crossFilter='brands'
+                              keyChart='grpBarRegionalBrandData'
+                            />
+                          </div>
+                          <div className='w-[40%] max-md:w-full'>
+                            <BarChart
+                              data={!dashboard.isLoading.grpBarWeekBrandData ? transformBarChartData(dashboard.grpBarWeekBrandData?.data, dashboard.grpBarWeekBrandData?.colnames) : 'isLoading'}
+                              height={CUSTOM_CHART.barChart.height}
+                              fontSize={CUSTOM_CHART.barChart.fontSize}
+                              fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                              fontWeight={CUSTOM_CHART.barChart.fontWeight}
+                              nameChart={'GRP (%) trong tuần theo nhà quảng cáo'}
+                              description={false}
+                              orientation={''}
+                              formatterValue={2}
+                              stack={true}
+                              crossFilter='brands'
+                              keyChart='grpBarWeekBrandData'
+                            />
+                          </div>
+                        </div>
+                        <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
+                          <ChildTabs tabs={[
+                            {
+                              id: 'spend', label: 'AD SPEND',
+                              content: (
+                                <div className='grid grid-cols-2 max-md:grid-cols-1 gap-6 max-md:gap-4'>
+                                  <BarChart
+                                    data={!dashboard.isLoading.spendVNDBarBrandChannelData ? transformBarChartData(dashboard.spendVNDBarBrandChannelData?.data, dashboard.spendVNDBarBrandChannelData?.colnames) : 'isLoading'}
+                                    height={CUSTOM_CHART.barChart.height}
+                                    fontSize={CUSTOM_CHART.barChart.fontSize}
+                                    fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                    colors={CUSTOM_CHART.barChart.colorChannel}
+                                    fontWeight={CUSTOM_CHART.barChart.fontWeight}
+                                    nameChart={'Phân bổ quảng cáo theo kênh'}
+                                    description={false}
+                                    orientation={'horizontal'}
+                                    colorZoom='red'
+                                    stack={true}
+                                    crossFilter='channels'
+                                    keyChart='barBrandChannelData'
+                                  />
+                                  <BarChart
+                                    data={!dashboard.isLoading.spendVNDBarBrandTimebandData ? transformBarChartData(dashboard.spendVNDBarBrandTimebandData?.data, dashboard.spendVNDBarBrandTimebandData?.colnames) : 'isLoading'}
+                                    height={CUSTOM_CHART.barChart.height}
+                                    fontSize={CUSTOM_CHART.barChart.fontSize}
+                                    fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                    colors={CUSTOM_CHART.barChart.colorTimeband}
+                                    fontWeight={CUSTOM_CHART.barChart.fontWeight}
+                                    nameChart={'Phân bổ quảng cáo theo khung giờ'}
+                                    description={false}
+                                    orientation={'horizontal'}
+                                    colorZoom='red'
+                                  />
+                                  <BarChart
+                                    data={!dashboard.isLoading.spendVNDBarBrandFirstLevelData ? transformBarChartData(dashboard.spendVNDBarBrandFirstLevelData?.data, dashboard.spendVNDBarBrandFirstLevelData?.colnames) : 'isLoading'}
+                                    height={CUSTOM_CHART.barChart.height}
+                                    fontSize={CUSTOM_CHART.barChart.fontSize}
+                                    fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                    colors={CUSTOM_CHART.barChart.colorFirstLevel}
+                                    fontWeight={CUSTOM_CHART.barChart.fontWeight}
+                                    nameChart={'Phân bổ quảng cáo theo Thể loại nội dung'}
+                                    description={false}
+                                    orientation={'horizontal'}
+                                    colorZoom='red'
+                                    stack={true}
+                                    crossFilter='firstLevels'
+                                    keyChart='barBrandFirstLevelData'
+                                  />
+                                  <PieChart data={!dashboard.isLoading.spendVNDPieAdvertiserData ? transformPieChartData(dashboard.spendVNDPieAdvertiserData?.data, dashboard.spendVNDPieAdvertiserData?.colnames) : 'isLoading'}
+                                    height={CUSTOM_CHART.pieChart.height}
+                                    fontSize={CUSTOM_CHART.pieChart.fontSize}
+                                    fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                    fontWeight={CUSTOM_CHART.pieChart.fontWeight}
+                                    nameChart={"Thị phần các nhà quảng cáo"}
+                                    description={false}
+                                    donut={CUSTOM_CHART.pieChart.donut}
+                                    innerRadius={CUSTOM_CHART.pieChart.innerRadius}
+                                    border={false}
+                                  />
                                 </div>
-                                <div className='px-6 max-lg:px-5 max-md:px-4 pb-6 max-lg:pb-5 max-md:pb-19 bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300'>
-                                  <Footer color='text-color-black-100 dark:text-color-white-90' />
+                              )
+                            },
+                            {
+                              id: 'grp', label: 'GRP',
+                              content: (
+                                <div className='grid grid-cols-2 max-md:grid-cols-1 gap-6 max-md:gap-4'>
+                                  <BarChart
+                                    data={!dashboard.isLoading.grpBarBrandChannelData ? transformBarChartData(dashboard.grpBarBrandChannelData?.data, dashboard.grpBarBrandChannelData?.colnames) : 'isLoading'}
+                                    height={CUSTOM_CHART.barChart.height}
+                                    fontSize={CUSTOM_CHART.barChart.fontSize}
+                                    fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                    colors={CUSTOM_CHART.barChart.colorChannel}
+                                    fontWeight={CUSTOM_CHART.barChart.fontWeight}
+                                    nameChart={'Phân bổ quảng cáo theo kênh'}
+                                    description={false}
+                                    orientation={'horizontal'}
+                                    colorZoom='red'
+                                    formatterValue={2}
+                                    stack={true}
+                                    crossFilter='channels'
+                                    keyChart='barBrandChannelData'
+                                  />
+                                  <BarChart
+                                    data={!dashboard.isLoading.grpBarBrandTimebandData ? transformBarChartData(dashboard.grpBarBrandTimebandData?.data, dashboard.grpBarBrandTimebandData?.colnames) : 'isLoading'}
+                                    height={CUSTOM_CHART.barChart.height}
+                                    fontSize={CUSTOM_CHART.barChart.fontSize}
+                                    fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                    colors={CUSTOM_CHART.barChart.colorTimeband}
+                                    fontWeight={CUSTOM_CHART.barChart.fontWeight}
+                                    nameChart={'Phân bổ quảng cáo theo khung giờ'}
+                                    description={false}
+                                    orientation={'horizontal'}
+                                    colorZoom='red'
+                                    formatterValue={2}
+                                  />
+                                  <BarChart
+                                    data={!dashboard.isLoading.grpBarBrandFirstLevelData ? transformBarChartData(dashboard.grpBarBrandFirstLevelData?.data, dashboard.grpBarBrandFirstLevelData?.colnames) : 'isLoading'}
+                                    height={CUSTOM_CHART.barChart.height}
+                                    fontSize={CUSTOM_CHART.barChart.fontSize}
+                                    fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                    colors={CUSTOM_CHART.barChart.colorFirstLevel}
+                                    fontWeight={CUSTOM_CHART.barChart.fontWeight}
+                                    nameChart={'Phân bổ quảng cáo theo Thể loại nội dung'}
+                                    description={false}
+                                    orientation={'horizontal'}
+                                    colorZoom='red'
+                                    formatterValue={2}
+                                    stack={true}
+                                    crossFilter='firstLevels'
+                                    keyChart='barBrandFirstLevelData'
+                                  />
+                                  <PieChart data={!dashboard.isLoading.grpPieAdvertiserData ? transformPieChartData(dashboard.grpPieAdvertiserData?.data, dashboard.grpPieAdvertiserData?.colnames) : 'isLoading'}
+                                    height={CUSTOM_CHART.pieChart.height}
+                                    fontSize={CUSTOM_CHART.pieChart.fontSize}
+                                    fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                    fontWeight={CUSTOM_CHART.pieChart.fontWeight}
+                                    nameChart={"Thị phần các nhà quảng cáo"}
+                                    description={false}
+                                    donut={CUSTOM_CHART.pieChart.donut}
+                                    innerRadius={CUSTOM_CHART.pieChart.innerRadius}
+                                    border={false}
+                                    formatterValue={2}
+                                  />
                                 </div>
-                              </section>
-                            )
-                          }
-                        ]}
+                              )
+                            },
+                            {
+                              id: 'reach', label: 'REACH',
+                              content: (
+                                <div className='grid grid-cols-2 max-md:grid-cols-1 gap-6 max-md:gap-4'>
+                                  <BarChart
+                                    data={!dashboard.isLoading.reachBarBrandChannelData ? transformBarChartData(dashboard.reachBarBrandChannelData?.data, dashboard.reachBarBrandChannelData?.colnames) : 'isLoading'}
+                                    height={CUSTOM_CHART.barChart.height}
+                                    fontSize={CUSTOM_CHART.barChart.fontSize}
+                                    fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                    colors={CUSTOM_CHART.barChart.colorChannel}
+                                    fontWeight={CUSTOM_CHART.barChart.fontWeight}
+                                    nameChart={'Phân bổ quảng cáo theo kênh'}
+                                    description={false}
+                                    orientation={'horizontal'}
+                                    colorZoom='red'
+                                    stack={true}
+                                    crossFilter='channels'
+                                    keyChart='barBrandChannelData'
+                                  />
+                                  <BarChart
+                                    data={!dashboard.isLoading.reachBarBrandTimebandData ? transformBarChartData(dashboard.reachBarBrandTimebandData?.data, dashboard.reachBarBrandTimebandData?.colnames) : 'isLoading'}
+                                    height={CUSTOM_CHART.barChart.height}
+                                    fontSize={CUSTOM_CHART.barChart.fontSize}
+                                    fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                    colors={CUSTOM_CHART.barChart.colorTimeband}
+                                    fontWeight={CUSTOM_CHART.barChart.fontWeight}
+                                    nameChart={'Phân bổ quảng cáo theo khung giờ'}
+                                    description={false}
+                                    orientation={'horizontal'}
+                                    colorZoom='red'
+                                  />
+                                  <BarChart
+                                    data={!dashboard.isLoading.reachBarBrandFirstLevelData ? transformBarChartData(dashboard.reachBarBrandFirstLevelData?.data, dashboard.reachBarBrandFirstLevelData?.colnames) : 'isLoading'}
+                                    height={CUSTOM_CHART.barChart.height}
+                                    fontSize={CUSTOM_CHART.barChart.fontSize}
+                                    fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                    colors={CUSTOM_CHART.barChart.colorFirstLevel}
+                                    fontWeight={CUSTOM_CHART.barChart.fontWeight}
+                                    nameChart={'Phân bổ quảng cáo theo Thể loại nội dung'}
+                                    description={false}
+                                    orientation={'horizontal'}
+                                    colorZoom='red'
+                                    stack={true}
+                                    crossFilter='firstLevels'
+                                    keyChart='barBrandFirstLevelData'
+                                  />
+                                  <PieChart data={!dashboard.isLoading.reachPieAdvertiserData ? transformPieChartData(dashboard.reachPieAdvertiserData?.data, dashboard.reachPieAdvertiserData?.colnames) : 'isLoading'}
+                                    height={CUSTOM_CHART.pieChart.height}
+                                    fontSize={CUSTOM_CHART.pieChart.fontSize}
+                                    fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                    fontWeight={CUSTOM_CHART.pieChart.fontWeight}
+                                    nameChart={"Thị phần các nhà quảng cáo"}
+                                    description={false}
+                                    donut={CUSTOM_CHART.pieChart.donut}
+                                    innerRadius={CUSTOM_CHART.pieChart.innerRadius}
+                                    border={false}
+                                  />
+                                </div>
+                              )
+                            }
+                          ]} />
+                        </div>
+                        <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
+                          <TableChart data={!dashboard.isLoading.allTableBrandData ? transformTableChartData(dashboard.allTableBrandData?.data, dashboard.allTableBrandData?.colnames) : 'isLoading'}
+                            height={CUSTOM_CHART.tableChart.tableChartChannel.height}
+                            fontSize={CUSTOM_CHART.tableChart.fontSize}
+                            fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                            fontWeight={CUSTOM_CHART.tableChart.fontWeight}
+                            nameChart={'Hiệu quả quảng cáo theo nhãn'}
+                            description={false}
+                            showSTT={false}
+                            showPagination={false}
+                            crossFilter={true}
+                            keyChart='allTableBrandData'
+                            customCol={{ 'Nhãn': { weight: 600, minSize: 100, maxSize: 170, sticky: true, crossFilter: 'brands' } }} />
+                        </div>
+                        <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
+                          <TableChart data={!dashboard.isLoading.allTableBrandProgramData ? transformTableChartData(dashboard.allTableBrandProgramData?.data, dashboard.allTableBrandProgramData?.colnames, null, [], LABEL_SPOT) : 'isLoading'}
+                            height={CUSTOM_CHART.tableChart.tableChartChannel.height}
+                            fontSize={CUSTOM_CHART.tableChart.fontSize}
+                            fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                            fontWeight={CUSTOM_CHART.tableChart.fontWeight}
+                            nameChart={'Hiệu quả quảng cáo của nhãn theo chương trình'}
+                            description={false}
+                            showSTT={false}
+                            showPagination={false}
+                            crossFilter={true}
+                            keyChart='allTableBrandProgramData'
+                            customCol={{ 'Nhãn': { weight: 600, minSize: 100, maxSize: 170, sticky: true, crossFilter: 'brands' }, 'Chương trình': { minSize: 100, maxSize: 170, crossFilter: 'programs' } }} />
+                        </div>
+                        <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
+                          <TableChart data={!dashboard.isLoading.allTableDeviceData ? transformTableChartData(dashboard.allTableDeviceData?.data, dashboard.allTableDeviceData?.colnames) : 'isLoading'}
+                            height={CUSTOM_CHART.tableChart.tableChartChannel.height}
+                            fontSize={CUSTOM_CHART.tableChart.fontSize}
+                            fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                            fontWeight={CUSTOM_CHART.tableChart.fontWeight}
+                            nameChart={'Tỉ lệ tiếp cận Reach (1+, 2+, 3+) theo ngày'}
+                            description={false}
+                            showSTT={false}
+                            customCol={{ 'Ngày': { sticky: true } }} />
+                        </div>
+                      </div>
+                      <div className='px-6 max-lg:px-5 max-md:px-4 pb-6 max-lg:pb-5 max-md:pb-19 bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300'>
+                        <Footer color='text-color-black-100 dark:text-color-white-90' />
+                      </div>
+                    </section>
+                  )
+                },
+                {
+                  id: 'ad_monitoring_report', label: !stateGlobals.screen_md ? 'Ad monitoring report' : 'Ad monitoring', icon: !stateGlobals.darkMode ? iconRatingByMinute : iconRatingByMinuteDark, iconActive: iconRatingByMinuteActive,
+                  content: (
+                    <section className='bg-background-dashboard dark:bg-background-dashboard-dark transiton-all duration-300' id="target_capture_ad_monitoring_report">
+                      <InforTab inforTab={"Ad monitoring report"} maxInsert={dashboard?.maxInsertData?.data?.[0]?.['MAX(check_time)']} />
+                      <InforFilter filters={scopeFilterData} FilterComponent={FilterSpot} nameFilter='FilterSpot' />
+                      <div className='px-6 max-lg:px-5 max-md:px-4'>
+                        <div className='w-full py-6 max-lg:py-5 max-md:py-4'>
+                          <TableChart data={!dashboard.isLoading.allTableMonitoringData ? transformTableChartData(dashboard.allTableMonitoringData?.data, dashboard.allTableMonitoringData?.colnames, null, [], LABEL_SPOT) : 'isLoading'}
+                            height={'600px'}
+                            fontSize={CUSTOM_CHART.tableChart.fontSize}
+                            fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                            fontWeight={CUSTOM_CHART.tableChart.fontWeight}
+                            nameChart={'MONITORING REPORT'}
+                            description={false}
+                            showPagination={true}
+                            fullScreen={true}
+                            crossFilter={true}
+                            keyChart='allTableMonitoringData'
+                            customCol={{
+                              'Tuần': { align: 'text-center', justify: 'justify-center' },
+                              'Chương trình': { minSize: 200, maxSize: 300, overflow: true, justify: 'justify-center', align: 'text-center', weight: 600, crossFilter: 'programs' },
+                              'Thời lượng Spot': { align: 'text-center', justify: 'justify-center' },
+                              'Break': { align: 'text-center', justify: 'justify-center' },
+                              'Position': { align: 'text-center', justify: 'justify-center' },
+                              'Chi phí (Triệu VND)': { align: 'text-center', justify: 'justify-center' },
+                              'Reach': { align: 'text-center', justify: 'justify-center' },
+                              'Chiến dịch': { minSize: 220, maxSize: 320, overflow: true, crossFilter: 'campaigns' },
+                              'Loại Spot': { minSize: 120, maxSize: 150, overflow: true, crossFilter: 'spotTypes' },
+                              'Ngành hàng': { minSize: 120, maxSize: 190, overflow: true, crossFilter: 'groups' },
+                              'Sản phẩm': { minSize: 120, maxSize: 190, overflow: true, crossFilter: 'products' },
+                              'Nhãn hàng': { minSize: 180, maxSize: 240, overflow: true, crossFilter: 'brands' },
+                              'Nhà quảng cáo': { minSize: 180, maxSize: 240, overflow: true, crossFilter: 'advertisers' }
+                            }} />
+                        </div>
+                      </div>
+                      <div className='px-6 max-lg:px-5 max-md:px-4 pb-6 max-lg:pb-5 max-md:pb-19 bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300'>
+                        <Footer color='text-color-black-100 dark:text-color-white-90' />
+                      </div>
+                    </section>
+                  )
+                }
+              ]}
             />
           </div>
         </div>

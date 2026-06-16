@@ -67,7 +67,7 @@ const DashboardContent = () => {
             <div className='flex w-full h-full bg-background-light dark:bg-background-dark transition-all duration-300'>
                 <FilterWorldCup filters={scopeFilterData} />
                 <div className={`${stateGlobals.isOpen && !stateGlobals.horizontal ? 'w-[84%] max-md:w-full' : 'w-full'} transition-all duration-300 bg-background-dashboard dark:bg-background-dashboard-dark`}>
-                    <BreadCrumb dashboardName='WORLD CUP 2026' icon={!stateGlobals.darkMode ? iconWorldCup : iconWorldCupDark} widthIcon='w-12 max-lg:w-11 max-md:w-9.75' />
+                    <BreadCrumb dashboardName='WORLD CUP 2026' icon={!stateGlobals.darkMode ? iconWorldCup : iconWorldCupDark} widthIcon='w-12 max-lg:w-8 max-md:w-7.25' />
                     <div className='bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300'>
                         <ParentTabs uniqueId='dashboard'
                             defaultTab='worldcup'

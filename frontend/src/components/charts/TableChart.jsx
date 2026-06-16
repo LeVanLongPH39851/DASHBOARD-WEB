@@ -78,6 +78,7 @@ const TableChart = ({
 
   showSTT = !stateGlobals.screen_md ? showSTT : false;
 
+  const path = import.meta.env.VITE_API_BASE_URL == '/rating' ? window.location.pathname : '/';
 
   const tableData = useMemo(() => {
     return labels.map((label, index) => {
@@ -550,10 +551,8 @@ const TableChart = ({
                               wordWrap: isNumericColumn ? 'normal' : 'break-word'
                             }}
                           >
-                            {console.log(window.location.pathname)
-                            }
-                            {rawValue && customCol[columnName]?.flag ? <div className='items-center gap-2 inline-flex'><figure><img src={`${window.location.origin}${import.meta.env.BASE_URL}flags/${FLAGS[rawValue]}`} alt={rawValue} className='w-7 max-lg:w-6 max-md:w-5' /></figure>
-                              {rawValue ? customCol[columnName]?.prefix : ''}{rawValue || rawValue === 0 ? flexRender(cell.column.columnDef.cell, cell.getContext()) : '-'} {rawValue ? customCol[columnName]?.suffix : ''}</div> : <>{rawValue ? customCol[columnName]?.prefix : ''}{rawValue || rawValue === 0 ? flexRender(cell.column.columnDef.cell, cell.getContext()) : '-'} {rawValue ? customCol[columnName]?.suffix : ''}</>}
+                            {rawValue && customCol[columnName]?.flag ? <div className='items-center gap-2 inline-flex'><figure><img src={`${window.location.origin}${path}/flags/${FLAGS[rawValue]}`} alt={rawValue} className='w-7 max-lg:w-6 max-md:w-5' /></figure>
+                            {rawValue ? customCol[columnName]?.prefix : ''}{rawValue || rawValue === 0 ? flexRender(cell.column.columnDef.cell, cell.getContext()) : '-'} {rawValue ? customCol[columnName]?.suffix : ''}</div> : <>{rawValue ? customCol[columnName]?.prefix : ''}{rawValue || rawValue === 0 ? flexRender(cell.column.columnDef.cell, cell.getContext()) : '-'} {rawValue ? customCol[columnName]?.suffix : ''}</>}
                           </td>
                         );
                       })}

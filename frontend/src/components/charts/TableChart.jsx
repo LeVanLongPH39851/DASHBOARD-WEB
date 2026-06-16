@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useCallback, useRef, useEffect } from 'react';
+import { FLAGS } from '../../utils/label';
 import {
   useReactTable,
   getCoreRowModel,
@@ -43,20 +44,21 @@ const TableChart = ({
   enableHeatmap = true,
   showSTT,
   showPagination,
-  displayName=true,
-  fullScreen=false,
-  customCol=false,
-  crossFilter=false,
-  keyChart=false
+  displayName = true,
+  fullScreen = false,
+  customCol = false,
+  crossFilter = false,
+  keyChart = false,
+  showHeader = true
 }) => {
 
   const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
   const { appliedFilters, setAppliedFilters } = useDashboardFilters();
   const { crossFilters, setCrossFilters } = useDashboardCrossFilters();
-  
-  if(data==='isLoading') {
+
+  if (data === 'isLoading') {
     return (
-      <div className={`${displayName ? 'p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : '' }`} style={{ fontFamily }}>
+      <div className={`${displayName ? 'p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : ''}`} style={{ fontFamily }}>
         <NameChart nameChart={nameChart} description={description} display={displayName} fullScreen={fullScreen} />
         <div className='h-13 max-lg:h-11 max-md:h-9.25'></div>
         <Loading height={!stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : stateGlobals.currentTab == 'program' ? '400px' : stateGlobals.currentTab == 'ad_monitoring_report' ? '500px' : '350px' : stateGlobals.currentTab == 'program' ? '300px' : stateGlobals.currentTab == 'ad_monitoring_report' ? '600px' : '240px'} />
@@ -64,7 +66,7 @@ const TableChart = ({
     );
   } else if (!data) {
     return (
-      <div className={`${displayName ? 'p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : '' }`} style={{ fontFamily }}>
+      <div className={`${displayName ? 'p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : ''}`} style={{ fontFamily }}>
         <NameChart nameChart={nameChart} description={description} display={displayName} fullScreen={fullScreen} />
         <div className='h-13 max-lg:h-11 max-md:h-9.25'></div>
         <NoData height={!stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : stateGlobals.currentTab == 'program' ? '400px' : stateGlobals.currentTab == 'ad_monitoring_report' ? '500px' : '350px' : stateGlobals.currentTab == 'program' ? '300px' : stateGlobals.currentTab == 'ad_monitoring_report' ? '600px' : '240px'} />
@@ -95,7 +97,7 @@ const TableChart = ({
 
   const columnStats = useMemo(() => {
     const stats = {};
-    
+
     series.forEach(s => {
       const numericValues = s.data.filter(val => typeof val === 'number');
       if (numericValues.length > 0) {
@@ -105,7 +107,7 @@ const TableChart = ({
         };
       }
     });
-    
+
     return stats;
   }, [series]);
 
@@ -127,7 +129,7 @@ const TableChart = ({
 
 
     const { min, max } = columnStats[columnName];
-    
+
     if (max === min) {
       return 'rgba(34, 197, 94, 0.2)';
     }
@@ -140,7 +142,7 @@ const TableChart = ({
 
     const normalized = (value - min) / (max - min);
     const opacity = 0.1 + (normalized * 0.5);
-    
+
     return `rgba(34, 197, 94, ${opacity})`;
   };
 
@@ -254,23 +256,23 @@ const TableChart = ({
   // const showPagination = tableData.length > 11;
 
 
-// Tách theo dấu phẩy → OR matching trên tất cả columns
-const multiValueGlobalFilter = (row, columnId, filterValue) => {
-  const terms = filterValue
-    .split(',')
-    .map((t) => t.trim().toLowerCase())
-    .filter(Boolean); // bỏ string rỗng
+  // Tách theo dấu phẩy → OR matching trên tất cả columns
+  const multiValueGlobalFilter = (row, columnId, filterValue) => {
+    const terms = filterValue
+      .split(',')
+      .map((t) => t.trim().toLowerCase())
+      .filter(Boolean); // bỏ string rỗng
 
-  if (terms.length === 0) return true;
+    if (terms.length === 0) return true;
 
-  const cellValue = String(row.getValue(columnId) ?? '').toLowerCase();
+    const cellValue = String(row.getValue(columnId) ?? '').toLowerCase();
 
-  // Row passed nếu cell này khớp BẤT KỲ term nào
-  return terms.some((term) => cellValue.includes(term));
-};
+    // Row passed nếu cell này khớp BẤT KỲ term nào
+    return terms.some((term) => cellValue.includes(term));
+  };
 
-// Bắt buộc có để TanStack tự remove filter khi input rỗng
-multiValueGlobalFilter.autoRemove = (val) => !val;
+  // Bắt buộc có để TanStack tự remove filter khi input rỗng
+  multiValueGlobalFilter.autoRemove = (val) => !val;
 
 
 
@@ -345,9 +347,9 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
       var crossFilterName = params.crossFilter;
       const crossFilterValues = [crossFilterValue];
       if (appliedFilters?.[crossFilterName]?.[0] !== crossFilterValues[0]) {
-        const transformed = {...appliedFilters, [crossFilterName]: crossFilterValues};
+        const transformed = { ...appliedFilters, [crossFilterName]: crossFilterValues };
         setAppliedFilters(transformed);
-        
+
         if (keyChart) {
           if (crossFilters) {
             setCrossFilters({
@@ -367,14 +369,14 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
         setClick(true);
         setActiveTable(prev => (prev === crossFilterValue ? '' : crossFilterValue));
         setInActiveTable(prev => (activeTable === crossFilterValue ? false : true));
-      } else if(click) {
+      } else if (click) {
         setClick(false);
         const { [crossFilterName]: removed, ...rest } = appliedFilters || {};
         setAppliedFilters(rest);
         if (keyChart) {
           if (crossFilters) {
             const { [keyChart]: _, main: __, ...rest } = crossFilters;
-            setCrossFilters({...rest, skipNext: keyChart});
+            setCrossFilters({ ...rest, skipNext: keyChart });
           }
         }
         setActiveTable(prev => (prev === crossFilterValue ? '' : crossFilterValue));
@@ -384,9 +386,9 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
   };
 
   return (
-    <div className={`${displayName ? `p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component` : '' }`} style={{ fontFamily }}>
+    <div className={`${displayName ? `p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component` : ''}`} style={{ fontFamily }}>
       <NameChart nameChart={nameChart} description={description} display={displayName} getChartData={getEChartsData} table={true} fullScreen={fullScreen} />
-      <div className="flex justify-between items-center mb-3 max-lg:mb-2 max-md:mb-1 searchTable">
+      {showHeader && <div className="flex justify-between items-center mb-3 max-lg:mb-2 max-md:mb-1 searchTable">
         <div className='flex items-center gap-2 max-lg:gap-1.5 max-md:gap-1'>
           <div className={`relative`}>
             <button
@@ -446,7 +448,7 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
           />
           <figure className='absolute top-1/2 -translate-y-1/2 right-4 max-lg:right-3.75 cursor-pointer'><img src={!stateGlobals.darkMode ? iconSearch : iconSearchDark} alt="Icon Search" className='w-3.75 max-lg:w-3.5 max-md:w-3' /></figure>
         </div>
-      </div>
+      </div>}
 
 
 
@@ -460,31 +462,31 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
           <div
             ref={tableScrollRef}
             className="overflow-auto divTable"
-            style={{height: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : stateGlobals.currentTab == 'program' ? '400px' : stateGlobals.currentTab == 'ad_monitoring_report' ? '500px' : '350px' : stateGlobals.currentTab == 'program' ? '300px' : stateGlobals.currentTab == 'ad_monitoring_report' ? '600px' : '240px'}}
+            style={{ height: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : stateGlobals.currentTab == 'program' ? '400px' : stateGlobals.currentTab == 'ad_monitoring_report' ? '500px' : '350px' : stateGlobals.currentTab == 'program' ? '300px' : stateGlobals.currentTab == 'ad_monitoring_report' ? '600px' : '240px' }}
             onClick={() => setShowColumnMenu(false)}
           >
-            <table 
+            <table
               className="w-full"
-              style={{ 
+              style={{
                 tableLayout: 'auto',
                 borderCollapse: 'separate',
                 borderSpacing: 0
               }}
             >
-              <thead 
+              <thead
                 className="sticky top-0 z-10"
               >
                 {table.getHeaderGroups().map((headerGroup) => (
                   <tr key={headerGroup.id}>
                     {headerGroup.headers.map((header, idx) => {
-                      
+
                       return (
                         <th
                           key={header.id}
                           className={`px-2 ${customCol[header.id]?.sticky && stateGlobals.screen_md ? 'program-border-right' : ''} max-lg:px-1.5 max-md:px-1 py-3 max-lg:py-2.5 max-md:py-2 text-center relative text-color-neotam dark:text-background-primary bg-background-light dark:bg-background-chart-dark border-b border-border-black-10 dark:border-background-white-15 transition-all duration-300 ${customCol[header.id]?.sticky ? 'max-md:sticky max-md:left-0 max-md:z-10' : ''}`}
                           style={{
-                            minWidth: `${stateGlobals.screen_md || customCol[header.id]?.overflow ? header.column.getSize() + (customCol[header.id]?.minSize - (customCol[header.id]?.overflow && stateGlobals.screen_md ? customCol[header.id]?.minSize*0.3 : 0) || 0) : header.column.getSize() - 40}px`,
-                            maxWidth: `${header.column.getSize() + (customCol[header.id]?.maxSize - (customCol[header.id]?.overflow && stateGlobals.screen_md ? customCol[header.id]?.maxSize*0.3 : 0) || 100)}px`,
+                            minWidth: `${stateGlobals.screen_md || customCol[header.id]?.overflow ? header.column.getSize() + (customCol[header.id]?.minSize - (customCol[header.id]?.overflow && stateGlobals.screen_md ? customCol[header.id]?.minSize * 0.3 : 0) || 0) : header.column.getSize() - 40}px`,
+                            maxWidth: `${header.column.getSize() + (customCol[header.id]?.maxSize - (customCol[header.id]?.overflow && stateGlobals.screen_md ? customCol[header.id]?.maxSize * 0.3 : 0) || 100)}px`,
                             fontSize: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.label : '13px' : '10.5px',
                             fontWeight: fontWeight.label,
                             whiteSpace: 'pre-line',
@@ -492,14 +494,13 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
                           }}
                         >
                           <div
-                            className={`flex text-nowrap items-center gap-2 max-lg:gap-1.5 ${customCol && customCol[header.id]?.justify ? customCol[header.id]?.justify : header.column.columnDef.meta?.isNumeric ? 'justify-end' : 'justify-start'} ${
-                              header.column.getCanSort() ? 'cursor-pointer select-none' : ''
-                            }`}
+                            className={`flex text-nowrap items-center gap-2 max-lg:gap-1.5 ${customCol && customCol[header.id]?.justify ? customCol[header.id]?.justify : header.column.columnDef.meta?.isNumeric ? 'justify-end' : 'justify-start'} ${header.column.getCanSort() ? 'cursor-pointer select-none' : ''
+                              }`}
                             onClick={header.column.getToggleSortingHandler()}
                           >
                             {flexRender(header.column.columnDef.header, header.getContext())}
                             {header.column.getIsSorted() && (
-                              <span className="text-color-neotam transition-all duration-300 text-[10px] max-lg:text-[9px] max-md:text-[8px]">
+                              <span className="text-color-neotam dark:text-background-primary transition-all duration-300 text-[10px] max-lg:text-[9px] max-md:text-[8px]">
                                 {header.column.getIsSorted() === 'asc' ? '▲' : '▼'}
                               </span>
                             )}
@@ -507,9 +508,8 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
                           <div
                             onMouseDown={header.getResizeHandler()}
                             onTouchStart={header.getResizeHandler()}
-                            className={`absolute right-0 top-0 h-full w-0.5 rounded-2xl cursor-col-resize transition-colors duration-300 ${
-                              header.column.getIsResizing() ? 'bg-color-neotam dark:bg-background-primary' : 'bg-transparent'
-                            }`}
+                            className={`absolute right-0 top-0 h-full w-0.5 rounded-2xl cursor-col-resize transition-colors duration-300 ${header.column.getIsResizing() ? 'bg-color-neotam dark:bg-background-primary' : 'bg-transparent'
+                              }`}
                             style={{ userSelect: 'none', touchAction: 'none' }}
                           />
                         </th>
@@ -518,10 +518,10 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
                   </tr>
                 ))}
               </thead>
-              
+
               <tbody>
                 {table.getRowModel().rows.map((row, idx) => {
-                  
+
                   return (
                     <tr
                       key={row.id}
@@ -532,26 +532,26 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
                         const rawValue = cell.row.original[columnName];
                         const bgColor = columnName === 'STT' ? 'transparent' : getHeatmapColor(rawValue, columnName);
                         const isNumericColumn = cell.column.columnDef.meta?.isNumeric;
-                        
+
                         return (
                           <td
                             key={cell.id}
-                            onClick={customCol[columnName]?.crossFilter ? () => onEvents({crossFilter: customCol[columnName]?.crossFilter, name: rawValue}) : undefined}
-                            className={`border-b ${customCol[columnName]?.sticky && stateGlobals.screen_md ? 'program-border-right' : ''} ${customCol[columnName]?.crossFilter ? 'cursor-pointer' : ''} border-border-black-10 dark:border-background-white-15 px-2 max-lg:px-1.5 max-md:px-1 py-3 max-lg:py-2.5 max-md:py-2 ${activeTable && activeTable === rawValue ? 'opacity-100 text-color-neotam dark:text-background-primary' : (inActiveTable  && crossFilters?.main === keyChart) ? 'opacity-50 text-color-black-100 dark:text-color-white-90' : 'opacity-100 text-color-black-100 dark:text-color-white-90'} transition-all duration-300 ${customCol[columnName]?.sticky ? `max-md:sticky max-md:left-0 max-md:z-1 max-md:bg-background-light max-md:dark:bg-background-chart-dark max-md:before:content-[''] max-md:before:inset-0 max-md:before:absolute max-md:before:-z-2 ${idx%2===0 ? 'max-md:before:bg-background-black-4 max-md:dark:before:bg-background-white-8' : 'max-md:before:bg-background-light max-md:dark:before:bg-background-chart-dark'}` : ''} ${
-                              isNumericColumn 
-                                ? `overflow-hidden text-ellipsis whitespace-nowrap ${customCol && customCol[columnName]?.align ? customCol[columnName]?.align : 'text-right'}`
-                                : `whitespace-normal ${customCol && customCol[columnName]?.align ? customCol[columnName]?.align : !rawValue ? 'text-center' : 'text-left'}`
-                            }`}
+                            onClick={customCol[columnName]?.crossFilter ? () => onEvents({ crossFilter: customCol[columnName]?.crossFilter, name: rawValue }) : undefined}
+                            className={`border-b ${customCol[columnName]?.sticky && stateGlobals.screen_md ? 'program-border-right' : ''} ${customCol[columnName]?.crossFilter ? 'cursor-pointer' : ''} border-border-black-10 dark:border-background-white-15 px-2 max-lg:px-1.5 max-md:px-1 py-3 max-lg:py-2.5 max-md:py-2 ${activeTable && activeTable === rawValue ? 'opacity-100 text-color-neotam dark:text-background-primary' : (inActiveTable && crossFilters?.main === keyChart) ? 'opacity-50 text-color-black-100 dark:text-color-white-90' : 'opacity-100 text-color-black-100 dark:text-color-white-90'} transition-all duration-300 ${customCol[columnName]?.sticky ? `max-md:sticky max-md:left-0 max-md:z-1 max-md:bg-background-light max-md:dark:bg-background-chart-dark max-md:before:content-[''] max-md:before:inset-0 max-md:before:absolute max-md:before:-z-2 ${idx % 2 === 0 ? 'max-md:before:bg-background-black-4 max-md:dark:before:bg-background-white-8' : 'max-md:before:bg-background-light max-md:dark:before:bg-background-chart-dark'}` : ''} ${isNumericColumn
+                              ? `overflow-hidden text-ellipsis whitespace-nowrap ${customCol && customCol[columnName]?.align ? customCol[columnName]?.align : 'text-right'}`
+                              : `whitespace-normal ${customCol && customCol[columnName]?.align ? customCol[columnName]?.align : !rawValue ? 'text-center' : 'text-left'}`
+                              }`}
                             style={{
                               fontSize: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.td : '12px' : '10.5px',
                               fontWeight: activeTable === rawValue || customCol[columnName]?.weight ? 600 : fontWeight.td,
-                              minWidth: `${stateGlobals.screen_md || customCol[columnName]?.overflow ? cell.column.getSize() + (customCol[columnName]?.minSize - (customCol[columnName]?.overflow && stateGlobals.screen_md ? customCol[columnName]?.minSize*0.3 : 0) || 0) : cell.column.getSize() - 40}px`,
-                              maxWidth: `${cell.column.getSize() + (customCol[columnName]?.maxSize - (customCol[columnName]?.overflow && stateGlobals.screen_md ? customCol[columnName]?.maxSize*0.3 : 0) || 100)}px`,
+                              minWidth: `${stateGlobals.screen_md || customCol[columnName]?.overflow ? cell.column.getSize() + (customCol[columnName]?.minSize - (customCol[columnName]?.overflow && stateGlobals.screen_md ? customCol[columnName]?.minSize * 0.3 : 0) || 0) : cell.column.getSize() - 40}px`,
+                              maxWidth: `${cell.column.getSize() + (customCol[columnName]?.maxSize - (customCol[columnName]?.overflow && stateGlobals.screen_md ? customCol[columnName]?.maxSize * 0.3 : 0) || 100)}px`,
                               // backgroundColor: bgColor,
                               wordWrap: isNumericColumn ? 'normal' : 'break-word'
                             }}
                           >
-                            {rawValue || rawValue === 0 ? flexRender(cell.column.columnDef.cell, cell.getContext()) : '-'} {rawValue ? customCol[columnName]?.suffix : ''}
+                            {rawValue && customCol[columnName]?.flag ? <div className='items-center gap-2 inline-flex'><figure><img src={`../../../public/flags/${FLAGS[rawValue]}`} alt={rawValue} className='w-7 max-lg:w-6 max-md:w-5' /></figure>
+                              {rawValue ? customCol[columnName]?.prefix : ''}{rawValue || rawValue === 0 ? flexRender(cell.column.columnDef.cell, cell.getContext()) : '-'} {rawValue ? customCol[columnName]?.suffix : ''}</div> : <>{rawValue ? customCol[columnName]?.prefix : ''}{rawValue || rawValue === 0 ? flexRender(cell.column.columnDef.cell, cell.getContext()) : '-'} {rawValue ? customCol[columnName]?.suffix : ''}</>}
                           </td>
                         );
                       })}
@@ -578,13 +578,13 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
             disabled={!table.getCanPreviousPage()}
             className="w-7.5 max-lg:w-7.25 max-md:w-7 h-7.5 max-lg:h-7.25 max-md:h-7 flex justify-center items-center disabled:cursor-not-allowed cursor-pointer dark:border dark:border-background-white-15 dark:rounded-lg transition-all duration-300"
           >
-          <figure><img src={!stateGlobals.darkMode ? iconArrowLeftGray : iconArrowLeftGrayDark} alt="Icon Arrow Left Gray" className='w-1.25' /></figure>
+            <figure><img src={!stateGlobals.darkMode ? iconArrowLeftGray : iconArrowLeftGrayDark} alt="Icon Arrow Left Gray" className='w-1.25' /></figure>
           </button>
-          
+
           {Array.from({ length: Math.min(table.getPageCount(), 5) }, (_, i) => {
             const pageIndex = table.getState().pagination.pageIndex;
             let pageNum;
-            
+
             if (table.getPageCount() <= 5) {
               pageNum = i;
             } else if (pageIndex < 3) {
@@ -594,16 +594,15 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
             } else {
               pageNum = pageIndex - 2 + i;
             }
-            
+
             return (
               <button
                 key={pageNum}
                 onClick={() => table.setPageIndex(pageNum)}
-                className={`w-7.5 max-lg:w-7.25 max-md:w-7 h-7.5 max-lg:h-7.25 max-md:h-7 flex justify-center items-center rounded-lg font-normal transition-all dark:border dark:border-background-white-15 cursor-pointer text-sm max-lg:text-[13px] max-md:text-xs duration-300 ${
-                  pageIndex === pageNum
-                    ? 'bg-background-black-90 text-background-light dark:bg-background-white-8 shadow-md transition-all duration-300'
-                    : 'text-color-black-50 dark:text-color-white-80'
-                }`}
+                className={`w-7.5 max-lg:w-7.25 max-md:w-7 h-7.5 max-lg:h-7.25 max-md:h-7 flex justify-center items-center rounded-lg font-normal transition-all dark:border dark:border-background-white-15 cursor-pointer text-sm max-lg:text-[13px] max-md:text-xs duration-300 ${pageIndex === pageNum
+                  ? 'bg-background-black-90 text-background-light dark:bg-background-white-8 shadow-md transition-all duration-300'
+                  : 'text-color-black-50 dark:text-color-white-80'
+                  }`}
               >
                 {pageNum + 1}
               </button>
@@ -621,7 +620,7 @@ multiValueGlobalFilter.autoRemove = (val) => !val;
             disabled={!table.getCanNextPage()}
             className="w-7.5 max-lg:w-7.25 max-md:w-7 h-7.5 max-lg:h-7.25 max-md:h-7 flex justify-center items-center disabled:cursor-not-allowed cursor-pointer dark:border dark:border-background-white-15 dark:rounded-lg transition-all duration-300"
           >
-          <figure><img src={!stateGlobals.darkMode ? iconArrowRightGray : iconArrowRightGrayDark} alt="Icon Arrow Left Gray" className='w-1.25' /></figure>
+            <figure><img src={!stateGlobals.darkMode ? iconArrowRightGray : iconArrowRightGrayDark} alt="Icon Arrow Left Gray" className='w-1.25' /></figure>
           </button>
         </div>
       )}

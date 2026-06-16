@@ -12,8 +12,10 @@ export const useApi = (apiFn, params = [], options = {}) => {
     if (!enabled || shouldSkip) return Promise.resolve(null);
     setLoading(true);
     setError(null);
+    var isKill = false;
     return apiFn(...params)
       .then(res => {
+        if (!res?.data?.data?.[0]) { isKill = true; } else { isKill = false; }
         setData(res?.data);
         return res?.data;
       })
@@ -22,7 +24,7 @@ export const useApi = (apiFn, params = [], options = {}) => {
         throw err;
       })
       .finally(() => {
-        setLoading(false);
+        if (!isKill) setLoading(false);
       });
   }, [enabled, shouldSkip, apiFn, ...params]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -33,14 +35,14 @@ export const useApi = (apiFn, params = [], options = {}) => {
   }, [refetch, enabled, shouldSkip]); // chỉ dep vào refetch → clean & safe
 
   // ✅ THÊM: lắng nghe event 'api-killed' để reset loading ngay khi kill request
-  useEffect(() => {
-    const handleKilled = () => {
-      setLoading(true);
-      setError(null);
-    };
-    window.addEventListener('api-killed', handleKilled);
-    return () => window.removeEventListener('api-killed', handleKilled);
-  }, []);
+  // useEffect(() => {
+  //   const handleKilled = () => {
+  //     setLoading(true);
+  //     setError(null);
+  //   };
+  //   window.addEventListener('api-killed', handleKilled);
+  //   return () => window.removeEventListener('api-killed', handleKilled);
+  // }, []);
 
   return { data, loading, error, refetch };
 };

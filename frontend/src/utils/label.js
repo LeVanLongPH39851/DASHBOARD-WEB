@@ -52,7 +52,12 @@ export const LABEL = {
   'others': 'TOÀN QUỐC',
   'Tổng user truy cập VTVgo': 'Tổng user',
   'Thời lượng (phút)': 'Thời lượng',
-  'key_city': 'THÀNH PHỐ LỚN'
+  'key_city': 'THÀNH PHỐ LỚN',
+  'stage': 'GIAI ĐOẠN',
+  'Trận đấu': 'TRẬN ĐẤU',
+  'Thời gian bắt đầu': 'THỜI GIAN\nBẮT ĐẦU',
+  'Đội tuyển': 'ĐỘI TUYỂN',
+  'Số trận đấu': 'SỐ TRẬN ĐẤU',
 };
 
 export const LABEL_SPOT = {
@@ -124,7 +129,7 @@ export const LABEL_METRIC = {
   'price': 'Chi phí (Triệu VND)',
   'price_usd': 'Chi phí (USD)',
   'count': 'Số lượng'
-} 
+}
 
 export const FILTER_LABEL = {
   'channels': 'Kênh',
@@ -166,4 +171,55 @@ export const LABEL_TABS = {
   revenue: 'Doanh thu',
   effective: 'Hiệu quả',
   ad_monitoring_report: 'Ad monitoring report'
+}
+
+export const FLAGS = {
+  "Mexico": "Mexico.png",
+  "Hàn Quốc": "South-Korea.png",
+  "Canada": "Canada.png",
+  "Mỹ": "United-States.png",
+  "Qatar": "Qatar.png",
+  "Brazil": "Brazil.png",
+  "Haiti": "Haiti.png",
+  "Australia": "Australia.png",
+  "Đức": "Germany.png",
+  "Hà Lan": "Netherlands.png",
+  "Bờ Biển Ngà": "Cote-dIvoire.png",
+  "Thụy Điển": "Sweden.png",
+  "Tây Ban Nha": "Spain.png",
+  "Bỉ": "Belgium.png",
+  "Ả Rập Xê Út": "Saudi-Arabia.png",
+  "Iran": "Iran.png",
+  "Pháp": "France.png",
+  "Iraq": "Iraq.png",
+  "Argentina": "Argentina.png",
+  "Áo": "Austria.png",
+  "Bồ Đào Nha": "Portugal.png",
+  "Anh": "England.png",
+  "Ghana": "Ghana.png",
+  "Uzbekistan": "Uzbekistan.png",
+  "CH Séc": "Czech-Republic.png",
+  "Thụy Sĩ": "Switzerland.png",
+  "Scotland": "Scotland.png",
+  "Thổ Nhĩ Kỳ": "Turkey.png",
+  "Ecuador": "Ecuador.png",
+  "Tunisia": "Tunisia.png",
+  "Uruguay": "Uruguay.png",
+  "New Zealand": "New-Zealand.png",
+  "Na Uy": "Norway.png",
+  "Jordan": "Jordan.png",
+  "Panama": "Panama.png",
+  "Colombia": "Colombia.png",
+  "Bosnia & Herzegovina": "Bosnia-and-Herzegovina.png",
+  "Morocco": "Morocco.png",
+  "Nam Phi": "South-Africa.png",
+  "Curacao": "Curacao.png",
+  "Nhật Bản": "Japan.png",
+  "Paraguay": "Paraguay.png",
+  "Senegal": "Senegal.png",
+  "Cape Verde": "Cape-Verde.png",
+  "Ai Cập": "Egypt.png",
+  "Croatia": "Croatia.png",
+  "CHDC Congo": "Democratic-Republic-of-the-Congo.png",
+  "Algeria": "Algeria.png"
 }

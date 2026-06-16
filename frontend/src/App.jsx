@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Link, Navigate } from "react-router-dom";
 import Dashboard from './pages/Dashboard';
 import DashboardSpot from './pages/DashboardSpot';
 import DashboardBrand from './pages/DashboardBrand';
+import DashboardWorldCup from './pages/DashboardWorldCup';
 import Login from "./pages/Login";
 
 const ProtectedRoute = ({ children }) => {
@@ -19,9 +20,10 @@ function App() {
     <BrowserRouter>
       <Routes>
         {/* <Route path="/" element={<PublicRoute><Login /></PublicRoute>}/> */}
-        <Route path="/rating" element={<Dashboard />}/>
-        <Route path="/spot" element={<DashboardSpot />}/>
-        <Route path="/brand" element={<DashboardBrand />}/>
+        <Route path="/rating" element={<Dashboard />} />
+        <Route path="/spot" element={<DashboardSpot />} />
+        <Route path="/brand" element={<DashboardBrand />} />
+        <Route path="/world-cup-2026" element={<DashboardWorldCup />} />
       </Routes>
     </BrowserRouter>
   )

@@ -20,36 +20,36 @@ const BarChart = ({
   nameChart,
   description,
   orientation,
-  displayName=true,
+  displayName = true,
   enableZoom = true, // Option bật/tắt zoom
   maxVisibleItems = 12,
   colorZoom = 'yellow',
   suffix = '',
-  overflow=false,
+  overflow = false,
   formatterValue = 0,
-  heightPlus=0,
+  heightPlus = 0,
   showPercent = false,
   crossFilter = false,
   keyChart = false,
   stack = false
 }) => {
-  
+
   const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
   const { appliedFilters, setAppliedFilters } = useDashboardFilters();
   const { crossFilters, setCrossFilters } = useDashboardCrossFilters();
-  
-  if(data==='isLoading') {
+
+  if (data === 'isLoading') {
     return (
       <div className={`${displayName ? 'p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : ''}`}>
         <NameChart nameChart={nameChart} description={description} display={displayName} />
-        <Loading height={ (!stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : 300 : 220) + heightPlus } />
+        <Loading height={(!stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : 300 : 220) + heightPlus} />
       </div>
     );
   } else if (!data) {
     return (
       <div className={`${displayName ? 'p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : ''}`}>
         <NameChart nameChart={nameChart} description={description} display={displayName} />
-        <NoData height={ (!stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : 300 : 220) + heightPlus } />
+        <NoData height={(!stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : 300 : 220) + heightPlus} />
       </div>
     );
   }
@@ -64,14 +64,14 @@ const BarChart = ({
 
   const parseDate = (dateStr) => {
     if (!dateStr || typeof dateStr !== 'string') return new Date(0);
-    
+
     // Split dd/mm/yyyy
     const [day, month, year] = dateStr.split('/').map(Number);
     return new Date(year, month - 1, day); // month 0-indexed
   };
 
   // Detect ngày từ labels
-  const hasDates = labels.some(label => 
+  const hasDates = labels.some(label =>
     /^\d{2}\/\d{2}\/\d{4}$/.test(label)
   );
 
@@ -83,8 +83,8 @@ const BarChart = ({
     const end = Number(match[2]);
 
     return start >= 0 && start <= 23 &&
-          end >= 0 && end <= 23 &&
-          end === start + 1;
+      end >= 0 && end <= 23 &&
+      end === start + 1;
   });
 
   const parseNumericLabel = (label) => {
@@ -143,9 +143,9 @@ const BarChart = ({
   const topSeriesIndex = sortedSeries.length - 1;
 
   // Tính toán có cần dataZoom hay không
-  const needsScroll = maxVisibleItems!=true ? enableZoom && sortedLabels.length > maxVisibleItems : true;
-  const zoomEndPercent = maxVisibleItems!=true ? (needsScroll 
-    ? Math.round((maxVisibleItems / sortedLabels.length) * 100) 
+  const needsScroll = maxVisibleItems != true ? enableZoom && sortedLabels.length > maxVisibleItems : true;
+  const zoomEndPercent = maxVisibleItems != true ? (needsScroll
+    ? Math.round((maxVisibleItems / sortedLabels.length) * 100)
     : 100) : 100;
 
   // ✅ SỬA ĐOẠN NÀY
@@ -210,7 +210,7 @@ const BarChart = ({
   }, [sortedLabels, sortedSeries, needsScroll]);
 
   const DEFAULT_COLORS = [
-    '#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', 
+    '#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de',
     '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc', '#c23531'
   ];
 
@@ -249,7 +249,7 @@ const BarChart = ({
   const [activeBar, setActiveBar] = React.useState('');
   const [inActiveBar, setInActiveBar] = React.useState(false);
   const [click, setClick] = React.useState(false);
-  
+
   const onEvents = {
     click: (params) => {
       if (params.componentType === 'series' && crossFilter) {
@@ -258,11 +258,11 @@ const BarChart = ({
         } else {
           var crossFilterValue = params.name.replace("\n", ' ');
         }
-        const crossFilterValues = [crossFilter === 'timebands' ? crossFilterValue.replace(/(\d{1,2})\s*-\s*(\d{1,2})/g, (_, a, b) => `${String(a).padStart(2, '0')}h - ${String(b).padStart(2, '0')}h`) : crossFilterValue];
+        const crossFilterValues = [crossFilter === 'timebands' ? crossFilterValue.replace(/(\d{1,2})\s*-\s*(\d{1,2})/g, (_, a, b) => `${Number(a)}h - ${Number(b)}h`) : crossFilterValue];
         if (appliedFilters?.[crossFilter]?.[0] !== crossFilterValues[0]) {
-          const transformed = {...appliedFilters, [crossFilter]: crossFilterValues};
+          const transformed = { ...appliedFilters, [crossFilter]: crossFilterValues };
           setAppliedFilters(transformed);
-          
+
           if (keyChart) {
             if (crossFilters) {
               setCrossFilters({
@@ -282,14 +282,14 @@ const BarChart = ({
           setClick(true);
           setActiveBar(prev => (prev === crossFilterValue ? '' : crossFilterValue));
           setInActiveBar(prev => (activeBar === crossFilterValue ? false : true));
-        } else if(click) {
+        } else if (click) {
           setClick(false);
           const { [crossFilter]: removed, ...rest } = appliedFilters || {};
           setAppliedFilters(rest);
           if (keyChart) {
             if (crossFilters) {
               const { [keyChart]: _, main: __, ...rest } = crossFilters;
-              setCrossFilters({...rest, skipNext: keyChart});
+              setCrossFilters({ ...rest, skipNext: keyChart });
             }
           }
           setActiveBar(prev => (prev === crossFilterValue ? '' : crossFilterValue));
@@ -324,7 +324,7 @@ const BarChart = ({
       axisPointer: { type: 'shadow', shadowStyle: { opacity: 0.1 } },
       backgroundColor: 'rgba(255, 255, 255, 1)',
       borderWidth: 0,
-      textStyle: { 
+      textStyle: {
         fontSize: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.tooltip : '11px' : '10.5px',
         color: 'rgba(0, 0, 0, 0.7)',
         fontWeight: fontWeight.tooltip,
@@ -334,28 +334,28 @@ const BarChart = ({
         const visibleParams = params
           .filter(p => p.value && p.value !== 0 && p.value !== null && p.value !== undefined)
           .sort((a, b) => b.value - a.value);
-        
+
         const total = visibleParams.reduce((sum, p) => sum + p.value, 0);
-        
+
         if (visibleParams.length === 0) return '';
 
         return `
           <div style="padding: ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '12' : '11' : '4'}px ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '16' : '15' : '8'}px; box-shadow: 0 ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '4' : '3' : '2'}px ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '12' : '11' : '4'}px rgba(0,0,0,0.1);">
-            <div style="font-weight: 500; font-size: ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '13': '12' : '11'}px; color: rgba(0, 0, 0, 0.7);">
+            <div style="font-weight: 500; font-size: ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '13' : '12' : '11'}px; color: rgba(0, 0, 0, 0.7);">
               ${visibleParams[0].name}
             </div>
             ${visibleParams.map(p => {
-              const percent = total > 0 ? (p.value / total * 100).toFixed(2) : 0;
-              return `
+          const percent = total > 0 ? (p.value / total * 100).toFixed(2) : 0;
+          return `
                 <div style="margin: 2px 0; display: flex; align-items: center;">
                   ${p.marker}
-                  <span style="font-weight: 500; font-size: ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '12': '11' : '10.5'}px; margin-right: 4px; color: rgba(0, 0, 0, 0.7);">${LABEL_METRIC[p.seriesName] || p.seriesName}:</span> 
+                  <span style="font-weight: 500; font-size: ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '12' : '11' : '10.5'}px; margin-right: 4px; color: rgba(0, 0, 0, 0.7);">${LABEL_METRIC[p.seriesName] || p.seriesName}:</span> 
                   <span style="font-size: ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '12' : '11' : '10.5'}px; font-weight: 400; color: rgba(0, 0, 0, 0.7);">
                     ${p.value.toLocaleString(undefined, { maximumFractionDigits: showPercent ? 2 : formatterValue })}${showPercent ? '%' : ''} ${suffix} ${topSeriesIndex != 0 ? ` <span style="font-size: ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '11' : '10.5' : '10'}px;">(${percent}%)</span>` : ''}
                   </span>
                 </div>
               `;
-            }).join('')}
+        }).join('')}
             ${topSeriesIndex != 0 ? `
               <hr style="margin: ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '5' : '4.5' : '4'}px 0; border: none; height: 1px; background: rgba(0, 0, 0, 0.1);">
               <div style="font-weight: 600; color: #059669; font-size: ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '12' : '11' : '10.5'}px;">
@@ -380,11 +380,11 @@ const BarChart = ({
         [isHorizontal ? 'width' : 'height']: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? 20 : 15 : 10,
         brushSelect: false,
         handleSize: '100%',
-        backgroundColor: colorZoom=='yellow' ? (!stateGlobals.darkMode ? 'rgba(255, 247, 217, 1)' : 'rgb(62, 63, 45)') : (!stateGlobals.darkMode ? 'rgba(254, 226, 226, 1)' : 'rgb(45, 29, 29)'),
-        borderColor: colorZoom=='yellow' ? (!stateGlobals.darkMode ? 'rgb(252, 233, 167)' : 'rgb(159, 135, 39)') : (!stateGlobals.darkMode ? 'rgba(255, 185, 187, 1)' : 'rgb(153, 80, 80)'),
+        backgroundColor: colorZoom == 'yellow' ? (!stateGlobals.darkMode ? 'rgba(255, 247, 217, 1)' : 'rgb(62, 63, 45)') : (!stateGlobals.darkMode ? 'rgba(254, 226, 226, 1)' : 'rgb(45, 29, 29)'),
+        borderColor: colorZoom == 'yellow' ? (!stateGlobals.darkMode ? 'rgb(252, 233, 167)' : 'rgb(159, 135, 39)') : (!stateGlobals.darkMode ? 'rgba(255, 185, 187, 1)' : 'rgb(153, 80, 80)'),
         borderRadius: 8,
         handleStyle: {
-          color: colorZoom=='yellow' ? 'rgba(255, 204, 0, 1)' : 'rgba(255, 56, 60, 1)',
+          color: colorZoom == 'yellow' ? 'rgba(255, 204, 0, 1)' : 'rgba(255, 56, 60, 1)',
           borderColor: !stateGlobals.darkMode ? 'rgba(255, 255, 255, 1)' : 'rgba(28, 37, 52, 1)'
         },
         textStyle: {
@@ -396,17 +396,17 @@ const BarChart = ({
         emphasis: {
           handleStyle: {
             color: !stateGlobals.darkMode ? 'rgba(255, 255, 255, 1)' : 'rgba(28, 37, 52, 1)',
-            borderColor:  colorZoom=='yellow' ? 'rgba(255, 204, 0, 1)' : 'rgba(255, 56, 60, 1)'
+            borderColor: colorZoom == 'yellow' ? 'rgba(255, 204, 0, 1)' : 'rgba(255, 56, 60, 1)'
           }
         },
-        fillerColor: colorZoom=='yellow' ? (!stateGlobals.darkMode ? 'rgb(252, 233, 167)' : 'rgb(159, 135, 39)') : stateGlobals.darkMode ? 'rgb(153, 80, 80)' : 'rgba(255, 185, 187, 1)',
+        fillerColor: colorZoom == 'yellow' ? (!stateGlobals.darkMode ? 'rgb(252, 233, 167)' : 'rgb(159, 135, 39)') : stateGlobals.darkMode ? 'rgb(153, 80, 80)' : 'rgba(255, 185, 187, 1)',
         dataBackground: {
           lineStyle: {
-            color: colorZoom=='yellow' ? 'rgba(255, 204, 0, 1)' : 'rgba(255, 56, 60, 1)',
+            color: colorZoom == 'yellow' ? 'rgba(255, 204, 0, 1)' : 'rgba(255, 56, 60, 1)',
             opacity: 0.2
           },
           areaStyle: {
-            color: colorZoom=='yellow' ? 'rgba(255, 204, 0, 1)' : 'rgba(255, 56, 60, 1)',
+            color: colorZoom == 'yellow' ? 'rgba(255, 204, 0, 1)' : 'rgba(255, 56, 60, 1)',
             opacity: 0.2
           }
         }
@@ -434,8 +434,8 @@ const BarChart = ({
       itemHeight: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? 14 : 12 : 10,
       itemGap: 10,
       data: legendData,
-      textStyle: { 
-        fontSize:  !stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.legend : '11px' : '10.5px',
+      textStyle: {
+        fontSize: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.legend : '11px' : '10.5px',
         color: !stateGlobals.darkMode ? 'rgba(30, 27, 57, 1)' : 'rgba(255, 255, 255, 0.8)',
         fontWeight: fontWeight.legend,
         letterSpacing: '0.1px',
@@ -483,7 +483,7 @@ const BarChart = ({
       data: sortedLabels,
       axisLine: { show: true, lineStyle: { color: !stateGlobals.darkMode ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255, 255, 255, 0.2)' } },
       axisTick: { show: false },
-      axisLabel: { 
+      axisLabel: {
         fontSize: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.axisLabel : '11px' : '10.5px',
         color: !stateGlobals.darkMode ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.8)',
         fontWeight: fontWeight.axisLabel,
@@ -553,11 +553,11 @@ const BarChart = ({
       },
       data: s.data.map((value, dataIndex) => {
         const activeSeries = stack ? s.name : sortedLabels[dataIndex].replace("\n", ' ');
-        
+
         const { first, last } = getVisibleEdgeIndexes(dataIndex);
         const numValue = Number(value || 0);
         const isActive = activeBar === activeSeries;
-        
+
         let barBorderRadius = [0, 0, 0, 0];
 
         if (numValue > 0) {
@@ -575,7 +575,7 @@ const BarChart = ({
           itemStyle: {
             barBorderRadius,
             borderWidth: isActive && numValue > 0 ? stack ? 1 : 2 : 0,
-            borderColor: isActive ? 'rgba(255, 255, 255, 1)': 'transparent',
+            borderColor: isActive ? 'rgba(255, 255, 255, 1)' : 'transparent',
             shadowBlur: isActive ? 15 : 0,
             shadowColor: isActive ? !stateGlobals.darkMode ? 'rgba(0,0,0,0.15)' : 'rgba(255,255,255,0.2)' : 'transparent',
             opacity: isActive ? 1 : (inActiveBar && crossFilters?.main === keyChart) ? 0.5 : 1
@@ -591,7 +591,7 @@ const BarChart = ({
         };
       }),
       emphasis: {
-        itemStyle: { 
+        itemStyle: {
           shadowBlur: 15,
           shadowColor: !stateGlobals.darkMode ? 'rgba(0,0,0,0.15)' : 'rgba(255,255,255,0.2)',
           opacity: 0.9
@@ -604,19 +604,19 @@ const BarChart = ({
         formatter: (params) => {
           const dataIndex = params.dataIndex;
           const seriesIndex = params.seriesIndex;
-          
+
           // Lấy chart instance
           const chartInstance = chartRef.current?.getEchartsInstance();
           if (!chartInstance) return '';
-          
+
           // Tính tổng của các series đang hiển thị
           let total = 0;
           let highestVisibleIndex = -1;
-          
+
           // Lấy option hiện tại để check series nào đang visible
           const currentOption = chartInstance.getOption();
           const legendSelected = currentOption.legend?.[0]?.selected || {};
-          
+
           // Duyệt từ cuối lên để tìm series cao nhất đang visible
           for (let i = sortedSeries.length - 1; i >= 0; i--) {
             const seriesName = sortedSeries[i].name;
@@ -627,7 +627,7 @@ const BarChart = ({
               break;
             }
           }
-          
+
           // Tính tổng các series visible
           sortedSeries.forEach((ss, i) => {
             const seriesName = ss.name;
@@ -648,7 +648,7 @@ const BarChart = ({
           }
           return '';
         },
-        fontSize:  !stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.dataLabel : '11px' : '10.5px',
+        fontSize: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.dataLabel : '11px' : '10.5px',
         fontWeight: fontWeight.dataLabel,
         fontFamily: fontFamily,
         color: !stateGlobals.darkMode ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.8)',
@@ -656,7 +656,7 @@ const BarChart = ({
         shadowColor: !stateGlobals.darkMode ? 'rgba(0, 0, 0, 0.1)' : 'rgba(0, 0, 0, 4)',
       }
     }))
-  }; 
+  };
 
 
 
@@ -664,7 +664,7 @@ const BarChart = ({
   return (
     <div className={`${displayName ? 'p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : ''}`}>
       <NameChart nameChart={nameChart} description={description} display={displayName} getChartData={getEChartsData} />
-      <ReactECharts 
+      <ReactECharts
         ref={chartRef}
         option={option}
         onEvents={onEvents}

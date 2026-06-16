@@ -99,7 +99,7 @@ const Header = ({ username }) => {
                 .then(data => {
                     console.log(`✅ Kill Superset requests: ${data.message}`);
                     // ✅ Báo cho tất cả useApi hooks reset loading về false
-                    window.dispatchEvent(new CustomEvent('api-killed'));
+                    // window.dispatchEvent(new CustomEvent('api-killed'));
                 })
                 .catch(err => {
                     if (err.name === 'AbortError') return;

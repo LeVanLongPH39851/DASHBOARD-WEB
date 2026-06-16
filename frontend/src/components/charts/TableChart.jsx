@@ -550,7 +550,7 @@ const TableChart = ({
                               wordWrap: isNumericColumn ? 'normal' : 'break-word'
                             }}
                           >
-                            {rawValue && customCol[columnName]?.flag ? <div className='items-center gap-2 inline-flex'><figure><img src={`../../../public/flags/${FLAGS[rawValue]}`} alt={rawValue} className='w-7 max-lg:w-6 max-md:w-5' /></figure>
+                            {rawValue && customCol[columnName]?.flag ? <div className='items-center gap-2 inline-flex'><figure><img src={`/flags/${FLAGS[rawValue]}`} alt={rawValue} className='w-7 max-lg:w-6 max-md:w-5' /></figure>
                               {rawValue ? customCol[columnName]?.prefix : ''}{rawValue || rawValue === 0 ? flexRender(cell.column.columnDef.cell, cell.getContext()) : '-'} {rawValue ? customCol[columnName]?.suffix : ''}</div> : <>{rawValue ? customCol[columnName]?.prefix : ''}{rawValue || rawValue === 0 ? flexRender(cell.column.columnDef.cell, cell.getContext()) : '-'} {rawValue ? customCol[columnName]?.suffix : ''}</>}
                           </td>
                         );

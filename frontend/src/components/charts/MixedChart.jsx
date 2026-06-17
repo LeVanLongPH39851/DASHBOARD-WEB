@@ -3,6 +3,7 @@ import ReactECharts from 'echarts-for-react';
 import NumberChart from '../layouts/components/NameChart';
 import { formatNumber } from '../../utils/formatNumber';
 import Loading from '../commons/Loading';
+import LoadingWorldCup from '../commons/LoadingWorldCup';
 import { formatKMB } from '../../utils/formatNumber';
 import { useDashboardStateGlobals } from '../../context/DashboardFilterContext';
 import NoData from '../commons/NoData';
@@ -23,25 +24,25 @@ const MixedChart = ({
   colors,
   barMaxWidth,
   barWidthPercent,
-  lastDataIndexActive=false,
-  KMB=false,
-  offsetLine=-8,
-  xAxisTitle=false
+  lastDataIndexActive = false,
+  KMB = false,
+  offsetLine = -8,
+  xAxisTitle = false
 }) => {
 
   const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
-  
-  if(data==='isLoading') {
+
+  if (data === 'isLoading') {
     return (
       <div className='p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
-        <NumberChart nameChart={nameChart} description={description}/>
-        <Loading height={!stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : 350 : 230} />
+        <NumberChart nameChart={nameChart} description={description} />
+        {window.location.pathname.includes('/world-cup-2026') ? <LoadingWorldCup height={!stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : 350 : 230} /> : <Loading height={!stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : 350 : 230} />}
       </div>
     );
   } else if (!data.labels.length > 0) {
     return (
       <div className='p-6 maxlg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
-        <NumberChart nameChart={nameChart} description={description}/>
+        <NumberChart nameChart={nameChart} description={description} />
         <NoData height={!stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : 350 : 230} />
       </div>
     );
@@ -55,7 +56,7 @@ const MixedChart = ({
       try {
         const instance = chartRef.current.getEchartsInstance();
         const option = instance.getOption();
-        
+
         const legendSelected = option.legend?.[0]?.selected || {};
         const dataZoom = option.dataZoom?.[0] || {};
         const start = dataZoom.start || 0;
@@ -63,7 +64,7 @@ const MixedChart = ({
         const startIndex = Math.floor((start / 100) * labels.length);
         const endIndex = Math.floor((end / 100) * labels.length);
         const visibleLabels = labels.slice(startIndex, endIndex);
-        
+
         return {
           labels: visibleLabels,
           series: (option.series || series)
@@ -85,18 +86,18 @@ const MixedChart = ({
   }, [labels, series]);
 
   // Tính toán có cần dataZoom hay không
-  const needsScroll = maxVisibleItems!=true ? enableZoom && labels.length > maxVisibleItems : true;
-  const zoomEndPercent = maxVisibleItems!=true ? (needsScroll 
+  const needsScroll = maxVisibleItems != true ? enableZoom && labels.length > maxVisibleItems : true;
+  const zoomEndPercent = maxVisibleItems != true ? (needsScroll
     ? Math.round((maxVisibleItems / labels.length) * 100)
     : 100) : 100;
 
   const lastDataIndex = labels.length - 1;
-    
+
   // ECHARTS OPTION
   const option = {
     tooltip: {
       trigger: 'axis',
-      axisPointer: { 
+      axisPointer: {
         type: 'cross',
         label: {
           backgroundColor: 'rgba(255, 56, 60, 1)',
@@ -108,7 +109,7 @@ const MixedChart = ({
       },
       backgroundColor: 'rgba(255, 255, 255, 1)',
       borderWidth: 0,
-      textStyle: { 
+      textStyle: {
         fontSize: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.tooltip : '11px' : '10.5px',
         color: 'rgba(0, 0, 0, 0.7)',
         fontWeight: fontWeight.tooltip,
@@ -121,9 +122,9 @@ const MixedChart = ({
               ${params[0].name}
             </div>
             ${params.map(p => {
-              const isLine = p.seriesType === 'line';
-              const markerStyle = isLine
-                ? `
+          const isLine = p.seriesType === 'line';
+          const markerStyle = isLine
+            ? `
                   display:inline-block;
                   width:10px;
                   height:10px;
@@ -132,7 +133,7 @@ const MixedChart = ({
                   margin-right:6px;
                   flex-shrink:0;
                 `
-                : `
+            : `
                   display:inline-block;
                   width:10px;
                   height:10px;
@@ -141,7 +142,7 @@ const MixedChart = ({
                   margin-right:6px;
                   flex-shrink:0;
                 `;
-              return `
+          return `
               <div style="margin: 2px 0; display: flex; align-items: center;">
                 <span style="${markerStyle}"></span>
                 <span style="font-weight: 500; font-size: ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '12' : '11' : '10.5'}px; margin-right: 4px; color: rgba(0, 0, 0, 0.7);">${p.seriesName}:</span> 
@@ -213,7 +214,7 @@ const MixedChart = ({
       itemHeight: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? 14 : 12 : 10,
       icon: 'roundRect',
       itemGap: 10,
-      textStyle: { 
+      textStyle: {
         fontSize: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.legend : '11px' : '10.5px',
         color: !stateGlobals.darkMode ? 'rgba(30, 27, 57, 1)' : 'rgba(255, 255, 255, 0.9)',
         fontWeight: fontWeight.legend,
@@ -248,12 +249,12 @@ const MixedChart = ({
           ? 'rgba(0, 0, 0, 0.7)'
           : 'rgba(255, 255, 255, 0.9)'
       },
-      axisLine: { 
-        show: true, 
+      axisLine: {
+        show: true,
         lineStyle: { color: !stateGlobals.darkMode ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255, 255, 255, 0.5)' }
       },
       axisTick: { show: false },
-      axisLabel: { 
+      axisLabel: {
         fontSize: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.axisLabel : '11px' : '10.5px',
         color: !stateGlobals.darkMode ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.9)',
         fontWeight: fontWeight.axisLabel,
@@ -290,7 +291,7 @@ const MixedChart = ({
     series: series.map((s) => {
       const isBar = barSeriesKeys.includes(s.name);
       const color = colors[s.name] || '#999';
-      
+
       if (isBar) {
         // Bar series
         return {
@@ -313,8 +314,8 @@ const MixedChart = ({
             borderRadius: [10, 10, 0, 0]
           },
           emphasis: {
-            itemStyle: { 
-              shadowBlur: 10, 
+            itemStyle: {
+              shadowBlur: 10,
               shadowColor: !stateGlobals.darkMode ? 'rgba(0,0,0,0.2)' : 'rgba(225,225,225,0.2)',
               opacity: 0.9
             }
@@ -380,9 +381,9 @@ const MixedChart = ({
   return (
     <div className='p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
       <NumberChart nameChart={nameChart} description={description} getChartData={getEChartsData} />
-      <ReactECharts 
+      <ReactECharts
         ref={chartRef}
-        option={option} 
+        option={option}
         style={{ height: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : 350 : 230, width: '100%' }}
         opts={{
           renderer: 'canvas',

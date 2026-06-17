@@ -223,3 +223,18 @@ export const FLAGS = {
   "CHDC Congo": "Democratic-Republic-of-the-Congo.png",
   "Algeria": "Algeria.png"
 }
+
+export const CHANNELS = {
+  "VTV1": "vtv1.png",
+  "VTV2": "vtv2.png",
+  "VTV3": "vtv3.png",
+  "VTV4": "vtv4.png",
+  "VTV5": "vtv5.png",
+  "VTV5 TÂY NGUYÊN": "vtv5taynguyen.png",
+  "VTV5 TÂY NAM BỘ": "vtv5taynambo.png",
+  "VTV6": "vtv6.png",
+  "VTV7": "vtv7.png",
+  "VTV8": "vtv8.png",
+  "VTV9": "vtv9.png",
+  "VTV10": "vtv10.png"
+}

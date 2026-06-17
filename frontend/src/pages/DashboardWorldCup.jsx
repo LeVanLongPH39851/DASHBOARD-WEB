@@ -204,7 +204,7 @@ const DashboardContent = () => {
                                                 </div>
                                                 <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
                                                     <TableChart data={!dashboard.isLoading.allTableDetailData ? transformTableChartData(dashboard.allTableDetailData?.data, dashboard.allTableDetailData?.colnames) : 'isLoading'}
-                                                        height={'400px'}
+                                                        height={'425px'}
                                                         fontSize={CUSTOM_CHART.tableChart.fontSize}
                                                         fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                         fontWeight={CUSTOM_CHART.tableChart.fontWeight}
@@ -238,7 +238,7 @@ const DashboardContent = () => {
                                                 </div>
                                                 <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
                                                     <TableChart data={!dashboard.isLoading.allTableShareData ? transformTableChartData(dashboard.allTableShareData?.data, dashboard.allTableShareData?.colnames) : 'isLoading'}
-                                                        height={'450px'}
+                                                        height={'490px'}
                                                         fontSize={CUSTOM_CHART.tableChart.fontSize}
                                                         fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                         fontWeight={CUSTOM_CHART.tableChart.fontWeight}

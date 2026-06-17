@@ -2,7 +2,7 @@ export const allTableChartSharePayload = {
   url: `${import.meta.env.VITE_API_DOMAIN}/api/v1/chart/data?form_data=%7B%22slice_id%22%3A915%7D&dashboard_id=66`,
   payload: {
     "datasource": {
-      "id": 209,
+      "id": 279,
       "type": "table"
     },
     "force": false,
@@ -10,13 +10,6 @@ export const allTableChartSharePayload = {
       {
         "time_range": "DATEADD(DATETIME(\"today\"),-7, DAY) : DATEADD(DATETIME(\"today\"),-1, SECOND)",
         "filters": [
-          {
-            "col": "description",
-            "op": "NOT IN",
-            "val": [
-              "active"
-            ]
-          },
           {
             "col": "date",
             "op": "TEMPORAL_RANGE",
@@ -50,7 +43,7 @@ export const allTableChartSharePayload = {
         "series_limit": 0,
         "order_desc": true,
         "url_params": {
-          "native_filters_key": "BTinBldyeeH2Bi1Ojx6_HGLfupLGLjt7YMX4epnhJtgpGz7c1XE6Umw-cYFAv4PS"
+          "native_filters_key": "OcUvgu5jkVmkvrD-9pPuDlzcO0aYcFCk7b_yEqd1UiSa5RdQVnIh4crJTer84Kxh"
         },
         "custom_params": {},
         "custom_form_data": {},
@@ -59,11 +52,11 @@ export const allTableChartSharePayload = {
       }
     ],
     "form_data": {
-      "datasource": "209__table",
+      "datasource": "279__table",
       "viz_type": "table",
       "slice_id": 915,
       "url_params": {
-        "native_filters_key": "BTinBldyeeH2Bi1Ojx6_HGLfupLGLjt7YMX4epnhJtgpGz7c1XE6Umw-cYFAv4PS"
+        "native_filters_key": "OcUvgu5jkVmkvrD-9pPuDlzcO0aYcFCk7b_yEqd1UiSa5RdQVnIh4crJTer84Kxh"
       },
       "query_mode": "aggregate",
       "groupby": [
@@ -83,21 +76,6 @@ export const allTableChartSharePayload = {
       "all_columns": [],
       "percent_metrics": [],
       "adhoc_filters": [
-        {
-          "clause": "WHERE",
-          "comparator": [
-            "active"
-          ],
-          "datasourceWarning": false,
-          "expressionType": "SIMPLE",
-          "filterOptionName": "filter_w2gnzzyekrl_b2olaqhaot",
-          "isExtra": false,
-          "isNew": false,
-          "operator": "NOT IN",
-          "operatorId": "NOT_IN",
-          "sqlExpression": null,
-          "subject": "description"
-        },
         {
           "clause": "WHERE",
           "comparator": null,

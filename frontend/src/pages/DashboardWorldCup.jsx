@@ -70,13 +70,13 @@ const DashboardContent = () => {
                     <BreadCrumb dashboardName='WORLD CUP 2026' icon={!stateGlobals.darkMode ? iconWorldCup : iconWorldCupDark} widthIcon='w-12 max-lg:w-8 max-md:w-7.25' />
                     <div className='bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300'>
                         <ParentTabs uniqueId='dashboard'
-                            defaultTab='worldcup'
+                            defaultTab='overview'
                             tabs={[
                                 {
-                                    id: 'worldcup', label: 'World cup 2026', icon: !stateGlobals.darkMode ? iconBall : iconBallDark, iconActive: iconBallActive,
+                                    id: 'overview', label: 'World Cup 2026', icon: !stateGlobals.darkMode ? iconBall : iconBallDark, iconActive: iconBallActive,
                                     content: (
-                                        <section className='bg-background-dashboard dark:bg-background-dashboard-dark transiton-all duration-300' id="target_capture_worldcup">
-                                            <InforTab inforTab={"World cup 2026"} maxInsert={dashboard?.maxInsertData?.data?.[0]?.['MAX(check_time)']} />
+                                        <section className='bg-background-dashboard dark:bg-background-dashboard-dark transiton-all duration-300' id="target_capture_overview">
+                                            <InforTab inforTab={"World Cup 2026"} maxInsert={dashboard?.maxInsertData?.data?.[0]?.['MAX(check_time)']} />
                                             <InforFilter filters={scopeFilterData} FilterComponent={FilterWorldCup} nameFilter='FilterWorldCup' />
                                             <div className='px-6 max-lg:px-5 max-md:px-4 pt-6 max-lg:pt-5 max-md:pt-4'>
                                                 <div className='w-full grid grid-cols-3 max-lg:grid-cols-3 max-md:grid-cols-2 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4'>
@@ -105,7 +105,7 @@ const DashboardContent = () => {
                                                         widthIcon={METRICS.ave_reach.widthIcon}
                                                     />
                                                     <NumberCard
-                                                        title={'Thời gian xem TB (Phút/người/trận đấu)'}
+                                                        title={'Thời gian xem TB'}
                                                         description={false}
                                                         value={!dashboard.isLoading.durationNumberData ? dashboard.durationNumberData?.data ? dashboard.durationNumberData?.data[0]?.minute_user_program?.toLocaleString(undefined, { maximumFractionDigits: 2 }) : '-' : 'isLoading'}
                                                         icon={METRIC_SPOTS.duration.icon}
@@ -211,11 +211,17 @@ const DashboardContent = () => {
                                                         nameChart={'Chỉ số đo lường theo trận đấu (THTT)'}
                                                         description={false}
                                                         showSTT={true}
+                                                        customCol={{
+                                                            'TRẬN ĐẤU': {
+                                                                flag2: true, minSize: 160, maxSize: 160
+                                                            },
+                                                            'THỜI GIAN\nBẮT ĐẦU': { justify: 'justify-center', align: 'text-center' }
+                                                        }}
                                                         showPagination={true} />
                                                 </div>
                                                 <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
                                                     <TableChart data={!dashboard.isLoading.allTableTeamData ? transformTableChartData(dashboard.allTableTeamData?.data, dashboard.allTableTeamData?.colnames) : 'isLoading'}
-                                                        height={'400px'}
+                                                        height={'425px'}
                                                         fontSize={CUSTOM_CHART.tableChart.fontSize}
                                                         fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                         fontWeight={CUSTOM_CHART.tableChart.fontWeight}
@@ -225,14 +231,14 @@ const DashboardContent = () => {
                                                         customCol={{
                                                             'SỐ TRẬN ĐẤU': { justify: 'justify-center', align: 'text-center', prefix: 0 },
                                                             'ĐỘI TUYỂN': {
-                                                                minSize: 100, maxSize: 300, flag: true
+                                                                minSize: 101, maxSize: 300, flag: true, sticky: true
                                                             },
                                                         }}
                                                         showPagination={true} />
                                                 </div>
                                                 <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
                                                     <TableChart data={!dashboard.isLoading.allTableShareData ? transformTableChartData(dashboard.allTableShareData?.data, dashboard.allTableShareData?.colnames) : 'isLoading'}
-                                                        height={'400px'}
+                                                        height={'450px'}
                                                         fontSize={CUSTOM_CHART.tableChart.fontSize}
                                                         fontFamily={CUSTOM_CHART.allChart.fontFamily}
                                                         fontWeight={CUSTOM_CHART.tableChart.fontWeight}
@@ -240,8 +246,8 @@ const DashboardContent = () => {
                                                         description={false}
                                                         showSTT={true}
                                                         customCol={{
-                                                            'KÊNH': { minSize: 0, maxSize: 30 },
-                                                            'CHƯƠNG TRÌNH': { weight: 600, minSize: 70, maxSize: 200 },
+                                                            'KÊNH': { minSize: 0, maxSize: 30, channel: true, sticky: true },
+                                                            'CHƯƠNG TRÌNH': { weight: 600, minSize: 100, maxSize: 200 },
                                                         }}
                                                         showPagination={true} />
                                                 </div>

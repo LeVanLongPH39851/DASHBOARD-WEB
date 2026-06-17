@@ -3,8 +3,9 @@ import React, { memo, useRef, useMemo, useState, useEffect, useCallback } from '
 import ReactECharts from 'echarts-for-react';
 import NameChart from '../layouts/components/NameChart';
 import Loading from '../commons/Loading';
+import LoadingWorldCup from '../commons/LoadingWorldCup';
 import { formatKMB } from '../../utils/formatNumber';
-import { useDashboardFilters ,useDashboardStateGlobals, useDashboardCrossFilters } from '../../context/DashboardFilterContext';
+import { useDashboardFilters, useDashboardStateGlobals, useDashboardCrossFilters } from '../../context/DashboardFilterContext';
 import NoData from '../commons/NoData';
 
 const LineChart = ({
@@ -25,12 +26,12 @@ const LineChart = ({
   stack,
   labelOffset = 0,
   showTopNSeries,
-  left=145,
-  legendTop=false,
-  KMB=true,
-  xAxisTitle=false,
-  fullScreen=false,
-  textOverflow=false,
+  left = 145,
+  legendTop = false,
+  KMB = true,
+  xAxisTitle = false,
+  fullScreen = false,
+  textOverflow = false,
   crossFilter = false,
   keyChart = false
 }) => {
@@ -38,12 +39,12 @@ const LineChart = ({
   const { appliedFilters, setAppliedFilters } = useDashboardFilters();
   const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
   const { crossFilters, setCrossFilters } = useDashboardCrossFilters();
-  
-  if(data==='isLoading') {
+
+  if (data === 'isLoading') {
     return (
       <div className='p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
         <NameChart nameChart={nameChart} description={description} fullScreen={fullScreen} />
-        <Loading height={!stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : 350 : 240} />
+        {window.location.pathname.includes('/world-cup-2026') ? <LoadingWorldCup height={!stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : 350 : 240} /> : <Loading height={!stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : 350 : 240} />}
       </div>
     );
   } else if (!data.labels.length > 0) {
@@ -72,25 +73,25 @@ const LineChart = ({
   // ✅ LOGIC showTopNSeries mới:
   const sortedLegendData = useMemo(() => {
     const visibleSeries = series.filter(s => selectedSeries[s.name]);
-    
+
     const seriesWithTotal = visibleSeries.map(s => ({
       name: s.name,
       total: s.data.reduce((sum, val) => sum + (val || 0), 0)
     }));
-    
+
     const sorted = seriesWithTotal.sort((a, b) => b.total - a.total);
-    
+
     // ✅ Quy tắc mới:
     // showTopNSeries = 0 → topSeriesNames = empty set (ẩn hết value)
     // showTopNSeries = null → topSeriesNames = null (hiện hết value)
     // showTopNSeries = số > 0 → top N series
-    
+
     let topSeriesNames = null;
-    if (showTopNSeries===null) {
+    if (showTopNSeries === null) {
       showTopNSeries = labels.length > 1 ? 3 : showTopNSeries;
     }
-    
-    if (stateGlobals.screen_lg && showTopNSeries !==0  && labels.length > 1) {
+
+    if (stateGlobals.screen_lg && showTopNSeries !== 0 && labels.length > 1) {
       showTopNSeries = 1;
     }
 
@@ -104,7 +105,7 @@ const LineChart = ({
       topSeriesNames = new Set(sorted.slice(0, showTopNSeries).map(s => s.name));
     }
     // else: null → hiện hết
-    
+
     return {
       legendOrder: sorted.map(s => s.name),
       topSeriesNames
@@ -127,20 +128,20 @@ const LineChart = ({
       try {
         const instance = chartRef.current.getEchartsInstance();
         const option = instance.getOption();
-        
+
         // ✅ Lấy legend selected state
         const legendSelected = option.legend?.[0]?.selected || {};
-        
+
         // ✅ Lấy dataZoom range để filter labels
         const dataZoom = option.dataZoom?.[0] || {};
         const start = dataZoom.start || 0;
         const end = dataZoom.end || 100;
         const startIndex = Math.floor((start / 100) * labels.length);
         const endIndex = Math.floor((end / 100) * labels.length);
-        
+
         // ✅ Filter labels theo dataZoom
         const visibleLabels = labels.slice(startIndex, endIndex);
-        
+
         return {
           labels: visibleLabels,  // ✅ Chỉ labels đang zoom
           series: (option.series || series)
@@ -178,7 +179,7 @@ const LineChart = ({
   const hoverLineRef = React.useRef('');
   const [inActiveLine, setInActiveLine] = React.useState(false);
   const [click, setClick] = React.useState(false);
-  
+
   const onEvents = {
     mouseover: (params) => {
       if (params.componentType === 'series') {
@@ -193,9 +194,9 @@ const LineChart = ({
         const crossFilterValue = params.seriesName;
         const crossFilterValues = [crossFilterValue];
         if (appliedFilters?.[crossFilter]?.[0] !== crossFilterValues[0]) {
-          const transformed = {...appliedFilters, [crossFilter]: crossFilterValues};
+          const transformed = { ...appliedFilters, [crossFilter]: crossFilterValues };
           setAppliedFilters(transformed);
-          
+
           if (keyChart) {
             if (crossFilters) {
               setCrossFilters({
@@ -215,14 +216,14 @@ const LineChart = ({
           setClick(true);
           setActiveLine(prev => (prev === crossFilterValue ? '' : crossFilterValue));
           setInActiveLine(prev => (activeLine === crossFilterValue ? false : true));
-        } else if(click) {
+        } else if (click) {
           setClick(false);
           const { [crossFilter]: removed, ...rest } = appliedFilters || {};
           setAppliedFilters(rest);
           if (keyChart) {
             if (crossFilters) {
               const { [keyChart]: _, main: __, ...rest } = crossFilters;
-              setCrossFilters({...rest, skipNext: keyChart});
+              setCrossFilters({ ...rest, skipNext: keyChart });
             }
           }
           setActiveLine(prev => (prev === crossFilterValue ? '' : crossFilterValue));
@@ -233,9 +234,9 @@ const LineChart = ({
   };
 
   const legendDatas = legendData.map((name) => {
-    
+
     const isActive = activeLine === name;
-    
+
     const isDim = inActiveLine && crossFilters?.main === keyChart;
 
     return {
@@ -259,7 +260,7 @@ const LineChart = ({
 
     tooltip: {
       trigger: 'axis',
-      axisPointer: { 
+      axisPointer: {
         type: 'cross',
         label: {
           backgroundColor: 'rgb(42, 198, 193)',
@@ -269,7 +270,7 @@ const LineChart = ({
       },
       backgroundColor: 'rgba(255, 255, 255, 1)',
       borderWidth: 0,
-      textStyle: { 
+      textStyle: {
         fontSize: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.tooltip : '11px' : '10.5px',
         color: 'rgba(0, 0, 0, 0.7)',
         fontWeight: fontWeight.tooltip,
@@ -279,19 +280,19 @@ const LineChart = ({
         // ✅ Chỉ hiện series CÓ value tại xAxis này
         const visibleParams = params.filter(p => p.value && p.value !== 0 && p.value !== null && p.value !== undefined).sort((a, b) => b.value - a.value);
         const total = visibleParams.reduce((sum, p) => sum + p.value, 0);
-        
+
         if (visibleParams.length === 0) return '';
-        
+
         return `
            <div style="padding: ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '12' : '11' : '4'}px ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '16' : '15' : '8'}px; box-shadow: 0 ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '4' : '3' : '2'}px ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '12' : '11' : '4'}px rgba(0,0,0,0.1);">
             <div style="font-weight: 500; font-size: ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '13' : '12' : '11'}px; color: rgba(0, 0, 0, 0.7);">
               ${visibleParams[0].name}
             </div>
             ${visibleParams.map(p => {
-              const percent = total > 0 ? (p.value / total * 100).toFixed(2) : 0;
-              const bold = hoverLineRef.current === p.seriesName;
-              
-              return `
+          const percent = total > 0 ? (p.value / total * 100).toFixed(2) : 0;
+          const bold = hoverLineRef.current === p.seriesName;
+
+          return `
                 <div style="margin: 2px 0; display: flex; align-items: center;">
                   <span style="
                     display: inline-block;
@@ -307,7 +308,7 @@ const LineChart = ({
                   </span>
                 </div>
               `;
-            }).join('')}
+        }).join('')}
             <hr style="margin:  ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '5' : '4.5' : '4'}px 0; border: none; height: 1px; background: rgba(0, 0, 0, 0.1);">
             <div style="font-weight: 600; color: #059669; font-size: ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '12' : '11' : '10.5'}px;">
               <span>Tổng:</span> <span>${total.toLocaleString(undefined, { maximumFractionDigits: (nameChart.includes('%') ? 2 : 0) })}</span>
@@ -378,11 +379,11 @@ const LineChart = ({
       align: 'left',
       itemWidth: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? 14 : 12 : 10,
       itemHeight: 10,  // ✅ Tăng từ 10 lên 14 để có chỗ cho dấu
-      lineHeight: 10, 
+      lineHeight: 10,
       icon: 'circle',
       itemGap: !legendTop ? 8 : 10,
       data: legendDatas,
-      textStyle: { 
+      textStyle: {
         fontSize: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.legend : '11px' : '10.5px',
         color: !stateGlobals.darkMode ? 'rgba(30, 27, 57, 1)' : 'rgba(255, 255, 255, 0.8)',
         fontWeight: fontWeight.legend,
@@ -435,7 +436,7 @@ const LineChart = ({
       },
       axisLine: { show: !stateGlobals.darkMode ? true : false, lineStyle: { color: 'rgba(229, 229, 239, 1)' } },
       axisTick: { show: false },
-      axisLabel: { 
+      axisLabel: {
         fontSize: fontSize.axisLabel,
         color: !stateGlobals.darkMode ? 'rgba(97, 94, 131, 1)' : 'rgba(255, 255, 255, 0.9)',
         fontWeight: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontWeight.axisLabel : '11px' : '10.5px',
@@ -472,12 +473,12 @@ const LineChart = ({
 
     series: series.map((s, index) => {
       const color = colors[s.name] || defaultColors[index % defaultColors.length];
-      
+
       // ✅ Logic show label theo showTopNSeries
       const isTopSeries = !topSeriesNames || topSeriesNames.has(s.name);
 
       const isActive = activeLine === s.name;
-      
+
       return {
         name: s.name,
         type: 'line',
@@ -493,9 +494,9 @@ const LineChart = ({
           opacity: isActive ? 1 : inActiveLine ? 0.2 : 1  // ✅ Luôn đậm ban đầu
         },
         itemStyle: {
-          color: labelLength===0 ? color : 'transparent',
-          borderColor: labelLength===0 ? 'rgba(255, 255, 255, 1)' : 'transparent',
-          borderWidth: labelLength===0 ? 2 : 0
+          color: labelLength === 0 ? color : 'transparent',
+          borderColor: labelLength === 0 ? 'rgba(255, 255, 255, 1)' : 'transparent',
+          borderWidth: labelLength === 0 ? 2 : 0
         },
         ...(areaStyle && {
           areaStyle: {
@@ -515,10 +516,10 @@ const LineChart = ({
           scale: true,
           itemStyle: {
             color: color,
-            borderWidth: labelLength===0 ? 3 : 2,
+            borderWidth: labelLength === 0 ? 3 : 2,
             borderColor: 'rgba(255, 255, 255, 1)',
-            shadowBlur: labelLength===0 ? 10 : 0,
-            shadowColor: labelLength===0 ? !stateGlobals.darkMode ? 'rgba(0,0,0,0.3)' : 'rgba(225,225,225,0.3)' : '',
+            shadowBlur: labelLength === 0 ? 10 : 0,
+            shadowColor: labelLength === 0 ? !stateGlobals.darkMode ? 'rgba(0,0,0,0.3)' : 'rgba(225,225,225,0.3)' : '',
           },
           lineStyle: {
             width: lineWidth + 1,  // ✅ Đậm hơn khi hover
@@ -559,16 +560,16 @@ const LineChart = ({
   return (
     <div className='p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
       <NameChart nameChart={nameChart} description={description} getChartData={getEChartsData} fullScreen={fullScreen} />
-        <ReactECharts 
-          ref={chartRef}
-          onEvents={onEvents}
-          option={option} 
-          style={{ height: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : 350 : 240, width: '100%' }}
-          opts={{
-            renderer: 'canvas',
-            locale: 'VN'
-          }}
-        />
+      <ReactECharts
+        ref={chartRef}
+        onEvents={onEvents}
+        option={option}
+        style={{ height: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : 350 : 240, width: '100%' }}
+        opts={{
+          renderer: 'canvas',
+          locale: 'VN'
+        }}
+      />
     </div>
   );
 };

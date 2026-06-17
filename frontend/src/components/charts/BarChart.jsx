@@ -2,6 +2,7 @@ import React, { memo, useRef, useCallback } from 'react';
 import ReactECharts from 'echarts-for-react';
 import NameChart from '../layouts/components/NameChart';
 import Loading from '../commons/Loading';
+import LoadingWorldCup from '../commons/LoadingWorldCup';
 import { useDashboardFilters, useDashboardStateGlobals, useDashboardCrossFilters } from '../../context/DashboardFilterContext';
 import { formatKMB } from '../../utils/formatNumber';
 import NoData from '../commons/NoData';
@@ -42,7 +43,7 @@ const BarChart = ({
     return (
       <div className={`${displayName ? 'p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : ''}`}>
         <NameChart nameChart={nameChart} description={description} display={displayName} />
-        <Loading height={(!stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : 300 : 220) + heightPlus} />
+        {window.location.pathname.includes('/world-cup-2026') ? <LoadingWorldCup height={(!stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : 300 : 220) + heightPlus} /> : <Loading height={(!stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : 300 : 220) + heightPlus} />}
       </div>
     );
   } else if (!data) {

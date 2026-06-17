@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback, useRef, useEffect } from 'react';
-import { FLAGS } from '../../utils/label';
+import { FLAGS, CHANNELS } from '../../utils/label';
 import {
   useReactTable,
   getCoreRowModel,
@@ -21,6 +21,7 @@ import iconArrowLeftGrayDark from '../../assets/icon_arrow_left_gray_dark.png'
 import iconArrowRightGrayDark from '../../assets/icon_arrow_right_gray_dark.png'
 import { formatNumber } from '../../utils/formatNumber';
 import Loading from '../commons/Loading';
+import LoadingWorldCup from '../commons/LoadingWorldCup';
 import { formatKMB } from '../../utils/formatNumber';
 import { useDashboardStateGlobals, useDashboardCrossFilters, useDashboardFilters } from '../../context/DashboardFilterContext';
 import NoData from '../commons/NoData';
@@ -61,7 +62,7 @@ const TableChart = ({
       <div className={`${displayName ? 'p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : ''}`} style={{ fontFamily }}>
         <NameChart nameChart={nameChart} description={description} display={displayName} fullScreen={fullScreen} />
         <div className='h-13 max-lg:h-11 max-md:h-9.25'></div>
-        <Loading height={!stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : stateGlobals.currentTab == 'program' ? '400px' : stateGlobals.currentTab == 'ad_monitoring_report' ? '500px' : '350px' : stateGlobals.currentTab == 'program' ? '300px' : stateGlobals.currentTab == 'ad_monitoring_report' ? '600px' : '240px'} />
+        {window.location.pathname.includes('/world-cup-2026') ? <LoadingWorldCup height={!stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : stateGlobals.currentTab == 'program' ? '400px' : stateGlobals.currentTab == 'ad_monitoring_report' ? '500px' : '350px' : stateGlobals.currentTab == 'program' ? '300px' : stateGlobals.currentTab == 'ad_monitoring_report' ? '600px' : '240px'} /> : <Loading height={!stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : stateGlobals.currentTab == 'program' ? '400px' : stateGlobals.currentTab == 'ad_monitoring_report' ? '500px' : '350px' : stateGlobals.currentTab == 'program' ? '300px' : stateGlobals.currentTab == 'ad_monitoring_report' ? '600px' : '240px'} />}
       </div>
     );
   } else if (!data) {
@@ -551,8 +552,8 @@ const TableChart = ({
                               wordWrap: isNumericColumn ? 'normal' : 'break-word'
                             }}
                           >
-                            {rawValue && customCol[columnName]?.flag ? <div className='items-center gap-2 inline-flex'><figure><img src={`${window.location.origin}${path}/flags/${FLAGS[rawValue]}`} alt={rawValue} className='w-7 max-lg:w-6 max-md:w-5' /></figure>
-                            {rawValue ? customCol[columnName]?.prefix : ''}{rawValue || rawValue === 0 ? flexRender(cell.column.columnDef.cell, cell.getContext()) : '-'} {rawValue ? customCol[columnName]?.suffix : ''}</div> : <>{rawValue ? customCol[columnName]?.prefix : ''}{rawValue || rawValue === 0 ? flexRender(cell.column.columnDef.cell, cell.getContext()) : '-'} {rawValue ? customCol[columnName]?.suffix : ''}</>}
+                            {rawValue && customCol[columnName]?.channel ? <figure><img src={`${window.location.origin}${path}/channels/${CHANNELS[rawValue]}`} alt={rawValue} className='w-12 max-lg:w-11 max-md:w-9' /></figure> : rawValue && customCol[columnName]?.flag2 ? <div className='items-center gap-1.5 inline-flex text-nowrap'><figure><img src={`${window.location.origin}${path}/flags/${FLAGS[rawValue.split(' - ')[0]]}`} alt={rawValue.split(' - ')[0]} className='w-7 max-lg:w-6 max-md:w-5' /></figure>{rawValue.split(' - ')[0]} - {rawValue.split(' - ')[1]}<figure><img src={`${window.location.origin}${path}/flags/${FLAGS[rawValue.split(' - ')[1]]}`} alt={rawValue.split(' - ')[1]} className='w-7 max-lg:w-6 max-md:w-5' /></figure></div> : rawValue && customCol[columnName]?.flag ? <div className='items-center gap-2 inline-flex'><figure><img src={`${window.location.origin}${path}/flags/${FLAGS[rawValue]}`} alt={rawValue} className='w-7 max-lg:w-6 max-md:w-5' /></figure>
+                              {rawValue ? customCol[columnName]?.prefix : ''}{rawValue || rawValue === 0 ? flexRender(cell.column.columnDef.cell, cell.getContext()) : '-'} {rawValue ? customCol[columnName]?.suffix : ''}</div> : <>{rawValue ? customCol[columnName]?.prefix : ''}{rawValue || rawValue === 0 ? flexRender(cell.column.columnDef.cell, cell.getContext()) : '-'} {rawValue ? customCol[columnName]?.suffix : ''}</>}
                           </td>
                         );
                       })}

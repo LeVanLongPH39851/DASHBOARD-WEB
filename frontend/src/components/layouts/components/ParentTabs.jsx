@@ -11,7 +11,7 @@ export default function ParentTabs({
   zIndex = 'z-100',
   countTab = 'max-md:grid-cols-4',
 }) {
-  
+
   tabs = tabs.filter(Boolean);
   const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
   const [activeTab, setActiveTab] = useState(defaultTab || tabs[0]?.id);
@@ -20,7 +20,7 @@ export default function ParentTabs({
 
   const handleTabChange = (tabId) => {
     setActiveTab(tabId);
-    setStateGlobals(prev => ({...prev, currentTab: tabId}));
+    setStateGlobals(prev => ({ ...prev, currentTab: tabId }));
   };
 
   // Update underline sau khi DOM render
@@ -53,24 +53,21 @@ export default function ParentTabs({
   const variants = {
     default: {
       container: `relative flex border-b border-border-black-10 dark:border-transparent max-md:shadow-2xl max-md:shadow-color-black-70 max-md:dark:shadow-none max-md:border-transparent max-md:w-full transition-colors duration-300 px-6 max-lg:px-5 max-md:px-4 gap-7 max-lg:gap-6 max-md:gap-0 h-12 max-lg:h-10 max-md:h-15.5 max-md:grid ${countTab}`,
-      button: (isActive) => `py-2 text-nowrap uppercase max-md:normal-case font-medium text-[16px] max-lg:text-sm max-md:text-xs transition-colors duration-300 cursor-pointer flex gap-2 max-lg:gap-1.5 max-md:flex-col max-md:justify-center items-center ${
-        isActive ? 'text-color-primary-700 font-semibold' : 'text-color-black-50 dark:text-color-white-50 hover:text-gray-700 hover:text-gray-700 dark:hover:text-color-white-80'
-      }`,
+      button: (isActive) => `py-2 text-nowrap uppercase max-md:normal-case font-medium text-[16px] max-lg:text-sm max-md:text-xs transition-colors duration-300 cursor-pointer flex gap-2 max-lg:gap-1.5 max-md:flex-col max-md:justify-center items-center ${isActive ? 'text-color-primary-700 font-semibold' : 'text-color-black-50 dark:text-color-white-50 hover:text-gray-700 hover:text-gray-700 dark:hover:text-color-white-80'
+        }`,
       underline: 'absolute -bottom-px max-md:-top-px block h-[3px] bg-color-primary-700 transition-all duration-400 ease-out rounded-full'
     },
     // ... giữ nguyên pills, bg
     pills: {
       container: 'flex gap-3 mb-6 relative',
-      button: (isActive) => `px-8 py-3 rounded-full font-semibold text-lg transition-all duration-300 ${
-        isActive ? 'bg-color-primary-700 text-white shadow-lg' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-      }`,
+      button: (isActive) => `px-8 py-3 rounded-full font-semibold text-lg transition-all duration-300 ${isActive ? 'bg-color-primary-700 text-white shadow-lg' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+        }`,
       underline: ''
     },
     bg: {
       container: 'flex gap-2 mb-6 bg-gray-100 p-2 rounded-xl relative',
-      button: (isActive) => `flex-1 px-8 py-3 rounded-lg font-semibold text-lg transition-all duration-300 ${
-        isActive ? 'bg-white text-color-primary-700 shadow-md' : 'text-gray-600 hover:text-gray-900'
-      }`,
+      button: (isActive) => `flex-1 px-8 py-3 rounded-lg font-semibold text-lg transition-all duration-300 ${isActive ? 'bg-white text-color-primary-700 shadow-md' : 'text-gray-600 hover:text-gray-900'
+        }`,
       underline: ''
     }
   };
@@ -93,9 +90,9 @@ export default function ParentTabs({
             {tab.label}
           </button>
         ))}
-        
+
         {showUnderline && (
-          <span 
+          <span
             className={currentVariant.underline}
             style={underlineStyle}
           />

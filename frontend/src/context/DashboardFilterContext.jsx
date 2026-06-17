@@ -27,9 +27,18 @@ const isSpotPage = () => {
   }
 };
 
+const isWorldCupPage = () => {
+  try {
+    const isWorldCup = window.location.pathname.includes('/world-cup-2026');
+    return isWorldCup
+  } catch {
+    return false;
+  }
+};
+
 const getSessionValue = (key, fallback = null) => {
   try {
-    if (!isRatingPage() && !isSpotPage()) return fallback;
+    if (!isRatingPage() && !isSpotPage() && !isWorldCupPage()) return fallback;
     const raw = sessionStorage.getItem(key);
     return raw ? JSON.parse(raw) : fallback;
   } catch (error) {
@@ -40,25 +49,25 @@ const getSessionValue = (key, fallback = null) => {
 
 export const DashboardFilterProvider = ({ children }) => {
   const [appliedFilters, setAppliedFilters] = useState(() =>
-    getSessionValue(SESSION_KEYS.appliedFilters + `${isRatingPage() ? '_ratings' : isSpotPage() ? '_spots' : ''}`, null)
+    getSessionValue(SESSION_KEYS.appliedFilters + `${isRatingPage() ? '_ratings' : isSpotPage() ? '_spots' : isWorldCupPage() ? '_worldcups' : ''}`, null)
   );
   const [filterValues, setFilterValues] = useState(null);
-  const [stateGlobals, setStateGlobals] = useState({isOpen: true, horizontal: false, isInfor: true, currentTab: 'overview', darkMode: true, screen_md: false, screen_lg: false});
+  const [stateGlobals, setStateGlobals] = useState({ isOpen: true, horizontal: false, isInfor: true, currentTab: 'overview', darkMode: true, screen_md: false, screen_lg: false });
   const [crossFilters, setCrossFilters] = useState(null);
-  
+
   const appliedValue = useMemo(() => ({ appliedFilters, setAppliedFilters }), [appliedFilters]);
   const filterValue = useMemo(() => ({ filterValues, setFilterValues }), [filterValues]);
   const stateGlobalValue = useMemo(() => ({ stateGlobals, setStateGlobals }), [stateGlobals]);
   const crossFilterValue = useMemo(() => ({ crossFilters, setCrossFilters }), [crossFilters]);
   return <DashboardFilterContext.Provider value={appliedValue}>
-          <FilterValueContext.Provider value={filterValue}>
-            <StateGlobalContext.Provider value={stateGlobalValue}>
-              <CrossFilterContext.Provider value={crossFilterValue}>
-                {children}
-              </CrossFilterContext.Provider>
-            </StateGlobalContext.Provider>
-          </FilterValueContext.Provider>
-         </DashboardFilterContext.Provider>;
+    <FilterValueContext.Provider value={filterValue}>
+      <StateGlobalContext.Provider value={stateGlobalValue}>
+        <CrossFilterContext.Provider value={crossFilterValue}>
+          {children}
+        </CrossFilterContext.Provider>
+      </StateGlobalContext.Provider>
+    </FilterValueContext.Provider>
+  </DashboardFilterContext.Provider>;
 };
 
 export const useDashboardFilters = () => {

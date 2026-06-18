@@ -238,3 +238,30 @@ export const CHANNELS = {
   "VTV9": "vtv9.png",
   "VTV10": "vtv10.png"
 }
+
+export const RESULT = {
+  "Mexico - Nam Phi": "Mexico (2-0) Nam Phi",
+  "Hàn Quốc - CH Séc": "Hàn Quốc (2-1) CH Séc",
+  "Canada - Bosnia & Herzegovina": "Canada (1-1) Bosnia & Herzegovina",
+  "Mỹ - Paraguay": "Mỹ (4-1) Paraguay",
+  "Qatar - Thụy Sĩ": "Qatar (1-1) Thụy Sĩ",
+  "Brazil - Morocco": "Brazil (1-1) Morocco",
+  "Haiti - Scotland": "Haiti (0-1) Scotland",
+  "Australia - Thổ Nhĩ Kỳ": "Australia (2-0) Thổ Nhĩ Kỳ",
+  "Đức - Curacao": "Đức (7-1) Curacao",
+  "Hà Lan - Nhật Bản": "Hà Lan (2-2) Nhật Bản",
+  "Bờ Biển Ngà - Ecuador": "Bờ Biển Ngà (1-0) Ecuador",
+  "Thụy Điển - Tunisia": "Thụy Điển (5-1) Tunisia",
+  "Tây Ban Nha - Cape Verde": "Tây Ban Nha (0-0) Cape Verde",
+  "Bỉ - Ai Cập": "Bỉ (1-1) Ai Cập",
+  "Ả Rập Xê Út - Uruguay": "Ả Rập Xê Út (1-1) Uruguay",
+  "Iran - New Zealand": "Iran (2-2) New Zealand",
+  "Pháp - Senegal": "Pháp (3-1) Senegal",
+  "Iraq - Na Uy": "Iraq (1-4) Na Uy",
+  "Argentina - Algeria": "Argentina (3-0) Algeria",
+  "Áo - Jordan": "Áo (3-1) Jordan",
+  "Bồ Đào Nha - CHDC Congo": "Bồ Đào Nha (1-1) CHDC Congo",
+  "Anh - Croatia": "Anh (4-2) Croatia",
+  "Ghana - Panama": "Ghana (1-0) Panama",
+  "Uzbekistan - Colombia": "Uzbekistan (1-3) Colombia"
+}

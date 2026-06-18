@@ -213,7 +213,7 @@ const DashboardContent = () => {
                                                         showSTT={true}
                                                         customCol={{
                                                             'TRẬN ĐẤU': {
-                                                                flag2: true, minSize: 160, maxSize: 160, justify: 'justify-center', align: 'text-center'
+                                                                flag2: true, minSize: 180, maxSize: 200, justify: 'justify-center', align: 'text-center'
                                                             },
                                                             'THỜI GIAN\nBẮT ĐẦU': { justify: 'justify-center', align: 'text-center' }
                                                         }}

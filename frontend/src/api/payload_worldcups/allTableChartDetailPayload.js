@@ -86,9 +86,9 @@ export const allTableChartDetailPayload = {
               "datasourceWarning": false,
               "expressionType": "SQL",
               "hasCustomLabel": false,
-              "label": "date",
+              "label": "date DESC, MIN(start_time)",
               "optionName": "metric_a4mrn8vxv1_dlxkbt5gv4m",
-              "sqlExpression": "date"
+              "sqlExpression": "date DESC, MIN(start_time)"
             },
             false
           ]
@@ -102,13 +102,13 @@ export const allTableChartDetailPayload = {
           "datasourceWarning": false,
           "expressionType": "SQL",
           "hasCustomLabel": false,
-          "label": "date",
+          "label": "date DESC, MIN(start_time)",
           "optionName": "metric_a4mrn8vxv1_dlxkbt5gv4m",
-          "sqlExpression": "date"
+          "sqlExpression": "date DESC, MIN(start_time)"
         },
         "order_desc": true,
         "url_params": {
-          "native_filters_key": "TPALyp2DOMnyoRC_hdcGRFnPrqor2mMdwKcMBKQyjVDOIxXGwkOeT8SspTL19xb3"
+          "native_filters_key": "1ir3gC7e_faAvvlzBB53h59YTyxmyJfyMvWhq2jFToviIBVV1NefC52_cWbZvY68"
         },
         "custom_params": {},
         "custom_form_data": {},
@@ -121,7 +121,7 @@ export const allTableChartDetailPayload = {
       "viz_type": "table",
       "slice_id": 916,
       "url_params": {
-        "native_filters_key": "TPALyp2DOMnyoRC_hdcGRFnPrqor2mMdwKcMBKQyjVDOIxXGwkOeT8SspTL19xb3"
+        "native_filters_key": "1ir3gC7e_faAvvlzBB53h59YTyxmyJfyMvWhq2jFToviIBVV1NefC52_cWbZvY68"
       },
       "query_mode": "aggregate",
       "groupby": [
@@ -227,9 +227,9 @@ export const allTableChartDetailPayload = {
         "datasourceWarning": false,
         "expressionType": "SQL",
         "hasCustomLabel": false,
-        "label": "date",
+        "label": "date DESC, MIN(start_time)",
         "optionName": "metric_a4mrn8vxv1_dlxkbt5gv4m",
-        "sqlExpression": "date"
+        "sqlExpression": "date DESC, MIN(start_time)"
       },
       "order_by_cols": [],
       "row_limit": 50000,

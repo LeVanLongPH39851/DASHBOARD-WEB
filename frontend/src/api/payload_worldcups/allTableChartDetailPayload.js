@@ -80,17 +80,35 @@ export const allTableChartDetailPayload = {
         ],
         "orderby": [
           [
-            "rating",
+            {
+              "aggregate": null,
+              "column": null,
+              "datasourceWarning": false,
+              "expressionType": "SQL",
+              "hasCustomLabel": false,
+              "label": "date",
+              "optionName": "metric_a4mrn8vxv1_dlxkbt5gv4m",
+              "sqlExpression": "date"
+            },
             false
           ]
         ],
         "annotation_layers": [],
         "row_limit": 50000,
         "series_limit": 0,
-        "series_limit_metric": "rating",
+        "series_limit_metric": {
+          "aggregate": null,
+          "column": null,
+          "datasourceWarning": false,
+          "expressionType": "SQL",
+          "hasCustomLabel": false,
+          "label": "date",
+          "optionName": "metric_a4mrn8vxv1_dlxkbt5gv4m",
+          "sqlExpression": "date"
+        },
         "order_desc": true,
         "url_params": {
-          "native_filters_key": "BTinBldyeeH2Bi1Ojx6_HGLfupLGLjt7YMX4epnhJtgpGz7c1XE6Umw-cYFAv4PS"
+          "native_filters_key": "TPALyp2DOMnyoRC_hdcGRFnPrqor2mMdwKcMBKQyjVDOIxXGwkOeT8SspTL19xb3"
         },
         "custom_params": {},
         "custom_form_data": {},
@@ -103,7 +121,7 @@ export const allTableChartDetailPayload = {
       "viz_type": "table",
       "slice_id": 916,
       "url_params": {
-        "native_filters_key": "BTinBldyeeH2Bi1Ojx6_HGLfupLGLjt7YMX4epnhJtgpGz7c1XE6Umw-cYFAv4PS"
+        "native_filters_key": "TPALyp2DOMnyoRC_hdcGRFnPrqor2mMdwKcMBKQyjVDOIxXGwkOeT8SspTL19xb3"
       },
       "query_mode": "aggregate",
       "groupby": [
@@ -203,7 +221,16 @@ export const allTableChartDetailPayload = {
           "subject": "date"
         }
       ],
-      "timeseries_limit_metric": "rating",
+      "timeseries_limit_metric": {
+        "aggregate": null,
+        "column": null,
+        "datasourceWarning": false,
+        "expressionType": "SQL",
+        "hasCustomLabel": false,
+        "label": "date",
+        "optionName": "metric_a4mrn8vxv1_dlxkbt5gv4m",
+        "sqlExpression": "date"
+      },
       "order_by_cols": [],
       "row_limit": 50000,
       "server_page_length": 10,
@@ -262,9 +289,8 @@ export const allTableChartDetailPayload = {
         }
       ],
       "comparison_type": "values",
-      "annotation_layers": [],
       "dashboards": [
-        103
+        66
       ],
       "extra_form_data": {
         "time_range": "DATEADD(DATETIME(\"today\"),-7, DAY) : DATEADD(DATETIME(\"today\"),-1, SECOND)"

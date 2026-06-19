@@ -197,7 +197,7 @@ const DashboardContent = () => {
                         <div className='w-full flex gap-6 max-lg:gap-5 max-md:gap-4 max-md:flex-wrap pb-6 max-lg:pb-5 max-md:pb-4'>
                           <div className='w-[60%] max-md:w-full'>
                             <div className={`p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
-                              <NameChart nameChart={CUSTOM_CHART.tableChart.tableChartChannel.name} description={CUSTOM_CHART.tableChart.tableChartChannel.description} opacity={true} />
+                              <NameChart nameChart={CUSTOM_CHART.tableChart.tableChartChannel.name} description={CUSTOM_CHART.tableChart.tableChartChannel.description} opacity={true} fullScreen={true} />
                               <ChildTabs tabs={[
                                 {
                                   id: CUSTOM_TAB.childTabChannel.channel.id, label: CUSTOM_TAB.childTabChannel.channel.label,
@@ -214,7 +214,8 @@ const DashboardContent = () => {
                                       displayName={false}
                                       customCol={CUSTOM_CHART.tableChart.tableChartChannel.customColChannel}
                                       crossFilter={true}
-                                      keyChart={'allTableChannelData'} />
+                                      keyChart={'allTableChannelData'}
+                                      fullScreen={true} />
                                   )
                                 },
                                 {
@@ -232,7 +233,8 @@ const DashboardContent = () => {
                                       displayName={false}
                                       customCol={CUSTOM_CHART.tableChart.tableChartChannel.customColChannelEvent}
                                       crossFilter={true}
-                                      keyChart={'allTableChannelData'} />
+                                      keyChart={'allTableChannelData'}
+                                      fullScreen={true} />
                                   )
                                 }
                               ]} />

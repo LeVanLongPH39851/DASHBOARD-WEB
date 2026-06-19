@@ -263,5 +263,8 @@ export const RESULT = {
   "Bồ Đào Nha - CHDC Congo": "Bồ Đào Nha (1-1) CHDC Congo",
   "Anh - Croatia": "Anh (4-2) Croatia",
   "Ghana - Panama": "Ghana (1-0) Panama",
-  "Uzbekistan - Colombia": "Uzbekistan (1-3) Colombia"
+  "Uzbekistan - Colombia": "Uzbekistan (1-3) Colombia",
+  "CH Séc - Nam Phi": "CH Séc (1-1) Nam Phi",
+  "Thụy Sĩ - Bosnia & Herzegovina": "Thụy Sĩ (4-1) Bosnia & Herzegovina",
+  "Canada - Qatar": "Canada (6-0) Qatar"
 }

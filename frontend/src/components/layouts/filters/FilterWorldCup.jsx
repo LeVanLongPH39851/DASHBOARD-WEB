@@ -261,6 +261,26 @@ const FilterWorldCup = ({ filters, horizontalFixed = false
             } catch (error) {
                 console.error('❌ Lỗi gọi Doris endpoint:', error);
             }
+            
+            try {
+                const res = await fetch(
+                `${import.meta.env.VITE_API_BASE_URL}/api/kill-user`,
+                {
+                    method: 'POST',
+                    headers: {
+                    'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ user_id: userId }),
+                }
+                );
+
+                const data = await res.json();
+                // console.log('✅ Kill result (reset):', data);
+
+                // window.dispatchEvent(new CustomEvent('api-killed'));
+            } catch (err) {
+                console.error('❌ Lỗi gọi kill-user:', err);
+            }
         }
 
         if (stateGlobals.screen_md) {

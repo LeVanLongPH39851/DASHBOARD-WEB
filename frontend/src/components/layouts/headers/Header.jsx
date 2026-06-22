@@ -79,7 +79,7 @@ const Header = ({ username }) => {
             })
                 .then(res => res.json())
                 .then(data => {
-                    console.log('✅ Doris PROCESSLIST:', data);
+                    // console.log('✅ Doris PROCESSLIST:', data);
                 })
                 .catch(err => {
                     if (err.name === 'AbortError') return;
@@ -97,7 +97,7 @@ const Header = ({ username }) => {
             })
                 .then(res => res.json())
                 .then(data => {
-                    console.log(`✅ Kill Superset requests: ${data.message}`);
+                    // console.log(`✅ Kill Superset requests: ${data.message}`);
                     // ✅ Báo cho tất cả useApi hooks reset loading về false
                     // window.dispatchEvent(new CustomEvent('api-killed'));
                 })

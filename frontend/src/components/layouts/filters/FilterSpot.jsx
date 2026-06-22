@@ -340,11 +340,31 @@ const FilterSpot = ({ filters, horizontalFixed = false
           body: JSON.stringify({ user_id: userId })
         });
         const result = await response.json();
-        console.log('✅ Doris endpoint called on reset:', result);
+        // console.log('✅ Doris endpoint called on reset:', result);
         // ✅ Báo cho tất cả useApi hooks reset loading về false
-        window.dispatchEvent(new CustomEvent('api-killed'));
+        // window.dispatchEvent(new CustomEvent('api-killed'));
       } catch (error) {
         console.error('❌ Lỗi gọi Doris endpoint:', error);
+      }
+      
+      try {
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/kill-user`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ user_id: userId }),
+          }
+        );
+
+        const data = await res.json();
+        // console.log('✅ Kill result (reset):', data);
+
+        // window.dispatchEvent(new CustomEvent('api-killed'));
+      } catch (err) {
+        console.error('❌ Lỗi gọi kill-user:', err);
       }
     }
 

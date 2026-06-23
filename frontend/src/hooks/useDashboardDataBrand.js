@@ -3,66 +3,66 @@ import * as useCallApi from './useCallApiBrand';
 
 const HOOKS = [
   // ===== ADCODE =====
-    { hook: useCallApi.useAdcodeTableChartProgramReturnApi, dataKey: 'adcodeProgramData' },
+  { hook: useCallApi.useAdcodeTableChartProgramReturnApi, dataKey: 'adcodeProgramData' },
 
-    // ===== GRP =====
-    { hook: useCallApi.useGrpBarChartBrandReturnApi, dataKey: 'grpBarBrandData' },
+  // ===== GRP =====
+  { hook: useCallApi.useGrpBarChartBrandReturnApi, dataKey: 'grpBarBrandData' },
 
-    // ===== PERCENT =====
-    { hook: useCallApi.usePercentBartChartPlatformViewReturnApi, dataKey: 'percentPlatformViewData' },
+  // ===== PERCENT =====
+  { hook: useCallApi.usePercentBartChartPlatformViewReturnApi, dataKey: 'percentPlatformViewData' },
 
-    // ===== REACH =====
-    { hook: useCallApi.useReachBarChartChannelReturnApi, dataKey: 'reachBarChannelData' },
-    { hook: useCallApi.useReachBarChartFirstLevelReturnApi, dataKey: 'reachBarFirstLevelData' },
+  // ===== REACH =====
+  { hook: useCallApi.useReachBarChartChannelReturnApi, dataKey: 'reachBarChannelData' },
+  { hook: useCallApi.useReachBarChartFirstLevelReturnApi, dataKey: 'reachBarFirstLevelData' },
 
-    // ===== SOS =====
-    { hook: useCallApi.useSosPieChartBrandGroupReturnApi, dataKey: 'sosPieBrandGroupData' },
-    { hook: useCallApi.useSosPieChartBrandProductReturnApi, dataKey: 'sosPieBrandProductData' },
+  // ===== SOS =====
+  { hook: useCallApi.useSosPieChartBrandGroupReturnApi, dataKey: 'sosPieBrandGroupData' },
+  { hook: useCallApi.useSosPieChartBrandProductReturnApi, dataKey: 'sosPieBrandProductData' },
 
-    // ===== SOV =====
-    { hook: useCallApi.useSovPieChartBrandGroupReturnApi, dataKey: 'sovPieBrandGroupData' },
-    { hook: useCallApi.useSovPieChartBrandProductReturnApi, dataKey: 'sovPieBrandProductData' },
+  // ===== SOV =====
+  { hook: useCallApi.useSovPieChartBrandGroupReturnApi, dataKey: 'sovPieBrandGroupData' },
+  { hook: useCallApi.useSovPieChartBrandProductReturnApi, dataKey: 'sovPieBrandProductData' },
 
-    // ===== SPEND VND =====
-    { hook: useCallApi.useSpendVNDBarChartChannelReturnApi, dataKey: 'spendVNDBarChannelData' },
-    { hook: useCallApi.useSpendVNDBarChartDateReturnApi, dataKey: 'spendVNDBarDateData' },
-    { hook: useCallApi.useSpendVNDBarChartFirstLevelReturnApi, dataKey: 'spendVNDBarFirstLevelData' },
-    { hook: useCallApi.useSpendVNDBarChartTimebandReturnApi, dataKey: 'spendVNDBarTimebandData' },
+  // ===== SPEND VND =====
+  { hook: useCallApi.useSpendVNDBarChartChannelReturnApi, dataKey: 'spendVNDBarChannelData' },
+  { hook: useCallApi.useSpendVNDBarChartDateReturnApi, dataKey: 'spendVNDBarDateData' },
+  { hook: useCallApi.useSpendVNDBarChartFirstLevelReturnApi, dataKey: 'spendVNDBarFirstLevelData' },
+  { hook: useCallApi.useSpendVNDBarChartTimebandReturnApi, dataKey: 'spendVNDBarTimebandData' },
 
-    // ===== VIEW =====
-    { hook: useCallApi.useViewPieChartPlatformReturnApi, dataKey: 'viewPiePlatformData' },
+  // ===== VIEW =====
+  { hook: useCallApi.useViewPieChartPlatformReturnApi, dataKey: 'viewPiePlatformData' },
 
-    { hook: useCallApi.useCountCampaignNumberChartReturnApi, dataKey: 'countCampaignNumberData' },
-    { hook: useCallApi.useCountSpotNumberChartReturnApi, dataKey: 'countSpotNumberData' },
-    { hook: useCallApi.useDurationSpotNumberChartReturnApi, dataKey: 'durationSpotNumberData' },
-    { hook: useCallApi.useFrequencyNumberChartReturnApi, dataKey: 'frequencyNumberData' },
-    { hook: useCallApi.useReachNumberChartReturnApi, dataKey: 'reachNumberData' },
-    { hook: useCallApi.useSpendVNDNumberChartReturnApi, dataKey: 'spendVNDNumberData' },
+  { hook: useCallApi.useCountCampaignNumberChartReturnApi, dataKey: 'countCampaignNumberData' },
+  { hook: useCallApi.useCountSpotNumberChartReturnApi, dataKey: 'countSpotNumberData' },
+  { hook: useCallApi.useDurationSpotNumberChartReturnApi, dataKey: 'durationSpotNumberData' },
+  { hook: useCallApi.useFrequencyNumberChartReturnApi, dataKey: 'frequencyNumberData' },
+  { hook: useCallApi.useReachNumberChartReturnApi, dataKey: 'reachNumberData' },
+  { hook: useCallApi.useSpendVNDNumberChartReturnApi, dataKey: 'spendVNDNumberData' },
 
-    // ===== ALL TABLE =====
-    { hook: useCallApi.useAllTableChartBrandReturnApi, dataKey: 'allTableBrandData' },
-    { hook: useCallApi.useAllTableChartCampaignReturnApi, dataKey: 'allTableCampaignData' },
-    { hook: useCallApi.useAllTableChartDeviceReturnApi, dataKey: 'allTableDeviceData' },
-    { hook: useCallApi.useAllTableChartPlatformReturnApi, dataKey: 'allTablePlatformData' },
-    { hook: useCallApi.useAllTableChartTopProgramReturnApi, dataKey: 'allTableTopProgramData' },
-    { hook: useCallApi.useAllTableChartMonitoringReturnApi, dataKey: 'allTableMonitoringData' },
-    
-    { hook: useCallApi.useMaxInsertReturnApi, dataKey: 'maxInsertData' },
+  // ===== ALL TABLE =====
+  { hook: useCallApi.useAllTableChartBrandReturnApi, dataKey: 'allTableBrandData' },
+  // { hook: useCallApi.useAllTableChartCampaignReturnApi, dataKey: 'allTableCampaignData' },
+  { hook: useCallApi.useAllTableChartDeviceReturnApi, dataKey: 'allTableDeviceData' },
+  { hook: useCallApi.useAllTableChartPlatformReturnApi, dataKey: 'allTablePlatformData' },
+  { hook: useCallApi.useAllTableChartTopProgramReturnApi, dataKey: 'allTableTopProgramData' },
+  { hook: useCallApi.useAllTableChartMonitoringReturnApi, dataKey: 'allTableMonitoringData' },
 
-    { hook: useCallApi.useFilterProvinceReturnApi, dataKey: 'filterProvinceData' },
-    { hook: useCallApi.useFilterProgramReturnApi, dataKey: 'filterProgramData' },
-    { hook: useCallApi.useFilterProductReturnApi, dataKey: 'filterProductData' },
-    { hook: useCallApi.useFilterGroupReturnApi, dataKey: 'filterGroupData' },
-    { hook: useCallApi.useFilterCampaignReturnApi, dataKey: 'filterCampaignData' },
-    { hook: useCallApi.useFilterBrandReturnApi, dataKey: 'filterBrandData' },
-    { hook: useCallApi.useFilterAdvertiserReturnApi, dataKey: 'filterAdvertiserData' },
-    { hook: useCallApi.useFilterAdcodeReturnApi, dataKey: 'filterAdcodeData' }
+  { hook: useCallApi.useMaxInsertReturnApi, dataKey: 'maxInsertData' },
+
+  { hook: useCallApi.useFilterProvinceReturnApi, dataKey: 'filterProvinceData' },
+  { hook: useCallApi.useFilterProgramReturnApi, dataKey: 'filterProgramData' },
+  { hook: useCallApi.useFilterProductReturnApi, dataKey: 'filterProductData' },
+  { hook: useCallApi.useFilterGroupReturnApi, dataKey: 'filterGroupData' },
+  { hook: useCallApi.useFilterCampaignReturnApi, dataKey: 'filterCampaignData' },
+  { hook: useCallApi.useFilterBrandReturnApi, dataKey: 'filterBrandData' },
+  { hook: useCallApi.useFilterAdvertiserReturnApi, dataKey: 'filterAdvertiserData' },
+  { hook: useCallApi.useFilterAdcodeReturnApi, dataKey: 'filterAdcodeData' }
 ];
 
 export const useDashboardData = () => {
   const hookResults = HOOKS.map(({ hook }) => hook());
   const hasLoggedRef = useRef(false);
-  
+
   const data = {};
   const isLoading = {};
   const hasError = {};
@@ -84,6 +84,9 @@ export const useDashboardData = () => {
       hasLoggedRef.current = true;
     }
   }, [allDataLoaded, anyLoading]);
+
+  console.log(data);
+
 
   return {
     ...data,

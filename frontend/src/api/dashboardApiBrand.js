@@ -29,8 +29,8 @@ export const getAdcodeTableChartProgram = (appliedFilters) =>
 export const getAllTableChartBrand = (appliedFilters) =>
   postChart(payloads.allTableChartBrandPayload, appliedFilters);
 
-export const getAllTableChartCampaign = (appliedFilters) =>
-  postChart(payloads.allTableChartCampaignPayload, appliedFilters);
+// export const getAllTableChartCampaign = (appliedFilters) =>
+//   postChart(payloads.allTableChartCampaignPayload, appliedFilters);
 
 export const getAllTableChartDevice = (appliedFilters) =>
   postChart(payloads.allTableChartDevicePayload, appliedFilters);

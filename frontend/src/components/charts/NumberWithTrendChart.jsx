@@ -25,10 +25,11 @@ const NumberWithTrendChart = ({
   unit = '%',
   height = '',
   icon = false,
-  suffix = ''
+  suffix = '',
+  id = null
 }) => {
-  
-  if(data==='isLoading') {
+
+  if (data === 'isLoading') {
     return (
       <div className={`p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component`} style={{ height: `${height}px` }}>
         <NameChart nameChart={nameChart} description={description} icon={icon} width='w-5.5 max-lg:w-5' backgound='bg-background-succes-type-2 dark:bg-background-succes-type-2-dark' />
@@ -41,9 +42,9 @@ const NumberWithTrendChart = ({
 
   // ✅ thêm: chỉ có trend khi có hơn 1 ngày
   const hasTrend = Array.isArray(data) && data.length > 1;
-  
+
   const getEChartsData = useCallback(() => {
-    
+
     if (!hasData) {
       return { labels: [], series: [] };
     }
@@ -73,7 +74,7 @@ const NumberWithTrendChart = ({
 
     const lastIndex = data.length - 1;
     const currentValue = data[lastIndex].value;
-    const prevValue    = data[lastIndex - 1].value;
+    const prevValue = data[lastIndex - 1].value;
     const trendPercent = prevValue !== 0 ? ((currentValue - prevValue) / prevValue * 100) : 0;
     const currentDate = data[lastIndex]?.date || '';
 
@@ -110,12 +111,12 @@ const NumberWithTrendChart = ({
         trigger: 'axis',
         backgroundColor: 'rgba(255, 255, 255, 1)',
         borderWidth: 0,
-        textStyle: { 
-        fontSize: !stateGlobals.screen_md ? fontSize.tooltip : '10.5px',
-        color: 'rgba(0, 0, 0, 0.7)',
-        fontWeight: fontWeight.tooltip,
-        fontFamily: fontFamily
-      },
+        textStyle: {
+          fontSize: !stateGlobals.screen_md ? fontSize.tooltip : '10.5px',
+          color: 'rgba(0, 0, 0, 0.7)',
+          fontWeight: fontWeight.tooltip,
+          fontFamily: fontFamily
+        },
         formatter: (params) => {
           const p = params?.[0];
           if (!p) return '';
@@ -158,31 +159,31 @@ const NumberWithTrendChart = ({
                 { offset: 0.47, color: trendPercent < 0 ? 'rgba(255, 56, 60, 0.4)' : 'rgba(201, 242, 242, 1)' },
                 { offset: 1, color: trendPercent < 0 ? 'rgba(255, 255, 255, 1)' : 'rgba(255, 255, 255, 1)' }
               ] :
-              [
-                { offset: 0, color: trendPercent < 0 ? 'rgba(255, 56, 60, 0.7)' : 'rgb(134, 225, 227, 1)'},
-                { offset: 1, color: trendPercent < 0 ? 'rgba(255, 56, 60, 0)' : 'rgb(134, 225, 227, 0)' }
-              ]
+                [
+                  { offset: 0, color: trendPercent < 0 ? 'rgba(255, 56, 60, 0.7)' : 'rgb(134, 225, 227, 1)' },
+                  { offset: 1, color: trendPercent < 0 ? 'rgba(255, 56, 60, 0)' : 'rgb(134, 225, 227, 0)' }
+                ]
             }
           }
         }
       ]
     };
   }, [data, trendPercent]);
-  
+
   return (
     <div className={`p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component`} style={{ height: `${height}px` }}>
-      <NameChart nameChart={nameChart} description={description} icon={icon} width='w-5.5 max-lg:w-5' backgound='bg-background-succes-type-2 dark:bg-background-succes-type-2-dark' getChartData={getEChartsData} />
+      <NameChart nameChart={nameChart} description={description} icon={icon} width='w-5.5 max-lg:w-5' backgound='bg-background-succes-type-2 dark:bg-background-succes-type-2-dark' getChartData={getEChartsData} id={id} />
       <div className='flex items-center mb-2'><span className='text-color-black-100 dark:text-color-white-50 transition-all duration-300 font-normal text-sm max-lg:text-[13px] max-md:text-xs'>Ngày {currentDate}</span></div>
       <div className="mb-6 max-lg:mb-5 max-md:mb-4 flex items-center gap-3 max-lg:gap-2.5 max-md:gap-2">
         <h4 className='text-5xl max-lg:text-4xl max-md:text-4xl text-nowrap text-color-black-100 dark:text-color-white-90 transition-all duration-300 font-semibold'>{currentValue.toLocaleString(undefined, { maximumFractionDigits: (nameChart.includes('%') ? 2 : 0) })} {!stateGlobals.screen_md && suffix}</h4>
         {hasTrend && (
-        <div className='flex gap-2 items-center'>
-          <div className={`px-2 max-lg:px-1.5 py-1 rounded-lg flex items-center gap-1 border ${trendPercent > 0 ? 'bg-background-succes-type-1 text-color-succes-type-1 border-border-succes-type-1 dark:bg-background-succes-type-1-dark dark:text-color-succes-type-1-dark dark:border-border-succes-type-1-dark' : 'bg-background-error text-color-error border-border-error'}`}>
-            <span className='text-sm max-lg:text-[13px] max-md:text-xs font-semibold'>{trendPercent.toFixed(1)}{unit}</span>
-            <figure><img src={trendPercent > 0 ? iconArrowUp45 : iconArrowDown45} alt="Icon Arrow Up 45" className='w-2.25 max-lg:w-2 h-2.25 max-lg:h-2' /></figure>
-          </div>
-          <span className='text-sm max-lg:text-[13px] max-md:text-xs text-color-black-50 dark:text-color-white-50 transition-all duration-300 font-normal'>{trendPeriod}</span>
-        </div>)}
+          <div className='flex gap-2 items-center'>
+            <div className={`px-2 max-lg:px-1.5 py-1 rounded-lg flex items-center gap-1 border ${trendPercent > 0 ? 'bg-background-succes-type-1 text-color-succes-type-1 border-border-succes-type-1 dark:bg-background-succes-type-1-dark dark:text-color-succes-type-1-dark dark:border-border-succes-type-1-dark' : 'bg-background-error text-color-error border-border-error'}`}>
+              <span className='text-sm max-lg:text-[13px] max-md:text-xs font-semibold'>{trendPercent.toFixed(1)}{unit}</span>
+              <figure><img src={trendPercent > 0 ? iconArrowUp45 : iconArrowDown45} alt="Icon Arrow Up 45" className='w-2.25 max-lg:w-2 h-2.25 max-lg:h-2' /></figure>
+            </div>
+            <span className='text-sm max-lg:text-[13px] max-md:text-xs text-color-black-50 dark:text-color-white-50 transition-all duration-300 font-normal'>{trendPeriod}</span>
+          </div>)}
       </div>
       {hasTrend ? (
         <div className="w-full">

@@ -140,6 +140,7 @@ const DashboardContent = () => {
                                     description={false}
                                     orientation={''}
                                     displayName={false}
+                                    id='spendVNDBarDateData'
                                   />
                                 )
                               },
@@ -158,6 +159,7 @@ const DashboardContent = () => {
                                     orientation={''}
                                     displayName={false}
                                     suffix={'$'}
+                                    id='spendUSDBarDateData'
                                   />
                                 )
                               }
@@ -182,6 +184,7 @@ const DashboardContent = () => {
                                     innerRadius={CUSTOM_CHART.pieChart.innerRadius}
                                     crossFilter='channels'
                                     keyChart='pieChannelData'
+                                    id='spendVNDPieChannelData'
                                   />
                                   <PieChart data={!dashboard.isLoading.spendVNDPieFirstLevelData ? transformPieChartData(dashboard.spendVNDPieFirstLevelData?.data, dashboard.spendVNDPieFirstLevelData?.colnames) : 'isLoading'}
                                     height={CUSTOM_CHART.pieChart.height}
@@ -195,6 +198,7 @@ const DashboardContent = () => {
                                     innerRadius={CUSTOM_CHART.pieChart.innerRadius}
                                     crossFilter='firstLevels'
                                     keyChart='pieFirstLevelData'
+                                    id='spendVNDPieFirstLevelData'
                                   />
                                 </div>
                               )
@@ -215,6 +219,7 @@ const DashboardContent = () => {
                                     innerRadius={CUSTOM_CHART.pieChart.innerRadius}
                                     crossFilter='channels'
                                     keyChart='pieChannelData'
+                                    id='countPieChannelData'
                                   />
                                   <PieChart data={!dashboard.isLoading.countPieFirstLevelData ? transformPieChartData(dashboard.countPieFirstLevelData?.data, dashboard.countPieFirstLevelData?.colnames) : 'isLoading'}
                                     height={CUSTOM_CHART.pieChart.height}
@@ -228,6 +233,7 @@ const DashboardContent = () => {
                                     innerRadius={CUSTOM_CHART.pieChart.innerRadius}
                                     crossFilter='firstLevels'
                                     keyChart='pieFirstLevelData'
+                                    id='countPieFirstLevelData'
                                   />
                                 </div>
                               )
@@ -250,6 +256,7 @@ const DashboardContent = () => {
                                     formatterValue={2}
                                     crossFilter='channels'
                                     keyChart='pieChannelData'
+                                    id='durationPieChannelData'
                                   />
                                   <PieChart data={!dashboard.isLoading.durationPieFirstLevelData ? transformPieChartData(dashboard.durationPieFirstLevelData?.data, dashboard.durationPieFirstLevelData?.colnames) : 'isLoading'}
                                     height={CUSTOM_CHART.pieChart.height}
@@ -265,6 +272,7 @@ const DashboardContent = () => {
                                     formatterValue={2}
                                     crossFilter='firstLevels'
                                     keyChart='pieFirstLevelData'
+                                    id='durationPieFirstLevelData'
                                   />
                                 </div>
                               )
@@ -286,6 +294,7 @@ const DashboardContent = () => {
                                     formatterValue={2}
                                     crossFilter='channels'
                                     keyChart='pieChannelData'
+                                    id='grpPieChannelData'
                                   />
                                   <PieChart data={!dashboard.isLoading.durationPieLengthData ? transformPieChartData(dashboard.durationPieLengthData?.data, dashboard.durationPieLengthData?.colnames) : 'isLoading'}
                                     height={CUSTOM_CHART.pieChart.height}
@@ -297,6 +306,7 @@ const DashboardContent = () => {
                                     colors={CUSTOM_CHART.pieChart.colorDuration}
                                     donut={CUSTOM_CHART.pieChart.donut}
                                     innerRadius={CUSTOM_CHART.pieChart.innerRadius}
+                                    id='durationPieLengthData'
                                   />
                                 </div>
                               )
@@ -325,6 +335,7 @@ const DashboardContent = () => {
                                     heightPlus={35}
                                     crossFilter='advertisers'
                                     keyChart='barAdvertiserData'
+                                    id='spendVNDBarAdvertiserData'
                                   />
                                 )
                               },
@@ -347,6 +358,7 @@ const DashboardContent = () => {
                                     heightPlus={35}
                                     crossFilter='advertisers'
                                     keyChart='barAdvertiserData'
+                                    id='spendUSDBarAdvertiserData'
                                   />
                                 )
                               },
@@ -368,6 +380,7 @@ const DashboardContent = () => {
                                     heightPlus={35}
                                     crossFilter='advertisers'
                                     keyChart='barAdvertiserData'
+                                    id='countBarAdvertiserData'
                                   />
                                 )
                               }
@@ -397,6 +410,7 @@ const DashboardContent = () => {
                                     crossFilter='channels'
                                     keyChart='barAdvertiserChannelData'
                                     stack={true}
+                                    id='spendVNDBarAdvertiserChannelData'
                                   />
                                 )
                               },
@@ -420,6 +434,7 @@ const DashboardContent = () => {
                                     crossFilter='channels'
                                     keyChart='barAdvertiserChannelData'
                                     stack={true}
+                                    id='spendUSDBarAdvertiserChannelData'
                                   />
                                 )
                               },
@@ -442,6 +457,7 @@ const DashboardContent = () => {
                                     crossFilter='channels'
                                     keyChart='barAdvertiserChannelData'
                                     stack={true}
+                                    id='countBarAdvertiserChannelData'
                                   />
                                 )
                               }
@@ -464,6 +480,7 @@ const DashboardContent = () => {
                                   showPagination={false}
                                   crossFilter={true}
                                   keyChart='top10BrandData'
+                                  id='top10BrandData'
                                   customCol={{ 'Nhãn': { minSize: 100, maxSize: 170, weight: 600, sticky: true, crossFilter: 'brands' }, 'Chi phí (USD)': { suffix: '$' } }} />
                               )
                             },
@@ -481,6 +498,7 @@ const DashboardContent = () => {
                                   showPagination={false}
                                   crossFilter={true}
                                   keyChart='top10ProductData'
+                                  id='top10ProductData'
                                   customCol={{ 'Sản phẩm': { minSize: 100, maxSize: 170, weight: 600, sticky: true, crossFilter: 'products' }, 'Chi phí (USD)': { suffix: '$' } }} />
                               )
                             },
@@ -498,6 +516,7 @@ const DashboardContent = () => {
                                   showPagination={false}
                                   crossFilter={true}
                                   keyChart={'top10CampaignData'}
+                                  id='top10CampaignData'
                                   customCol={{ 'Chiến dịch': { minSize: 100, maxSize: 170, weight: 600, sticky: true, crossFilter: 'campaigns' }, 'Chi phí (USD)': { suffix: '$' } }} />
                               )
                             }
@@ -531,6 +550,7 @@ const DashboardContent = () => {
                             maxVisibleItems={true}
                             crossFilter='timebands'
                             keyChart='spendVNDBarTimebandData'
+                            id='spendVNDBarTimebandData'
                           />
                         </div>
                         <div className='w-full grid grid-cols-10 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4'>
@@ -546,6 +566,7 @@ const DashboardContent = () => {
                               showPagination={false}
                               crossFilter={true}
                               keyChart='adcodeProgramData'
+                              id='adcodeProgramData'
                               customCol={{ 'Adcode': { weight: 600, crossFilter: 'adCodes' }, 'Khung giờ': { crossFilter: 'timebands' }, 'Chương trình': { minSize: 100, maxSize: 170, crossFilter: 'programs' }, 'Kênh': { minSize: 0, maxSize: 10, crossFilter: 'channels' } }} />
                           </div>
                           <div className='col-span-4 max-md:col-span-10'>
@@ -560,6 +581,7 @@ const DashboardContent = () => {
                               showPagination={false}
                               crossFilter={true}
                               keyChart='adcodeProductData'
+                              id='adcodeProductData'
                               customCol={{ 'Sản phẩm': { weight: 600, crossFilter: 'products' } }} />
                           </div>
                         </div>
@@ -582,6 +604,7 @@ const DashboardContent = () => {
                               customCol={{ 'channel_name_tvd': { crossFilter: 'channels' } }}
                               crossFilter={true}
                               keyChart='spendVNDPivotChannelFirstLevelData'
+                              id='spendVNDPivotChannelFirstLevelData'
                             />
                           </div>
                           <div className='col-span-4 max-md:col-span-10 grid'>
@@ -601,6 +624,7 @@ const DashboardContent = () => {
                               donut={CUSTOM_CHART.pieChart.donut}
                               innerRadius={CUSTOM_CHART.pieChart.innerRadius}
                               legendHorizontal={true}
+                              id='countPieTimebandData'
                             />
                           </div>
                         </div>

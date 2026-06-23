@@ -144,7 +144,8 @@ const DashboardContent = () => {
                                                         colors={CUSTOM_CHART.mixedChart.mixedChartDate.colors}
                                                         barMaxWidth={CUSTOM_CHART.mixedChart.barMaxWidth}
                                                         barWidthPercent={CUSTOM_CHART.mixedChart.barWidthPercent}
-                                                        lastDataIndexActive={CUSTOM_CHART.mixedChart.mixedChartDate.lastDataIndexActive} />
+                                                        lastDataIndexActive={CUSTOM_CHART.mixedChart.mixedChartDate.lastDataIndexActive}
+                                                        id='ratingReachBarDateData' />
                                                 </div>
                                                 <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4 grid grid-cols-2 max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4'>
                                                     <BarChart
@@ -157,6 +158,7 @@ const DashboardContent = () => {
                                                         description={false}
                                                         orientation={'horizontal'}
                                                         formatterValue={2}
+                                                        id='ratingPercentBarChannelData'
                                                     />
                                                     <div className={`p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
                                                         <NameChart nameChart={'Khán giả World Cup theo thị trường'} description={false} opacity={true} />
@@ -177,7 +179,8 @@ const DashboardContent = () => {
                                                                             'VÙNG': { justify: 'justify-center', minSize: 100, maxSize: 300 }
                                                                         }}
                                                                         displayName={false}
-                                                                        showHeader={false} />
+                                                                        showHeader={false}
+                                                                        id='allTableRegionalData' />
                                                                 )
                                                             },
                                                             {
@@ -196,7 +199,8 @@ const DashboardContent = () => {
                                                                             'TỈNH/TP': { justify: 'justify-center', minSize: 100, maxSize: 300 }
                                                                         }}
                                                                         displayName={false}
-                                                                        showHeader={false} />
+                                                                        showHeader={false}
+                                                                        id='allTableProvinceData' />
                                                                 )
                                                             }
                                                         ]} />
@@ -217,7 +221,8 @@ const DashboardContent = () => {
                                                             },
                                                             'THỜI GIAN\nBẮT ĐẦU': { justify: 'justify-center', align: 'text-center' }
                                                         }}
-                                                        showPagination={true} />
+                                                        showPagination={true}
+                                                        id='allTableDetailData' />
                                                 </div>
                                                 <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
                                                     <TableChart data={!dashboard.isLoading.allTableTeamData ? transformTableChartData(dashboard.allTableTeamData?.data, dashboard.allTableTeamData?.colnames) : 'isLoading'}
@@ -234,7 +239,8 @@ const DashboardContent = () => {
                                                                 minSize: 101, maxSize: 300, flag: true, sticky: true
                                                             },
                                                         }}
-                                                        showPagination={true} />
+                                                        showPagination={true}
+                                                        id='allTableTeamData' />
                                                 </div>
                                                 <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
                                                     <TableChart data={!dashboard.isLoading.allTableShareData ? transformTableChartData(dashboard.allTableShareData?.data, dashboard.allTableShareData?.colnames) : 'isLoading'}
@@ -249,7 +255,8 @@ const DashboardContent = () => {
                                                             'KÊNH': { minSize: 0, maxSize: 30, channel: true, sticky: true },
                                                             'CHƯƠNG TRÌNH': { weight: 600, minSize: 100, maxSize: 200 },
                                                         }}
-                                                        showPagination={true} />
+                                                        showPagination={true}
+                                                        id='allTableShareData' />
                                                 </div>
                                                 <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
                                                     <LineChart data={!dashboard.isLoading.ratingLineMinuteVTV6Data ? transformMixedChartData(dashboard.ratingLineMinuteVTV6Data?.data, 'event_hour_minute', dashboard.ratingLineMinuteVTV6Data?.colnames) : 'isLoading'}
@@ -268,6 +275,7 @@ const DashboardContent = () => {
                                                         legendTop={true}
                                                         fullScreen={true}
                                                         textOverflow={true}
+                                                        id='ratingLineMinuteVTV6Data'
                                                     />
                                                 </div>
                                             </div>

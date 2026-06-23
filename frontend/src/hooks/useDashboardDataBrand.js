@@ -85,9 +85,6 @@ export const useDashboardData = () => {
     }
   }, [allDataLoaded, anyLoading]);
 
-  console.log(data);
-
-
   return {
     ...data,
     isLoading,

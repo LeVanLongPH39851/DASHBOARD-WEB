@@ -15,8 +15,8 @@ export const useAdcodeTableChartProgramReturnApi = () =>
 export const useAllTableChartBrandReturnApi = () =>
   createChartHook(getChart.getAllTableChartBrand)();
 
-export const useAllTableChartCampaignReturnApi = () =>
-  createChartHook(getChart.getAllTableChartCampaign)();
+// export const useAllTableChartCampaignReturnApi = () =>
+//   createChartHook(getChart.getAllTableChartCampaign)();
 
 export const useAllTableChartDeviceReturnApi = () =>
   createChartHook(getChart.getAllTableChartDevice)();

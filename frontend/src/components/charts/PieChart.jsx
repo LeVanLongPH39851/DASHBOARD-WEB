@@ -20,18 +20,19 @@ const PieChart = ({
   labelDisplay = 'percent', // NEW: 'percent', 'label', 'label-percent', 'percent-label'
   formatterValue = 0,
   border = true,
-  suffix='',
-  legendHorizontal=false,
-  center=false,
-  crossFilter=false,
-  keyChart=false
+  suffix = '',
+  legendHorizontal = false,
+  center = false,
+  crossFilter = false,
+  keyChart = false,
+  id = null
 }) => {
 
   const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
   const { appliedFilters, setAppliedFilters } = useDashboardFilters();
   const { crossFilters, setCrossFilters } = useDashboardCrossFilters();
 
-  if(data==='isLoading') {
+  if (data === 'isLoading') {
     return (
       <div className='p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
         <NameChart nameChart={nameChart} description={description} />
@@ -52,23 +53,23 @@ const PieChart = ({
   const { labels = [], values = [], series = [] } = data;
 
   // Dùng series nếu có, fallback về labels + values
-  const pieSeriesData = series.length > 0 
-    ? series 
+  const pieSeriesData = series.length > 0
+    ? series
     : labels.map((name, i) => ({
-        name,
-        value: values[i] || 0,
-      }));
+      name,
+      value: values[i] || 0,
+    }));
 
   const getEChartsData = useCallback(() => {
     if (chartRef.current) {
       try {
         const instance = chartRef.current.getEchartsInstance();
         const option = instance.getOption();
-        
+
         const legendSelected = option.legend?.[0]?.selected || {};
         const pieData = option.series?.[0]?.data || pieSeriesData;
         const visibleData = pieData.filter(item => legendSelected[item.name] !== false);
-        
+
         return {
           labels: visibleData.map(item => item.name),
           series: [{
@@ -90,7 +91,7 @@ const PieChart = ({
   }, [pieSeriesData]);  // ✅ Chỉ deps cần thiết
 
   const DEFAULT_COLORS = [
-    '#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', 
+    '#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de',
     '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc', '#c23531'
   ];
 
@@ -101,15 +102,15 @@ const PieChart = ({
       return colors[name] || colors[`${name}`.trim()] || DEFAULT_COLORS[0];
     }
     // Nếu là array, lấy theo index
-     // Array colors
+    // Array colors
     if (Array.isArray(colors) && colors.length > 0) {
       return colors[index % colors.length];
     }
-    
+
     // ✅ Default palette theo index
     return DEFAULT_COLORS[index % DEFAULT_COLORS.length];
   };
-  
+
   // Helper function để format label theo option
   const getLabelFormatter = () => {
     switch (labelDisplay) {
@@ -129,17 +130,17 @@ const PieChart = ({
   const [activePie, setActivePie] = React.useState('');
   const [inActivePie, setInActivePie] = React.useState(false);
   const [click, setClick] = React.useState(false);
-  
+
   const onEvents = {
     click: (params) => {
       if (params.componentType === 'series' && crossFilter) {
         const crossFilterValue = params.name;
-        
+
         const crossFilterValues = [crossFilterValue];
         if (appliedFilters?.[crossFilter]?.[0] !== crossFilterValues[0]) {
-          const transformed = {...appliedFilters, [crossFilter]: crossFilterValues};
+          const transformed = { ...appliedFilters, [crossFilter]: crossFilterValues };
           setAppliedFilters(transformed);
-          
+
           if (keyChart) {
             if (crossFilters) {
               setCrossFilters({
@@ -159,14 +160,14 @@ const PieChart = ({
           setClick(true);
           setActivePie(prev => (prev === crossFilterValue ? '' : crossFilterValue));
           setInActivePie(prev => (activePie === crossFilterValue ? false : true));
-        } else if(click) {
+        } else if (click) {
           setClick(false);
           const { [crossFilter]: removed, ...rest } = appliedFilters || {};
           setAppliedFilters(rest);
           if (keyChart) {
             if (crossFilters) {
               const { [keyChart]: _, main: __, ...rest } = crossFilters;
-              setCrossFilters({...rest, skipNext: keyChart});
+              setCrossFilters({ ...rest, skipNext: keyChart });
             }
           }
           setActivePie(prev => (prev === crossFilterValue ? '' : crossFilterValue));
@@ -177,7 +178,7 @@ const PieChart = ({
   };
 
   const legendData = pieSeriesData.map((s) => {
-    
+
     const isActive = activePie === s.name;
     const isDim = inActivePie && crossFilters?.main === keyChart;
 
@@ -192,13 +193,13 @@ const PieChart = ({
       }
     };
   });
-  
+
   const option = {
     tooltip: {
       trigger: 'item',
       backgroundColor: 'rgba(255,255,255,1)',
       borderWidth: 0,
-      textStyle: { 
+      textStyle: {
         fontSize: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.tooltip : '11px' : '10.5px',
         color: 'rgba(0, 0, 0, 0.7)',
         fontWeight: fontWeight.tooltip,
@@ -296,7 +297,7 @@ const PieChart = ({
       },
       data: pieSeriesData.map((item, idx) => {
         const isActive = activePie === item.name;
-        
+
         return {
           ...item,
           itemStyle: {
@@ -325,7 +326,7 @@ const PieChart = ({
 
   return (
     <div className='p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
-      <NameChart nameChart={nameChart} description={description} getChartData={getEChartsData} />
+      <NameChart nameChart={nameChart} description={description} getChartData={getEChartsData} id={id} />
       <ReactECharts
         ref={chartRef}
         onEvents={onEvents}

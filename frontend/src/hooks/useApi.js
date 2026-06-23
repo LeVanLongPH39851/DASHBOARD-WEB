@@ -12,10 +12,10 @@ export const useApi = (apiFn, params = [], options = {}) => {
     if (!enabled || shouldSkip) return Promise.resolve(null);
     setLoading(true);
     setError(null);
-    var isKill = false;
+    // var isKill = false;
     return apiFn(...params)
       .then(res => {
-        if (!res?.data?.data?.[0]) { isKill = true; } else { isKill = false; }
+        // if (!res?.data?.data?.[0]) { isKill = true; } else { isKill = false; }
         setData(res?.data);
         return res?.data;
       })
@@ -24,7 +24,8 @@ export const useApi = (apiFn, params = [], options = {}) => {
         throw err;
       })
       .finally(() => {
-        if (!isKill) setLoading(false);
+        // if (!isKill)
+        setLoading(false);
       });
   }, [enabled, shouldSkip, apiFn, ...params]); // eslint-disable-line react-hooks/exhaustive-deps
 

@@ -1,6 +1,6 @@
 import React, { memo, useRef, useCallback } from 'react';
 import ReactECharts from 'echarts-for-react';
-import NumberChart from '../layouts/components/NameChart';
+import NameChart from '../layouts/components/NameChart';
 import { formatNumber } from '../../utils/formatNumber';
 import Loading from '../commons/Loading';
 import LoadingWorldCup from '../commons/LoadingWorldCup';
@@ -27,7 +27,8 @@ const MixedChart = ({
   lastDataIndexActive = false,
   KMB = false,
   offsetLine = -8,
-  xAxisTitle = false
+  xAxisTitle = false,
+  id = null
 }) => {
 
   const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
@@ -35,14 +36,14 @@ const MixedChart = ({
   if (data === 'isLoading') {
     return (
       <div className='p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
-        <NumberChart nameChart={nameChart} description={description} />
+        <NameChart nameChart={nameChart} description={description} />
         {window.location.pathname.includes('/world-cup-2026') ? <LoadingWorldCup height={!stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : 350 : 230} /> : <Loading height={!stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : 350 : 230} />}
       </div>
     );
   } else if (!data.labels.length > 0) {
     return (
       <div className='p-6 maxlg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
-        <NumberChart nameChart={nameChart} description={description} />
+        <NameChart nameChart={nameChart} description={description} />
         <NoData height={!stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : 350 : 230} />
       </div>
     );
@@ -380,7 +381,7 @@ const MixedChart = ({
 
   return (
     <div className='p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
-      <NumberChart nameChart={nameChart} description={description} getChartData={getEChartsData} />
+      <NameChart nameChart={nameChart} description={description} getChartData={getEChartsData} id={id} />
       <ReactECharts
         ref={chartRef}
         option={option}

@@ -18,7 +18,7 @@ import { faExpand, faClockRotateLeft } from '@fortawesome/free-solid-svg-icons';
 import { getYesterday, formatDate } from '../../../helpers/helper';
 import { FILTER_LABEL } from '../../../utils/label';
 
-const NameChart = ({ nameChart, description, icon = false, width = '', height = '', backgound = '', display = true, opacity = false, getChartData = null, table = false, fullScreen = false }) => {
+const NameChart = ({ nameChart, description, icon = false, width = '', height = '', backgound = '', display = true, opacity = false, getChartData = null, table = false, fullScreen = false, id = null }) => {
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { user, userLoading } = useCurrentUser();
@@ -653,6 +653,10 @@ const NameChart = ({ nameChart, description, icon = false, width = '', height = 
     }
   };
 
+  const refresh = (id) => {
+    console.log(id);
+  }
+
   return (
     <div className={`${opacity ? 'opacity-0 invisible' : ''} pb-6 max-lg:pb-5 max-md:pb-4 text-[16px] max-lg:text-sm max-md:text-xs font-semibold text-color-black-100 dark:text-color-white-90 transition-all duration-300 flex justify-between items-center ${!display ? 'absolute top-0 left-0 w-full p-6 max-lg:p-5 max-md:p-4' : ''}`}>
       <div className='flex items-center gap-2 max-lg:gap-1.5 max-md:gap-1 text-nowrap'>
@@ -682,7 +686,7 @@ const NameChart = ({ nameChart, description, icon = false, width = '', height = 
               </div>
             </div>
           </figure>)}
-        <figure className='p-2 cursor-pointer transition-all duration-300 hover:scale-110' title='Làm mới' onClick={undefined}>
+        <figure className='p-2 cursor-pointer transition-all duration-300 hover:scale-110' title='Làm mới' onClick={() => refresh(id)}>
           <FontAwesomeIcon icon={faClockRotateLeft} fontSize={!stateGlobals.screen_lg ? 15 : 14} color={!stateGlobals.darkMode ? 'rgba(31, 31, 31, 1)' : 'rgba(255, 255, 255, 0.8)'} />
         </figure>
         {/* <figure className='p-2 cursor-pointer'><img src={!stateGlobals.darkMode ? iconEyeHidden : iconEyeHiddenDark} alt="Icon Eye Hidden" className='w-4.5 max-lg:w-4' onClick={handleHideChart} /></figure> */}

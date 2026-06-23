@@ -15,7 +15,8 @@ export const METRICS = {
     icon: iconEye,
     widthIcon: 'w-5.5 max-lg:w-5 max-md:w-4.5',
     color: 'text-color-rating',
-    background: 'bg-background-succes-type-2 dark:bg-background-succes-type-2-dark'
+    background: 'bg-background-succes-type-2 dark:bg-background-succes-type-2-dark',
+    id: 'ratingNumberData'
   },
   ave_reach: {
     name: 'aveReachNumber',
@@ -26,7 +27,8 @@ export const METRICS = {
     icon: iconUsers,
     widthIcon: 'w-6 max-lg:w-5.5 max-md:w-5',
     color: 'text-color-ave-reach',
-    background: 'bg-background-purple dark:bg-background-purple-dark'
+    background: 'bg-background-purple dark:bg-background-purple-dark',
+    id: 'aveReachNumberData'
   },
   'rating%': {
     name: 'ratingPercentNumber',
@@ -37,7 +39,8 @@ export const METRICS = {
     icon: iconEye,
     widthIcon: 'w-5.5 max-lg:w-5 max-md:w-4.5',
     color: 'text-color-rating-percent',
-    background: 'bg-background-succes-type-2 dark:bg-background-succes-type-2-dark'
+    background: 'bg-background-succes-type-2 dark:bg-background-succes-type-2-dark',
+    id: 'ratingPercentNumberData'
   },
   'reach%': {
     name: 'aveReachPercentNumber',
@@ -48,7 +51,8 @@ export const METRICS = {
     icon: iconUsers,
     widthIcon: 'w-6 max-lg:w-5.5 max-md:w-5',
     color: 'text-color-ave-reach-percent',
-    background: 'bg-background-purple dark:bg-background-purple-dark'
+    background: 'bg-background-purple dark:bg-background-purple-dark',
+    id: 'aveReachPercentNumberData'
   }
 };
 export const METRIC_SPOTS = {

@@ -32,7 +32,8 @@ const BarChart = ({
   showPercent = false,
   crossFilter = false,
   keyChart = false,
-  stack = false
+  stack = false,
+  id = null
 }) => {
 
   const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
@@ -664,7 +665,7 @@ const BarChart = ({
 
   return (
     <div className={`${displayName ? 'p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : ''}`}>
-      <NameChart nameChart={nameChart} description={description} display={displayName} getChartData={getEChartsData} />
+      <NameChart nameChart={nameChart} description={description} display={displayName} getChartData={getEChartsData} id={id} />
       <ReactECharts
         ref={chartRef}
         option={option}

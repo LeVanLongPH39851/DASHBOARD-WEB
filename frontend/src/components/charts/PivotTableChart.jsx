@@ -98,15 +98,16 @@ const PivotTableChart = ({
   showPagination = false,
   displayName = true,
   enableHeatmap = false,
-  suffix='',
-  formatterValue=0,
-  sortColTimeband=false,
+  suffix = '',
+  formatterValue = 0,
+  sortColTimeband = false,
   labelTables = LABEL,
   suffixHeader = '',
-  fullScreen=false,
-  customCol=false,
-  crossFilter=false,
-  keyChart=false
+  fullScreen = false,
+  customCol = false,
+  crossFilter = false,
+  keyChart = false,
+  id = null
 }) => {
   const { stateGlobals } = useDashboardStateGlobals();
   const { appliedFilters, setAppliedFilters } = useDashboardFilters();
@@ -232,9 +233,9 @@ const PivotTableChart = ({
       var crossFilterName = params.crossFilter;
       const crossFilterValues = [crossFilterValue];
       if (appliedFilters?.[crossFilterName]?.[0] !== crossFilterValues[0]) {
-        const transformed = {...appliedFilters, [crossFilterName]: crossFilterValues};
+        const transformed = { ...appliedFilters, [crossFilterName]: crossFilterValues };
         setAppliedFilters(transformed);
-        
+
         if (keyChart) {
           if (crossFilters) {
             setCrossFilters({
@@ -254,14 +255,14 @@ const PivotTableChart = ({
         setClick(true);
         setActiveTable(prev => (prev === crossFilterValue ? '' : crossFilterValue));
         setInActiveTable(prev => (activeTable === crossFilterValue ? false : true));
-      } else if(click) {
+      } else if (click) {
         setClick(false);
         const { [crossFilterName]: removed, ...rest } = appliedFilters || {};
         setAppliedFilters(rest);
         if (keyChart) {
           if (crossFilters) {
             const { [keyChart]: _, main: __, ...rest } = crossFilters;
-            setCrossFilters({...rest, skipNext: keyChart});
+            setCrossFilters({ ...rest, skipNext: keyChart });
           }
         }
         setActiveTable(prev => (prev === crossFilterValue ? '' : crossFilterValue));
@@ -294,7 +295,7 @@ const PivotTableChart = ({
   // ✅ JSX table view - giữ nguyên 100%
   return (
     <div className={`${displayName ? 'p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : ''}`} style={{ fontFamily }}>
-      <NameChart nameChart={nameChart} description={description} display={displayName} getChartData={getPivotChartData} table='pivot' fullScreen={fullScreen} />
+      <NameChart nameChart={nameChart} description={description} display={displayName} getChartData={getPivotChartData} table='pivot' fullScreen={fullScreen} id={id} />
 
       <div className="flex justify-between items-center mb-3 max-lg:mb-2 max-md:mb-1 searchTable">
         <div className='flex items-center gap-2 max-lg:gap-1.5 max-md:gap-1'>
@@ -385,19 +386,18 @@ const PivotTableChart = ({
                         >
                           {idx !== 0 ? suffixHeader : ''} {flexRender(header.column.columnDef.header, header.getContext())}
                           {header.column.getIsSorted() && (
-                              <span className="text-color-neotam transition-all duration-300 text-[10px] max-lg:text-[9px] max-md:text-[8px]">
-                                {header.column.getIsSorted() === 'asc' ? '▲' : '▼'}
-                              </span>
-                            )}
+                            <span className="text-color-neotam transition-all duration-300 text-[10px] max-lg:text-[9px] max-md:text-[8px]">
+                              {header.column.getIsSorted() === 'asc' ? '▲' : '▼'}
+                            </span>
+                          )}
                         </div>
                         <div
-                            onMouseDown={header.getResizeHandler()}
-                            onTouchStart={header.getResizeHandler()}
-                            className={`absolute right-0 top-0 h-full w-0.5 rounded-2xl cursor-col-resize transition-colors duration-300 ${
-                              header.column.getIsResizing() ? 'bg-color-neotam dark:bg-background-primary' : 'bg-transparent'
+                          onMouseDown={header.getResizeHandler()}
+                          onTouchStart={header.getResizeHandler()}
+                          className={`absolute right-0 top-0 h-full w-0.5 rounded-2xl cursor-col-resize transition-colors duration-300 ${header.column.getIsResizing() ? 'bg-color-neotam dark:bg-background-primary' : 'bg-transparent'
                             }`}
-                            style={{ userSelect: 'none', touchAction: 'none' }}
-                          />
+                          style={{ userSelect: 'none', touchAction: 'none' }}
+                        />
                       </th>
                     ))}
                   </tr>
@@ -416,8 +416,8 @@ const PivotTableChart = ({
                       return (
                         <td
                           key={cell.id}
-                          onClick={customCol[columnName]?.crossFilter ? () => onEvents({crossFilter: customCol[columnName]?.crossFilter, name: rawValue}) : undefined}
-                          className={`${customCol[columnName]?.crossFilter ? 'cursor-pointer' : ''} border-b border-r border-border-black-10 dark:border-background-white-15 px-2 max-lg:px-1.5 max-md:px-1 py-3 max-lg:py-2.5 max-md:py-2 ${activeTable && activeTable === rawValue ? 'opacity-100 text-color-neotam dark:text-background-primary' : (inActiveTable  && crossFilters?.main === keyChart) ? 'opacity-50 text-color-black-100 dark:text-color-white-90' : 'opacity-100 text-color-black-100 dark:text-color-white-90'} transition-all duration-300 ${cellIdx === 0 ? `sticky left-0 z-1 bg-background-light dark:bg-background-chart-dark before:content-[''] before:inset-0 before:absolute before:-z-2 ${idx%2===0 ? 'before:bg-background-black-4 dark:before:bg-background-white-8' : 'before:bg-background-light dark:before:bg-background-chart-dark'}` : ''} ${isNumeric || !rawValue ? 'text-right' : 'text-left'}`}
+                          onClick={customCol[columnName]?.crossFilter ? () => onEvents({ crossFilter: customCol[columnName]?.crossFilter, name: rawValue }) : undefined}
+                          className={`${customCol[columnName]?.crossFilter ? 'cursor-pointer' : ''} border-b border-r border-border-black-10 dark:border-background-white-15 px-2 max-lg:px-1.5 max-md:px-1 py-3 max-lg:py-2.5 max-md:py-2 ${activeTable && activeTable === rawValue ? 'opacity-100 text-color-neotam dark:text-background-primary' : (inActiveTable && crossFilters?.main === keyChart) ? 'opacity-50 text-color-black-100 dark:text-color-white-90' : 'opacity-100 text-color-black-100 dark:text-color-white-90'} transition-all duration-300 ${cellIdx === 0 ? `sticky left-0 z-1 bg-background-light dark:bg-background-chart-dark before:content-[''] before:inset-0 before:absolute before:-z-2 ${idx % 2 === 0 ? 'before:bg-background-black-4 dark:before:bg-background-white-8' : 'before:bg-background-light dark:before:bg-background-chart-dark'}` : ''} ${isNumeric || !rawValue ? 'text-right' : 'text-left'}`}
                           style={{
                             fontSize: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.td : '12px' : '10.5px',
                             fontWeight: cellIdx === 0 ? 600 : fontWeight.td,

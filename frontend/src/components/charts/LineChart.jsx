@@ -33,7 +33,8 @@ const LineChart = ({
   fullScreen = false,
   textOverflow = false,
   crossFilter = false,
-  keyChart = false
+  keyChart = false,
+  id = null
 }) => {
 
   const { appliedFilters, setAppliedFilters } = useDashboardFilters();
@@ -559,7 +560,7 @@ const LineChart = ({
 
   return (
     <div className='p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
-      <NameChart nameChart={nameChart} description={description} getChartData={getEChartsData} fullScreen={fullScreen} />
+      <NameChart nameChart={nameChart} description={description} getChartData={getEChartsData} fullScreen={fullScreen} id={id} />
       <ReactECharts
         ref={chartRef}
         onEvents={onEvents}

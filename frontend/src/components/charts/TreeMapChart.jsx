@@ -19,15 +19,16 @@ const TreeMapChart = ({
   colorSaturation = [0.3, 0.6],
   visibleMin = 300,
   childrenVisibleMin = 100,
-  crossFilter=false,
-  keyChart=false
+  crossFilter = false,
+  keyChart = false,
+  id = null
 }) => {
 
   const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
   const { appliedFilters, setAppliedFilters } = useDashboardFilters();
   const { crossFilters, setCrossFilters } = useDashboardCrossFilters();
-  
-  if(data==='isLoading') {
+
+  if (data === 'isLoading') {
     return (
       <div className='p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
         <NameChart nameChart={nameChart} description={description} />
@@ -47,7 +48,7 @@ const TreeMapChart = ({
 
   // TreeMapChart.jsx - getEChartsData giống PieChart (đơn giản & chính xác)
   const getEChartsData = useCallback(() => {
-    
+
     if (!chartRef.current) {
       console.log('❌ No chartRef');
       return { labels: [], series: [] };
@@ -56,16 +57,16 @@ const TreeMapChart = ({
     try {
       const instance = chartRef.current.getEchartsInstance();
       const option = instance.getOption();
-      
+
       // ✅ Giống PieChart: lấy legend selected + series data
       const legendSelected = option.legend?.[0]?.selected || {};
       const treeMapData = option.series?.[0]?.data || [];
-      
+
       // Filter theo legend (nếu có)
-      const visibleData = Array.isArray(treeMapData) 
+      const visibleData = Array.isArray(treeMapData)
         ? treeMapData.filter(item => legendSelected[item.name] !== false)
         : treeMapData;
-      
+
       // ✅ Transform thành {labels, series} format chuẩn Excel
       if (visibleData.length > 0) {
         // Flat TreeMap hoặc children level
@@ -74,14 +75,14 @@ const TreeMapChart = ({
           name: 'Value',
           data: visibleData.map(item => item.value || 0)
         }];
-        
+
         return { labels, series };
       }
-      
+
     } catch (error) {
       console.error('Lỗi TreeMap data:', error);
     }
-    
+
     // ✅ Fallback giống PieChart
     const { labels = [], series = [] } = data || {};
     return {
@@ -107,7 +108,7 @@ const TreeMapChart = ({
   // Transform data format
   const transformData = (inputData) => {
     const { labels = [], series = [] } = inputData;
-    
+
     if (series.length === 0) return [];
 
     // Nếu data đơn giản: 1 series với labels
@@ -156,17 +157,17 @@ const TreeMapChart = ({
     }
     return sum + (item.value || 0);
   }, 0);
-  
+
   const onEvents = {
     click: (params) => {
       if (params.componentType === 'series' && crossFilter) {
         const crossFilterValue = params.name;
-        
+
         const crossFilterValues = [crossFilterValue];
         if (appliedFilters?.[crossFilter]?.[0] !== crossFilterValues[0]) {
-          const transformed = {...appliedFilters, [crossFilter]: crossFilterValues};
+          const transformed = { ...appliedFilters, [crossFilter]: crossFilterValues };
           setAppliedFilters(transformed);
-          
+
           if (keyChart) {
             if (crossFilters) {
               setCrossFilters({
@@ -186,14 +187,14 @@ const TreeMapChart = ({
           setClick(true);
           setActiveTree(prev => (prev === crossFilterValue ? '' : crossFilterValue));
           setInActiveTree(prev => (activeTree === crossFilterValue ? false : true));
-        } else if(click) {
+        } else if (click) {
           setClick(false);
           const { [crossFilter]: removed, ...rest } = appliedFilters || {};
           setAppliedFilters(rest);
           if (keyChart) {
             if (crossFilters) {
               const { [keyChart]: _, main: __, ...rest } = crossFilters;
-              setCrossFilters({...rest, skipNext: keyChart});
+              setCrossFilters({ ...rest, skipNext: keyChart });
             }
           }
           setActiveTree(prev => (prev === crossFilterValue ? '' : crossFilterValue));
@@ -202,7 +203,7 @@ const TreeMapChart = ({
       }
     }
   };
-  
+
   const option = {
     tooltip: {
       trigger: 'item',
@@ -221,7 +222,7 @@ const TreeMapChart = ({
           .map(p => p.name)
           .join(' > ') || name;
 
-          // ✅ Tính % theo root node hoặc parent tùy depth
+        // ✅ Tính % theo root node hoặc parent tùy depth
         const depth = treePathInfo?.length ?? 1;
         let percent = 0;
 
@@ -237,7 +238,7 @@ const TreeMapChart = ({
         const formattedValue = value?.toLocaleString(undefined, {
           maximumFractionDigits: nameChart.includes('%') ? 2 : 0
         }) || 0;
-        
+
         return `
            <div style="padding: ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '12' : '11' : '4'}px ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '16' : '15' : '8'}px; box-shadow: 0 ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '4' : '3' : '2'}px ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '12' : '11' : '4'}px rgba(0,0,0,0.1);">
             <div style="font-weight: 600; font-size: ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '13' : '12' : '11'}px; color: rgba(0, 0, 0, 0.7);">
@@ -271,7 +272,7 @@ const TreeMapChart = ({
           color: 'rgba(255, 255, 255, 1)',
           formatter: (params) => {
             const { name, value } = params;
-            return `{name|${name}}\n{value|${nameChart.includes('%') ? formatNumber(value, {isPercent: true}) : !stateGlobals.screen_md ? value?.toLocaleString(undefined, { maximumFractionDigits: (nameChart.includes('%') ? 2 : 0) }) : formatKMB(params.value) || 0}}`;
+            return `{name|${name}}\n{value|${nameChart.includes('%') ? formatNumber(value, { isPercent: true }) : !stateGlobals.screen_md ? value?.toLocaleString(undefined, { maximumFractionDigits: (nameChart.includes('%') ? 2 : 0) }) : formatKMB(params.value) || 0}}`;
           },
           rich: {
             name: {
@@ -324,7 +325,7 @@ const TreeMapChart = ({
 
   return (
     <div className='p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
-      <NameChart nameChart={nameChart} description={description} getChartData={getEChartsData} />
+      <NameChart nameChart={nameChart} description={description} getChartData={getEChartsData} id={id} />
       <ReactECharts
         ref={chartRef}
         option={option}

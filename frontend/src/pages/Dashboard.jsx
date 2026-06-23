@@ -83,7 +83,7 @@ const DashboardContent = () => {
                       <div className='px-6 max-lg:px-5 max-md:px-4 pt-6 max-lg:pt-5 max-md:pt-4'>
                         <div className='w-full grid grid-cols-2 max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4'>
                           <NumberWithTrendChart nameChart={METRICS['rating%'].title} description={METRICS['rating%'].description} fontFamily={CUSTOM_CHART.allChart.fontFamily} fontSize={CUSTOM_CHART.numberWithTrendChart.fontSize} fontWeight={CUSTOM_CHART.numberWithTrendChart.fontWeight}
-                            data={!dashboard.isLoading.ratingPercentTrendNumberData ? transformNumberWithTrendData(dashboard.ratingPercentTrendNumberData?.data, dashboard.ratingPercentTrendNumberData?.colnames) : 'isLoading'} icon={METRICS.rating.icon} />
+                            data={!dashboard.isLoading.ratingPercentTrendNumberData ? transformNumberWithTrendData(dashboard.ratingPercentTrendNumberData?.data, dashboard.ratingPercentTrendNumberData?.colnames) : 'isLoading'} icon={METRICS.rating.icon} id='ratingPercentTrendNumberData' />
                           <div className="grid grid-cols-2 gap-6 max-lg:gap-5 max-md:gap-4">
                             {Object.values(METRICS).map(card => (
                               <NumberCard
@@ -94,6 +94,7 @@ const DashboardContent = () => {
                                 icon={card.icon}
                                 background={card.background}
                                 widthIcon={card.widthIcon}
+                                id={card.id}
                               />
                             ))}
                           </div>
@@ -120,6 +121,7 @@ const DashboardContent = () => {
                                       crossFilter='events'
                                       keyChart='barChannelEventData'
                                       stack={true}
+                                      id='ratingBarChannelEventData'
                                     />
                                   )
                                 },
@@ -140,6 +142,7 @@ const DashboardContent = () => {
                                       crossFilter='events'
                                       keyChart='barChannelEventData'
                                       stack={true}
+                                      id='aveReachBarChannelEventData'
                                     />
                                   )
                                 }
@@ -167,6 +170,7 @@ const DashboardContent = () => {
                                       crossFilter='events'
                                       keyChart='barDayEventData'
                                       stack={true}
+                                      id='ratingBarDayEventData'
                                     />
                                   )
                                 },
@@ -187,6 +191,7 @@ const DashboardContent = () => {
                                       crossFilter='events'
                                       keyChart='barDayEventData'
                                       stack={true}
+                                      id='aveReachBarDayEventData'
                                     />
                                   )
                                 }
@@ -215,7 +220,8 @@ const DashboardContent = () => {
                                       customCol={CUSTOM_CHART.tableChart.tableChartChannel.customColChannel}
                                       crossFilter={true}
                                       keyChart={'allTableChannelData'}
-                                      fullScreen={true} />
+                                      fullScreen={true}
+                                      id='allTableChannelData' />
                                   )
                                 },
                                 {
@@ -234,7 +240,8 @@ const DashboardContent = () => {
                                       customCol={CUSTOM_CHART.tableChart.tableChartChannel.customColChannelEvent}
                                       crossFilter={true}
                                       keyChart={'allTableChannelData'}
-                                      fullScreen={true} />
+                                      fullScreen={true}
+                                      id='allTableChannelEventData' />
                                   )
                                 }
                               ]} />
@@ -259,7 +266,8 @@ const DashboardContent = () => {
                                       displayName={false}
                                       customCol={CUSTOM_CHART.tableChart.tableChartArea.customColRegional}
                                       crossFilter={true}
-                                      keyChart={'ratingReachPercentTableRegionalData'} />
+                                      keyChart={'ratingReachPercentTableRegionalData'}
+                                      id='ratingReachPercentTableRegionalData' />
                                   )
                                 },
                                 {
@@ -277,7 +285,8 @@ const DashboardContent = () => {
                                       displayName={false}
                                       customCol={CUSTOM_CHART.tableChart.tableChartArea.customColProvince}
                                       crossFilter={true}
-                                      keyChart={'ratingReachPercentTableProvinceData'} />
+                                      keyChart={'ratingReachPercentTableProvinceData'}
+                                      id='ratingReachPercentTableProvinceData' />
                                   )
                                 }
                               ]} />
@@ -305,6 +314,7 @@ const DashboardContent = () => {
                                     colorZoom={CUSTOM_CHART.barChart.barChartArea.rating.colorZoom}
                                     crossFilter='regionals'
                                     keyChart='ratingBarRegionalData'
+                                    id='ratingBarRegionalData'
                                   />
                                 )
                               },
@@ -325,6 +335,7 @@ const DashboardContent = () => {
                                     colorZoom={CUSTOM_CHART.barChart.barChartArea.rating.colorZoom}
                                     crossFilter='keyCities'
                                     keyChart='ratingBarKeyCityData'
+                                    id='ratingBarKeyCityData'
                                   />
                                 )
                               },
@@ -345,6 +356,7 @@ const DashboardContent = () => {
                                     colorZoom={CUSTOM_CHART.barChart.barChartArea.rating.colorZoom}
                                     crossFilter='provinces'
                                     keyChart='ratingBarProvinceData'
+                                    id='ratingBarProvinceData'
                                   />
                                 )
                               },
@@ -363,6 +375,7 @@ const DashboardContent = () => {
                                     orientation={CUSTOM_CHART.barChart.barChartArea.orientation}
                                     displayName={false}
                                     colorZoom={CUSTOM_CHART.barChart.barChartArea.rating.colorZoom}
+                                    id='ratingBarOthersData'
                                   />
                                 )
                               }
@@ -388,6 +401,7 @@ const DashboardContent = () => {
                                     colorZoom={CUSTOM_CHART.barChart.barChartArea.aveReach.colorZoom}
                                     crossFilter='regionals'
                                     keyChart='aveReachBarRegionalData'
+                                    id='aveReachBarRegionalData'
                                   />
                                 )
                               },
@@ -408,6 +422,7 @@ const DashboardContent = () => {
                                     colorZoom={CUSTOM_CHART.barChart.barChartArea.aveReach.colorZoom}
                                     crossFilter='keyCities'
                                     keyChart='aveReachBarKeyCityData'
+                                    id='aveReachBarKeyCityData'
                                   />
                                 )
                               },
@@ -428,6 +443,7 @@ const DashboardContent = () => {
                                     colorZoom={CUSTOM_CHART.barChart.barChartArea.aveReach.colorZoom}
                                     crossFilter='provinces'
                                     keyChart='aveReachBarProvinceData'
+                                    id='aveReachBarProvinceData'
                                   />
                                 )
                               },
@@ -446,6 +462,7 @@ const DashboardContent = () => {
                                     orientation={CUSTOM_CHART.barChart.barChartArea.orientation}
                                     displayName={false}
                                     colorZoom={CUSTOM_CHART.barChart.barChartArea.aveReach.colorZoom}
+                                    id='aveReachBarOthersData'
                                   />
                                 )
                               }
@@ -466,7 +483,8 @@ const DashboardContent = () => {
                             colors={CUSTOM_CHART.mixedChart.mixedChartDate.colors}
                             barMaxWidth={CUSTOM_CHART.mixedChart.barMaxWidth}
                             barWidthPercent={CUSTOM_CHART.mixedChart.barWidthPercent}
-                            lastDataIndexActive={CUSTOM_CHART.mixedChart.mixedChartDate.lastDataIndexActive} />
+                            lastDataIndexActive={CUSTOM_CHART.mixedChart.mixedChartDate.lastDataIndexActive}
+                            id='ratingReachMixedDateData' />
                         </div>
                       </div>
                       <div className='px-6 max-lg:px-5 max-md:px-4 pb-6 max-lg:pb-5 max-md:pb-19 bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300'>
@@ -504,6 +522,7 @@ const DashboardContent = () => {
                                       barWidthPercent={CUSTOM_CHART.mixedChart.barWidthPercent}
                                       offsetLine={CUSTOM_CHART.mixedChart.mixedChartPercentTimeband.offsetLine}
                                       xAxisTitle={CUSTOM_CHART.mixedChart.mixedChartPercentTimeband.xAxisTitle}
+                                      id='ratingReachPercentMixedTimebandData'
                                     />
                                   </div>
                                   <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
@@ -524,6 +543,7 @@ const DashboardContent = () => {
                                       xAxisTitle={CUSTOM_CHART.lineChart.xAxisTitle}
                                       crossFilter={'channels'}
                                       keyChart={'ratingPercentLineTimebandChannelData'}
+                                      id='ratingPercentLineTimebandChannelData'
                                     />
                                   </div>
                                   <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
@@ -543,6 +563,7 @@ const DashboardContent = () => {
                                       showTopNSeries={CUSTOM_CHART.lineChart.showTopNSeries}
                                       crossFilter={'channels'}
                                       keyChart={'aveReachPercentLineDateChannelData'}
+                                      id='aveReachPercentLineDateChannelData'
                                     />
                                   </div>
                                   <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
@@ -562,6 +583,7 @@ const DashboardContent = () => {
                                       showTopNSeries={CUSTOM_CHART.lineChart.showTopNSeries}
                                       crossFilter={'channels'}
                                       keyChart={'ratingPercentLineDateChannelData'}
+                                      id='ratingPercentLineDateChannelData'
                                     />
                                   </div>
                                   <div className='w-full pb-6 max-lg:pb-5 max-md:pb-0'>
@@ -575,6 +597,7 @@ const DashboardContent = () => {
                                       colors={CUSTOM_CHART.treeMapChart.colorChannel}
                                       crossFilter={'channels'}
                                       keyChart={'aveReachPercentTreemapChannelData'}
+                                      id='aveReachPercentTreemapChannelData'
                                     />
                                   </div>
                                 </>
@@ -601,6 +624,7 @@ const DashboardContent = () => {
                                       KMB={CUSTOM_CHART.mixedChart.mixedChartTimeband.KMB}
                                       offsetLine={CUSTOM_CHART.mixedChart.mixedChartTimeband.offsetLine}
                                       xAxisTitle={CUSTOM_CHART.mixedChart.mixedChartTimeband.xAxisTitle}
+                                      id='ratingReachMixedTimebandData'
                                     />
                                   </div>
                                   <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
@@ -621,6 +645,7 @@ const DashboardContent = () => {
                                       xAxisTitle={CUSTOM_CHART.lineChart.xAxisTitle}
                                       crossFilter={'channels'}
                                       keyChart={'ratingLineTimebandChannelData'}
+                                      id='ratingLineTimebandChannelData'
                                     />
                                   </div>
                                   <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
@@ -641,6 +666,7 @@ const DashboardContent = () => {
                                       xAxisTitle={CUSTOM_CHART.lineChart.xAxisTitle}
                                       crossFilter={'channels'}
                                       keyChart={'aveReachLineTimebandChannelData'}
+                                      id='aveReachLineTimebandChannelData'
                                     />
                                   </div>
                                   <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
@@ -660,6 +686,7 @@ const DashboardContent = () => {
                                       showTopNSeries={CUSTOM_CHART.lineChart.showTopNSeries}
                                       crossFilter={'channels'}
                                       keyChart={'ratingLineDateChannelData'}
+                                      id='ratingLineDateChannelData'
                                     />
                                   </div>
                                   <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
@@ -679,6 +706,7 @@ const DashboardContent = () => {
                                       showTopNSeries={CUSTOM_CHART.lineChart.showTopNSeries}
                                       crossFilter={'channels'}
                                       keyChart={'aveReachLineDateChannelData'}
+                                      id='aveReachLineDateChannelData'
                                     />
                                   </div>
                                   <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
@@ -698,6 +726,7 @@ const DashboardContent = () => {
                                       showTopNSeries={CUSTOM_CHART.lineChart.lineChartTimebandDay.showTopNSeries}
                                       left={CUSTOM_CHART.lineChart.lineChartTimebandDay.left}
                                       xAxisTitle={CUSTOM_CHART.lineChart.xAxisTitle}
+                                      id='ratingLineTimebandDayData'
                                     />
                                   </div>
                                   <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
@@ -717,6 +746,7 @@ const DashboardContent = () => {
                                       showTopNSeries={CUSTOM_CHART.lineChart.lineChartTimebandDay.showTopNSeries}
                                       left={CUSTOM_CHART.lineChart.lineChartTimebandDay.left}
                                       xAxisTitle={CUSTOM_CHART.lineChart.xAxisTitle}
+                                      id='aveReachLineTimebandDayData'
                                     />
                                   </div>
                                   <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
@@ -738,6 +768,7 @@ const DashboardContent = () => {
                                       xAxisTitle={CUSTOM_CHART.lineChart.xAxisTitle}
                                       crossFilter={'regionals'}
                                       keyChart={'aveReachLineTimebandRegionalData'}
+                                      id='aveReachLineTimebandRegionalData'
                                     />
                                   </div>
                                   <div className='w-full pb-6 max-lg:pb-5 max-md:pb-0'>
@@ -751,6 +782,7 @@ const DashboardContent = () => {
                                       colors={CUSTOM_CHART.treeMapChart.colorChannel}
                                       crossFilter={'channels'}
                                       keyChart={'ratingTreemapChannelData'}
+                                      id='ratingTreemapChannelData'
                                     />
                                   </div>
                                 </>
@@ -785,6 +817,7 @@ const DashboardContent = () => {
                             innerRadius={CUSTOM_CHART.pieChart.innerRadius}
                             crossFilter='firstLevels'
                             keyChart='totalEventDurationPieFirstLevelData'
+                            id='totalEventDurationPieFirstLevelData'
                           />
                           <PieChart data={!dashboard.isLoading.totalViewDurationPieFirstLevelData ? transformPieChartData(dashboard.totalViewDurationPieFirstLevelData?.data, dashboard.totalViewDurationPieFirstLevelData?.colnames) : 'isLoading'}
                             height={CUSTOM_CHART.pieChart.height}
@@ -798,6 +831,7 @@ const DashboardContent = () => {
                             innerRadius={CUSTOM_CHART.pieChart.innerRadius}
                             crossFilter='firstLevels'
                             keyChart='totalViewDurationPieFirstLevelData'
+                            id='totalViewDurationPieFirstLevelData'
                           />
                         </div>
                         <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
@@ -819,7 +853,8 @@ const DashboardContent = () => {
                                     showPagination={true}
                                     customCol={CUSTOM_CHART.tableChart.tableProgramChannel.programArea.customCol}
                                     crossFilter={true}
-                                    keyChart={'ratingReachTableData'} />
+                                    keyChart={'ratingReachTableData'}
+                                    id='ratingReachTableRegionalData' />
                                 )
                               },
                               {
@@ -837,7 +872,8 @@ const DashboardContent = () => {
                                     showPagination={true}
                                     customCol={CUSTOM_CHART.tableChart.tableProgramChannel.programArea.customCol}
                                     crossFilter={true}
-                                    keyChart={'ratingReachTableData'} />
+                                    keyChart={'ratingReachTableData'}
+                                    id='ratingReachTableKeyCityData' />
                                 )
                               },
                               {
@@ -855,7 +891,8 @@ const DashboardContent = () => {
                                     showPagination={true}
                                     customCol={CUSTOM_CHART.tableChart.tableProgramChannel.programArea.customCol}
                                     crossFilter={true}
-                                    keyChart={'ratingReachTableData'} />
+                                    keyChart={'ratingReachTableData'}
+                                    id='ratingReachTableProvinceData' />
                                 )
                               },
                               {
@@ -873,7 +910,8 @@ const DashboardContent = () => {
                                     showPagination={true}
                                     customCol={CUSTOM_CHART.tableChart.tableProgramChannel.programArea.customCol}
                                     crossFilter={true}
-                                    keyChart={'ratingReachTableData'} />
+                                    keyChart={'ratingReachTableData'}
+                                    id='ratingReachTableOthersData' />
                                 )
                               }
                             ]} />
@@ -892,7 +930,8 @@ const DashboardContent = () => {
                             fullScreen={true}
                             customCol={CUSTOM_CHART.tableChart.tableProgramChannel.customCol}
                             crossFilter={true}
-                            keyChart={'allTableRankData'} />
+                            keyChart={'allTableRankData'}
+                            id='allTableRankData' />
                         </div>
                         <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
                           <TableChart data={!dashboard.isLoading.allTableDetailData ? transformTableChartData(dashboard.allTableDetailData?.data, dashboard.allTableDetailData?.colnames, CUSTOM_CHART.tableChart.tableProgramChannel.programDetail.columnSort) : 'isLoading'}
@@ -907,7 +946,8 @@ const DashboardContent = () => {
                             fullScreen={true}
                             customCol={CUSTOM_CHART.tableChart.tableProgramChannel.programDetail.customCol}
                             crossFilter={true}
-                            keyChart={'allTableDetailData'} />
+                            keyChart={'allTableDetailData'}
+                            id='allTableDetailData' />
                         </div>
                         <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
                           <TableChart data={!dashboard.isLoading.allTableEventData ? transformTableChartData(dashboard.allTableEventData?.data, dashboard.allTableEventData?.colnames, CUSTOM_CHART.tableChart.tableProgramChannel.programEvent.columnSort) : 'isLoading'}
@@ -922,7 +962,8 @@ const DashboardContent = () => {
                             fullScreen={true}
                             customCol={CUSTOM_CHART.tableChart.tableProgramChannel.customCol}
                             crossFilter={true}
-                            keyChart={'allTableEventData'} />
+                            keyChart={'allTableEventData'}
+                            id='allTableEventData' />
                         </div>
                       </div>
                       <div className='px-6 max-lg:px-5 max-md:px-4 pb-6 max-lg:pb-5 max-md:pb-19 bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300'>
@@ -958,6 +999,7 @@ const DashboardContent = () => {
                             fullScreen={true}
                             crossFilter={'channels'}
                             keyChart={'ratingLineMinuteChannelData'}
+                            id='ratingLineMinuteChannelData'
                           />
                         </div>
                         <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
@@ -981,6 +1023,7 @@ const DashboardContent = () => {
                             textOverflow={true}
                             crossFilter={'programs'}
                             keyChart={'ratingLineMinuteChannelOneDateData'}
+                            id='ratingLineMinuteChannelOneDateData'
                           />
                         </div>
                         <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
@@ -1001,6 +1044,7 @@ const DashboardContent = () => {
                             legendTop={CUSTOM_CHART.lineChart.lineChartMinuteChannel.legendTop}
                             fullScreen={true}
                             textOverflow={true}
+                            id='ratingLineMinuteChannelDatesData'
                           />
                         </div>
                       </div>

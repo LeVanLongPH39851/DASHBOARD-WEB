@@ -64,7 +64,13 @@ const NameChart = ({ nameChart, description, icon = false, width = '', height = 
   const handlefullScreen = (event) => {
     if (!event.currentTarget) return;
     const chartParent = event.currentTarget.closest('.shadow-component');
-    chartParent.classList.toggle('relative');
+    if (chartParent.classList.contains('relative')) {
+      chartParent.classList.remove('relative');
+      chartParent.classList.add('relative-remove');
+    } else if (chartParent.classList.contains('relative-remove')) {
+      chartParent.classList.add('relative');
+    }
+
     chartParent.classList.toggle('fixed');
     chartParent.classList.toggle('z-9999999');
     chartParent.classList.toggle('inset-0');

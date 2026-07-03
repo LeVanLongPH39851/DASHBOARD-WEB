@@ -58,6 +58,7 @@ export const LABEL = {
   'Thời gian bắt đầu': 'THỜI GIAN\nBẮT ĐẦU',
   'Đội tuyển': 'ĐỘI TUYỂN',
   'Số trận đấu': 'SỐ TRẬN ĐẤU',
+  'retention_rate': 'Tỷ lệ thời\ngian xem (%)',
 };
 
 export const LABEL_SPOT = {
@@ -311,5 +312,17 @@ export const RESULT = {
   "Colombia - Bồ Đào Nha": "Colombia (0-0) Bồ Đào Nha",
   "CHDC Congo - Uzbekistan": "CHDC Congo (3-1) Uzbekistan",
   "Panama - Anh": "Panama (0-2) Anh",
-  "Croatia - Ghana": "Croatia (2-1) Ghana"
+  "Croatia - Ghana": "Croatia (2-1) Ghana",
+  "Nam Phi - Canada": "Nam Phi (0-1) Canada",
+  "Brazil - Nhật Bản": "Brazil (2-1) Nhật Bản",
+  "Đức - Paraguay": "Đức (1 [3] - 1 [4]) Paraguay",
+  "Hà Lan - Morocco": "Hà Lan (1 [2] - 1 [3]) Morocco",
+  "Bờ Biển Ngà - Na Uy": "Bờ Biển Ngà (1-2) Na Uy",
+  "Pháp - Thụy Điển": "Pháp (3-0) Thụy Điển",
+  "Mexico - Ecuador": "Mexico (2-0) Ecuador",
+  "Anh - CHDC Congo": "Anh (2-1) CHDC Congo",
+  "Bỉ - Senegal": "Bỉ (3-2) Senegal",
+  "Mỹ - Bosnia & Herzegovina": "Mỹ (2-0) Bosnia & Herzegovina",
+  "Tây Ban Nha - Áo": "Tây Ban Nha (3-0) Áo",
+  "Bồ Đào Nha - Croatia": "Bồ Đào Nha (2-1) Croatia"
 }

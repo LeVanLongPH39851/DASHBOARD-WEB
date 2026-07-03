@@ -149,15 +149,16 @@ export const CUSTOM_CHART = {
       programRank: {
         name: 'XẾP HẠNG chương trình theo các chỉ số',
         description: false,
-        columnSort: ['program_name', 'channel_name_tvd', 'firstlevel_vn', 'name_vn', 'rating', 'rating%', 'ave_reach', 'reach%', 'minute_user_program']
+        columnSort: ['program_name', 'channel_name_tvd', 'firstlevel_vn', 'name_vn', 'rating', 'rating%', 'ave_reach', 'reach%', 'minute_user_program', 'retention_rate']
       },
       programDetail: {
         name: 'Chỉ số đo lường chi tiết từng chương trình',
         description: false,
-        columnSort: ['program_name', 'description', 'NGÀY PHÁT', 'start_time', 'end_time', 'channel_name_tvd', 'rating', 'rating%', 'ave_reach', 'reach%', 'minute_user_program'],
+        columnSort: ['program_name', 'description', 'NGÀY PHÁT', 'start_time', 'end_time', 'channel_name_tvd', 'rating', 'rating%', 'ave_reach', 'reach%', 'minute_user_program', 'retention_rate'],
         customCol: {
-          'CHƯƠNG TRÌNH': { weight: 600, sticky: true, minSize: 70, maxSize: 180, crossFilter: 'programs' },
+          'CHƯƠNG TRÌNH': { weight: 600, sticky: true, minSize: 90, maxSize: 200, crossFilter: 'programs' },
           'KÊNH': { minSize: 0, maxSize: 30, align: 'text-center', justify: 'justify-center', crossFilter: 'channels' },
+          'TÊN/TẬP': { minSize: 60, maxSize: 110 },
           'THỜI GIAN\nBẮT ĐẦU': { align: 'text-center', justify: 'justify-center' },
           'THỜI GIAN\nKẾT THÚC': { align: 'text-center', justify: 'justify-center' }
         }
@@ -165,7 +166,7 @@ export const CUSTOM_CHART = {
       programEvent: {
         name: 'Chỉ số đo lường chương trình theo Live/TimeShift',
         description: false,
-        columnSort: ['program_name', 'channel_name_tvd', 'event_category_name', 'rating', 'rating%', 'ave_reach', 'reach%', 'minute_user_program']
+        columnSort: ['program_name', 'channel_name_tvd', 'event_category_name', 'rating', 'rating%', 'ave_reach', 'reach%', 'minute_user_program', 'retention_rate']
       },
       programArea: {
         customCol: {
@@ -180,7 +181,7 @@ export const CUSTOM_CHART = {
       STT: true,
       pagination: true,
       customCol: {
-        'CHƯƠNG TRÌNH': { weight: 600, sticky: true, minSize: 70, maxSize: 180, crossFilter: 'programs' },
+        'CHƯƠNG TRÌNH': { weight: 600, sticky: true, minSize: 90, maxSize: 185, crossFilter: 'programs' },
         'KÊNH': { minSize: 0, maxSize: 30, crossFilter: 'channels' },
         'MÔ TẢ': { minSize: 70 },
         'THỂ LOẠI': { minSize: 70, crossFilter: 'firstLevels' },

@@ -46,7 +46,8 @@ export const allTableChartRankPayload = {
           "rating%",
           "ave_reach",
           "reach%",
-          "minute_user_program"
+          "minute_user_program",
+          "retention_rate"
         ],
         "orderby": [
           [
@@ -58,7 +59,9 @@ export const allTableChartRankPayload = {
         "row_limit": 50000,
         "series_limit": 0,
         "order_desc": true,
-        "url_params": {},
+        "url_params": {
+          "native_filters_key": "34EpRU-vY1W1JC64KW-cqLvpzjY0_AXC4OFAabwWoLMh8Q-KaRFnn68kXEvAB_lS"
+        },
         "custom_params": {},
         "custom_form_data": {},
         "post_processing": [],
@@ -69,7 +72,9 @@ export const allTableChartRankPayload = {
       "datasource": "209__table",
       "viz_type": "table",
       "slice_id": 643,
-      "url_params": {},
+      "url_params": {
+        "native_filters_key": "34EpRU-vY1W1JC64KW-cqLvpzjY0_AXC4OFAabwWoLMh8Q-KaRFnn68kXEvAB_lS"
+      },
       "query_mode": "aggregate",
       "groupby": [
         "channel_name_tvd",
@@ -85,7 +90,8 @@ export const allTableChartRankPayload = {
         "rating%",
         "ave_reach",
         "reach%",
-        "minute_user_program"
+        "minute_user_program",
+        "retention_rate"
       ],
       "all_columns": [],
       "percent_metrics": [],
@@ -188,9 +194,8 @@ export const allTableChartRankPayload = {
         }
       ],
       "comparison_type": "values",
-      "annotation_layers": [],
       "dashboards": [
-        87
+        50
       ],
       "extra_form_data": {
         "time_range": "DATEADD(DATETIME(\"today\"),-1, DAY) : DATEADD(DATETIME(\"today\"),-1, SECOND)"
@@ -245,18 +250,26 @@ export const allTableChartRankPayload = {
         "Chủ Nhật": "#FCC700"
       },
       "shared_label_colors": [
+        "Chủ Nhật",
         "Dành cho trẻ em",
         "Giáo dục - Đào tạo",
         "Giải trí",
         "Live",
         "Phim dài tập",
+        "Phim truyện",
         "Phim điện ảnh",
         "Sự kiện - Đặc biệt",
         "TSV",
         "Thể thao",
         "Thời sự - Chính luận",
+        "Thứ Ba",
+        "Thứ Bảy",
+        "Thứ Hai",
+        "Thứ Năm",
         "Thứ Sáu",
+        "Thứ Tư",
         "Tài liệu - Phóng sự",
+        "VTV Cần Thơ",
         "VTV1",
         "VTV10",
         "VTV2",
@@ -265,11 +278,14 @@ export const allTableChartRankPayload = {
         "VTV5",
         "VTV5 Tây Nam Bộ",
         "VTV5 Tây Nguyên",
+        "VTV6",
         "VTV7",
         "VTV8",
         "VTV9",
         "ave_reach",
+        "ave_reach_timeband",
         "rating",
+        "rating_timeband",
         "Đời sống"
       ],
       "map_label_colors": {},

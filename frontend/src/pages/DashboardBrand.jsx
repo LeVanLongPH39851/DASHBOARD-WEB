@@ -89,6 +89,7 @@ const DashboardContent = () => {
                             icon={METRIC_SPOTS.count.icon}
                             background={METRIC_SPOTS.count.background}
                             widthIcon={METRIC_SPOTS.count.widthIcon}
+                            refetch={() => dashboard.refetch('countCampaignNumberData')}
                           />
                           <NumberCard
                             title={'Số lượng Spot'}
@@ -97,6 +98,7 @@ const DashboardContent = () => {
                             icon={METRIC_SPOTS.count.icon}
                             background={METRIC_SPOTS.count.background}
                             widthIcon={METRIC_SPOTS.count.widthIcon}
+                            refetch={() => dashboard.refetch('countSpotNumberData')}
                           />
                           <NumberCard
                             title={'Thời lượng Spot (Phút)'}
@@ -105,6 +107,7 @@ const DashboardContent = () => {
                             icon={METRIC_SPOTS.duration.icon}
                             background={METRIC_SPOTS.duration.background}
                             widthIcon={METRIC_SPOTS.duration.widthIcon}
+                            refetch={() => dashboard.refetch('durationSpotNumberData')}
                           />
                           <NumberCard
                             title={'Tổng chi phí (Triệu VND)'}
@@ -113,6 +116,7 @@ const DashboardContent = () => {
                             icon={METRIC_SPOTS.spend_vnd.icon}
                             background={METRIC_SPOTS.spend_vnd.background}
                             widthIcon={METRIC_SPOTS.spend_vnd.widthIcon}
+                            refetch={() => dashboard.refetch('spendVNDNumberData')}
                           />
                           <NumberCard
                             title={'Reach'}
@@ -121,6 +125,7 @@ const DashboardContent = () => {
                             icon={METRICS.ave_reach.icon}
                             background={METRICS.ave_reach.background}
                             widthIcon={METRICS.ave_reach.widthIcon}
+                            refetch={() => dashboard.refetch('reachNumberData')}
                           />
                           <NumberCard
                             title={'Tần suất'}
@@ -129,6 +134,7 @@ const DashboardContent = () => {
                             icon={METRICS.rating.icon}
                             background={METRICS.rating.background}
                             widthIcon={METRICS.rating.widthIcon}
+                            refetch={() => dashboard.refetch('frequencyNumberData')}
                           />
                         </div>
                         <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
@@ -146,7 +152,7 @@ const DashboardContent = () => {
                               'Nhà quảng cáo': { minSize: 200, maxSize: 300 },
                               'Nhãn hàng': { minSize: 150, maxSize: 250 }
                             }}
-                            id='allTableBrandData' />
+                            refetch={() => dashboard.refetch('allTableBrandData')} />
                         </div>
                         <div className='w-full grid grid-cols-2 max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4'>
                           <TableChart data={!dashboard.isLoading.allTableDeviceData ? transformTableChartData(dashboard.allTableDeviceData?.data, dashboard.allTableDeviceData?.colnames) : 'isLoading'}
@@ -157,7 +163,7 @@ const DashboardContent = () => {
                             nameChart={'Báo cáo hiệu quả theo tuần'}
                             description={false}
                             showPagination={false}
-                            id='allTableDeviceData' />
+                            refetch={() => dashboard.refetch('allTableDeviceData')} />
                           <TableChart data={!dashboard.isLoading.allTablePlatformData ? transformTableChartData(dashboard.allTablePlatformData?.data, dashboard.allTablePlatformData?.colnames) : 'isLoading'}
                             height={'300px'}
                             fontSize={CUSTOM_CHART.tableChart.fontSize}
@@ -166,7 +172,7 @@ const DashboardContent = () => {
                             nameChart={'Thống kê truy cập và tỷ lệ tiếp cận theo thiết bị'}
                             description={false}
                             showPagination={false}
-                            id='allTablePlatformData' />
+                            refetch={() => dashboard.refetch('allTablePlatformData')} />
                         </div>
                         <div className='w-full grid grid-cols-2 max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4'>
                           <PieChart data={!dashboard.isLoading.viewPiePlatformData ? transformPieChartData(dashboard.viewPiePlatformData?.data, dashboard.viewPiePlatformData?.colnames) : 'isLoading'}
@@ -179,8 +185,8 @@ const DashboardContent = () => {
                             donut={CUSTOM_CHART.pieChart.donut}
                             innerRadius={CUSTOM_CHART.pieChart.innerRadius}
                             border={false}
-                            center={true} 
-                            id='viewPiePlatformData' />
+                            center={true}
+                            refetch={() => dashboard.refetch('viewPiePlatformData')} />
                           <BarChart data={!dashboard.isLoading.percentPlatformViewData ? transformBarChartData(dashboard.percentPlatformViewData?.data, dashboard.percentPlatformViewData?.colnames) : 'isLoading'}
                             height={CUSTOM_CHART.barChart.height}
                             fontSize={CUSTOM_CHART.barChart.fontSize}
@@ -189,8 +195,8 @@ const DashboardContent = () => {
                             nameChart={'Tỉ lệ xem hết quảng cáo'}
                             description={false}
                             orientation={''}
-                            showPercent={true} 
-                            id='percentPlatformViewData' />
+                            showPercent={true}
+                            refetch={() => dashboard.refetch('percentPlatformViewData')} />
                         </div>
                         <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
                           <TableChart data={!dashboard.isLoading.allTableTopProgramData ? transformTableChartData(dashboard.allTableTopProgramData?.data, dashboard.allTableTopProgramData?.colnames, null, [], LABEL_SPOT) : 'isLoading'}
@@ -206,7 +212,7 @@ const DashboardContent = () => {
                               'Chương trình': { minSize: 120, maxSize: 250 },
                               'Kênh': { minSize: 0, maxSize: 20 }
                             }}
-                            id='allTableTopProgramData' />
+                            refetch={() => dashboard.refetch('allTableTopProgramData')} />
                         </div>
                         <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
                           <TableChart data={!dashboard.isLoading.adcodeProgramData ? transformTableChartData(dashboard.adcodeProgramData?.data, dashboard.adcodeProgramData?.colnames, null, [], LABEL_SPOT) : 'isLoading'}
@@ -222,7 +228,7 @@ const DashboardContent = () => {
                               'Khung giờ': { minSize: 40, maxSize: 150 },
                               'Adcode': { minSize: 40, maxSize: 150 },
                             }}
-                            id='adcodeProgramData' />
+                            refetch={() => dashboard.refetch('adcodeProgramData')} />
                         </div>
                         <div className='w-full grid grid-cols-2 max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4'>
                           <PieChart data={!dashboard.isLoading.sosPieBrandGroupData ? transformPieChartData(dashboard.sosPieBrandGroupData?.data, dashboard.sosPieBrandGroupData?.colnames) : 'isLoading'}
@@ -235,8 +241,7 @@ const DashboardContent = () => {
                             donut={CUSTOM_CHART.pieChart.donut}
                             innerRadius={CUSTOM_CHART.pieChart.innerRadius}
                             border={false}
-                            id='sosPieBrandGroupData'
-                          />
+                            refetch={() => dashboard.refetch('sosPieBrandGroupData')} />
                           <PieChart data={!dashboard.isLoading.sosPieBrandProductData ? transformPieChartData(dashboard.sosPieBrandProductData?.data, dashboard.sosPieBrandProductData?.colnames) : 'isLoading'}
                             height={CUSTOM_CHART.pieChart.height}
                             fontSize={CUSTOM_CHART.pieChart.fontSize}
@@ -247,8 +252,7 @@ const DashboardContent = () => {
                             donut={CUSTOM_CHART.pieChart.donut}
                             innerRadius={CUSTOM_CHART.pieChart.innerRadius}
                             border={false}
-                            id='sosPieBrandProductData'
-                          />
+                            refetch={() => dashboard.refetch('sosPieBrandProductData')} />
                           <PieChart data={!dashboard.isLoading.sovPieBrandGroupData ? transformPieChartData(dashboard.sovPieBrandGroupData?.data, dashboard.sovPieBrandGroupData?.colnames) : 'isLoading'}
                             height={CUSTOM_CHART.pieChart.height}
                             fontSize={CUSTOM_CHART.pieChart.fontSize}
@@ -259,8 +263,7 @@ const DashboardContent = () => {
                             donut={CUSTOM_CHART.pieChart.donut}
                             innerRadius={CUSTOM_CHART.pieChart.innerRadius}
                             border={false}
-                            id='sovPieBrandGroupData'
-                          />
+                            refetch={() => dashboard.refetch('sovPieBrandGroupData')} />
                           <PieChart data={!dashboard.isLoading.sovPieBrandProductData ? transformPieChartData(dashboard.sovPieBrandProductData?.data, dashboard.sovPieBrandProductData?.colnames) : 'isLoading'}
                             height={CUSTOM_CHART.pieChart.height}
                             fontSize={CUSTOM_CHART.pieChart.fontSize}
@@ -271,8 +274,7 @@ const DashboardContent = () => {
                             donut={CUSTOM_CHART.pieChart.donut}
                             innerRadius={CUSTOM_CHART.pieChart.innerRadius}
                             border={false}
-                            id='sovPieBrandProductData'
-                          />
+                            refetch={() => dashboard.refetch('sovPieBrandProductData')} />
                         </div>
                         <div className='w-full grid grid-cols-2 max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4'>
                           <BarChart
@@ -286,8 +288,7 @@ const DashboardContent = () => {
                             description={false}
                             orientation={'horizontal'}
                             colorZoom='red'
-                            id='spendVNDBarChannelData'
-                          />
+                            refetch={() => dashboard.refetch('spendVNDBarChannelData')} />
                           <BarChart
                             data={!dashboard.isLoading.spendVNDBarFirstLevelData ? transformBarChartData(dashboard.spendVNDBarFirstLevelData?.data, dashboard.spendVNDBarFirstLevelData?.colnames) : 'isLoading'}
                             height={CUSTOM_CHART.barChart.height}
@@ -299,8 +300,7 @@ const DashboardContent = () => {
                             description={false}
                             orientation={'horizontal'}
                             colorZoom='red'
-                            id='spendVNDBarFirstLevelData'
-                          />
+                            refetch={() => dashboard.refetch('spendVNDBarFirstLevelData')} />
                           <BarChart
                             data={!dashboard.isLoading.reachBarChannelData ? transformBarChartData(dashboard.reachBarChannelData?.data, dashboard.reachBarChannelData?.colnames) : 'isLoading'}
                             height={CUSTOM_CHART.barChart.height}
@@ -312,8 +312,7 @@ const DashboardContent = () => {
                             description={false}
                             orientation={'horizontal'}
                             colorZoom='red'
-                            id='reachBarChannelData'
-                          />
+                            refetch={() => dashboard.refetch('reachBarChannelData')} />
                           <BarChart
                             data={!dashboard.isLoading.reachBarFirstLevelData ? transformBarChartData(dashboard.reachBarFirstLevelData?.data, dashboard.reachBarFirstLevelData?.colnames) : 'isLoading'}
                             height={CUSTOM_CHART.barChart.height}
@@ -325,8 +324,7 @@ const DashboardContent = () => {
                             description={false}
                             orientation={'horizontal'}
                             colorZoom='red'
-                            id='reachBarFirstLevelData'
-                          />
+                            refetch={() => dashboard.refetch('reachBarFirstLevelData')} />
                         </div>
                         <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
                           <BarChart
@@ -339,8 +337,7 @@ const DashboardContent = () => {
                             nameChart={'Xu hướng quảng cáo THEO NGÀY (Triệu VND)'}
                             description={false}
                             orientation={''}
-                            id='spendVNDBarDateData'
-                          />
+                            refetch={() => dashboard.refetch('spendVNDBarDateData')} />
                         </div>
                         <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
                           <BarChart
@@ -354,7 +351,7 @@ const DashboardContent = () => {
                             description={false}
                             orientation={''}
                             maxVisibleItems={true}
-                            id='spendVNDBarTimebandData' />
+                            refetch={() => dashboard.refetch('spendVNDBarTimebandData')} />
                         </div>
                         <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
                           <BarChart
@@ -367,8 +364,7 @@ const DashboardContent = () => {
                             description={false}
                             orientation={''}
                             formatterValue={2}
-                            id='grpBarBrandData'
-                          />
+                            refetch={() => dashboard.refetch('grpBarBrandData')} />
                         </div>
                       </div>
                       <div className='px-6 max-lg:px-5 max-md:px-4 pb-6 max-lg:pb-5 max-md:pb-19 bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300'>
@@ -409,7 +405,7 @@ const DashboardContent = () => {
                               'Nhãn hàng': { minSize: 180, maxSize: 240, overflow: true },
                               'Nhà quảng cáo': { minSize: 180, maxSize: 240, overflow: true }
                             }}
-                            id='allTableMonitoringData' />
+                            refetch={() => dashboard.refetch('allTableMonitoringData')} />
                         </div>
                       </div>
                       <div className='px-6 max-lg:px-5 max-md:px-4 pb-6 max-lg:pb-5 max-md:pb-19 bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300'>

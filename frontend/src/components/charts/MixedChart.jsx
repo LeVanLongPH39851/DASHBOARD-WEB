@@ -28,7 +28,7 @@ const MixedChart = ({
   KMB = false,
   offsetLine = -8,
   xAxisTitle = false,
-  id = null
+  refetch = undefined
 }) => {
 
   const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
@@ -381,7 +381,7 @@ const MixedChart = ({
 
   return (
     <div className='p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
-      <NameChart nameChart={nameChart} description={description} getChartData={getEChartsData} id={id} />
+      <NameChart nameChart={nameChart} description={description} getChartData={getEChartsData} refetch={refetch} />
       <ReactECharts
         ref={chartRef}
         option={option}

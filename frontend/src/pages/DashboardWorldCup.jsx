@@ -87,6 +87,7 @@ const DashboardContent = () => {
                                                         icon={METRIC_SPOTS.count.icon}
                                                         background={METRIC_SPOTS.count.background}
                                                         widthIcon={METRIC_SPOTS.count.widthIcon}
+                                                        refetch={() => dashboard.refetch('countMatchNumberData')}
                                                     />
                                                     <NumberCard
                                                         title={'Rating (000)'}
@@ -95,6 +96,7 @@ const DashboardContent = () => {
                                                         icon={METRICS.rating.icon}
                                                         background={METRICS.rating.background}
                                                         widthIcon={METRICS.rating.widthIcon}
+                                                        refetch={() => dashboard.refetch('ratingNumberData')}
                                                     />
                                                     <NumberCard
                                                         title={'Ave.Reach (000)'}
@@ -103,6 +105,7 @@ const DashboardContent = () => {
                                                         icon={METRICS.ave_reach.icon}
                                                         background={METRICS.ave_reach.background}
                                                         widthIcon={METRICS.ave_reach.widthIcon}
+                                                        refetch={() => dashboard.refetch('aveReachNumberData')}
                                                     />
                                                     <NumberCard
                                                         title={'Thời gian xem TB'}
@@ -111,6 +114,7 @@ const DashboardContent = () => {
                                                         icon={METRIC_SPOTS.duration.icon}
                                                         background={METRIC_SPOTS.duration.background}
                                                         widthIcon={METRIC_SPOTS.duration.widthIcon}
+                                                        refetch={() => dashboard.refetch('durationNumberData')}
                                                         suffix='phút'
                                                     />
                                                     <NumberCard
@@ -120,6 +124,7 @@ const DashboardContent = () => {
                                                         icon={METRICS.rating.icon}
                                                         background={METRICS.rating.background}
                                                         widthIcon={METRICS.rating.widthIcon}
+                                                        refetch={() => dashboard.refetch('ratingPercentNumberData')}
                                                     />
                                                     <NumberCard
                                                         title={'Reach (%)'}
@@ -128,6 +133,7 @@ const DashboardContent = () => {
                                                         icon={METRICS.ave_reach.icon}
                                                         background={METRICS.ave_reach.background}
                                                         widthIcon={METRICS.ave_reach.widthIcon}
+                                                        refetch={() => dashboard.refetch('aveReachPercentNumberData')}
                                                     />
                                                 </div>
                                                 <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
@@ -145,7 +151,7 @@ const DashboardContent = () => {
                                                         barMaxWidth={CUSTOM_CHART.mixedChart.barMaxWidth}
                                                         barWidthPercent={CUSTOM_CHART.mixedChart.barWidthPercent}
                                                         lastDataIndexActive={CUSTOM_CHART.mixedChart.mixedChartDate.lastDataIndexActive}
-                                                        id='ratingReachBarDateData' />
+                                                        refetch={() => dashboard.refetch('ratingReachBarDateData')} />
                                                 </div>
                                                 <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4 grid grid-cols-2 max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4'>
                                                     <BarChart
@@ -158,7 +164,7 @@ const DashboardContent = () => {
                                                         description={false}
                                                         orientation={'horizontal'}
                                                         formatterValue={2}
-                                                        id='ratingPercentBarChannelData'
+                                                        refetch={() => dashboard.refetch('ratingPercentBarChannelData')}
                                                     />
                                                     <div className={`p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}>
                                                         <NameChart nameChart={'Khán giả World Cup theo thị trường'} description={false} opacity={true} />
@@ -180,7 +186,7 @@ const DashboardContent = () => {
                                                                         }}
                                                                         displayName={false}
                                                                         showHeader={false}
-                                                                        id='allTableRegionalData' />
+                                                                        refetch={() => dashboard.refetch('allTableRegionalData')} />
                                                                 )
                                                             },
                                                             {
@@ -200,7 +206,7 @@ const DashboardContent = () => {
                                                                         }}
                                                                         displayName={false}
                                                                         showHeader={false}
-                                                                        id='allTableProvinceData' />
+                                                                        refetch={() => dashboard.refetch('allTableProvinceData')} />
                                                                 )
                                                             }
                                                         ]} />
@@ -222,7 +228,7 @@ const DashboardContent = () => {
                                                             'THỜI GIAN\nBẮT ĐẦU': { justify: 'justify-center', align: 'text-center' }
                                                         }}
                                                         showPagination={true}
-                                                        id='allTableDetailData' />
+                                                        refetch={() => dashboard.refetch('allTableDetailData')} />
                                                 </div>
                                                 <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
                                                     <TableChart data={!dashboard.isLoading.allTableTeamData ? transformTableChartData(dashboard.allTableTeamData?.data, dashboard.allTableTeamData?.colnames) : 'isLoading'}
@@ -240,7 +246,7 @@ const DashboardContent = () => {
                                                             },
                                                         }}
                                                         showPagination={true}
-                                                        id='allTableTeamData' />
+                                                        refetch={() => dashboard.refetch('allTableTeamData')} />
                                                 </div>
                                                 <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
                                                     <TableChart data={!dashboard.isLoading.allTableShareData ? transformTableChartData(dashboard.allTableShareData?.data, dashboard.allTableShareData?.colnames) : 'isLoading'}
@@ -256,7 +262,7 @@ const DashboardContent = () => {
                                                             'CHƯƠNG TRÌNH': { weight: 600, minSize: 100, maxSize: 200 },
                                                         }}
                                                         showPagination={true}
-                                                        id='allTableShareData' />
+                                                        refetch={() => dashboard.refetch('allTableShareData')} />
                                                 </div>
                                                 <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
                                                     <LineChart data={!dashboard.isLoading.ratingLineMinuteVTV6Data ? transformMixedChartData(dashboard.ratingLineMinuteVTV6Data?.data, 'event_hour_minute', dashboard.ratingLineMinuteVTV6Data?.colnames) : 'isLoading'}
@@ -275,7 +281,7 @@ const DashboardContent = () => {
                                                         legendTop={true}
                                                         fullScreen={true}
                                                         textOverflow={true}
-                                                        id='ratingLineMinuteVTV6Data'
+                                                        refetch={() => dashboard.refetch('ratingLineMinuteVTV6Data')}
                                                     />
                                                 </div>
                                             </div>

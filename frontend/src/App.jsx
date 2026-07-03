@@ -3,6 +3,7 @@ import Dashboard from './pages/Dashboard';
 import DashboardSpot from './pages/DashboardSpot';
 import DashboardBrand from './pages/DashboardBrand';
 import DashboardWorldCup from './pages/DashboardWorldCup';
+import BaoTri from './pages/BaoTri';
 import Login from "./pages/Login";
 
 const ProtectedRoute = ({ children }) => {
@@ -21,8 +22,8 @@ function App() {
       <Routes>
         {/* <Route path="/" element={<PublicRoute><Login /></PublicRoute>}/> */}
         <Route path="/rating" element={<Dashboard />} />
-        <Route path="/spot" element={<DashboardSpot />} />
-        <Route path="/brand" element={<DashboardBrand />} />
+        <Route path="/spot" element={<BaoTri />} />
+        <Route path="/brand" element={<BaoTri />} />
         <Route path="/world-cup-2026" element={<DashboardWorldCup />} />
       </Routes>
     </BrowserRouter>

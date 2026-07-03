@@ -216,7 +216,8 @@ const TableChart = ({
           if (typeof value === 'number' && !isNaN(value)) {
             const isPercent = columnId.includes('%');
             const isMinuteUserProgram = columnId.includes('Phút/người/\nlượt phát');
-            return isMinuteUserProgram ? value.toLocaleString(undefined, { maximumFractionDigits: 2 }) : formatNumber(value, { isPercent });
+            const isRetentionRate = columnId.includes('Tỷ lệ thời\ngian xem');
+            return isMinuteUserProgram ? value.toLocaleString(undefined, { maximumFractionDigits: 2 }) : isRetentionRate ? value.toLocaleString(undefined, { maximumFractionDigits: 0 }) + '%' : formatNumber(value, { isPercent });
           }
           return value || '';
         },

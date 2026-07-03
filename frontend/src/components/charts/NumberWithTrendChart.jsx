@@ -26,7 +26,7 @@ const NumberWithTrendChart = ({
   height = '',
   icon = false,
   suffix = '',
-  id = null
+  refetch = undefined
 }) => {
 
   if (data === 'isLoading') {
@@ -172,7 +172,7 @@ const NumberWithTrendChart = ({
 
   return (
     <div className={`p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component`} style={{ height: `${height}px` }}>
-      <NameChart nameChart={nameChart} description={description} icon={icon} width='w-5.5 max-lg:w-5' backgound='bg-background-succes-type-2 dark:bg-background-succes-type-2-dark' getChartData={getEChartsData} id={id} />
+      <NameChart nameChart={nameChart} description={description} icon={icon} width='w-5.5 max-lg:w-5' backgound='bg-background-succes-type-2 dark:bg-background-succes-type-2-dark' getChartData={getEChartsData} refetch={refetch} />
       <div className='flex items-center mb-2'><span className='text-color-black-100 dark:text-color-white-50 transition-all duration-300 font-normal text-sm max-lg:text-[13px] max-md:text-xs'>Ngày {currentDate}</span></div>
       <div className="mb-6 max-lg:mb-5 max-md:mb-4 flex items-center gap-3 max-lg:gap-2.5 max-md:gap-2">
         <h4 className='text-5xl max-lg:text-4xl max-md:text-4xl text-nowrap text-color-black-100 dark:text-color-white-90 transition-all duration-300 font-semibold'>{currentValue.toLocaleString(undefined, { maximumFractionDigits: (nameChart.includes('%') ? 2 : 0) })} {!stateGlobals.screen_md && suffix}</h4>

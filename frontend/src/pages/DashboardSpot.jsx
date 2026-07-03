@@ -95,6 +95,7 @@ const DashboardContent = () => {
                             icon={METRIC_SPOTS.spend_vnd.icon}
                             background={METRIC_SPOTS.spend_vnd.background}
                             widthIcon={METRIC_SPOTS.spend_vnd.widthIcon}
+                            refetch={() => dashboard.refetch('spendVNDNumberData')}
                           />
                           <NumberCard
                             title={'Chi phí (USD)'}
@@ -103,6 +104,7 @@ const DashboardContent = () => {
                             icon={METRIC_SPOTS.spend_usd.icon}
                             background={METRIC_SPOTS.spend_usd.background}
                             widthIcon={METRIC_SPOTS.spend_usd.widthIcon}
+                            refetch={() => dashboard.refetch('spendUSDNumberData')}
                           />
                           <NumberCard
                             title={'Số lượng Spot'}
@@ -111,6 +113,7 @@ const DashboardContent = () => {
                             icon={METRIC_SPOTS.count.icon}
                             background={METRIC_SPOTS.count.background}
                             widthIcon={METRIC_SPOTS.count.widthIcon}
+                            refetch={() => dashboard.refetch('countNumberData')}
                           />
                           <NumberCard
                             title={'Thời lượng Spot'}
@@ -120,6 +123,7 @@ const DashboardContent = () => {
                             background={METRIC_SPOTS.duration.background}
                             widthIcon={METRIC_SPOTS.duration.widthIcon}
                             suffix='phút'
+                            refetch={() => dashboard.refetch('durationNumberData')}
                           />
                         </div>
                         <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
@@ -140,7 +144,7 @@ const DashboardContent = () => {
                                     description={false}
                                     orientation={''}
                                     displayName={false}
-                                    id='spendVNDBarDateData'
+                                    refetch={() => dashboard.refetch('spendVNDBarDateData')}
                                   />
                                 )
                               },
@@ -159,7 +163,7 @@ const DashboardContent = () => {
                                     orientation={''}
                                     displayName={false}
                                     suffix={'$'}
-                                    id='spendUSDBarDateData'
+                                    refetch={() => dashboard.refetch('spendUSDBarDateData')}
                                   />
                                 )
                               }
@@ -184,7 +188,7 @@ const DashboardContent = () => {
                                     innerRadius={CUSTOM_CHART.pieChart.innerRadius}
                                     crossFilter='channels'
                                     keyChart='pieChannelData'
-                                    id='spendVNDPieChannelData'
+                                    refetch={() => dashboard.refetch('spendVNDPieChannelData')}
                                   />
                                   <PieChart data={!dashboard.isLoading.spendVNDPieFirstLevelData ? transformPieChartData(dashboard.spendVNDPieFirstLevelData?.data, dashboard.spendVNDPieFirstLevelData?.colnames) : 'isLoading'}
                                     height={CUSTOM_CHART.pieChart.height}
@@ -198,7 +202,7 @@ const DashboardContent = () => {
                                     innerRadius={CUSTOM_CHART.pieChart.innerRadius}
                                     crossFilter='firstLevels'
                                     keyChart='pieFirstLevelData'
-                                    id='spendVNDPieFirstLevelData'
+                                    refetch={() => dashboard.refetch('spendVNDPieFirstLevelData')}
                                   />
                                 </div>
                               )
@@ -219,7 +223,7 @@ const DashboardContent = () => {
                                     innerRadius={CUSTOM_CHART.pieChart.innerRadius}
                                     crossFilter='channels'
                                     keyChart='pieChannelData'
-                                    id='countPieChannelData'
+                                    refetch={() => dashboard.refetch('countPieChannelData')}
                                   />
                                   <PieChart data={!dashboard.isLoading.countPieFirstLevelData ? transformPieChartData(dashboard.countPieFirstLevelData?.data, dashboard.countPieFirstLevelData?.colnames) : 'isLoading'}
                                     height={CUSTOM_CHART.pieChart.height}
@@ -233,7 +237,7 @@ const DashboardContent = () => {
                                     innerRadius={CUSTOM_CHART.pieChart.innerRadius}
                                     crossFilter='firstLevels'
                                     keyChart='pieFirstLevelData'
-                                    id='countPieFirstLevelData'
+                                    refetch={() => dashboard.refetch('countPieFirstLevelData')}
                                   />
                                 </div>
                               )
@@ -256,7 +260,7 @@ const DashboardContent = () => {
                                     formatterValue={2}
                                     crossFilter='channels'
                                     keyChart='pieChannelData'
-                                    id='durationPieChannelData'
+                                    refetch={() => dashboard.refetch('durationPieChannelData')}
                                   />
                                   <PieChart data={!dashboard.isLoading.durationPieFirstLevelData ? transformPieChartData(dashboard.durationPieFirstLevelData?.data, dashboard.durationPieFirstLevelData?.colnames) : 'isLoading'}
                                     height={CUSTOM_CHART.pieChart.height}
@@ -272,7 +276,7 @@ const DashboardContent = () => {
                                     formatterValue={2}
                                     crossFilter='firstLevels'
                                     keyChart='pieFirstLevelData'
-                                    id='durationPieFirstLevelData'
+                                    refetch={() => dashboard.refetch('durationPieFirstLevelData')}
                                   />
                                 </div>
                               )
@@ -294,7 +298,7 @@ const DashboardContent = () => {
                                     formatterValue={2}
                                     crossFilter='channels'
                                     keyChart='pieChannelData'
-                                    id='grpPieChannelData'
+                                    refetch={() => dashboard.refetch('grpPieChannelData')}
                                   />
                                   <PieChart data={!dashboard.isLoading.durationPieLengthData ? transformPieChartData(dashboard.durationPieLengthData?.data, dashboard.durationPieLengthData?.colnames) : 'isLoading'}
                                     height={CUSTOM_CHART.pieChart.height}
@@ -306,7 +310,7 @@ const DashboardContent = () => {
                                     colors={CUSTOM_CHART.pieChart.colorDuration}
                                     donut={CUSTOM_CHART.pieChart.donut}
                                     innerRadius={CUSTOM_CHART.pieChart.innerRadius}
-                                    id='durationPieLengthData'
+                                    refetch={() => dashboard.refetch('durationPieLengthData')}
                                   />
                                 </div>
                               )
@@ -335,7 +339,7 @@ const DashboardContent = () => {
                                     heightPlus={35}
                                     crossFilter='advertisers'
                                     keyChart='barAdvertiserData'
-                                    id='spendVNDBarAdvertiserData'
+                                    refetch={() => dashboard.refetch('spendVNDBarAdvertiserData')}
                                   />
                                 )
                               },
@@ -358,7 +362,7 @@ const DashboardContent = () => {
                                     heightPlus={35}
                                     crossFilter='advertisers'
                                     keyChart='barAdvertiserData'
-                                    id='spendUSDBarAdvertiserData'
+                                    refetch={() => dashboard.refetch('spendUSDBarAdvertiserData')}
                                   />
                                 )
                               },
@@ -380,7 +384,7 @@ const DashboardContent = () => {
                                     heightPlus={35}
                                     crossFilter='advertisers'
                                     keyChart='barAdvertiserData'
-                                    id='countBarAdvertiserData'
+                                    refetch={() => dashboard.refetch('countBarAdvertiserData')}
                                   />
                                 )
                               }
@@ -410,7 +414,7 @@ const DashboardContent = () => {
                                     crossFilter='channels'
                                     keyChart='barAdvertiserChannelData'
                                     stack={true}
-                                    id='spendVNDBarAdvertiserChannelData'
+                                    refetch={() => dashboard.refetch('spendVNDBarAdvertiserChannelData')}
                                   />
                                 )
                               },
@@ -434,7 +438,7 @@ const DashboardContent = () => {
                                     crossFilter='channels'
                                     keyChart='barAdvertiserChannelData'
                                     stack={true}
-                                    id='spendUSDBarAdvertiserChannelData'
+                                    refetch={() => dashboard.refetch('spendUSDBarAdvertiserChannelData')}
                                   />
                                 )
                               },
@@ -457,7 +461,7 @@ const DashboardContent = () => {
                                     crossFilter='channels'
                                     keyChart='barAdvertiserChannelData'
                                     stack={true}
-                                    id='countBarAdvertiserChannelData'
+                                    refetch={() => dashboard.refetch('countBarAdvertiserChannelData')}
                                   />
                                 )
                               }
@@ -480,7 +484,7 @@ const DashboardContent = () => {
                                   showPagination={false}
                                   crossFilter={true}
                                   keyChart='top10BrandData'
-                                  id='top10BrandData'
+                                  refetch={() => dashboard.refetch('top10BrandData')}
                                   customCol={{ 'Nhãn': { minSize: 100, maxSize: 170, weight: 600, sticky: true, crossFilter: 'brands' }, 'Chi phí (USD)': { suffix: '$' } }} />
                               )
                             },
@@ -498,7 +502,7 @@ const DashboardContent = () => {
                                   showPagination={false}
                                   crossFilter={true}
                                   keyChart='top10ProductData'
-                                  id='top10ProductData'
+                                  refetch={() => dashboard.refetch('top10ProductData')}
                                   customCol={{ 'Sản phẩm': { minSize: 100, maxSize: 170, weight: 600, sticky: true, crossFilter: 'products' }, 'Chi phí (USD)': { suffix: '$' } }} />
                               )
                             },
@@ -516,7 +520,7 @@ const DashboardContent = () => {
                                   showPagination={false}
                                   crossFilter={true}
                                   keyChart={'top10CampaignData'}
-                                  id='top10CampaignData'
+                                  refetch={() => dashboard.refetch('top10CampaignData')}
                                   customCol={{ 'Chiến dịch': { minSize: 100, maxSize: 170, weight: 600, sticky: true, crossFilter: 'campaigns' }, 'Chi phí (USD)': { suffix: '$' } }} />
                               )
                             }
@@ -550,7 +554,7 @@ const DashboardContent = () => {
                             maxVisibleItems={true}
                             crossFilter='timebands'
                             keyChart='spendVNDBarTimebandData'
-                            id='spendVNDBarTimebandData'
+                            refetch={() => dashboard.refetch('spendVNDBarTimebandData')}
                           />
                         </div>
                         <div className='w-full grid grid-cols-10 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4'>
@@ -566,7 +570,7 @@ const DashboardContent = () => {
                               showPagination={false}
                               crossFilter={true}
                               keyChart='adcodeProgramData'
-                              id='adcodeProgramData'
+                              refetch={() => dashboard.refetch('adcodeProgramData')}
                               customCol={{ 'Adcode': { weight: 600, crossFilter: 'adCodes' }, 'Khung giờ': { crossFilter: 'timebands' }, 'Chương trình': { minSize: 100, maxSize: 170, crossFilter: 'programs' }, 'Kênh': { minSize: 0, maxSize: 10, crossFilter: 'channels' } }} />
                           </div>
                           <div className='col-span-4 max-md:col-span-10'>
@@ -581,7 +585,7 @@ const DashboardContent = () => {
                               showPagination={false}
                               crossFilter={true}
                               keyChart='adcodeProductData'
-                              id='adcodeProductData'
+                              refetch={() => dashboard.refetch('adcodeProductData')}
                               customCol={{ 'Sản phẩm': { weight: 600, crossFilter: 'products' } }} />
                           </div>
                         </div>
@@ -604,7 +608,7 @@ const DashboardContent = () => {
                               customCol={{ 'channel_name_tvd': { crossFilter: 'channels' } }}
                               crossFilter={true}
                               keyChart='spendVNDPivotChannelFirstLevelData'
-                              id='spendVNDPivotChannelFirstLevelData'
+                              refetch={() => dashboard.refetch('spendVNDPivotChannelFirstLevelData')}
                             />
                           </div>
                           <div className='col-span-4 max-md:col-span-10 grid'>
@@ -624,7 +628,7 @@ const DashboardContent = () => {
                               donut={CUSTOM_CHART.pieChart.donut}
                               innerRadius={CUSTOM_CHART.pieChart.innerRadius}
                               legendHorizontal={true}
-                              id='countPieTimebandData'
+                              refetch={() => dashboard.refetch('countPieTimebandData')}
                             />
                           </div>
                         </div>
@@ -643,6 +647,7 @@ const DashboardContent = () => {
                             heightPlus={35}
                             crossFilter='programs'
                             keyChart='spendVNDBarProgramData'
+                            refetch={() => dashboard.refetch('spendVNDBarProgramData')}
                           />
                         </div>
                         <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
@@ -658,6 +663,7 @@ const DashboardContent = () => {
                             orientation={''}
                             crossFilter='channels'
                             keyChart='spendVNDBarChannelData'
+                            refetch={() => dashboard.refetch('spendVNDBarChannelData')}
                           />
                         </div>
                         <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
@@ -679,6 +685,7 @@ const DashboardContent = () => {
                             customCol={{ 'channel_name_tvd': { crossFilter: 'channels' } }}
                             crossFilter={true}
                             keyChart='spendVNDPivotChannelTimebandData'
+                            refetch={() => dashboard.refetch('spendVNDPivotChannelTimebandData')}
                           />
                         </div>
                         <div className='w-full'>
@@ -693,6 +700,7 @@ const DashboardContent = () => {
                             showPagination={false}
                             crossFilter={true}
                             keyChart='spendVNDTableAdvertiserData'
+                            refetch={() => dashboard.refetch('spendVNDTableAdvertiserData')}
                             customCol={{ 'Nhà quảng cáo': { weight: 600, crossFilter: 'advertisers' } }} />
                         </div>
                       </div>
@@ -734,6 +742,7 @@ const DashboardContent = () => {
                                     customCol={{ 'campaign_name': { crossFilter: 'campaigns' } }}
                                     crossFilter={true}
                                     keyChart='pivotCampaignWeekData'
+                                    refetch={() => dashboard.refetch('grpPivotCampaignWeekData')}
                                   />
                                 )
                               },
@@ -757,6 +766,7 @@ const DashboardContent = () => {
                                     customCol={{ 'campaign_name': { crossFilter: 'campaigns' } }}
                                     crossFilter={true}
                                     keyChart='pivotCampaignWeekData'
+                                    refetch={() => dashboard.refetch('reachPivotCampaignWeekData')}
                                   />
                                 )
                               },
@@ -780,6 +790,7 @@ const DashboardContent = () => {
                                     customCol={{ 'campaign_name': { crossFilter: 'campaigns' } }}
                                     crossFilter={true}
                                     keyChart='pivotCampaignWeekData'
+                                    refetch={() => dashboard.refetch('countPivotCampaignWeekData')}
                                   />
                                 )
                               }
@@ -801,6 +812,7 @@ const DashboardContent = () => {
                               stack={true}
                               crossFilter='brands'
                               keyChart='grpBarRegionalBrandData'
+                              refetch={() => dashboard.refetch('grpBarRegionalBrandData')}
                             />
                           </div>
                           <div className='w-[40%] max-md:w-full'>
@@ -817,6 +829,7 @@ const DashboardContent = () => {
                               stack={true}
                               crossFilter='brands'
                               keyChart='grpBarWeekBrandData'
+                              refetch={() => dashboard.refetch('grpBarWeekBrandData')}
                             />
                           </div>
                         </div>
@@ -840,6 +853,7 @@ const DashboardContent = () => {
                                     stack={true}
                                     crossFilter='channels'
                                     keyChart='barBrandChannelData'
+                                    refetch={() => dashboard.refetch('spendVNDBarBrandChannelData')}
                                   />
                                   <BarChart
                                     data={!dashboard.isLoading.spendVNDBarBrandTimebandData ? transformBarChartData(dashboard.spendVNDBarBrandTimebandData?.data, dashboard.spendVNDBarBrandTimebandData?.colnames) : 'isLoading'}
@@ -852,6 +866,7 @@ const DashboardContent = () => {
                                     description={false}
                                     orientation={'horizontal'}
                                     colorZoom='red'
+                                    refetch={() => dashboard.refetch('spendVNDBarBrandTimebandData')}
                                   />
                                   <BarChart
                                     data={!dashboard.isLoading.spendVNDBarBrandFirstLevelData ? transformBarChartData(dashboard.spendVNDBarBrandFirstLevelData?.data, dashboard.spendVNDBarBrandFirstLevelData?.colnames) : 'isLoading'}
@@ -867,6 +882,7 @@ const DashboardContent = () => {
                                     stack={true}
                                     crossFilter='firstLevels'
                                     keyChart='barBrandFirstLevelData'
+                                    refetch={() => dashboard.refetch('spendVNDBarBrandFirstLevelData')}
                                   />
                                   <PieChart data={!dashboard.isLoading.spendVNDPieAdvertiserData ? transformPieChartData(dashboard.spendVNDPieAdvertiserData?.data, dashboard.spendVNDPieAdvertiserData?.colnames) : 'isLoading'}
                                     height={CUSTOM_CHART.pieChart.height}
@@ -878,6 +894,7 @@ const DashboardContent = () => {
                                     donut={CUSTOM_CHART.pieChart.donut}
                                     innerRadius={CUSTOM_CHART.pieChart.innerRadius}
                                     border={false}
+                                    refetch={() => dashboard.refetch('spendVNDPieAdvertiserData')}
                                   />
                                 </div>
                               )
@@ -901,6 +918,7 @@ const DashboardContent = () => {
                                     stack={true}
                                     crossFilter='channels'
                                     keyChart='barBrandChannelData'
+                                    refetch={() => dashboard.refetch('grpBarBrandChannelData')}
                                   />
                                   <BarChart
                                     data={!dashboard.isLoading.grpBarBrandTimebandData ? transformBarChartData(dashboard.grpBarBrandTimebandData?.data, dashboard.grpBarBrandTimebandData?.colnames) : 'isLoading'}
@@ -914,6 +932,7 @@ const DashboardContent = () => {
                                     orientation={'horizontal'}
                                     colorZoom='red'
                                     formatterValue={2}
+                                    refetch={() => dashboard.refetch('grpBarBrandTimebandData')}
                                   />
                                   <BarChart
                                     data={!dashboard.isLoading.grpBarBrandFirstLevelData ? transformBarChartData(dashboard.grpBarBrandFirstLevelData?.data, dashboard.grpBarBrandFirstLevelData?.colnames) : 'isLoading'}
@@ -930,6 +949,7 @@ const DashboardContent = () => {
                                     stack={true}
                                     crossFilter='firstLevels'
                                     keyChart='barBrandFirstLevelData'
+                                    refetch={() => dashboard.refetch('grpBarBrandFirstLevelData')}
                                   />
                                   <PieChart data={!dashboard.isLoading.grpPieAdvertiserData ? transformPieChartData(dashboard.grpPieAdvertiserData?.data, dashboard.grpPieAdvertiserData?.colnames) : 'isLoading'}
                                     height={CUSTOM_CHART.pieChart.height}
@@ -942,6 +962,7 @@ const DashboardContent = () => {
                                     innerRadius={CUSTOM_CHART.pieChart.innerRadius}
                                     border={false}
                                     formatterValue={2}
+                                    refetch={() => dashboard.refetch('grpPieAdvertiserData')}
                                   />
                                 </div>
                               )
@@ -964,6 +985,7 @@ const DashboardContent = () => {
                                     stack={true}
                                     crossFilter='channels'
                                     keyChart='barBrandChannelData'
+                                    refetch={() => dashboard.refetch('reachBarBrandChannelData')}
                                   />
                                   <BarChart
                                     data={!dashboard.isLoading.reachBarBrandTimebandData ? transformBarChartData(dashboard.reachBarBrandTimebandData?.data, dashboard.reachBarBrandTimebandData?.colnames) : 'isLoading'}
@@ -976,6 +998,7 @@ const DashboardContent = () => {
                                     description={false}
                                     orientation={'horizontal'}
                                     colorZoom='red'
+                                    refetch={() => dashboard.refetch('reachBarBrandTimebandData')}
                                   />
                                   <BarChart
                                     data={!dashboard.isLoading.reachBarBrandFirstLevelData ? transformBarChartData(dashboard.reachBarBrandFirstLevelData?.data, dashboard.reachBarBrandFirstLevelData?.colnames) : 'isLoading'}
@@ -991,6 +1014,7 @@ const DashboardContent = () => {
                                     stack={true}
                                     crossFilter='firstLevels'
                                     keyChart='barBrandFirstLevelData'
+                                    refetch={() => dashboard.refetch('reachBarBrandFirstLevelData')}
                                   />
                                   <PieChart data={!dashboard.isLoading.reachPieAdvertiserData ? transformPieChartData(dashboard.reachPieAdvertiserData?.data, dashboard.reachPieAdvertiserData?.colnames) : 'isLoading'}
                                     height={CUSTOM_CHART.pieChart.height}
@@ -1002,6 +1026,7 @@ const DashboardContent = () => {
                                     donut={CUSTOM_CHART.pieChart.donut}
                                     innerRadius={CUSTOM_CHART.pieChart.innerRadius}
                                     border={false}
+                                    refetch={() => dashboard.refetch('reachPieAdvertiserData')}
                                   />
                                 </div>
                               )
@@ -1020,7 +1045,8 @@ const DashboardContent = () => {
                             showPagination={false}
                             crossFilter={true}
                             keyChart='allTableBrandData'
-                            customCol={{ 'Nhãn': { weight: 600, minSize: 100, maxSize: 170, sticky: true, crossFilter: 'brands' } }} />
+                            customCol={{ 'Nhãn': { weight: 600, minSize: 100, maxSize: 170, sticky: true, crossFilter: 'brands' } }}
+                            refetch={() => dashboard.refetch('allTableBrandData')} />
                         </div>
                         <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
                           <TableChart data={!dashboard.isLoading.allTableBrandProgramData ? transformTableChartData(dashboard.allTableBrandProgramData?.data, dashboard.allTableBrandProgramData?.colnames, null, [], LABEL_SPOT) : 'isLoading'}
@@ -1034,6 +1060,7 @@ const DashboardContent = () => {
                             showPagination={false}
                             crossFilter={true}
                             keyChart='allTableBrandProgramData'
+                            refetch={() => dashboard.refetch('allTableBrandProgramData')}
                             customCol={{ 'Nhãn': { weight: 600, minSize: 100, maxSize: 170, sticky: true, crossFilter: 'brands' }, 'Chương trình': { minSize: 100, maxSize: 170, crossFilter: 'programs' } }} />
                         </div>
                         <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
@@ -1045,7 +1072,8 @@ const DashboardContent = () => {
                             nameChart={'Tỉ lệ tiếp cận Reach (1+, 2+, 3+) theo ngày'}
                             description={false}
                             showSTT={false}
-                            customCol={{ 'Ngày': { sticky: true } }} />
+                            customCol={{ 'Ngày': { sticky: true } }}
+                            refetch={() => dashboard.refetch('allTableDeviceData')} />
                         </div>
                       </div>
                       <div className='px-6 max-lg:px-5 max-md:px-4 pb-6 max-lg:pb-5 max-md:pb-19 bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300'>
@@ -1073,6 +1101,7 @@ const DashboardContent = () => {
                             fullScreen={true}
                             crossFilter={true}
                             keyChart='allTableMonitoringData'
+                            refetch={() => dashboard.refetch('allTableMonitoringData')}
                             customCol={{
                               'Tuần': { align: 'text-center', justify: 'justify-center' },
                               'Chương trình': { minSize: 200, maxSize: 300, overflow: true, justify: 'justify-center', align: 'text-center', weight: 600, crossFilter: 'programs' },

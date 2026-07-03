@@ -58,15 +58,17 @@ const HOOKS = [
 export const useDashboardData = () => {
   const hookResults = HOOKS.map(({ hook }) => hook());
   const hasLoggedRef = useRef(false);
-  
+
   const data = {};
   const isLoading = {};
   const hasError = {};
+  const refetchMap = {};
 
   HOOKS.forEach(({ dataKey }, index) => {
     data[dataKey] = hookResults[index].data;
     isLoading[dataKey] = hookResults[index].loading;
     hasError[dataKey] = hookResults[index].error;
+    refetchMap[dataKey] = hookResults[index].refetch;
   });
 
   const anyLoading = Object.values(isLoading).some(Boolean);
@@ -81,9 +83,19 @@ export const useDashboardData = () => {
     }
   }, [allDataLoaded, anyLoading]);
 
+  const refetch = (key) => {
+    if (!refetchMap[key]) {
+      console.warn(`Không tìm thấy API với key: ${key}`);
+      return Promise.resolve(null);
+    }
+
+    return refetchMap[key]();
+  };
+
   return {
     ...data,
     isLoading,
-    hasError
+    hasError,
+    refetch
   };
 };

@@ -52,7 +52,7 @@ const TableChart = ({
   crossFilter = false,
   keyChart = false,
   showHeader = true,
-  id = null
+  refetch = undefined
 }) => {
 
   const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
@@ -62,7 +62,7 @@ const TableChart = ({
   if (data === 'isLoading') {
     return (
       <div className={`${displayName ? 'p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : ''}`} style={{ fontFamily }}>
-        <NameChart nameChart={nameChart} description={description} display={displayName} fullScreen={fullScreen} id={id} />
+        <NameChart nameChart={nameChart} description={description} display={displayName} fullScreen={fullScreen} />
         <div className='h-13 max-lg:h-11 max-md:h-9.25'></div>
         {window.location.pathname.includes('/world-cup-2026') ? <LoadingWorldCup height={!stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : stateGlobals.currentTab == 'program' ? '400px' : stateGlobals.currentTab == 'ad_monitoring_report' ? '500px' : '350px' : stateGlobals.currentTab == 'program' ? '300px' : stateGlobals.currentTab == 'ad_monitoring_report' ? '600px' : '240px'} /> : <Loading height={!stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : stateGlobals.currentTab == 'program' ? '400px' : stateGlobals.currentTab == 'ad_monitoring_report' ? '500px' : '350px' : stateGlobals.currentTab == 'program' ? '300px' : stateGlobals.currentTab == 'ad_monitoring_report' ? '600px' : '240px'} />}
       </div>
@@ -392,7 +392,7 @@ const TableChart = ({
 
   return (
     <div className={`${displayName ? `p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component` : ''}`} style={{ fontFamily }}>
-      <NameChart nameChart={nameChart} description={description} display={displayName} getChartData={getEChartsData} table={true} fullScreen={fullScreen} />
+      <NameChart nameChart={nameChart} description={description} display={displayName} getChartData={getEChartsData} table={true} fullScreen={fullScreen} refetch={refetch} />
       {showHeader && <div className="flex justify-between items-center mb-3 max-lg:mb-2 max-md:mb-1 searchTable">
         <div className='flex items-center gap-2 max-lg:gap-1.5 max-md:gap-1'>
           <div className={`relative`}>

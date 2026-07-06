@@ -1,8 +1,8 @@
 export const reachBarChartChannelPayload = {
-    url: `${import.meta.env.VITE_API_DOMAIN}/api/v1/chart/data?form_data=%7B%22slice_id%22%3A844%7D&dashboard_id=54`,
+    url: `${import.meta.env.VITE_API_DOMAIN}/api/v1/chart/data?form_data=%7B%22slice_id%22%3A926%7D&dashboard_id=54`,
     payload: {
         "datasource": {
-            "id": 240,
+            "id": 283,
             "type": "table"
         },
         "force": false,
@@ -26,7 +26,7 @@ export const reachBarChartChannelPayload = {
                     {
                         "timeGrain": "P1D",
                         "columnType": "BASE_AXIS",
-                        "datasourceWarning": true,
+                        "datasourceWarning": false,
                         "expressionType": "SQL",
                         "label": "brand",
                         "sqlExpression": "CASE\r\nWHEN length(brand) > 15\r\n   THEN CONCAT(left(brand, 15), '...')\r\nELSE brand\r\nEND"
@@ -104,7 +104,7 @@ export const reachBarChartChannelPayload = {
                 "series_limit": 0,
                 "order_desc": true,
                 "url_params": {
-                    "native_filters_key": "vOYIdAWM02QEXqlUkzsEpqDNEKoOq0Yk2zg2q4JvhHAgX1Gz-5VLyZxEY5eP4qrX"
+                    "native_filters_key": "aaAgVXCbIn24rD_9C82ooOEo2XaGgZMtAAzqV4Shet0E6AUVprSZrNgSNeKLVVYZ"
                 },
                 "custom_params": {},
                 "custom_form_data": {},
@@ -144,14 +144,14 @@ export const reachBarChartChannelPayload = {
             }
         ],
         "form_data": {
-            "datasource": "240__table",
+            "datasource": "283__table",
             "viz_type": "echarts_timeseries_bar",
-            "slice_id": 844,
+            "slice_id": 926,
             "url_params": {
-                "native_filters_key": "vOYIdAWM02QEXqlUkzsEpqDNEKoOq0Yk2zg2q4JvhHAgX1Gz-5VLyZxEY5eP4qrX"
+                "native_filters_key": "aaAgVXCbIn24rD_9C82ooOEo2XaGgZMtAAzqV4Shet0E6AUVprSZrNgSNeKLVVYZ"
             },
             "x_axis": {
-                "datasourceWarning": true,
+                "datasourceWarning": false,
                 "expressionType": "SQL",
                 "label": "brand",
                 "sqlExpression": "CASE\r\nWHEN length(brand) > 15\r\n   THEN CONCAT(left(brand, 15), '...')\r\nELSE brand\r\nEND"
@@ -198,6 +198,7 @@ export const reachBarChartChannelPayload = {
                     "clause": "WHERE",
                     "comparator": "No filter",
                     "expressionType": "SIMPLE",
+                    "isExtra": true,
                     "operator": "TEMPORAL_RANGE",
                     "subject": "date"
                 }
@@ -234,13 +235,11 @@ export const reachBarChartChannelPayload = {
             "showTooltipTotal": true,
             "showTooltipPercentage": true,
             "tooltipTimeFormat": "smart_date",
-            "dashboards": [
-                54
-            ],
+            "dashboards": [],
             "extra_form_data": {
                 "time_range": "DATEADD(DATETIME(\"today\"),-2, DAY) : DATEADD(DATETIME(\"today\"),-1, SECOND)"
             },
-            "chart_id": 844,
+            "chart_id": 926,
             "label_colors": {
                 "price": "#ffd04c",
                 "price_usd": "#ffd04c",
@@ -269,6 +268,7 @@ export const reachBarChartChannelPayload = {
                 "Quảng cáo": "#B17BAA"
             },
             "shared_label_colors": [
+                "2 PHONG (FERTIL...",
                 "ABBANK",
                 "AGRIBANK",
                 "AJINOMOTO VIETN...",
@@ -277,10 +277,13 @@ export const reachBarChartChannelPayload = {
                 "BAO KHI KHANG (...",
                 "BENH VIEN DA KH...",
                 "BIA HA NOI",
+                "BIDV (BANK)",
                 "BINH VI THAI MI...",
+                "BLIVE MART",
                 "BOGANIC PREMIUM...",
                 "BONCHA (RTD GRE...",
                 "BOSS COFFEE (RT...",
+                "BUDWEISER (BEER...",
                 "BYEBYE-FYVER",
                 "C2 (RTD GREEN T...",
                 "CA HOI NA UY SF...",
@@ -295,7 +298,10 @@ export const reachBarChartChannelPayload = {
                 "COOL AIR",
                 "DA HUONG (FEMIN...",
                 "DANISA",
+                "DAP PHU MY",
                 "DAU TRAU (FERTI...",
+                "DEF PHU MY XANH",
+                "DONG TRUNG HA T...",
                 "DOVE (HAIR CARE...",
                 "DOWNY (FABRIC C...",
                 "DR.THANH (RTD H...",
@@ -305,8 +311,12 @@ export const reachBarChartChannelPayload = {
                 "FAMI (SOY MILK)",
                 "FLC QUY NHON BE...",
                 "FUZE TEA",
+                "GIA BY KITA",
                 "GILLETTE (RAZOR...",
+                "GLOBAL NUTRITIO...",
+                "Giải trí",
                 "HANOI (BEER)",
+                "HDBANK PRIORITY",
                 "HEAD & SHOULDER...",
                 "HEAD HONDA",
                 "HOA PHAT (TOLE)",
@@ -316,18 +326,24 @@ export const reachBarChartChannelPayload = {
                 "HONDA",
                 "HONDA CUVE",
                 "HUDA (BEER)",
+                "HUU CO PHU MY O...",
                 "HYGIENE",
+                "HYUNDAI-SANTAFE...",
                 "ICH NIEU KHANG ...",
                 "ICH THAN VUONG ...",
                 "IMPERIA SKY PAR...",
                 "INTIMATE",
                 "IPHONE - APPLE ...",
+                "IPHONE 17",
                 "JEX (BONE & JOI...",
                 "KANGAROO (WATER...",
+                "KANTECH",
                 "KAROFI (WATER F...",
                 "KHU Y TE KY THU...",
+                "KIEU BY KITA",
                 "KNORR (SEASONIN...",
                 "LAY'S (POTATO C...",
+                "LINEABON (VITAM...",
                 "LIVOTEC",
                 "LOTTE CHOCOLAT",
                 "MARIAL GEL",
@@ -340,7 +356,9 @@ export const reachBarChartChannelPayload = {
                 "MILO (ENERGY PO...",
                 "MOC CHAU CREAME...",
                 "MOLFIX OXY",
+                "MOOZI",
                 "NAGAKAWA (AIR C...",
+                "NESCAFE (INSTAN...",
                 "NEXTG CAL (VITA...",
                 "NGUYEN XUAN (HE...",
                 "NOBLE PALACE TA...",
@@ -356,6 +374,7 @@ export const reachBarChartChannelPayload = {
                 "PANTENE PRO-V (...",
                 "PETRO VIETNAM (...",
                 "PETROLIMEX VIET...",
+                "PHENIKAA UNIVER...",
                 "PLEIKU GOLF CLU...",
                 "PONNIE",
                 "PSA",
@@ -366,9 +385,11 @@ export const reachBarChartChannelPayload = {
                 "ROMA D-MAXX MAR...",
                 "S-LIGHT TOWER",
                 "SALONPAS (PAIN ...",
+                "SAMSUNG",
                 "SCTV CHANNELS (...",
                 "SEABANK",
                 "SENSODYNE (TOOT...",
+                "SIEU THI DIEN M...",
                 "SODA",
                 "SUA RUA MAT LEN...",
                 "SUBAC (ANTISEPT...",
@@ -384,7 +405,9 @@ export const reachBarChartChannelPayload = {
                 "TEA+ (RTD TEA)",
                 "TEBAGOCEL",
                 "TECHCOMBANK",
+                "TH TRUE FOOD (F...",
                 "TH TRUE MILK (F...",
+                "THACO AGRI (AGR...",
                 "THACO LOGISTICS",
                 "THANH HANG BEAU...",
                 "THE MAGNOLIA PR...",
@@ -396,7 +419,10 @@ export const reachBarChartChannelPayload = {
                 "TRUONG HAI AUTO...",
                 "Thể thao",
                 "Thời sự - Chính luận",
+                "UNIVERSITY OF E...",
+                "VIETCOMBANK",
                 "VIETINBANK",
+                "VIETJET AIR",
                 "VIETLOTT (LOTTE...",
                 "VIGLACERA",
                 "VINAMILK",

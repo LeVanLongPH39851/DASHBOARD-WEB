@@ -2,7 +2,7 @@ export const reachBarChartFirstLevelPayload = {
   url: `${import.meta.env.VITE_API_DOMAIN}/api/v1/chart/data?form_data=%7B%22slice_id%22%3A845%7D&dashboard_id=54`,
   payload: {
     "datasource": {
-      "id": 294,
+      "id": 241,
       "type": "table"
     },
     "force": false,
@@ -108,7 +108,7 @@ export const reachBarChartFirstLevelPayload = {
         "series_limit": 0,
         "order_desc": true,
         "url_params": {
-          "native_filters_key": "izCWMxuz3zLyy85Am8B9r6Oe-RAKlM2ks_Dl5zdU4qH4Lqte32sFHq6Y8UDE5WbN"
+          "native_filters_key": "jmy1bYCEAZmHRyL6d9NxCSsjQt6yEXHOMfN6hdGKP8DxiV6kIxXmon_e-Y1Q4b0e"
         },
         "custom_params": {},
         "custom_form_data": {},
@@ -148,11 +148,11 @@ export const reachBarChartFirstLevelPayload = {
       }
     ],
     "form_data": {
-      "datasource": "294__table",
+      "datasource": "241__table",
       "viz_type": "echarts_timeseries_bar",
-      "slice_id": 954,
+      "slice_id": 957,
       "url_params": {
-        "native_filters_key": "izCWMxuz3zLyy85Am8B9r6Oe-RAKlM2ks_Dl5zdU4qH4Lqte32sFHq6Y8UDE5WbN"
+        "native_filters_key": "jmy1bYCEAZmHRyL6d9NxCSsjQt6yEXHOMfN6hdGKP8DxiV6kIxXmon_e-Y1Q4b0e"
       },
       "x_axis": {
         "datasourceWarning": false,
@@ -252,11 +252,13 @@ export const reachBarChartFirstLevelPayload = {
       "showTooltipTotal": true,
       "showTooltipPercentage": true,
       "tooltipTimeFormat": "smart_date",
-      "dashboards": [],
+      "dashboards": [
+        54
+      ],
       "extra_form_data": {
         "time_range": "DATEADD(DATETIME(\"today\"),-2, DAY) : DATEADD(DATETIME(\"today\"),-1, SECOND)"
       },
-      "chart_id": 954,
+      "chart_id": 957,
       "label_colors": {
         "price": "#ffd04c",
         "price_usd": "#ffd04c",
@@ -305,9 +307,11 @@ export const reachBarChartFirstLevelPayload = {
         "BONCHA (RTD GRE...",
         "BONISLEEP (ANTI...",
         "BOSS COFFEE (RT...",
+        "BRG GROUP",
         "BUDWEISER (BEER...",
         "C2 (RTD GREEN T...",
         "CA HOI NA UY SF...",
+        "CA MAU (NITROGE...",
         "CASPER (AIR CON...",
         "CHANTE (WASHING...",
         "CHARMORA CITY N...",
@@ -318,6 +322,7 @@ export const reachBarChartFirstLevelPayload = {
         "COLGATE (TOOTHP...",
         "COMFORT (FABRIC...",
         "COOL AIR",
+        "COSY MARIE (BIS...",
         "DA HUONG (FEMIN...",
         "DANISA",
         "DAP PHU MY",
@@ -334,6 +339,8 @@ export const reachBarChartFirstLevelPayload = {
         "ENTEROGERMINA (...",
         "FAMI (SOY MILK)",
         "FLC PREMIER PAR...",
+        "FLC QUANG TRI B...",
+        "FPT LONG CHAU P...",
         "FUZE TEA",
         "GIA BY KITA",
         "GILLETTE (RAZOR...",
@@ -411,14 +418,17 @@ export const reachBarChartFirstLevelPayload = {
         "Quảng cáo",
         "RED BULL (ENERG...",
         "ROMA D-MAXX MAR...",
+        "ROMANO (MEN SHA...",
         "S-LIGHT TOWER",
         "SAM NHUNG BO TH...",
         "SAMSUNG",
         "SEABANK",
+        "SEAPAYMENT",
         "SENSODYNE (TOOT...",
         "SIEU THI DIEN M...",
         "SKYLED HA NOI",
         "SKYLED SAI GON",
+        "SODA",
         "STING (ENERGY D...",
         "SUA RUA MAT LEN...",
         "SUBAC (ANTISEPT...",
@@ -432,6 +442,7 @@ export const reachBarChartFirstLevelPayload = {
         "SUNSHINE RIVER ...",
         "SUNSILK (HAIR C...",
         "SURF (WASHING L...",
+        "TAM ANH HOSPITA...",
         "TAM BINH (DRINK...",
         "TEA+ (RTD OLONG...",
         "TEA+ (RTD TEA)",
@@ -448,23 +459,29 @@ export const reachBarChartFirstLevelPayload = {
         "TRUONG HAI AUTO...",
         "Thể thao",
         "Thời sự - Chính luận",
+        "Tài liệu - Phóng sự",
         "UNIQLO (FASHION...",
         "UNIVERSITY OF E...",
         "VIETCOMBANK",
         "VIETINBANK",
         "VIETJET AIR",
+        "VIETTEL CORPORA...",
         "VIGLACERA",
+        "VIGLACERA (CERA...",
+        "VIGLACERA KINH ...",
         "VILAZA",
         "VINACAFE (COFFE...",
         "VINAMILK",
         "VINAMILK (FRESH...",
         "VINAPHONE (MOBI...",
         "VINFAST",
+        "VINGROUP",
         "VINHOMES GLOBAL...",
         "VINHOMES GREEN ...",
         "VINHOMES HAI VA...",
         "VINHOMES SAIGON...",
         "VINMEC HEALTHCA...",
+        "VNPT (TELECOM C...",
         "VPBANK",
         "VPBANK (CREDIT ...",
         "VPBANK - APPLE ...",
@@ -609,7 +626,8 @@ export const reachBarChartFirstLevelPayload = {
       "extra_filters": [],
       "force": false,
       "result_format": "json",
-      "result_type": "full"
+      "result_type": "full",
+      heavy: true
     },
     "result_format": "json",
     "result_type": "full"

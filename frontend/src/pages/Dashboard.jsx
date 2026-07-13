@@ -547,26 +547,6 @@ const DashboardContent = () => {
                                     />
                                   </div>
                                   <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
-                                    <LineChart data={!dashboard.isLoading.aveReachPercentLineDateChannelData ? transformMixedChartData(dashboard.aveReachPercentLineDateChannelData?.data, 'date', dashboard.aveReachPercentLineDateChannelData?.colnames) : 'isLoading'}
-                                      height={CUSTOM_CHART.lineChart.height}
-                                      fontSize={CUSTOM_CHART.lineChart.fontSize}
-                                      fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                                      fontWeight={CUSTOM_CHART.lineChart.fontWeight}
-                                      nameChart={CUSTOM_CHART.lineChart.lineChartPercentDateChannel.aveReach.name}
-                                      description={CUSTOM_CHART.lineChart.lineChartPercentDateChannel.aveReach.description}
-                                      colors={CUSTOM_CHART.lineChart.colorChannel}
-                                      smooth={CUSTOM_CHART.lineChart.smooth}
-                                      symbolSize={CUSTOM_CHART.lineChart.symbolSize}
-                                      lineWidth={CUSTOM_CHART.lineChart.lineWidth}
-                                      areaStyle={CUSTOM_CHART.lineChart.areaStyle}
-                                      stack={CUSTOM_CHART.lineChart.stack}
-                                      showTopNSeries={CUSTOM_CHART.lineChart.showTopNSeries}
-                                      crossFilter={'channels'}
-                                      keyChart={'aveReachPercentLineDateChannelData'}
-                                      refetch={() => dashboard.refetch('aveReachPercentLineDateChannelData')}
-                                    />
-                                  </div>
-                                  <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
                                     <LineChart data={!dashboard.isLoading.ratingPercentLineDateChannelData ? transformMixedChartData(dashboard.ratingPercentLineDateChannelData?.data, 'date', dashboard.ratingPercentLineDateChannelData?.colnames) : 'isLoading'}
                                       height={CUSTOM_CHART.lineChart.height}
                                       fontSize={CUSTOM_CHART.lineChart.fontSize}
@@ -584,6 +564,26 @@ const DashboardContent = () => {
                                       crossFilter={'channels'}
                                       keyChart={'ratingPercentLineDateChannelData'}
                                       refetch={() => dashboard.refetch('ratingPercentLineDateChannelData')}
+                                    />
+                                  </div>
+                                  <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>
+                                    <LineChart data={!dashboard.isLoading.aveReachPercentLineDateChannelData ? transformMixedChartData(dashboard.aveReachPercentLineDateChannelData?.data, 'date', dashboard.aveReachPercentLineDateChannelData?.colnames) : 'isLoading'}
+                                      height={CUSTOM_CHART.lineChart.height}
+                                      fontSize={CUSTOM_CHART.lineChart.fontSize}
+                                      fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                                      fontWeight={CUSTOM_CHART.lineChart.fontWeight}
+                                      nameChart={CUSTOM_CHART.lineChart.lineChartPercentDateChannel.aveReach.name}
+                                      description={CUSTOM_CHART.lineChart.lineChartPercentDateChannel.aveReach.description}
+                                      colors={CUSTOM_CHART.lineChart.colorChannel}
+                                      smooth={CUSTOM_CHART.lineChart.smooth}
+                                      symbolSize={CUSTOM_CHART.lineChart.symbolSize}
+                                      lineWidth={CUSTOM_CHART.lineChart.lineWidth}
+                                      areaStyle={CUSTOM_CHART.lineChart.areaStyle}
+                                      stack={CUSTOM_CHART.lineChart.stack}
+                                      showTopNSeries={CUSTOM_CHART.lineChart.showTopNSeries}
+                                      crossFilter={'channels'}
+                                      keyChart={'aveReachPercentLineDateChannelData'}
+                                      refetch={() => dashboard.refetch('aveReachPercentLineDateChannelData')}
                                     />
                                   </div>
                                   <div className='w-full pb-6 max-lg:pb-5 max-md:pb-0'>

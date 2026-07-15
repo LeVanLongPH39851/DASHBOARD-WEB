@@ -16,6 +16,6 @@ export function useCurrentUser() {
         setLoading(false)
       })
   }, [])
-  
-  return { user, loading }
+
+  return { user, userLoading: loading }
 }

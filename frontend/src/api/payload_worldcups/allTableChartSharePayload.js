@@ -18,7 +18,7 @@ export const allTableChartSharePayload = {
         ],
         "extras": {
           "having": "",
-          "where": "(program_name like '%WORLD CUP 2026%'\nand program_name not like 'THTT %'\nand program_name not like 'TT %'\nand program_name not like 'BÌNH LUẬN FIFA WORLD CUP 2026%'\n)"
+          "where": "(program_name like '%WORLD CUP 2026%'\nand (program_name not like 'THTT %' or program_name like '%FINAL HALFTIME SHOW%') \nand program_name not like 'TT %'\nand program_name not like 'BÌNH LUẬN FIFA WORLD CUP 2026%'\n)"
         },
         "applied_time_extras": {},
         "columns": [
@@ -43,7 +43,7 @@ export const allTableChartSharePayload = {
         "series_limit": 0,
         "order_desc": true,
         "url_params": {
-          "native_filters_key": "OcUvgu5jkVmkvrD-9pPuDlzcO0aYcFCk7b_yEqd1UiSa5RdQVnIh4crJTer84Kxh"
+          "native_filters_key": "pQ3s9esKl5A53VG-lcUNs7LXbL8_nclrgTO539EMCjTu0jVBXR2Z7fzi71B3B3U3"
         },
         "custom_params": {},
         "custom_form_data": {},
@@ -56,7 +56,7 @@ export const allTableChartSharePayload = {
       "viz_type": "table",
       "slice_id": 915,
       "url_params": {
-        "native_filters_key": "OcUvgu5jkVmkvrD-9pPuDlzcO0aYcFCk7b_yEqd1UiSa5RdQVnIh4crJTer84Kxh"
+        "native_filters_key": "pQ3s9esKl5A53VG-lcUNs7LXbL8_nclrgTO539EMCjTu0jVBXR2Z7fzi71B3B3U3"
       },
       "query_mode": "aggregate",
       "groupby": [
@@ -85,7 +85,7 @@ export const allTableChartSharePayload = {
           "isExtra": false,
           "isNew": false,
           "operator": null,
-          "sqlExpression": "program_name like '%WORLD CUP 2026%'\nand program_name not like 'THTT %'\nand program_name not like 'TT %'\nand program_name not like 'BÌNH LUẬN FIFA WORLD CUP 2026%'\n",
+          "sqlExpression": "program_name like '%WORLD CUP 2026%'\nand (program_name not like 'THTT %' or program_name like '%FINAL HALFTIME SHOW%') \nand program_name not like 'TT %'\nand program_name not like 'BÌNH LUẬN FIFA WORLD CUP 2026%'\n",
           "subject": null
         },
         {

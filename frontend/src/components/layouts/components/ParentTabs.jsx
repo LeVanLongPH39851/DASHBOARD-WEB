@@ -7,10 +7,17 @@ export default function ParentTabs({
   variant = 'default',
   uniqueId = 'parent-tab',
   sticky = true,
-  stickyTop = 'top-17.25 max-lg:top-[53.56px]',
   zIndex = 'z-100',
   countTab = 'max-md:grid-cols-4',
 }) {
+
+  const [height, setHeight] = useState(0);
+
+  useEffect(() => {
+    const h =
+      document.getElementById("BreadCrumb")?.getBoundingClientRect()?.height?.toFixed(2) ?? 0;
+    setHeight(h);
+  }, [document.getElementById("BreadCrumb")?.getBoundingClientRect()?.height]);
 
   tabs = tabs.filter(Boolean);
   const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
@@ -78,7 +85,7 @@ export default function ParentTabs({
 
   return (
     <div>
-      <div className={`${currentVariant.container} ${stickyClasses} ${stickyTop}`}>
+      <div id='Tab' className={`${currentVariant.container} ${stickyClasses}`} style={{ top: `${window.innerWidth < 1025 ? 'auto' : height + 'px'}` }}>
         {tabs.map((tab, index) => (
           <button
             key={`${uniqueId}-${tab.id}`}

@@ -370,7 +370,7 @@ const BreadCrumb = ({ dashboardName = 'Kênh truyền hình VTV', icon = false, 
     };
 
     return (
-        <nav className='px-6 max-lg:px-5 max-md:px-4 bg-background-light dark:bg-background-dark border-b border-border-black-10 dark:border-transparent transition-all duration-300 pt-2 pb-1 sticky top-0' style={{ zIndex: 300 }}>
+        <nav id='BreadCrumb' className='px-6 max-lg:px-5 max-md:px-4 bg-background-light dark:bg-background-dark border-b border-border-black-10 dark:border-transparent transition-all duration-300 pt-2 pb-1 sticky top-0' style={{ zIndex: 300 }}>
             {/* <div className='flex items-center gap-2 max-lg:gap-1 max-md:hidden'>
             <figure><img src={!stateGlobals.darkMode ? iconHome : iconHomeDark} className='w-3 max-lg:w-2.5 h-3 max-lg:h-2.5' alt="Icon Home" /></figure>
                 <span className='text-sm max-lg:text-[13px] font-normal text-color-black-50 dark:text-color-white-50 transition-all duration-300'>

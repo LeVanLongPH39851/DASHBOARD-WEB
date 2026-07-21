@@ -88,8 +88,21 @@ const InforFilter = ({ filters, FilterComponent = Filter, nameFilter = 'FilterRa
     });
   }, []);
 
+  const [height, setHeight] = useState(0);
+
+  useEffect(() => {
+    const hBreadCrumb =
+      document.getElementById("BreadCrumb")?.getBoundingClientRect()?.height?.toFixed(2) ?? 0;
+    const hTab =
+      window.innerWidth < 1025 ? 0 : document.getElementById("Tab")?.getBoundingClientRect()?.height?.toFixed(2) ?? 0;
+    const hInforTab =
+      document.getElementById("inforTabSticky")?.getBoundingClientRect()?.height?.toFixed(2) ?? 0;
+    const h = Number(hBreadCrumb) + Number(hTab) + Number(hInforTab);
+    setHeight(h.toFixed(2));
+  }, [document.getElementById("Tab")?.getBoundingClientRect()?.height, document.getElementById("BreadCrumb")?.getBoundingClientRect()?.height, document.getElementById("inforTabSticky")?.getBoundingClientRect()?.height]);
+
   return (
-    <section id='inforFilterSticky' className='mx-6 max-lg:mx-5 max-md:mx-4 bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300 sticky top-41.25 max-lg:top-[137.56px] max-md:top-22.25 rounded-b-2xl' style={{ zIndex: 100 }}>
+    <section id='inforFilterSticky' className='mx-6 max-lg:mx-5 max-md:mx-4 bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300 sticky rounded-b-2xl' style={{ zIndex: 100, top: `${height}px` }}>
       <div id='inforFilterRelative' className="transition-all duration-300 w-full">
         <div id='inforFilter' className={`px-6 max-lg:px-5 max-md:px-4 py-4 max-lg:py-3 max-md:py-2.5 bg-background-light dark:bg-background-chart-dark w-full border transition-all duration-300 absolute left-0 border-border-black-10 dark:border-background-white-15 rounded-2xl ${stateGlobals.isInfor ? 'visible opacity-100 top-0' : 'invisible opacity-0 -top-1/2'}`}>
           <div className='flex gap-2 mb-2.5 max-lg:mb-2 max-md:mb-1.5'>

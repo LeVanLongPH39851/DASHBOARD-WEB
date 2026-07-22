@@ -228,6 +228,7 @@ const DashboardContent = () => {
                                                             'THỜI GIAN\nBẮT ĐẦU': { justify: 'justify-center', align: 'text-center' }
                                                         }}
                                                         showPagination={true}
+                                                        fullScreen={true}
                                                         refetch={() => dashboard.refetch('allTableDetailData')} />
                                                 </div>
                                                 <div className='w-full pb-6 max-lg:pb-5 max-md:pb-4'>

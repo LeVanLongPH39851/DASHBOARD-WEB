@@ -32,7 +32,7 @@ export const filterAdvertiserPayload = {
           ]
         ],
         "annotation_layers": [],
-        "row_limit": 1000,
+        "row_limit": 10000,
         "series_limit": 0,
         "order_desc": true,
         "url_params": {
@@ -75,7 +75,7 @@ export const filterAdvertiserPayload = {
       "metrics": [
         "count"
       ],
-      "row_limit": 1000,
+      "row_limit": 10000,
       "showSearch": true,
       "time_range": "No filter",
       "url_params": {

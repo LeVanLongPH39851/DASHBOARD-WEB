@@ -25,7 +25,7 @@ export const filterAdcodePayload = {
                 ]
             ],
             "annotation_layers": [],
-            "row_limit": 1000,
+            "row_limit": 10000,
             "series_limit": 0,
             "order_desc": true,
             "url_params": {},
@@ -49,7 +49,7 @@ export const filterAdcodePayload = {
         "metrics": [
             "count"
         ],
-        "row_limit": 1000,
+        "row_limit": 10000,
         "showSearch": true,
         "url_params": {},
         "inView": true,

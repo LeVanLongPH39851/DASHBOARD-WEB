@@ -11,14 +11,14 @@ const NumberCard = ({ title, description, value, icon = false, background, heigh
 
   if (value === 'isLoading') {
     return (
-      <div className={`p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component`} style={{ height: `${height}px` }}>
+      <div className={`p-6 max-lg:p-5 max-md:p-4 flex flex-col bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component`} style={{ height: `${height}px` }}>
         <NameChart nameChart={title} description={description} icon={icon} width={widthIcon} backgound={background} />
         {window.location.pathname.includes('/world-cup-2026') ? <LoadingNumberWC height={'50px'} /> : <Loading />}
       </div>
     );
   } else if (value === '-') {
     return (
-      <div className={`p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component`} style={{ height: `${height}px` }}>
+      <div className={`p-6 max-lg:p-5 max-md:p-4 flex flex-col bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component`} style={{ height: `${height}px` }}>
         <NameChart nameChart={title} description={description} icon={icon} width={widthIcon} backgound={background} />
         <NoData />
       </div>

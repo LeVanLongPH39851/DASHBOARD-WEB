@@ -29,11 +29,13 @@ const NumberWithTrendChart = ({
   refetch = undefined
 }) => {
 
+  const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
+
   if (data === 'isLoading') {
     return (
       <div className={`p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component`} style={{ height: `${height}px` }}>
         <NameChart nameChart={nameChart} description={description} icon={icon} width='w-5.5 max-lg:w-5' backgound='bg-background-succes-type-2 dark:bg-background-succes-type-2-dark' />
-        <Loading height={270} />
+        <Loading height={!stateGlobals.screen_md ? !stateGlobals.screen_lg ? 270 : 236.56 : 195} />
       </div>
     );
   }
@@ -80,8 +82,6 @@ const NumberWithTrendChart = ({
 
     return { currentValue, trendPercent, currentDate };
   }, [data, hasData, hasTrend]);
-
-  const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
 
   const chartOption = useMemo(() => {
     const chartData = data?.map(item => item.value || 0) || [];

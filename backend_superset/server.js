@@ -2,6 +2,18 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const mysql = require('mysql2/promise');
+
+const pool = mysql.createPool({
+  host: '100.100.10.3',
+  port: 9030,
+  user: 'Ami_doris',
+  password: 'Ami@123#@!',
+  database: '',
+  waitForConnections: true,
+  connectionLimit: 10,   // Tối đa 10 connection
+  queueLimit: 0
+});
+
 const { callAPIWithUser, killUserRequests } = require('./api');
 
 const app = express();
@@ -69,16 +81,7 @@ app.post('/api/doris/processlist', async (req, res) => {
     console.log(`📥 Query PROCESSLIST cho user_id: ${user_id}`);
 
     // Kết nối đến Doris
-    connection = await mysql.createConnection({
-      host: '100.100.10.3',
-      port: 9030,
-      user: 'Ami_doris',
-      password: 'Ami@123#@!',
-      database: '',
-      waitForConnections: true,
-      connectionLimit: 1,
-      queueLimit: 0
-    });
+    connection = await pool.getConnection();
 
     // Thực hiện query PROCESSLIST
     const [rows] = await connection.execute(
@@ -137,7 +140,7 @@ app.post('/api/doris/processlist', async (req, res) => {
     });
   } finally {
     if (connection) {
-      await connection.end();
+      connection.release();
     }
   }
 });

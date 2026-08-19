@@ -1,10 +1,14 @@
 // src/components/filters/SelectMultiFilter.jsx
-import React from 'react';
-import Select from 'react-select';
-import { useState } from 'react';
-import iconArrowUpGray from '../../../../assets/icon_arrow_up_gray.png';
-import iconArrowUpGrayDark from '../../../../assets/icon_arrow_up_gray_dark.png';
-import { useDashboardStateGlobals } from '../../../../context/DashboardFilterContext';
+import React from "react";
+import Select from "react-select";
+import { useState } from "react";
+import iconArrowUpGray from "../../../../assets/icon_arrow_up_gray.png";
+import iconArrowUpGrayDark from "../../../../assets/icon_arrow_up_gray_dark.png";
+import {
+  useDarkMode,
+  useScreenMd,
+  useScreenLg,
+} from "../../../../context/DashboardFilterContext";
 
 const SelectMultiFilter = ({
   options = [],
@@ -14,145 +18,203 @@ const SelectMultiFilter = ({
   placeholder,
   disabled = false,
   marginBottom,
-  horizontalFixed=false
+  horizontalFixed = false,
 }) => {
-  
-   const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
+  // console.log("SelectMultiFilter");
 
-   const darkMode = stateGlobals.darkMode;
-   const isMobile = stateGlobals.screen_md;
-   const isLaptop = stateGlobals.screen_lg;
+  const { value: darkMode, setValue: setDarkMode } = useDarkMode();
+  const { value: screenMd } = useScreenMd();
+  const { value: screenLg } = useScreenLg();
 
-    const customStyles = {
-      control: (provided, state) => ({
+  const isDarkMode = darkMode;
+  const isMobile = screenMd;
+  const isLaptop = screenLg;
+
+  const customStyles = {
+    control: (provided, state) => ({
+      ...provided,
+      minHeight: !horizontalFixed
+        ? !isMobile
+          ? !isLaptop
+            ? "40px"
+            : "34px"
+          : "30px"
+        : !isMobile
+          ? !isLaptop
+            ? "38px"
+            : "32px"
+          : "30px",
+      fontSize: !isMobile ? (!isLaptop ? "14px" : "13px") : "12px",
+      borderRadius: "12px",
+      outline: "none",
+      boxShadow: "none",
+      border: isDarkMode
+        ? "1px solid rgba(255, 255, 255, 0.15)"
+        : "1px solid rgba(225, 227, 234, 1)",
+      backgroundColor: isDarkMode
+        ? "rgba(255, 255, 255, 0.08)"
+        : "rgba(255, 255, 255, 1)",
+      transition: "all 0.3s ease-in-out",
+      color: isDarkMode ? "rgba(249, 250, 251, 1)" : "rgba(28, 28, 28, 1)",
+      ":hover": {
+        border: isDarkMode
+          ? "1px solid rgba(255, 255, 255, 0.15)"
+          : "1px solid rgba(225, 227, 234, 1)",
+      },
+      padding: "0px 8px 0px 2px",
+    }),
+    singleValue: (provided) => ({
+      ...provided,
+      color: "rgba(28, 28, 28, 1)",
+    }),
+    multiValue: (provided) => ({
+      ...provided,
+      backgroundColor: !isDarkMode ? "#20A7C9" : "rgb(40 153 156 / 50%)",
+      border: `1px solid ${!isDarkMode ? "#20A7C9" : "rgb(40 153 156 / 50%)"}`,
+      borderRadius: "6px",
+      cursor: "pointer",
+    }),
+    multiValueLabel: (provided) => ({
+      ...provided,
+      color: "rgba(255, 255, 255, 1)",
+    }),
+    multiValueRemove: (provided) => ({
+      ...provided,
+      color: "rgba(255, 255, 255, 1)",
+      borderRadius: "6px",
+      ":hover": {
+        backgroundColor: !isDarkMode ? "#1a8fb3" : "rgb(35 135 145 / 50%)",
+        color: "rgba(255, 255, 255, 1)",
+      },
+    }),
+    menu: (provided) => ({
+      ...provided,
+      backgroundColor: isDarkMode
+        ? "rgba(17, 23, 37, 1)"
+        : "rgba(255, 255, 255, 1)",
+      border: isDarkMode
+        ? "1px solid rgba(255, 255, 255, 0.15)"
+        : "1px solid rgba(255, 255, 255, 1)",
+      marginTop: "4px",
+    }),
+    option: (provided, state) => {
+      const baseBg = isDarkMode
+        ? "rgba(17, 23, 37, 1)"
+        : "rgba(255, 255, 255, 1)";
+      const hoverBg = isDarkMode ? "rgba(31, 41, 55, 1)" : "#e0e0e0";
+      return {
         ...provided,
-        minHeight: !horizontalFixed ? (!isMobile ? !isLaptop ? '40px' : '34px' : '30px') : (!isMobile ? !isLaptop ? '38px' : '32px' : '30px'),
-        fontSize: !isMobile ? !isLaptop ? '14px' : '13px' : '12px',
-        borderRadius: '12px',
-        outline: 'none',
-        boxShadow: 'none',
-        border: darkMode 
-          ? '1px solid rgba(255, 255, 255, 0.15)'
-          : '1px solid rgba(225, 227, 234, 1)',
-        backgroundColor: darkMode 
-          ? 'rgba(255, 255, 255, 0.08)'
-          : 'rgba(255, 255, 255, 1)',
-        transition: 'all 0.3s ease-in-out',
-        color: darkMode ? 'rgba(249, 250, 251, 1)' : 'rgba(28, 28, 28, 1)',
-        ':hover': {
-          border: darkMode 
-            ? '1px solid rgba(255, 255, 255, 0.15)'
-            : '1px solid rgba(225, 227, 234, 1)'
-        },
-        padding: '0px 8px 0px 2px'
-      }),
-      singleValue: (provided) => ({
-        ...provided,
-        color: 'rgba(28, 28, 28, 1)'
-      }),
-      multiValue: (provided) => ({
-        ...provided,
-        backgroundColor: !darkMode ? '#20A7C9' : 'rgb(40 153 156 / 50%)',
-        border: `1px solid ${!darkMode ? '#20A7C9' : 'rgb(40 153 156 / 50%)'}`,
-        borderRadius: '6px',
-        cursor: 'pointer'
-      }),
-      multiValueLabel: (provided) => ({
-        ...provided,
-        color: 'rgba(255, 255, 255, 1)'
-      }),
-      multiValueRemove: (provided) => ({
-        ...provided,
-        color: 'rgba(255, 255, 255, 1)',
-        borderRadius: '6px',
-        ':hover': {
-          backgroundColor: !darkMode ? '#1a8fb3' : 'rgb(35 135 145 / 50%)',
-          color: 'rgba(255, 255, 255, 1)',
-        }
-      }),
-      menu: (provided) => ({
-        ...provided,
-        backgroundColor: darkMode 
-          ? 'rgba(17, 23, 37, 1)'
-          : 'rgba(255, 255, 255, 1)',
-        border: darkMode 
-          ? '1px solid rgba(255, 255, 255, 0.15)'
-          : '1px solid rgba(255, 255, 255, 1)',
-        marginTop: '4px'
-      }),
-      option: (provided, state) => {
-        const baseBg = darkMode ? 'rgba(17, 23, 37, 1)' : 'rgba(255, 255, 255, 1)';
-        const hoverBg = darkMode ? 'rgba(31, 41, 55, 1)' : '#e0e0e0';
-        return {
-          ...provided,
-          fontSize: !isMobile ? !isLaptop ? '14px' : '13px' : '12px',
-          fontWeight: 400,
-          backgroundColor: state.isSelected
-            ? !darkMode ? '#20A7C9' : 'rgb(40 153 156 / 50%)'
-            : state.isFocused
+        fontSize: !isMobile ? (!isLaptop ? "14px" : "13px") : "12px",
+        fontWeight: 400,
+        backgroundColor: state.isSelected
+          ? !isDarkMode
+            ? "#20A7C9"
+            : "rgb(40 153 156 / 50%)"
+          : state.isFocused
             ? hoverBg
             : baseBg,
-          color: state.isSelected
-            ? 'rgba(255, 255, 255, 1)'
-            : darkMode
-            ? 'rgba(255, 255, 255, 0.5)'
-            : 'rgba(28, 28, 28, 1)'
-        };
+        color: state.isSelected
+          ? "rgba(255, 255, 255, 1)"
+          : isDarkMode
+            ? "rgba(255, 255, 255, 0.5)"
+            : "rgba(28, 28, 28, 1)",
+      };
+    },
+    placeholder: (provided) => ({
+      ...provided,
+      color: isDarkMode ? "rgba(255, 255, 255, 0.5)" : "rgba(0, 0, 0, 0.5)",
+      fontSize: !isMobile ? (!isLaptop ? "14px" : "13px") : "12px",
+      fontWeight: 400,
+    }),
+    input: (provided) => ({
+      ...provided,
+      color: isDarkMode ? "rgba(255, 255, 255, 0.5)" : "rgba(0, 0, 0, 0.5)",
+      fontSize: !isMobile ? (!isLaptop ? "14px" : "13px") : "12px",
+      fontWeight: 400,
+      cursor: "text",
+      transition: "all 0.3s ease-in-out",
+    }),
+    dropdownIndicator: (provided) => ({
+      ...provided,
+      color: isDarkMode ? "rgba(255, 255, 255, 0.5)" : "rgba(0, 0, 0, 0.5)",
+      ":hover": {
+        color: isDarkMode ? "rgba(255, 255, 255, 0.5)" : "rgba(0, 0, 0, 0.5)",
       },
-      placeholder: (provided) => ({
-        ...provided,
-        color: darkMode ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)',
-        fontSize: !isMobile ? !isLaptop ? '14px' : '13px' : '12px',
-        fontWeight: 400
-      }),
-      input: (provided) => ({
-        ...provided,
-        color: darkMode ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)',
-        fontSize: !isMobile ? !isLaptop ? '14px' : '13px' : '12px', 
-        fontWeight: 400,
-        cursor: 'text',
-        transition: 'all 0.3s ease-in-out'
-      }),
-      dropdownIndicator: (provided) => ({
-        ...provided,
-        color: darkMode ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)',
-        ':hover': {
-          color: darkMode ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)'
-        },
-        transition: 'all 0.3s ease-in-out',
-        cursor: 'pointer',
-        padding: '0px 8px 0px 8px'
-      }),
-      clearIndicator: (provided, state) => ({
-        ...provided,
-        color: darkMode ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)',
-        ':hover': {
-          color: darkMode ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)'
-        },
-        transition: 'all 0.3s ease-in-out',
-        cursor: 'pointer'
-      }),
-      noOptionsMessage: (provided) => ({
-        ...provided,
-        fontSize: !isMobile ? !isLaptop ? '14px' : '13px' : '12px'
-      }),
-    };
+      transition: "all 0.3s ease-in-out",
+      cursor: "pointer",
+      padding: "0px 8px 0px 8px",
+    }),
+    clearIndicator: (provided, state) => ({
+      ...provided,
+      color: isDarkMode ? "rgba(255, 255, 255, 0.5)" : "rgba(0, 0, 0, 0.5)",
+      ":hover": {
+        color: isDarkMode ? "rgba(255, 255, 255, 0.5)" : "rgba(0, 0, 0, 0.5)",
+      },
+      transition: "all 0.3s ease-in-out",
+      cursor: "pointer",
+    }),
+    noOptionsMessage: (provided) => ({
+      ...provided,
+      fontSize: !isMobile ? (!isLaptop ? "14px" : "13px") : "12px",
+    }),
+  };
 
-  
-  const openFilter = sessionStorage.getItem('open_filters') ? JSON.parse(sessionStorage.getItem('open_filters')).includes(label) : false;
+  const openFilter = sessionStorage.getItem("open_filters")
+    ? JSON.parse(sessionStorage.getItem("open_filters")).includes(label)
+    : false;
   const [isOpenFilter, setIsOpenFilter] = useState(openFilter);
 
   return (
-    <div className={`${horizontalFixed ? '' : isOpenFilter ? `${marginBottom}` : ''}`}>
-      {!horizontalFixed && (<div onClick={() => {setIsOpenFilter(prev => !prev);
-                                                const sessionOpen = isOpenFilter ? JSON.stringify([...(JSON.parse(sessionStorage.getItem('open_filters') || '[]')).filter(item => item !== label)]) : JSON.stringify([...(JSON.parse(sessionStorage.getItem('open_filters') || '[]')), label]);
-                                                sessionStorage.setItem('open_filters', sessionOpen);}}
-                        className={`flex cursor-pointer group justify-between items-center h-10.5 max-md:h-8 ${isOpenFilter ? 'mb-1' : ''}`}>
-                        <label className='cursor-pointer text-[16px] max-lg:text-sm max-md:text-xs text-background-black-child-tab dark:text-color-white-90 transition-all duration-300 font-medium'>{label}</label>
-                        <figure className={`cursor-pointer transition-all duration-300 ${isOpenFilter ? '' : 'rotate-180'}`}><img src={!stateGlobals.darkMode ? iconArrowUpGray : iconArrowUpGrayDark} className='w-2.75 max-lg:w-2.5 max-md:w-2' alt="Icon Arrow Up Gray" /></figure>
-                      </div>)}
-      <div className={!horizontalFixed ? 'transition-all duration-300 relative filter-relative overflow-hidden' : ''} data-initial-height="match">
-        <div className={!horizontalFixed ? `transition-all duration-300 absolute w-full left-0 filter-absolute ${isOpenFilter ? 'visible opacity-100 top-0' : 'invisible opacity-0 -top-1/2'}` : ''}>
+    <div
+      className={`${horizontalFixed ? "" : isOpenFilter ? `${marginBottom}` : ""}`}
+    >
+      {!horizontalFixed && (
+        <div
+          onClick={() => {
+            setIsOpenFilter((prev) => !prev);
+            const sessionOpen = isOpenFilter
+              ? JSON.stringify([
+                  ...JSON.parse(
+                    sessionStorage.getItem("open_filters") || "[]",
+                  ).filter((item) => item !== label),
+                ])
+              : JSON.stringify([
+                  ...JSON.parse(sessionStorage.getItem("open_filters") || "[]"),
+                  label,
+                ]);
+            sessionStorage.setItem("open_filters", sessionOpen);
+          }}
+          className={`flex cursor-pointer group justify-between items-center h-10.5 max-md:h-8 ${isOpenFilter ? "mb-1" : ""}`}
+        >
+          <label className="cursor-pointer text-[16px] max-lg:text-sm max-md:text-xs text-background-black-child-tab dark:text-color-white-90 transition-all duration-300 font-medium">
+            {label}
+          </label>
+          <figure
+            className={`cursor-pointer transition-all duration-300 ${isOpenFilter ? "" : "rotate-180"}`}
+          >
+            <img
+              src={!darkMode ? iconArrowUpGray : iconArrowUpGrayDark}
+              className="w-2.75 max-lg:w-2.5 max-md:w-2"
+              alt="Icon Arrow Up Gray"
+            />
+          </figure>
+        </div>
+      )}
+      <div
+        className={
+          !horizontalFixed
+            ? "transition-all duration-300 relative filter-relative overflow-hidden"
+            : ""
+        }
+        data-initial-height="match"
+      >
+        <div
+          className={
+            !horizontalFixed
+              ? `transition-all duration-300 absolute w-full left-0 filter-absolute ${isOpenFilter ? "visible opacity-100 top-0" : "invisible opacity-0 -top-1/2"}`
+              : ""
+          }
+        >
           <Select
             isMulti
             options={options}
@@ -176,4 +238,4 @@ const SelectMultiFilter = ({
   );
 };
 
-export default SelectMultiFilter;
+export default React.memo(SelectMultiFilter);

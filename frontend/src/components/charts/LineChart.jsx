@@ -1,12 +1,25 @@
 // LineChart.jsx - showTopNSeries = 0: ẩn value, null: hiện hết
-import React, { memo, useRef, useMemo, useState, useEffect, useCallback } from 'react';
-import ReactECharts from 'echarts-for-react';
-import NameChart from '../layouts/components/NameChart';
-import Loading from '../commons/Loading';
-import LoadingWorldCup from '../commons/LoadingWorldCup';
-import { formatKMB } from '../../utils/formatNumber';
-import { useDashboardFilters, useDashboardStateGlobals, useDashboardCrossFilters } from '../../context/DashboardFilterContext';
-import NoData from '../commons/NoData';
+import React, {
+  memo,
+  useRef,
+  useMemo,
+  useState,
+  useEffect,
+  useCallback,
+} from "react";
+import ReactECharts from "echarts-for-react";
+import NameChart from "../layouts/components/NameChart";
+import Loading from "../commons/Loading";
+import LoadingWorldCup from "../commons/LoadingWorldCup";
+import { formatKMB } from "../../utils/formatNumber";
+import {
+  useDashboardFilters,
+  useDarkMode,
+  useScreenLg,
+  useScreenMd,
+  useDashboardCrossFilters,
+} from "../../context/DashboardFilterContext";
+import NoData from "../commons/NoData";
 
 const LineChart = ({
   data,
@@ -34,25 +47,42 @@ const LineChart = ({
   textOverflow = false,
   crossFilter = false,
   keyChart = false,
-  refetch = undefined
+  refetch = undefined,
 }) => {
+  // console.log("LineChart");
 
   const { appliedFilters, setAppliedFilters } = useDashboardFilters();
-  const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
+  const { value: darkMode, setValue: setDarkMode } = useDarkMode();
+  const { value: screenLg, setValue: setScreenLg } = useScreenLg();
+  const { value: screenMd, setValue: setScreenMd } = useScreenMd();
   const { crossFilters, setCrossFilters } = useDashboardCrossFilters();
 
-  if (data === 'isLoading') {
+  if (data === "isLoading") {
     return (
-      <div className='p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
-        <NameChart nameChart={nameChart} description={description} fullScreen={fullScreen} />
-        {window.location.pathname.includes('/world-cup-2026') ? <LoadingWorldCup height={!stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : 350 : 240} /> : <Loading height={!stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : 350 : 240} />}
+      <div className="p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component">
+        <NameChart
+          nameChart={nameChart}
+          description={description}
+          fullScreen={fullScreen}
+        />
+        {window.location.pathname.includes("/world-cup-2026") ? (
+          <LoadingWorldCup
+            height={!screenMd ? (!screenLg ? height : 350) : 240}
+          />
+        ) : (
+          <Loading height={!screenMd ? (!screenLg ? height : 350) : 240} />
+        )}
       </div>
     );
   } else if (!data.labels.length > 0) {
     return (
-      <div className='p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
-        <NameChart nameChart={nameChart} description={description} fullScreen={fullScreen} />
-        <NoData height={!stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : 350 : 240} />
+      <div className="p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component">
+        <NameChart
+          nameChart={nameChart}
+          description={description}
+          fullScreen={fullScreen}
+        />
+        <NoData height={!screenMd ? (!screenLg ? height : 350) : 240} />
       </div>
     );
   }
@@ -60,24 +90,32 @@ const LineChart = ({
   const { labels = [], series = [] } = data;
   const chartRef = useRef(null);
   const [selectedSeries, setSelectedSeries] = useState(
-    series.reduce((acc, s) => ({ ...acc, [s.name]: true }), {})
+    series.reduce((acc, s) => ({ ...acc, [s.name]: true }), {}),
   );
 
   const needsScroll = true;
   const zoomEndPercent = 100;
 
   const defaultColors = [
-    '#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6',
-    '#ec4899', '#06b6d4', '#84cc16', '#f97316', '#6366f1'
+    "#3b82f6",
+    "#ef4444",
+    "#10b981",
+    "#f59e0b",
+    "#8b5cf6",
+    "#ec4899",
+    "#06b6d4",
+    "#84cc16",
+    "#f97316",
+    "#6366f1",
   ];
 
   // ✅ LOGIC showTopNSeries mới:
   const sortedLegendData = useMemo(() => {
-    const visibleSeries = series.filter(s => selectedSeries[s.name]);
+    const visibleSeries = series.filter((s) => selectedSeries[s.name]);
 
-    const seriesWithTotal = visibleSeries.map(s => ({
+    const seriesWithTotal = visibleSeries.map((s) => ({
       name: s.name,
-      total: s.data.reduce((sum, val) => sum + (val || 0), 0)
+      total: s.data.reduce((sum, val) => sum + (val || 0), 0),
     }));
 
     const sorted = seriesWithTotal.sort((a, b) => b.total - a.total);
@@ -92,24 +130,30 @@ const LineChart = ({
       showTopNSeries = labels.length > 1 ? 3 : showTopNSeries;
     }
 
-    if (stateGlobals.screen_lg && showTopNSeries !== 0 && labels.length > 1) {
+    if (screenLg && showTopNSeries !== 0 && labels.length > 1) {
       showTopNSeries = 1;
     }
 
-    if (stateGlobals.screen_md && labels.length > 1) {
+    if (screenMd && labels.length > 1) {
       showTopNSeries = 0;
     }
 
     if (showTopNSeries === 0) {
       topSeriesNames = new Set(); // Empty → ẩn hết
-    } else if (showTopNSeries && typeof showTopNSeries === 'number' && showTopNSeries > 0) {
-      topSeriesNames = new Set(sorted.slice(0, showTopNSeries).map(s => s.name));
+    } else if (
+      showTopNSeries &&
+      typeof showTopNSeries === "number" &&
+      showTopNSeries > 0
+    ) {
+      topSeriesNames = new Set(
+        sorted.slice(0, showTopNSeries).map((s) => s.name),
+      );
     }
     // else: null → hiện hết
 
     return {
-      legendOrder: sorted.map(s => s.name),
-      topSeriesNames
+      legendOrder: sorted.map((s) => s.name),
+      topSeriesNames,
     };
   }, [series, showTopNSeries, selectedSeries]);
 
@@ -119,7 +163,8 @@ const LineChart = ({
 
   const colorMap = useMemo(() => {
     return series.reduce((acc, s, index) => {
-      acc[s.name] = colors[s.name] || defaultColors[index % defaultColors.length];
+      acc[s.name] =
+        colors[s.name] || defaultColors[index % defaultColors.length];
       return acc;
     }, {});
   }, [series, colors]);
@@ -144,22 +189,21 @@ const LineChart = ({
         const visibleLabels = labels.slice(startIndex, endIndex);
 
         return {
-          labels: visibleLabels,  // ✅ Chỉ labels đang zoom
+          labels: visibleLabels, // ✅ Chỉ labels đang zoom
           series: (option.series || series)
-            .filter(s => legendSelected[s.name] !== false)  // ✅ Chỉ series đang visible
-            .map(s => ({
+            .filter((s) => legendSelected[s.name] !== false) // ✅ Chỉ series đang visible
+            .map((s) => ({
               name: s.name,
-              data: visibleLabels.map((_, i) => s.data[startIndex + i] || 0)  // ✅ Data theo zoom range
-            }))
+              data: visibleLabels.map((_, i) => s.data[startIndex + i] || 0), // ✅ Data theo zoom range
+            })),
         };
       } catch (error) {
-        console.error('Lỗi lấy LineChart data:', error);
+        console.error("Lỗi lấy LineChart data:", error);
         return { labels, series };
       }
     }
     return { labels, series };
   }, [labels, series]);
-
 
   useEffect(() => {
     const chart = chartRef.current?.getEchartsInstance();
@@ -169,54 +213,61 @@ const LineChart = ({
       setSelectedSeries(params.selected);
     };
 
-    chart.on('legendselectchanged', handleLegendSelectChanged);
+    chart.on("legendselectchanged", handleLegendSelectChanged);
 
     return () => {
-      chart.off('legendselectchanged', handleLegendSelectChanged);
+      chart.off("legendselectchanged", handleLegendSelectChanged);
     };
   }, []);
 
-  const [activeLine, setActiveLine] = React.useState('');
-  const hoverLineRef = React.useRef('');
+  const [activeLine, setActiveLine] = React.useState("");
+  const hoverLineRef = React.useRef("");
   const [inActiveLine, setInActiveLine] = React.useState(false);
   const [click, setClick] = React.useState(false);
 
   const onEvents = {
     mouseover: (params) => {
-      if (params.componentType === 'series') {
+      if (params.componentType === "series") {
         hoverLineRef.current = params.seriesName;
       }
     },
     globalout: () => {
-      hoverLineRef.current = '';
+      hoverLineRef.current = "";
     },
     click: (params) => {
-      if (params.componentType === 'series' && crossFilter) {
+      if (params.componentType === "series" && crossFilter) {
         const crossFilterValue = params.seriesName;
         const crossFilterValues = [crossFilterValue];
         if (appliedFilters?.[crossFilter]?.[0] !== crossFilterValues[0]) {
-          const transformed = { ...appliedFilters, [crossFilter]: crossFilterValues };
+          const transformed = {
+            ...appliedFilters,
+            [crossFilter]: crossFilterValues,
+          };
           setAppliedFilters(transformed);
 
           if (keyChart) {
             if (crossFilters) {
               setCrossFilters({
                 ...crossFilters,
-                [keyChart]: crossFilter.slice(0, -1) + 'Filters',
+                [keyChart]: crossFilter.slice(0, -1) + "Filters",
                 main: keyChart,
-                skipNext: null
+                skipNext: null,
               });
             } else {
               setCrossFilters({
-                [keyChart]: crossFilter.slice(0, -1) + 'Filters',
+                [keyChart]: crossFilter.slice(0, -1) + "Filters",
                 main: keyChart,
-                skipNext: null
+                skipNext: null,
               });
             }
           }
           setClick(true);
-          setActiveLine(prev => (prev === crossFilterValue ? '' : crossFilterValue));
-          setInActiveLine(prev => (activeLine === crossFilterValue ? false : true));
+          setActiveLine((prev) =>
+            prev === crossFilterValue ? "" : crossFilterValue,
+          );
+          setInActiveLine((prev) =>
+            activeLine === crossFilterValue ? false : true,
+          );
         } else if (click) {
           setClick(false);
           const { [crossFilter]: removed, ...rest } = appliedFilters || {};
@@ -227,73 +278,92 @@ const LineChart = ({
               setCrossFilters({ ...rest, skipNext: keyChart });
             }
           }
-          setActiveLine(prev => (prev === crossFilterValue ? '' : crossFilterValue));
-          setInActiveLine(prev => (activeLine === crossFilterValue ? false : true));
+          setActiveLine((prev) =>
+            prev === crossFilterValue ? "" : crossFilterValue,
+          );
+          setInActiveLine((prev) =>
+            activeLine === crossFilterValue ? false : true,
+          );
         }
       }
-    }
+    },
   };
 
   const legendDatas = legendData.map((name) => {
-
     const isActive = activeLine === name;
 
     const isDim = inActiveLine && crossFilters?.main === keyChart;
 
     return {
       name: name,
-      icon: 'circle',
+      icon: "circle",
       itemStyle: {
         opacity: isActive ? 1 : isDim ? 0.5 : 1,
-        color: colorMap[name]
+        color: colorMap[name],
       },
       textStyle: {
-        opacity: isActive ? 1 : isDim ? 0.5 : 1
-      }
+        opacity: isActive ? 1 : isDim ? 0.5 : 1,
+      },
     };
   });
 
   const option = {
-    color: legendData.map(name => {
-      const seriesIndex = series.findIndex(s => s.name === name);
+    color: legendData.map((name) => {
+      const seriesIndex = series.findIndex((s) => s.name === name);
       return colors[name] || defaultColors[seriesIndex % defaultColors.length];
     }),
 
     tooltip: {
-      trigger: 'axis',
+      trigger: "axis",
       axisPointer: {
-        type: 'cross',
+        type: "cross",
         label: {
-          backgroundColor: 'rgb(42, 198, 193)',
-          color: 'rgba(255, 255, 255, 0.9)'
+          backgroundColor: "rgb(42, 198, 193)",
+          color: "rgba(255, 255, 255, 0.9)",
         },
-        crossStyle: { color: !stateGlobals.darkMode ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255, 255, 255, 0.5)' }
+        crossStyle: {
+          color: !darkMode ? "rgba(0, 0, 0, 0.2)" : "rgba(255, 255, 255, 0.5)",
+        },
       },
-      backgroundColor: 'rgba(255, 255, 255, 1)',
+      backgroundColor: "rgba(255, 255, 255, 1)",
       borderWidth: 0,
       textStyle: {
-        fontSize: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.tooltip : '11px' : '10.5px',
-        color: 'rgba(0, 0, 0, 0.7)',
+        fontSize: !screenMd
+          ? !screenLg
+            ? fontSize.tooltip
+            : "11px"
+          : "10.5px",
+        color: "rgba(0, 0, 0, 0.7)",
         fontWeight: fontWeight.tooltip,
-        fontFamily: fontFamily
+        fontFamily: fontFamily,
       },
-      formatter: params => {
+      formatter: (params) => {
         // ✅ Chỉ hiện series CÓ value tại xAxis này
-        const visibleParams = params.filter(p => p.value && p.value !== 0 && p.value !== null && p.value !== undefined).sort((a, b) => b.value - a.value);
+        const visibleParams = params
+          .filter(
+            (p) =>
+              p.value &&
+              p.value !== 0 &&
+              p.value !== null &&
+              p.value !== undefined,
+          )
+          .sort((a, b) => b.value - a.value);
         const total = visibleParams.reduce((sum, p) => sum + p.value, 0);
 
-        if (visibleParams.length === 0) return '';
+        if (visibleParams.length === 0) return "";
 
         return `
-           <div style="padding: ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '12' : '11' : '4'}px ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '16' : '15' : '8'}px; box-shadow: 0 ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '4' : '3' : '2'}px ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '12' : '11' : '4'}px rgba(0,0,0,0.1);">
-            <div style="font-weight: 500; font-size: ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '13' : '12' : '11'}px; color: rgba(0, 0, 0, 0.7);">
+           <div style="padding: ${!screenMd ? (!screenLg ? "12" : "11") : "4"}px ${!screenMd ? (!screenLg ? "16" : "15") : "8"}px; box-shadow: 0 ${!screenMd ? (!screenLg ? "4" : "3") : "2"}px ${!screenMd ? (!screenLg ? "12" : "11") : "4"}px rgba(0,0,0,0.1);">
+            <div style="font-weight: 500; font-size: ${!screenMd ? (!screenLg ? "13" : "12") : "11"}px; color: rgba(0, 0, 0, 0.7);">
               ${visibleParams[0].name}
             </div>
-            ${visibleParams.map(p => {
-          const percent = total > 0 ? (p.value / total * 100).toFixed(2) : 0;
-          const bold = hoverLineRef.current === p.seriesName;
+            ${visibleParams
+              .map((p) => {
+                const percent =
+                  total > 0 ? ((p.value / total) * 100).toFixed(2) : 0;
+                const bold = hoverLineRef.current === p.seriesName;
 
-          return `
+                return `
                 <div style="margin: 2px 0; display: flex; align-items: center;">
                   <span style="
                     display: inline-block;
@@ -303,177 +373,239 @@ const LineChart = ({
                     margin-right: 6px;
                     flex-shrink: 0;
                   "></span>
-                  <span style="font-weight: ${bold ? '700' : '500'}; font-size: ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '12' : '11' : '10.5'}px; margin-right: 4px; color: rgba(0, 0, 0, 0.7);">${p.seriesName}:</span> 
-                  <span style="font-size: ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '12' : '11' : '10.5'}px; font-weight: ${bold ? '600' : '400'}; color: rgba(0, 0, 0, 0.7);">
-                    ${p.value.toLocaleString(undefined, { maximumFractionDigits: (nameChart.includes('%') ? 2 : 0) })} <span style="font-size: ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '11' : '10.5' : '10'}px;">(${percent}%)</span>
+                  <span style="font-weight: ${bold ? "700" : "500"}; font-size: ${!screenMd ? (!screenLg ? "12" : "11") : "10.5"}px; margin-right: 4px; color: rgba(0, 0, 0, 0.7);">${p.seriesName}:</span> 
+                  <span style="font-size: ${!screenMd ? (!screenLg ? "12" : "11") : "10.5"}px; font-weight: ${bold ? "600" : "400"}; color: rgba(0, 0, 0, 0.7);">
+                    ${p.value.toLocaleString(undefined, { maximumFractionDigits: nameChart.includes("%") ? 2 : 0 })} <span style="font-size: ${!screenMd ? (!screenLg ? "11" : "10.5") : "10"}px;">(${percent}%)</span>
                   </span>
                 </div>
               `;
-        }).join('')}
-            <hr style="margin:  ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '5' : '4.5' : '4'}px 0; border: none; height: 1px; background: rgba(0, 0, 0, 0.1);">
-            <div style="font-weight: 600; color: #059669; font-size: ${!stateGlobals.screen_md ? !stateGlobals.screen_lg ? '12' : '11' : '10.5'}px;">
-              <span>Tổng:</span> <span>${total.toLocaleString(undefined, { maximumFractionDigits: (nameChart.includes('%') ? 2 : 0) })}</span>
+              })
+              .join("")}
+            <hr style="margin:  ${!screenMd ? (!screenLg ? "5" : "4.5") : "4"}px 0; border: none; height: 1px; background: rgba(0, 0, 0, 0.1);">
+            <div style="font-weight: 600; color: #059669; font-size: ${!screenMd ? (!screenLg ? "12" : "11") : "10.5"}px;">
+              <span>Tổng:</span> <span>${total.toLocaleString(undefined, { maximumFractionDigits: nameChart.includes("%") ? 2 : 0 })}</span>
             </div>
           </div>
         `;
-      }
+      },
     },
 
-    dataZoom: needsScroll ? [
-      {
-        type: 'slider',
-        show: true,
-        xAxisIndex: 0,
-        start: 0,
-        end: zoomEndPercent,
-        bottom: 0,
-        height: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? 20 : 15 : 10,
-        borderRadius: 8,
-        backgroundColor: !stateGlobals.darkMode ? 'rgb(223, 249, 245)' : 'rgb(31, 60, 72)',
-        borderColor: !stateGlobals.darkMode ? 'rgb(205, 240, 246)' : 'rgb(38, 128, 136)',
-        brushSelect: false,
-        handleSize: '100%',
-        handleStyle: {
-          color: 'rgb(42, 198, 193)',
-          borderColor: !stateGlobals.darkMode ? 'rgba(255, 255, 255, 1)' : 'rgba(28, 37, 52, 1)'
-        },
-        textStyle: {
-          fontSize: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.axisLabel : '11px' : '10.5px',
-          color: !stateGlobals.darkMode ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.8)',
-          fontWeight: 500
-        },
-        emphasis: {
-          handleStyle: {
-            color: !stateGlobals.darkMode ? 'rgba(255, 255, 255, 1)' : 'rgba(28, 37, 52, 1)',
-            borderColor: 'rgb(42, 198, 193)'
-          }
-        },
-        fillerColor: !stateGlobals.darkMode ? 'rgb(205, 240, 246)' : 'rgb(38, 128, 136)',
-        dataBackground: {
-          lineStyle: {
-            opacity: 0.2,
-            color: 'rgb(42, 198, 193)'
+    dataZoom: needsScroll
+      ? [
+          {
+            type: "slider",
+            show: true,
+            xAxisIndex: 0,
+            start: 0,
+            end: zoomEndPercent,
+            bottom: 0,
+            height: !screenMd ? (!screenLg ? 20 : 15) : 10,
+            borderRadius: 8,
+            backgroundColor: !darkMode
+              ? "rgb(223, 249, 245)"
+              : "rgb(31, 60, 72)",
+            borderColor: !darkMode ? "rgb(205, 240, 246)" : "rgb(38, 128, 136)",
+            brushSelect: false,
+            handleSize: "100%",
+            handleStyle: {
+              color: "rgb(42, 198, 193)",
+              borderColor: !darkMode
+                ? "rgba(255, 255, 255, 1)"
+                : "rgba(28, 37, 52, 1)",
+            },
+            textStyle: {
+              fontSize: !screenMd
+                ? !screenLg
+                  ? fontSize.axisLabel
+                  : "11px"
+                : "10.5px",
+              color: !darkMode
+                ? "rgba(0, 0, 0, 0.7)"
+                : "rgba(255, 255, 255, 0.8)",
+              fontWeight: 500,
+            },
+            emphasis: {
+              handleStyle: {
+                color: !darkMode
+                  ? "rgba(255, 255, 255, 1)"
+                  : "rgba(28, 37, 52, 1)",
+                borderColor: "rgb(42, 198, 193)",
+              },
+            },
+            fillerColor: !darkMode ? "rgb(205, 240, 246)" : "rgb(38, 128, 136)",
+            dataBackground: {
+              lineStyle: {
+                opacity: 0.2,
+                color: "rgb(42, 198, 193)",
+              },
+              areaStyle: {
+                opacity: 0.2,
+                color: "rgb(42, 198, 193)",
+              },
+            },
           },
-          areaStyle: {
-            opacity: 0.2,
-            color: 'rgb(42, 198, 193)'
-          }
-        }
-      },
-      {
-        type: 'inside',
-        xAxisIndex: 0,
-        start: 0,
-        end: zoomEndPercent,
-        zoomOnMouseWheel: true,
-        moveOnMouseMove: true,
-        moveOnMouseWheel: false
-      }
-    ] : [],
+          {
+            type: "inside",
+            xAxisIndex: 0,
+            start: 0,
+            end: zoomEndPercent,
+            zoomOnMouseWheel: true,
+            moveOnMouseMove: true,
+            moveOnMouseWheel: false,
+          },
+        ]
+      : [],
 
     legend: {
-      type: 'scroll', // ✅ Cho phép cuộn ngang
-      orient: !legendTop && !stateGlobals.screen_md ? 'vertical' : 'horizontal', // ✅ Xếp nằm ngang trên 1 hàng
-      top: 0,                     // ✅ Đưa lên trên cùng
-      left: 0,                  // ✅ Canh trái (theo padding X của grid)
-      right: 0,                 // Giữ khoảng cách bên phải giống grid
-      align: 'left',
-      itemWidth: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? 14 : 12 : 10,
-      itemHeight: 10,  // ✅ Tăng từ 10 lên 14 để có chỗ cho dấu
+      type: "scroll", // ✅ Cho phép cuộn ngang
+      orient: !legendTop && !screenMd ? "vertical" : "horizontal", // ✅ Xếp nằm ngang trên 1 hàng
+      top: 0, // ✅ Đưa lên trên cùng
+      left: 0, // ✅ Canh trái (theo padding X của grid)
+      right: 0, // Giữ khoảng cách bên phải giống grid
+      align: "left",
+      itemWidth: !screenMd ? (!screenLg ? 14 : 12) : 10,
+      itemHeight: 10, // ✅ Tăng từ 10 lên 14 để có chỗ cho dấu
       lineHeight: 10,
-      icon: 'circle',
+      icon: "circle",
       itemGap: !legendTop ? 8 : 10,
       data: legendDatas,
       textStyle: {
-        fontSize: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.legend : '11px' : '10.5px',
-        color: !stateGlobals.darkMode ? 'rgba(30, 27, 57, 1)' : 'rgba(255, 255, 255, 0.8)',
+        fontSize: !screenMd ? (!screenLg ? fontSize.legend : "11px") : "10.5px",
+        color: !darkMode ? "rgba(30, 27, 57, 1)" : "rgba(255, 255, 255, 0.8)",
         fontWeight: fontWeight.legend,
-        letterSpacing: '0.1px',
+        letterSpacing: "0.1px",
         fontFamily: fontFamily,
-        height: textOverflow && legendTop ? (!stateGlobals.screen_md ? !stateGlobals.screen_lg ? 23 : 20 : 19) : 10,
-        lineHeight: textOverflow && legendTop ? (!stateGlobals.screen_md ? !stateGlobals.screen_lg ? 23 : 20 : 19) : 10
+        height:
+          textOverflow && legendTop
+            ? !screenMd
+              ? !screenLg
+                ? 23
+                : 20
+              : 19
+            : 10,
+        lineHeight:
+          textOverflow && legendTop
+            ? !screenMd
+              ? !screenLg
+                ? 23
+                : 20
+              : 19
+            : 10,
       },
       selector: [
-        { type: 'all', title: 'All' },
-        { type: 'inverse', title: 'Inv' }
+        { type: "all", title: "All" },
+        { type: "inverse", title: "Inv" },
       ],
-      selectorPosition: !legendTop ? 'start' : 'end',
+      selectorPosition: !legendTop ? "start" : "end",
       selectorItemGap: 5,
       selectorButtonGap: 8,
       selectorLabel: {
         show: true,
         padding: [3, 8],
         borderRadius: 10,
-        borderColor: !stateGlobals.darkMode ? 'rgba(229, 229, 239, 1)' : 'rgba(255, 255, 255, 0.2)',
-        color: !stateGlobals.darkMode ? 'rgba(30, 27, 57, 1)' : 'rgba(255, 255, 255, 0.8)',
+        borderColor: !darkMode
+          ? "rgba(229, 229, 239, 1)"
+          : "rgba(255, 255, 255, 0.2)",
+        color: !darkMode ? "rgba(30, 27, 57, 1)" : "rgba(255, 255, 255, 0.8)",
         fontWeight: 400,
         fontFamily: fontFamily,
-        fontSize: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.legend : '11px' : '10.5px'
+        fontSize: !screenMd ? (!screenLg ? fontSize.legend : "11px") : "10.5px",
       },
-      selected: selectedSeries
+      selected: selectedSeries,
     },
 
     grid: {
-      left: !legendTop && !stateGlobals.screen_md ? !stateGlobals.screen_lg ? left : left - 10 : '1%',
-      right: '1%',
-      bottom: needsScroll ? (!stateGlobals.screen_md ? !stateGlobals.screen_lg ? (xAxisTitle ? '42px' : '30px') : (xAxisTitle ? '37px' : '25px') : (xAxisTitle ? '32px' : '20px')) : '1%',
-      top: !legendTop && !stateGlobals.screen_md ? '5%' : 40,
-      containLabel: true
+      left: !legendTop && !screenMd ? (!screenLg ? left : left - 10) : "1%",
+      right: "1%",
+      bottom: needsScroll
+        ? !screenMd
+          ? !screenLg
+            ? xAxisTitle
+              ? "42px"
+              : "30px"
+            : xAxisTitle
+              ? "37px"
+              : "25px"
+          : xAxisTitle
+            ? "32px"
+            : "20px"
+        : "1%",
+      top: !legendTop && !screenMd ? "5%" : 40,
+      containLabel: true,
     },
 
     xAxis: {
-      type: 'category',
+      type: "category",
       data: labels,
       name: xAxisTitle,
-      nameLocation: 'middle',
-      nameGap: !stateGlobals.screen_md ? 25 : 24,
+      nameLocation: "middle",
+      nameGap: !screenMd ? 25 : 24,
       nameTextStyle: {
-        fontSize: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.axisLabel : '11px' : '10.5px',
+        fontSize: !screenMd
+          ? !screenLg
+            ? fontSize.axisLabel
+            : "11px"
+          : "10.5px",
         fontWeight: fontWeight.axisLabel,
         fontFamily: fontFamily,
-        color: !stateGlobals.darkMode
-          ? 'rgba(0, 0, 0, 0.7)'
-          : 'rgba(255, 255, 255, 0.9)'
+        color: !darkMode ? "rgba(0, 0, 0, 0.7)" : "rgba(255, 255, 255, 0.9)",
       },
-      axisLine: { show: !stateGlobals.darkMode ? true : false, lineStyle: { color: 'rgba(229, 229, 239, 1)' } },
+      axisLine: {
+        show: !darkMode ? true : false,
+        lineStyle: { color: "rgba(229, 229, 239, 1)" },
+      },
       axisTick: { show: false },
       axisLabel: {
         fontSize: fontSize.axisLabel,
-        color: !stateGlobals.darkMode ? 'rgba(97, 94, 131, 1)' : 'rgba(255, 255, 255, 0.9)',
-        fontWeight: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontWeight.axisLabel : '11px' : '10.5px',
+        color: !darkMode ? "rgba(97, 94, 131, 1)" : "rgba(255, 255, 255, 0.9)",
+        fontWeight: !screenMd
+          ? !screenLg
+            ? fontWeight.axisLabel
+            : "11px"
+          : "10.5px",
         rotate: 0,
-        interval: 'auto',
+        interval: "auto",
         fontFamily: fontFamily,
-        formatter: (value) => value
+        formatter: (value) => value,
       },
       splitLine: { show: false },
-      boundaryGap: true
+      boundaryGap: true,
     },
 
     yAxis: {
-      type: 'value',
+      type: "value",
       axisLine: { show: false },
       axisTick: { show: false },
       splitLine: {
         show: true,
         lineStyle: {
-          color: !stateGlobals.darkMode ? 'rgba(229, 229, 239, 1)' : 'rgba(255, 255, 255, 0.2)',
-          type: !stateGlobals.darkMode ? 'solid' : 'dashed',
+          color: !darkMode
+            ? "rgba(229, 229, 239, 1)"
+            : "rgba(255, 255, 255, 0.2)",
+          type: !darkMode ? "solid" : "dashed",
           width: 1,
-          opacity: 1
-        }
+          opacity: 1,
+        },
       },
       axisLabel: {
-        formatter: v => !stateGlobals.screen_md && !KMB ? v.toLocaleString(undefined, { maximumFractionDigits: 0 }) : formatKMB(v),
-        fontSize: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.axisLabel : '11px' : '10.5px',
-        color: !stateGlobals.darkMode ? 'rgba(97, 94, 131, 1)' : 'rgba(255, 255, 255, 0.9)',
+        formatter: (v) =>
+          !screenMd && !KMB
+            ? v.toLocaleString(undefined, { maximumFractionDigits: 0 })
+            : formatKMB(v),
+        fontSize: !screenMd
+          ? !screenLg
+            ? fontSize.axisLabel
+            : "11px"
+          : "10.5px",
+        color: !darkMode ? "rgba(97, 94, 131, 1)" : "rgba(255, 255, 255, 0.9)",
         fontWeight: fontWeight.axisLabel,
-        fontFamily: fontFamily
-      }
+        fontFamily: fontFamily,
+      },
     },
 
     series: series.map((s, index) => {
-      const color = colors[s.name] || defaultColors[index % defaultColors.length];
+      const color =
+        colors[s.name] || defaultColors[index % defaultColors.length];
 
       // ✅ Logic show label theo showTopNSeries
       const isTopSeries = !topSeriesNames || topSeriesNames.has(s.name);
@@ -482,93 +614,143 @@ const LineChart = ({
 
       return {
         name: s.name,
-        type: 'line',
+        type: "line",
         triggerLineEvent: true,
         data: s.data,
         smooth: smooth,
-        symbol: 'circle',
-        symbolSize: !stateGlobals.screen_md ? symbolSize : 6,
+        symbol: "circle",
+        symbolSize: !screenMd ? symbolSize : 6,
         // showSymbol: isTopSeries,
         lineStyle: {
           color: color,
           width: isActive ? lineWidth + 1 : lineWidth,
-          opacity: isActive ? 1 : inActiveLine ? 0.2 : 1  // ✅ Luôn đậm ban đầu
+          opacity: isActive ? 1 : inActiveLine ? 0.2 : 1, // ✅ Luôn đậm ban đầu
         },
         itemStyle: {
-          color: labelLength === 0 ? color : 'transparent',
-          borderColor: labelLength === 0 ? 'rgba(255, 255, 255, 1)' : 'transparent',
-          borderWidth: labelLength === 0 ? 2 : 0
+          color: labelLength === 0 ? color : "transparent",
+          borderColor:
+            labelLength === 0 ? "rgba(255, 255, 255, 1)" : "transparent",
+          borderWidth: labelLength === 0 ? 2 : 0,
         },
         ...(areaStyle && {
           areaStyle: {
             color: {
-              type: 'linear',
-              x: 0, y: 0, x2: 0, y2: 1,
+              type: "linear",
+              x: 0,
+              y: 0,
+              x2: 0,
+              y2: 1,
               colorStops: [
-                { offset: 0, color: color + '40' },
-                { offset: 1, color: color + '10' }
-              ]
-            }
-          }
+                { offset: 0, color: color + "40" },
+                { offset: 1, color: color + "10" },
+              ],
+            },
+          },
         }),
-        ...(stack && { stack: 'total' }),
+        ...(stack && { stack: "total" }),
         emphasis: {
-          focus: 'series',  // ✅ Tự động mờ các series khác khi hover
+          focus: "series", // ✅ Tự động mờ các series khác khi hover
           scale: true,
           itemStyle: {
             color: color,
             borderWidth: labelLength === 0 ? 3 : 2,
-            borderColor: 'rgba(255, 255, 255, 1)',
+            borderColor: "rgba(255, 255, 255, 1)",
             shadowBlur: labelLength === 0 ? 10 : 0,
-            shadowColor: labelLength === 0 ? !stateGlobals.darkMode ? 'rgba(0,0,0,0.3)' : 'rgba(225,225,225,0.3)' : '',
+            shadowColor:
+              labelLength === 0
+                ? !darkMode
+                  ? "rgba(0,0,0,0.3)"
+                  : "rgba(225,225,225,0.3)"
+                : "",
           },
           lineStyle: {
-            width: lineWidth + 1,  // ✅ Đậm hơn khi hover
-            opacity: 1
+            width: lineWidth + 1, // ✅ Đậm hơn khi hover
+            opacity: 1,
           },
           label: {
             show: true,
-            position: 'top',
+            position: "top",
             offset: [0, labelOffset],
-            formatter: (params) => params.value ? nameChart.includes('%') ? params.value.toLocaleString(undefined, { maximumFractionDigits: (nameChart.includes('%') ? 2 : 0) }) : !stateGlobals.screen_md && !KMB ? params.value.toLocaleString(undefined, { maximumFractionDigits: (nameChart.includes('%') ? 2 : 0) }) : formatKMB(params.value) : '',
-            fontSize: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.dataLabel : '11px' : '10.5px',
+            formatter: (params) =>
+              params.value
+                ? nameChart.includes("%")
+                  ? params.value.toLocaleString(undefined, {
+                      maximumFractionDigits: nameChart.includes("%") ? 2 : 0,
+                    })
+                  : !screenMd && !KMB
+                    ? params.value.toLocaleString(undefined, {
+                        maximumFractionDigits: nameChart.includes("%") ? 2 : 0,
+                      })
+                    : formatKMB(params.value)
+                : "",
+            fontSize: !screenMd
+              ? !screenLg
+                ? fontSize.dataLabel
+                : "11px"
+              : "10.5px",
             fontWeight: fontWeight.dataLabel,
             fontFamily: fontFamily,
             color: color,
-            backgroundColor: 'rgba(255,255,255,1)',
+            backgroundColor: "rgba(255,255,255,1)",
             padding: [4, 8],
             borderRadius: 4,
             borderColor: color,
             borderWidth: 1,
-            opacity: 1
-          }
+            opacity: 1,
+          },
         },
         label: {
-          show: (showLabel && isTopSeries && !inActiveLine) || (isActive && !stateGlobals.screen_md),  // ✅ Logic hoàn chỉnh
-          position: 'top',
+          show:
+            (showLabel && isTopSeries && !inActiveLine) ||
+            (isActive && !screenMd), // ✅ Logic hoàn chỉnh
+          position: "top",
           offset: [0, labelOffset],
-          formatter: (params) => params.value ? nameChart.includes('%') ? params.value.toLocaleString(undefined, { maximumFractionDigits: (nameChart.includes('%') ? 2 : 0) }) : !stateGlobals.screen_md && !KMB ? params.value.toLocaleString(undefined, { maximumFractionDigits: (nameChart.includes('%') ? 2 : 0) }) : formatKMB(params.value) : '',
-          fontSize: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? fontSize.dataLabel : '11px' : '10.5px',
+          formatter: (params) =>
+            params.value
+              ? nameChart.includes("%")
+                ? params.value.toLocaleString(undefined, {
+                    maximumFractionDigits: nameChart.includes("%") ? 2 : 0,
+                  })
+                : !screenMd && !KMB
+                  ? params.value.toLocaleString(undefined, {
+                      maximumFractionDigits: nameChart.includes("%") ? 2 : 0,
+                    })
+                  : formatKMB(params.value)
+              : "",
+          fontSize: !screenMd
+            ? !screenLg
+              ? fontSize.dataLabel
+              : "11px"
+            : "10.5px",
           fontWeight: fontWeight.dataLabel,
           fontFamily: fontFamily,
           color: color,
-          opacity: isActive ? 1 : inActiveLine ? 0.2 : 1
-        }
+          opacity: isActive ? 1 : inActiveLine ? 0.2 : 1,
+        },
       };
-    })
+    }),
   };
 
   return (
-    <div className='p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component'>
-      <NameChart nameChart={nameChart} description={description} getChartData={getEChartsData} fullScreen={fullScreen} refetch={refetch} />
+    <div className="p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component">
+      <NameChart
+        nameChart={nameChart}
+        description={description}
+        getChartData={getEChartsData}
+        fullScreen={fullScreen}
+        refetch={refetch}
+      />
       <ReactECharts
         ref={chartRef}
         onEvents={onEvents}
         option={option}
-        style={{ height: !stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : 350 : 240, width: '100%' }}
+        style={{
+          height: !screenMd ? (!screenLg ? height : 350) : 240,
+          width: "100%",
+        }}
         opts={{
-          renderer: 'canvas',
-          locale: 'VN'
+          renderer: "canvas",
+          locale: "VN",
         }}
       />
     </div>

@@ -7,17 +7,21 @@ import iconDarkMode from "../../../assets/icon_dark_mode.png";
 import iconDarkModeDark from "../../../assets/icon_dark_mode_dark.png";
 import iconLanguageDark from "../../../assets/icon_language_dark.png";
 import imageUser from "../../../assets/image_user.png";
-import React, { useEffect, useState, useRef } from "react";
-import { useDashboardStateGlobals } from "../../../context/DashboardFilterContext";
+import React, { useEffect, useState, useRef, useCallback } from "react";
+import { useDarkMode } from "../../../context/DashboardFilterContext";
 import Button from "./Button";
 import { CUSTOM_CHART } from "../../../utils/customChart";
 import { generateRandomId } from "../../../helpers/helper";
 import iconUserInfor from "../../../assets/icon_user_infor.png";
 import iconUserInforDark from "../../../assets/icon_user_infor_dark.png";
 import iconLogout from "../../../assets/icon_logout.png";
+import useGlobalEffects from "../../../hooks/useGlobalEffects";
 
 const Header = ({ username }) => {
-  const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
+  // console.log("--------------");
+  // console.log("Header");
+
+  const { value: darkMode, setValue: setDarkMode } = useDarkMode();
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -54,129 +58,10 @@ const Header = ({ username }) => {
     setIsDropdownOpen((prev) => !prev);
   };
 
-  useEffect(() => {
-    const savedTheme = localStorage.getItem("theme");
-
-    if (savedTheme && savedTheme === "light") {
-      setStateGlobals((prev) => ({ ...prev, darkMode: false }));
-      document.documentElement.classList.remove("dark");
-    } else {
-      setStateGlobals((prev) => ({ ...prev, darkMode: true }));
-      document.documentElement.classList.add("dark");
-    }
-
-    const existingUserId = sessionStorage.getItem("user_id");
-    const controller = new AbortController();
-    const newUserId = generateRandomId(6);
-    sessionStorage.setItem("user_id", newUserId);
-
-    // Gọi endpoint Doris với session cũ trước khi reset session mới
-    if (existingUserId) {
-      fetch(`${import.meta.env.VITE_API_BASE_URL}/api/doris/processlist`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ user_id: existingUserId }),
-        signal: controller.signal,
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          // console.log('✅ Doris PROCESSLIST:', data);
-        })
-        .catch((err) => {
-          if (err.name === "AbortError") return;
-          console.error("❌ Lỗi gọi Doris:", err);
-        });
-
-      // Kill tất cả Superset request đang pending của user cũ
-      fetch(`${import.meta.env.VITE_API_BASE_URL}/api/kill-user`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ user_id: existingUserId }),
-        signal: controller.signal,
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          // console.log(`✅ Kill Superset requests: ${data.message}`);
-          // ✅ Báo cho tất cả useApi hooks reset loading về false
-          // window.dispatchEvent(new CustomEvent('api-killed'));
-        })
-        .catch((err) => {
-          if (err.name === "AbortError") return;
-          console.error("❌ Lỗi gọi kill-user:", err);
-        });
-    }
-
-    return () => controller.abort();
-  }, []);
-
-  // ✅ Thêm event listener khi tắt trình duyệt/tab để kill các request
-  useEffect(() => {
-    const handleUnload = () => {
-      const userId = sessionStorage.getItem("user_id");
-      if (userId) {
-        // Kill Doris
-        fetch(`${import.meta.env.VITE_API_BASE_URL}/api/doris/processlist`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ user_id: userId }),
-          keepalive: true,
-        }).catch(() => {});
-
-        // Kill Superset
-        fetch(`${import.meta.env.VITE_API_BASE_URL}/api/kill-user`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ user_id: userId }),
-          keepalive: true,
-        }).catch(() => {});
-      }
-    };
-
-    window.addEventListener("beforeunload", handleUnload);
-    return () => window.removeEventListener("beforeunload", handleUnload);
-  }, []);
-
-  useEffect(() => {
-    let timeoutId;
-
-    const checkMobile = () => {
-      // ✅ Cancel timeout cũ
-      clearTimeout(timeoutId);
-
-      // ✅ Debounce manual 150ms
-      timeoutId = setTimeout(() => {
-        const isMobile = window.innerWidth < 1025;
-        const isLaptop = window.innerWidth < 1707;
-        setStateGlobals((prev) => ({
-          ...prev,
-          isOpen: !isMobile,
-          screen_md: isMobile,
-          screen_lg: isLaptop,
-        }));
-      }, 150);
-    };
-
-    // ✅ Initial check ngay lập tức
-    checkMobile();
-
-    // ✅ Listen resize
-    window.addEventListener("resize", checkMobile);
-
-    return () => {
-      window.removeEventListener("resize", checkMobile);
-      clearTimeout(timeoutId); // ✅ Cleanup timeout
-    };
-  }, []);
-
   const toggleDarkMode = () => {
-    const newDarkMode = !stateGlobals.darkMode;
-    setStateGlobals((prev) => ({ ...prev, darkMode: newDarkMode }));
+    setDarkMode((prev) => !prev);
 
-    if (newDarkMode) {
+    if (!darkMode) {
       document.documentElement.classList.add("dark");
       localStorage.setItem("theme", "dark");
     } else {
@@ -185,7 +70,7 @@ const Header = ({ username }) => {
     }
   };
 
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     sessionStorage.removeItem("user_id");
     sessionStorage.removeItem("dashboard_filters");
     sessionStorage.removeItem("filter_values");
@@ -194,7 +79,7 @@ const Header = ({ username }) => {
     sessionStorage.removeItem("open_filters");
     sessionStorage.removeItem("filter_sessions_ratings");
     window.location.href = CUSTOM_CHART.domain + "/logout/";
-  };
+  }, []);
 
   // const [currentTime, setCurrentTime] = useState('');
   // const [currentDate, setCurrentDate] = useState('');
@@ -226,12 +111,14 @@ const Header = ({ username }) => {
   //     return () => clearInterval(intervalId);
   // }, []);
 
+  useGlobalEffects();
+
   return (
     <header className="h-15 max-lg:h-13 max-md:h-10 bg-background-light dark:bg-background-dark transition-all duration-300 px-6 max-lg:px-5 max-md:px-4 py-px flex justify-between items-center border-b border-border-black-10 dark:border-background-white-15">
       <a href={`${CUSTOM_CHART.domain}/superset/welcome/`}>
         <figure>
           <img
-            src={!stateGlobals.darkMode ? logoVTVRatings : logoVTVRatingsDark}
+            src={!darkMode ? logoVTVRatings : logoVTVRatingsDark}
             className="h-14.5 max-lg:h-12.5 max-md:h-9.5"
             alt="Logo VTVRatings"
           />
@@ -240,17 +127,17 @@ const Header = ({ username }) => {
       <div className="flex items-center">
         <div className="flex items-center gap-2 max-lg:gap-1.5 max-md:gap-1">
           {/* <div className='flex items-center gap-2 py-2 px-4 max-lg:px-3 max-md:px-2'>
-                    <figure><img src={!stateGlobals.darkMode ? iconLanguge : iconLanguageDark} className='w-4 max-lg:w-3.5 max-md:w-3 h-4 max-lg:h-3.5 max-md:h-3' alt="Icon Language" /></figure>
+                    <figure><img src={!darkMode ? iconLanguge : iconLanguageDark} className='w-4 max-lg:w-3.5 max-md:w-3 h-4 max-lg:h-3.5 max-md:h-3' alt="Icon Language" /></figure>
                     <span className='text-base max-lg:text-sm max-md:text-xs font-medium text-color-black-100 dark:text-color-white-90 transition-all duration-300'>English</span>
-                    <figure><img src={!stateGlobals.darkMode ? iconArrowDown : iconArrowDownDark} className='w-2.25' alt="Icon Arrow Down" /></figure>
+                    <figure><img src={!darkMode ? iconArrowDown : iconArrowDownDark} className='w-2.25' alt="Icon Arrow Down" /></figure>
                 </div> */}
           <figure
             className="p-2 max-md:pr-0 cursor-pointer"
             onClick={toggleDarkMode}
-            title={stateGlobals.darkMode ? "Chế độ sáng" : "Chế độ tối"}
+            title={darkMode ? "Chế độ sáng" : "Chế độ tối"}
           >
             <img
-              src={!stateGlobals.darkMode ? iconDarkMode : iconDarkModeDark}
+              src={!darkMode ? iconDarkMode : iconDarkModeDark}
               className="w-4.5 max-lg:w-4 max-md:w-3.5 h-4.5 max-lg:h-4 max-md:h-3.5"
               alt="Icon Dark Mode"
             />
@@ -274,7 +161,7 @@ const Header = ({ username }) => {
                         <span className='text-base max-lg:text-sm max-md:text-xs font-normal text-color-gray-800 dark:text-color-white-90 transition-all duration-300'>{currentTime}</span>
                         <span className='text-xs max-md:text-[11px] font-normal text-color-gray-600 dark:text-color-white-50 transition-all duration-300'>{currentDate}</span>
                     </div> */}
-            {/* <figure><img src={!stateGlobals.darkMode ? iconArrowDown : iconArrowDownDark} className={`w-2.25 max-md:w-2 transition-all duration-300 ${!isDropdownOpen ? '' : 'rotate-180'}`} alt="Icon Arrow Down" /></figure> */}
+            {/* <figure><img src={!darkMode ? iconArrowDown : iconArrowDownDark} className={`w-2.25 max-md:w-2 transition-all duration-300 ${!isDropdownOpen ? '' : 'rotate-180'}`} alt="Icon Arrow Down" /></figure> */}
           </div>
           <div
             ref={dropdownRef}
@@ -284,7 +171,7 @@ const Header = ({ username }) => {
               <Button
                 background={"bg-transparent"}
                 color={"text-color-black-100 dark:text-color-white-80"}
-                src={!stateGlobals.darkMode ? iconUserInfor : iconUserInforDark}
+                src={!darkMode ? iconUserInfor : iconUserInforDark}
                 widthImage="w-4.5 max-lg:w-4.25 max-md:w-4"
                 alt="Icon User"
                 text={username ? username : "vtvguest"}

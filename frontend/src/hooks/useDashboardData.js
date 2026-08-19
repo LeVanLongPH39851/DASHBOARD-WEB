@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import * as useCallApi from './useCallApi';
 
 const HOOKS = [
@@ -56,6 +56,8 @@ const HOOKS = [
 ];
 
 export const useDashboardData = () => {
+  console.log('useDashboardData');
+  
   const hookResults = HOOKS.map(({ hook }) => hook());
   const hasLoggedRef = useRef(false);
 

@@ -1,13 +1,20 @@
 // src/components/filters/DateRangeFilter.jsx
-import { useState, useEffect } from 'react';
-import { getYesterday, formatDate } from '../../../../helpers/helper';
-import iconArrowUpGray from '../../../../assets/icon_arrow_up_gray.png';
-import iconArrowUpGrayDark from '../../../../assets/icon_arrow_up_gray_dark.png';
-import iconCalendar from '../../../../assets/icon_input_date.png';
-import iconCalendarDark from '../../../../assets/icon_calendar_dark.png';
-import { useDashboardStateGlobals } from '../../../../context/DashboardFilterContext';
+import React, { useState, useEffect } from "react";
+import { getYesterday, formatDate } from "../../../../helpers/helper";
+import iconArrowUpGray from "../../../../assets/icon_arrow_up_gray.png";
+import iconArrowUpGrayDark from "../../../../assets/icon_arrow_up_gray_dark.png";
+import iconCalendar from "../../../../assets/icon_input_date.png";
+import iconCalendarDark from "../../../../assets/icon_calendar_dark.png";
+import { useDarkMode } from "../../../../context/DashboardFilterContext";
 
-const DateRangeFilter = ({ startDate, endDate, onChange, horizontalFixed=false }) => {
+const DateRangeFilter = ({
+  startDate,
+  endDate,
+  onChange,
+  horizontalFixed = false,
+}) => {
+  // console.log("DateRangeFilter");
+
   const yesterday = getYesterday();
   const [localStart, setLocalStart] = useState(startDate || yesterday);
   const [localEnd, setLocalEnd] = useState(endDate || yesterday);
@@ -15,7 +22,7 @@ const DateRangeFilter = ({ startDate, endDate, onChange, horizontalFixed=false }
   const getMinStartDate = (endDateStr) => {
     const endDate = new Date(endDateStr);
     endDate.setDate(endDate.getDate() - 365);
-    return endDate.toISOString().split('T')[0];
+    return endDate.toISOString().split("T")[0];
   };
 
   // Sync props → state khi Filter reset / load từ context
@@ -63,49 +70,113 @@ const DateRangeFilter = ({ startDate, endDate, onChange, horizontalFixed=false }
     }
   };
 
-  const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
-  const openFilter = sessionStorage.getItem('open_filters') ? JSON.parse(sessionStorage.getItem('open_filters')).includes('Ngày') : false;
+  const { value: darkMode, setValue: setDarkMode } = useDarkMode();
+  const openFilter = sessionStorage.getItem("open_filters")
+    ? JSON.parse(sessionStorage.getItem("open_filters")).includes("Ngày")
+    : false;
   const [isOpenFilter, setIsOpenFilter] = useState(openFilter);
 
   return (
-    <div className={`${horizontalFixed ? '' : isOpenFilter ? `mb-4 max-lg:mb-3 max-md:mb-2` : ''}`}>
-      {!horizontalFixed && (<div onClick={() => {setIsOpenFilter(prev => !prev);
-                                                const sessionOpen = isOpenFilter ? JSON.stringify([...(JSON.parse(sessionStorage.getItem('open_filters') || '[]')).filter(item => item !== 'Ngày')]) : JSON.stringify([...(JSON.parse(sessionStorage.getItem('open_filters') || '[]')), 'Ngày']);
-                                                sessionStorage.setItem('open_filters', sessionOpen);}}
-                        className={`flex cursor-pointer group justify-between items-center h-10.5 max-lg:h-9 max-md:h-8 ${isOpenFilter ? 'mb-1' : ''}`}>
-                        <label className='cursor-pointer text-[16px] max-lg:text-sm max-md:text-xs text-background-black-child-tab dark:text-color-white-90 transition-all duration-300 font-medium'>Ngày</label>
-                        <figure className={`cursor-pointer ${isOpenFilter ? '' : 'rotate-180'}`}><img src={!stateGlobals.darkMode ? iconArrowUpGray : iconArrowUpGrayDark} className='w-2.75 max-lg:w-2.5 max-md:w-2' alt="Icon Arrow Up Gray" /></figure>
-                      </div>)}
-      <div className={!horizontalFixed ? `transition-all duration-300 relative filter-relative overflow-hidden` : ''} data-initial-height="match">
-        <div className={`flex ${horizontalFixed ? 'gap-1 max-md:grid max-md:grid-cols-2' : 'flex-col'} ${!horizontalFixed ? `transition-all duration-300 absolute w-full left-0 filter-absolute ${isOpenFilter ? 'visible opacity-100 top-0' : 'invisible opacity-0 -top-1/2'}` : ''}`}>
-          {!horizontalFixed && <label className='text-sm max-lg:text-[13px] max-md:text-xs font-normal text-color-black-50 dark:text-color-white-50 transition-all duration-300 mb-1.5 max-md:mb-1'>Từ ngày</label>}
-          <div className={`relative w-full ${!horizontalFixed ? 'mb-2' : ''}`}>
+    <div
+      className={`${horizontalFixed ? "" : isOpenFilter ? `mb-4 max-lg:mb-3 max-md:mb-2` : ""}`}
+    >
+      {!horizontalFixed && (
+        <div
+          onClick={() => {
+            setIsOpenFilter((prev) => !prev);
+            const sessionOpen = isOpenFilter
+              ? JSON.stringify([
+                  ...JSON.parse(
+                    sessionStorage.getItem("open_filters") || "[]",
+                  ).filter((item) => item !== "Ngày"),
+                ])
+              : JSON.stringify([
+                  ...JSON.parse(sessionStorage.getItem("open_filters") || "[]"),
+                  "Ngày",
+                ]);
+            sessionStorage.setItem("open_filters", sessionOpen);
+          }}
+          className={`flex cursor-pointer group justify-between items-center h-10.5 max-lg:h-9 max-md:h-8 ${isOpenFilter ? "mb-1" : ""}`}
+        >
+          <label className="cursor-pointer text-[16px] max-lg:text-sm max-md:text-xs text-background-black-child-tab dark:text-color-white-90 transition-all duration-300 font-medium">
+            Ngày
+          </label>
+          <figure
+            className={`cursor-pointer ${isOpenFilter ? "" : "rotate-180"}`}
+          >
+            <img
+              src={!darkMode ? iconArrowUpGray : iconArrowUpGrayDark}
+              className="w-2.75 max-lg:w-2.5 max-md:w-2"
+              alt="Icon Arrow Up Gray"
+            />
+          </figure>
+        </div>
+      )}
+      <div
+        className={
+          !horizontalFixed
+            ? `transition-all duration-300 relative filter-relative overflow-hidden`
+            : ""
+        }
+        data-initial-height="match"
+      >
+        <div
+          className={`flex ${horizontalFixed ? "gap-1 max-md:grid max-md:grid-cols-2" : "flex-col"} ${!horizontalFixed ? `transition-all duration-300 absolute w-full left-0 filter-absolute ${isOpenFilter ? "visible opacity-100 top-0" : "invisible opacity-0 -top-1/2"}` : ""}`}
+        >
+          {!horizontalFixed && (
+            <label className="text-sm max-lg:text-[13px] max-md:text-xs font-normal text-color-black-50 dark:text-color-white-50 transition-all duration-300 mb-1.5 max-md:mb-1">
+              Từ ngày
+            </label>
+          )}
+          <div className={`relative w-full ${!horizontalFixed ? "mb-2" : ""}`}>
             <input
-              className={`px-4 max-lg:px-3 max-md:px-3 rounded-xl border border-background-line-gray w-full dark:border-background-white-15 text-sm max-lg:text-[13px] max-md:text-xs font-normal text-transparent transition-all duration-300 dark:bg-background-white-8 outline-none ${horizontalFixed ? 'py-2 max-lg:py-1.5 max-md:py-1.5' : 'py-2.25 max-lg:py-1.75 max-md:py-1.5'}`}
+              className={`px-4 max-lg:px-3 max-md:px-3 rounded-xl border border-background-line-gray w-full dark:border-background-white-15 text-sm max-lg:text-[13px] max-md:text-xs font-normal text-transparent transition-all duration-300 dark:bg-background-white-8 outline-none ${horizontalFixed ? "py-2 max-lg:py-1.5 max-md:py-1.5" : "py-2.25 max-lg:py-1.75 max-md:py-1.5"}`}
               type="date"
               value={localStart}
               min={getMinStartDate(localEnd)}
               max={localEnd}
               onChange={handleStartChange}
             />
-            <span className='absolute left-4 max-lg:left-3 max-md:left-3 top-1/2 -translate-y-1/2 text-sm max-lg:text-[13px] max-md:text-xs font-normal text-color-black-50 dark:text-color-white-50 transition-all duration-300 bg-background-light dark:bg-inherit pr-3'>{formatDate(localStart)}</span>
-            <figure onClick={showPicker} className='cursor-pointer absolute right-4.75 max-lg:right-3.75 top-1/2 -translate-y-1/2'>
-              <img src={iconCalendar} className='w-3 max-lg:w-2.75 max-md:w-2.5' alt="Icon Calendar" />
+            <span className="absolute left-4 max-lg:left-3 max-md:left-3 top-1/2 -translate-y-1/2 text-sm max-lg:text-[13px] max-md:text-xs font-normal text-color-black-50 dark:text-color-white-50 transition-all duration-300 bg-background-light dark:bg-inherit pr-3">
+              {formatDate(localStart)}
+            </span>
+            <figure
+              onClick={showPicker}
+              className="cursor-pointer absolute right-4.75 max-lg:right-3.75 top-1/2 -translate-y-1/2"
+            >
+              <img
+                src={iconCalendar}
+                className="w-3 max-lg:w-2.75 max-md:w-2.5"
+                alt="Icon Calendar"
+              />
             </figure>
           </div>
-          {!horizontalFixed && <label className='text-sm max-lg:text-[13px] max-md:text-xs font-normal text-color-black-50 dark:text-color-white-50 transition-all duration-300 mb-1.5 max-md:mb-1'>Đến ngày</label>}
-          <div className='relative w-full'>
+          {!horizontalFixed && (
+            <label className="text-sm max-lg:text-[13px] max-md:text-xs font-normal text-color-black-50 dark:text-color-white-50 transition-all duration-300 mb-1.5 max-md:mb-1">
+              Đến ngày
+            </label>
+          )}
+          <div className="relative w-full">
             <input
-              className={`px-4 max-lg:px-3 max-md:px-3 rounded-xl border border-background-line-gray w-full dark:border-background-white-15 text-sm max-lg:text-[13px] max-md:text-xs font-normal text-transparent transition-all duration-300 dark:bg-background-white-8 outline-none ${horizontalFixed ? 'py-2 max-lg:py-1.5 max-md:py-1.5' : 'py-2.25 max-lg:py-1.75 max-md:py-1.5'}`}
+              className={`px-4 max-lg:px-3 max-md:px-3 rounded-xl border border-background-line-gray w-full dark:border-background-white-15 text-sm max-lg:text-[13px] max-md:text-xs font-normal text-transparent transition-all duration-300 dark:bg-background-white-8 outline-none ${horizontalFixed ? "py-2 max-lg:py-1.5 max-md:py-1.5" : "py-2.25 max-lg:py-1.75 max-md:py-1.5"}`}
               type="date"
               value={localEnd}
               min={localStart}
               max={yesterday}
               onChange={handleEndChange}
             />
-            <span className='absolute left-4 max-lg:left-3 max-md:left-3 top-1/2 -translate-y-1/2 text-sm max-lg:text-[13px] max-md:text-xs font-normal text-color-black-50 dark:text-color-white-50 transition-all duration-300 bg-background-light dark:bg-inherit pr-3'>{formatDate(localEnd)}</span>
-            <figure onClick={showPicker} className='cursor-pointer absolute right-4.75 max-lg:right-3.75 top-1/2 -translate-y-1/2'>
-              <img src={iconCalendar} className='w-3 max-lg:w-2.75 max-md:w-2.5' alt="Icon Calendar" />
+            <span className="absolute left-4 max-lg:left-3 max-md:left-3 top-1/2 -translate-y-1/2 text-sm max-lg:text-[13px] max-md:text-xs font-normal text-color-black-50 dark:text-color-white-50 transition-all duration-300 bg-background-light dark:bg-inherit pr-3">
+              {formatDate(localEnd)}
+            </span>
+            <figure
+              onClick={showPicker}
+              className="cursor-pointer absolute right-4.75 max-lg:right-3.75 top-1/2 -translate-y-1/2"
+            >
+              <img
+                src={iconCalendar}
+                className="w-3 max-lg:w-2.75 max-md:w-2.5"
+                alt="Icon Calendar"
+              />
             </figure>
           </div>
         </div>
@@ -114,4 +185,4 @@ const DateRangeFilter = ({ startDate, endDate, onChange, horizontalFixed=false }
   );
 };
 
-export default DateRangeFilter;
+export default React.memo(DateRangeFilter);

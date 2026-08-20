@@ -5,6 +5,7 @@ import DashboardBrand from './pages/DashboardBrand';
 import DashboardWorldCup from './pages/DashboardWorldCup';
 import BaoTri from './pages/BaoTri';
 import Login from "./pages/Login";
+import ChatBot from "./components/layouts/components/ChatBot";
 
 const ProtectedRoute = ({ children }) => {
   const token = sessionStorage.getItem('userToken');
@@ -26,6 +27,7 @@ function App() {
         <Route path="/brand" element={<DashboardBrand />} />
         <Route path="/world-cup-2026" element={<DashboardWorldCup />} />
       </Routes>
+      <ChatBot />
     </BrowserRouter>
   )
 }

@@ -72,6 +72,7 @@ app.post("/api/superset", async (req, res) => {
     }
 
     res.json(responseData);
+    console.log('✅ Trả data về React');
   } catch (error) {
     if (error.name === "AbortError" || error.message?.includes("abort")) {
       return res.status(499).json({
@@ -201,6 +202,39 @@ app.post("/api/kill-user", (req, res) => {
     });
   } catch (error) {
     console.error("❌ Lỗi kill-user:", error.message);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+});
+
+// Endpoint cho ChatBot
+app.post('/api/chatbot', async (req, res) => {
+  try {
+    const { message } = req.body;
+    console.log(`💬 ChatBot nhận: "${message}"`);
+
+    // Gọi API query
+    const apiResponse = await fetch('http://100.100.11.2:8010/api/query', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        question: message,
+        no_llm: false,
+        execute: true,
+      }),
+    });
+
+    const data = await apiResponse.json();
+    console.log('✅ ChatBot API trả về:', JSON.stringify(data).substring(0, 200));
+
+    res.json({
+      success: true,
+      reply: data,
+    });
+  } catch (error) {
+    console.error('❌ Lỗi ChatBot:', error.message);
     res.status(500).json({
       success: false,
       error: error.message,

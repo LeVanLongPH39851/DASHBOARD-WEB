@@ -1,20 +1,21 @@
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
-const mysql = require('mysql2/promise');
+require("dotenv").config();
+const express = require("express");
+const cors = require("cors");
+const mysql = require("mysql2/promise");
+const { buildCacheKey, getCache, setCache } = require("./redis");
 
 const pool = mysql.createPool({
-  host: '100.100.10.3',
+  host: "100.100.10.3",
   port: 9030,
-  user: 'Ami_doris',
-  password: 'Ami@123#@!',
-  database: '',
+  user: "Ami_doris",
+  password: "Ami@123#@!",
+  database: "",
   waitForConnections: true,
-  connectionLimit: 10,   // Tối đa 10 connection
-  queueLimit: 0
+  connectionLimit: 10, // Tối đa 10 connection
+  queueLimit: 0,
 });
 
-const { callAPIWithUser, killUserRequests } = require('./api');
+const { callAPIWithUser, killUserRequests } = require("./api");
 
 const app = express();
 
@@ -23,50 +24,71 @@ app.use(cors());
 app.use(express.json());
 
 // Endpoint cho React gọi
-app.post('/api/superset', async (req, res) => {
+app.post("/api/superset", async (req, res) => {
   try {
     const { url, payload, user_id } = req.body;
 
-    console.log(`📥 Nhận request từ React (${user_id ? `[user_id: ${user_id}]` : 'NaN'})`);
+    // Nếu payload chứa user_id → tạo cache key từ payload KHÔNG có user_id
+    // (strip cả top-level user_id lẫn filter user_id trong queries[].filters[])
+    // → nhiều user khác nhau vẫn hit cùng cache key nếu cùng bộ filter
+    let cacheKey = null;
+    if (user_id && payload.force !== true) {
+      cacheKey = buildCacheKey(payload);
+
+      // Kiểm tra cache trước
+      const cached = await getCache(cacheKey);
+      if (cached) {
+        console.log(`⚡ Cache hit: key=${cacheKey}`);
+        return res.json({ ...cached, from_cache: true });
+      }
+      console.log(`🔍 Cache miss: key=${cacheKey}`);
+    }
 
     // Gọi Superset API (gắn user_id để có thể kill sau)
     const result = await callAPIWithUser(url, payload, user_id);
 
-    // Trả về data
-    res.json({
+    const responseData = {
       success: true,
       data: result.result[1]
         ? [...result.result[0].data, ...result.result[1].data]
         : result.result[0].data,
       colnames: result.result[1]
-        ? [...new Set([...result.result[0].colnames, ...result.result[1].colnames])]
+        ? [
+            ...new Set([
+              ...result.result[0].colnames,
+              ...result.result[1].colnames,
+            ]),
+          ]
         : result.result[0].colnames,
       rowcount: result.result[1]
         ? result.result[0].rowcount + result.result[1].rowcount
-        : result.result[0].rowcount
-    });
+        : result.result[0].rowcount,
+    };
 
-    console.log('✅ Trả data về React');
+    // Lưu vào Redis nếu có cacheKey
+    if (cacheKey) {
+      const ttl = parseInt(process.env.REDIS_TTL || "3600");
+      await setCache(cacheKey, responseData, ttl);
+    }
 
+    res.json(responseData);
   } catch (error) {
-    if (error.name === 'AbortError' || error.message?.includes('abort')) {
-      console.log('🛑 Request bị kill bởi user');
+    if (error.name === "AbortError" || error.message?.includes("abort")) {
       return res.status(499).json({
         success: false,
         killed: true,
-        error: 'Request bị hủy bởi người dùng'
+        error: "Request bị hủy bởi người dùng",
       });
     }
-    console.error('❌ Lỗi:', error.message);
     res.status(500).json({
       success: false,
-      error: error.message
+      error: error.message,
     });
   }
 });
 
 // Endpoint để query PROCESSLIST từ Doris
-app.post('/api/doris/processlist', async (req, res) => {
+app.post("/api/doris/processlist", async (req, res) => {
   let connection;
   try {
     const { user_id } = req.body;
@@ -74,7 +96,7 @@ app.post('/api/doris/processlist', async (req, res) => {
     if (!user_id) {
       return res.status(400).json({
         success: false,
-        error: 'user_id là bắt buộc'
+        error: "user_id là bắt buộc",
       });
     }
 
@@ -86,10 +108,12 @@ app.post('/api/doris/processlist', async (req, res) => {
     // Thực hiện query PROCESSLIST
     const [rows] = await connection.execute(
       `SELECT * FROM information_schema.PROCESSLIST WHERE COMMAND = 'Query' AND Info like ?`,
-      [`%${user_id}%`]
+      [`%${user_id}%`],
     );
 
-    console.log(`✅ Query PROCESSLIST thành công, kết quả: ${rows.length} hàng`);
+    console.log(
+      `✅ Query PROCESSLIST thành công, kết quả: ${rows.length} hàng`,
+    );
 
     // Nếu có kết quả (length > 0), thực hiện KILL QUERY
     const killResults = [];
@@ -105,18 +129,20 @@ app.post('/api/doris/processlist', async (req, res) => {
 
           killResults.push({
             queryId,
-            status: 'killed',
-            info: row.Info
+            status: "killed",
+            info: row.Info,
           });
 
           console.log(`  ✅ Killed QUERY_ID: ${queryId}`);
         } catch (killError) {
-          console.log(`  ⚠️  Lỗi kill QUERY_ID ${row.QUERY_ID}: ${killError.message}`);
+          console.log(
+            `  ⚠️  Lỗi kill QUERY_ID ${row.QUERY_ID}: ${killError.message}`,
+          );
           killResults.push({
             queryId: row.QUERY_ID,
-            status: 'error',
+            status: "error",
             error: killError.message,
-            info: row.Info
+            info: row.Info,
           });
         }
       }
@@ -129,14 +155,13 @@ app.post('/api/doris/processlist', async (req, res) => {
       processlist: rows,
       killResults: killResults,
       count: rows.length,
-      killedCount: killResults.filter(r => r.status === 'killed').length
+      killedCount: killResults.filter((r) => r.status === "killed").length,
     });
-
   } catch (error) {
-    console.error('❌ Lỗi Doris:', error.message);
+    console.error("❌ Lỗi Doris:", error.message);
     res.status(500).json({
       success: false,
-      error: error.message
+      error: error.message,
     });
   } finally {
     if (connection) {
@@ -146,14 +171,14 @@ app.post('/api/doris/processlist', async (req, res) => {
 });
 
 // Endpoint để kill tất cả request đang chạy của một user_id
-app.post('/api/kill-user', (req, res) => {
+app.post("/api/kill-user", (req, res) => {
   try {
     const { user_id } = req.body;
 
     if (!user_id) {
       return res.status(400).json({
         success: false,
-        error: 'user_id là bắt buộc'
+        error: "user_id là bắt buộc",
       });
     }
 
@@ -161,29 +186,31 @@ app.post('/api/kill-user', (req, res) => {
 
     const killedCount = killUserRequests(user_id);
 
-    console.log(`✅ Đã gửi lệnh abort cho ${killedCount} request của user_id: ${user_id}`);
+    console.log(
+      `✅ Đã gửi lệnh abort cho ${killedCount} request của user_id: ${user_id}`,
+    );
 
     res.json({
       success: true,
       user_id,
       killedCount,
-      message: killedCount > 0
-        ? `Đã abort ${killedCount} request của user_id: ${user_id}`
-        : `Không có request nào đang chạy cho user_id: ${user_id}`
+      message:
+        killedCount > 0
+          ? `Đã abort ${killedCount} request của user_id: ${user_id}`
+          : `Không có request nào đang chạy cho user_id: ${user_id}`,
     });
-
   } catch (error) {
-    console.error('❌ Lỗi kill-user:', error.message);
+    console.error("❌ Lỗi kill-user:", error.message);
     res.status(500).json({
       success: false,
-      error: error.message
+      error: error.message,
     });
   }
 });
 
 // Health check
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'OK', message: 'Server đang chạy' });
+app.get("/api/health", (req, res) => {
+  res.json({ status: "OK", message: "Server đang chạy" });
 });
 
 const PORT = process.env.PORT || 5000;

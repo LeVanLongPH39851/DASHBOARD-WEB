@@ -1,7 +1,7 @@
 export const ratingLineChartMinuteChannelDatesPayload = {
   url: `${import.meta.env.VITE_API_DOMAIN}/api/v1/chart/data?form_data=%7B%22slice_id%22%3A681%7D&dashboard_id=50`,
   payload: {
-      "datasource": {"id": 214, "type": "table"}, "force": true, "queries": [{
+      "datasource": {"id": 214, "type": "table"}, "force": false, "queries": [{
           "time_range": "DATEADD(DATETIME(\"today\"),-1, DAY) : DATEADD(DATETIME(\"today\"),-1, SECOND)",
           "filters": [{"col": "channel_name_tvd", "op": "IN", "val": ["VTV1"]}, {
               "col": "date",
@@ -150,7 +150,7 @@ export const ratingLineChartMinuteChannelDatesPayload = {
           "map_label_colors": {},
           "own_color_scheme": "supersetColors",
           "extra_filters": [],
-          "force": true,
+          "force": false,
           "result_format": "json",
           "result_type": "full"
       }, "result_format": "json", "result_type": "full"

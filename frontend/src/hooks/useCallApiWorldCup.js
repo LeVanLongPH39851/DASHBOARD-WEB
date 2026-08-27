@@ -1,72 +1,77 @@
-import { useApi } from './useApi';
-import * as getChart from '../api/dashboardApiWorldCup';
-import { useDashboardFilters, useDashboardCrossFilters } from '../context/DashboardFilterContext';
+import { useApi } from "./useApi";
+import * as getChart from "../api/dashboardApiWorldCup";
+import {
+  useDashboardFilters,
+  useDashboardCrossFilters,
+} from "../context/DashboardFilterContext";
 
-const createChartHook = (apiFn, keyMain = '') => () => {
+const createChartHook =
+  (apiFn, keyMain = "") =>
+  () => {
     const { appliedFilters } = useDashboardFilters();
     const { crossFilters } = useDashboardCrossFilters();
 
-    const shouldSkip = crossFilters?.skipNext === keyMain || (crossFilters?.main && keyMain === crossFilters.main);
+    const shouldSkip =
+      crossFilters?.skipNext === keyMain ||
+      (crossFilters?.main && keyMain === crossFilters.main);
 
-    return useApi(
-        apiFn,
-        [appliedFilters, crossFilters],
-        { shouldSkip }
-    );
-};
+    // Only pass appliedFilters to useApi, not crossFilters
+    // crossFilters is only used for shouldSkip logic
+    return useApi(apiFn, [appliedFilters], { shouldSkip });
+  };
 
 // ===== ALL TABLE =====
 export const useAllTableChartDetailReturnApi = () =>
-    createChartHook(getChart.getAllTableChartDetail)();
+  createChartHook(getChart.getAllTableChartDetail)();
 
 export const useAllTableChartProvinceReturnApi = () =>
-    createChartHook(getChart.getAllTableChartProvince)();
+  createChartHook(getChart.getAllTableChartProvince)();
 
 export const useAllTableChartRegionalReturnApi = () =>
-    createChartHook(getChart.getAllTableChartRegional)();
+  createChartHook(getChart.getAllTableChartRegional)();
 
 export const useAllTableChartShareReturnApi = () =>
-    createChartHook(getChart.getAllTableChartShare)();
+  createChartHook(getChart.getAllTableChartShare)();
 
 export const useAllTableChartTeamReturnApi = () =>
-    createChartHook(getChart.getAllTableChartTeam)();
+  createChartHook(getChart.getAllTableChartTeam)();
 
 // ===== NUMBER CHART =====
 export const useAveReachNumberChartReturnApi = () =>
-    createChartHook(getChart.getAveReachNumberChart)();
+  createChartHook(getChart.getAveReachNumberChart)();
 
 export const useAveReachPercentNumberChartReturnApi = () =>
-    createChartHook(getChart.getAveReachPercentNumberChart)();
+  createChartHook(getChart.getAveReachPercentNumberChart)();
 
 export const useCountMatchNumberChartReturnApi = () =>
-    createChartHook(getChart.getCountMatchNumberChart)();
+  createChartHook(getChart.getCountMatchNumberChart)();
 
 export const useDurationNumberChartReturnApi = () =>
-    createChartHook(getChart.getDurationNumberChart)();
+  createChartHook(getChart.getDurationNumberChart)();
 
 // ===== RATING =====
 export const useRatingLineChartMinuteVTV6ReturnApi = () =>
-    createChartHook(getChart.getRatingLineChartMinuteVTV6)();
+  createChartHook(getChart.getRatingLineChartMinuteVTV6)();
 
 export const useRatingNumberChartReturnApi = () =>
-    createChartHook(getChart.getRatingNumberChart)();
+  createChartHook(getChart.getRatingNumberChart)();
 
 export const useRatingPercentBarChartChannelReturnApi = () =>
-    createChartHook(getChart.getRatingPercentBarChartChannel)();
+  createChartHook(getChart.getRatingPercentBarChartChannel)();
 
 export const useRatingPercentNumberChartReturnApi = () =>
-    createChartHook(getChart.getRatingPercentNumberChart)();
+  createChartHook(getChart.getRatingPercentNumberChart)();
 
 export const useRatingReachBarChartDateReturnApi = () =>
-    createChartHook(getChart.getRatingReachBarChartDate)();
+  createChartHook(getChart.getRatingReachBarChartDate)();
 
 export const useMaxInsertReturnApi = () => {
-    return useApi(getChart.getMaxInsert);
+  return useApi(getChart.getMaxInsert);
 };
 
 export const useFilterProvinceReturnApi = () => {
-    return useApi(getChart.getFilterProvince);
+  return useApi(getChart.getFilterProvince);
 };
 
 export const useFilterProgramReturnApi = () =>
-    createChartHook(getChart.getFilterProgram)();
+  createChartHook(getChart.getFilterProgram)();

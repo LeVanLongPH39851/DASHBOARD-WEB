@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from "react";
 
 export const useApi = (apiFn, params = [], options = {}) => {
   const { enabled = true, shouldSkip = false } = options;
@@ -8,26 +8,33 @@ export const useApi = (apiFn, params = [], options = {}) => {
   const [error, setError] = useState(null);
 
   // ✅ THÊM: refetch manual (backup cho trường hợp cần)
-  const refetch = useCallback(() => {
-    if (!enabled || shouldSkip) return Promise.resolve(null);
-    setLoading(true);
-    setError(null);
-    // var isKill = false;
-    return apiFn(...params)
-      .then(res => {
-        // if (!res?.data?.data?.[0]) { isKill = true; } else { isKill = false; }
-        setData(res?.data);
-        return res?.data;
-      })
-      .catch(err => {
-        setError(err);
-        throw err;
-      })
-      .finally(() => {
-        // if (!isKill)
-        setLoading(false);
-      });
-  }, [enabled, shouldSkip, apiFn, ...params]); // eslint-disable-line react-hooks/exhaustive-deps
+  const refetch = useCallback(
+    (force = false) => {
+      if (!enabled || shouldSkip) return Promise.resolve(null);
+      setLoading(true);
+      setError(null);
+      // var isKill = false;
+
+      // Append force to params when calling the API function
+      const finalParams = [...params, force];
+
+      return apiFn(...finalParams)
+        .then((res) => {
+          // if (!res?.data?.data?.[0]) { isKill = true; } else { isKill = false; }
+          setData(res?.data);
+          return res?.data;
+        })
+        .catch((err) => {
+          setError(err);
+          throw err;
+        })
+        .finally(() => {
+          // if (!isKill)
+          setLoading(false);
+        });
+    },
+    [enabled, shouldSkip, apiFn, ...params],
+  ); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ✅ SỬA: auto call khi params thay đổi
   useEffect(() => {

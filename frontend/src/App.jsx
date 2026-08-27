@@ -1,20 +1,20 @@
 import { BrowserRouter, Routes, Route, Link, Navigate } from "react-router-dom";
-import Dashboard from './pages/Dashboard';
-import DashboardSpot from './pages/DashboardSpot';
-import DashboardBrand from './pages/DashboardBrand';
-import DashboardWorldCup from './pages/DashboardWorldCup';
-import BaoTri from './pages/BaoTri';
+import Dashboard from "./pages/Dashboard";
+import DashboardSpot from "./pages/DashboardSpot";
+import DashboardBrand from "./pages/DashboardBrand";
+import DashboardWorldCup from "./pages/DashboardWorldCup";
+import BaoTri from "./pages/BaoTri";
 import Login from "./pages/Login";
 import ChatBot from "./components/layouts/components/ChatBot";
 
 const ProtectedRoute = ({ children }) => {
-  const token = sessionStorage.getItem('userToken');
+  const token = sessionStorage.getItem("userToken");
   return token ? children : <Navigate to="/" replace />;
 };
 
 const PublicRoute = ({ children }) => {
-  const token = sessionStorage.getItem('userToken');
-  return token ? <Navigate to="/dashboard" replace /> : children;
+  const token = sessionStorage.getItem("userToken");
+  return token ? <Navigate to="/rating" replace /> : children;
 };
 
 function App() {
@@ -27,9 +27,8 @@ function App() {
         <Route path="/brand" element={<DashboardBrand />} />
         <Route path="/world-cup-2026" element={<DashboardWorldCup />} />
       </Routes>
-      <ChatBot />
     </BrowserRouter>
-  )
+  );
 }
 
-export default App
+export default App;

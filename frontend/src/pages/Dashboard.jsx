@@ -3323,6 +3323,7 @@ const Dashboard = () => {
   return (
     <DashboardFilterProvider>
       <DashboardContent />
+      {/* <ChatBot /> */}
     </DashboardFilterProvider>
   );
 };

@@ -17,6 +17,10 @@ const pool = mysql.createPool({
 
 const { callAPIWithUser, killUserRequests } = require("./api");
 
+// Single-flight map: cache key → Promise đang chạy
+// Ngăn nhiều request cùng hit DB khi cache miss đồng thời
+const inFlight = new Map();
+
 const app = express();
 
 // Cho phép React gọi từ localhost:3000 hoặc 5173
@@ -35,35 +39,62 @@ app.post("/api/superset", async (req, res) => {
     if (user_id && payload.force !== true) {
       cacheKey = buildCacheKey(payload);
 
-      // Kiểm tra cache trước
+      // 1. Cache hit → trả về ngay
       const cached = await getCache(cacheKey);
       if (cached) {
         console.log(`⚡ Cache hit: key=${cacheKey}`);
         return res.json({ ...cached, from_cache: true });
       }
+
+      // 2. Đang có request khác chạy cùng key → chờ kết quả của nó
+      if (inFlight.has(cacheKey)) {
+        console.log(`⏳ Single-flight wait: key=${cacheKey}`);
+        try {
+          const responseData = await inFlight.get(cacheKey);
+          return res.json({ ...responseData, from_cache: true });
+        } catch (err) {
+          // Request gốc lỗi → để fall-through gọi lại bên dưới
+          console.warn(`⚠️  Single-flight upstream lỗi, thử lại: ${err.message}`);
+        }
+      }
+
+      // 3. Cache miss, không có in-flight → request này chạy xuống DB
       console.log(`🔍 Cache miss: key=${cacheKey}`);
     }
 
-    // Gọi Superset API (gắn user_id để có thể kill sau)
-    const result = await callAPIWithUser(url, payload, user_id);
+    // Tạo Promise gọi Superset và đăng ký vào inFlight map
+    const fetchPromise = (async () => {
+      const result = await callAPIWithUser(url, payload, user_id);
+      return {
+        success: true,
+        data: result.result[1]
+          ? [...result.result[0].data, ...result.result[1].data]
+          : result.result[0].data,
+        colnames: result.result[1]
+          ? [
+              ...new Set([
+                ...result.result[0].colnames,
+                ...result.result[1].colnames,
+              ]),
+            ]
+          : result.result[0].colnames,
+        rowcount: result.result[1]
+          ? result.result[0].rowcount + result.result[1].rowcount
+          : result.result[0].rowcount,
+      };
+    })();
 
-    const responseData = {
-      success: true,
-      data: result.result[1]
-        ? [...result.result[0].data, ...result.result[1].data]
-        : result.result[0].data,
-      colnames: result.result[1]
-        ? [
-            ...new Set([
-              ...result.result[0].colnames,
-              ...result.result[1].colnames,
-            ]),
-          ]
-        : result.result[0].colnames,
-      rowcount: result.result[1]
-        ? result.result[0].rowcount + result.result[1].rowcount
-        : result.result[0].rowcount,
-    };
+    if (cacheKey) {
+      inFlight.set(cacheKey, fetchPromise);
+    }
+
+    let responseData;
+    try {
+      responseData = await fetchPromise;
+    } finally {
+      // Dù thành công hay lỗi đều xóa khỏi inFlight
+      if (cacheKey) inFlight.delete(cacheKey);
+    }
 
     // Lưu vào Redis nếu có cacheKey
     if (cacheKey) {

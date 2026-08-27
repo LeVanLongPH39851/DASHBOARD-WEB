@@ -69,12 +69,15 @@ const ChatBot = () => {
         }),
       };
       setMessages((prev) => [...prev, botMsg]);
-    } catch {
+    } catch (error) {
+      const is429 = error?.response?.status === 429;
       setMessages((prev) => [
         ...prev,
         {
           id: Date.now() + 1,
-          text: "Xin lỗi, đã xảy ra lỗi. Vui lòng thử lại.",
+          text: is429
+            ? "Bạn vừa gửi tin nhắn. Vui lòng thử lại sau 10 giây."
+            : "Xin lỗi, đã xảy ra lỗi. Vui lòng thử lại.",
           sender: "bot",
           time: new Date().toLocaleTimeString("vi-VN", {
             hour: "2-digit",

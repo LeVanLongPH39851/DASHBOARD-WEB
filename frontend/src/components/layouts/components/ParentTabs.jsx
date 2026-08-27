@@ -16,7 +16,7 @@ const ParentTabs = ({
   zIndex = "z-100",
   countTab = "max-md:grid-cols-4",
 }) => {
-  console.log("ParentTabs");
+  // console.log("ParentTabs");
 
   const [height, setHeight] = useState(0);
 

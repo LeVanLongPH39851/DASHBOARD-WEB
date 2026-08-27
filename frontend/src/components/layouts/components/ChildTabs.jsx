@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
  * ChildTabs với hiệu ứng smooth background slide
  */
 const ChildTabs = ({ tabs, defaultTab, variant = "default" }) => {
-  console.log("ChildTabs");
+  // console.log("ChildTabs");
 
   const [activeTab, setActiveTab] = useState(defaultTab || tabs[0]?.id);
   const [bgStyle, setBgStyle] = useState({

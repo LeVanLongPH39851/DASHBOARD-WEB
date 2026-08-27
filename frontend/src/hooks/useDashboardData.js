@@ -203,7 +203,7 @@ const HOOKS = [
 ];
 
 export const useDashboardData = () => {
-  console.log("useDashboardData");
+  // console.log("useDashboardData");
 
   const hookResults = HOOKS.map(({ hook }) => hook());
   const hasLoggedRef = useRef(false);

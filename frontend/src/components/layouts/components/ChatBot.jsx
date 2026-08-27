@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import axiosClient from "../../../api/axiosClient";
+import chatbotClient from "../../../api/chatbotClient";
 
 const ChatBot = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -54,13 +54,14 @@ const ChatBot = () => {
     setIsLoading(true);
 
     try {
-      const { data } = await axiosClient.post("/api/chatbot", {
-        message: trimmed,
+      const { data } = await chatbotClient.post("/api/query", {
+        // message: trimmed,
+        question: trimmed,
       });
 
       const botMsg = {
         id: Date.now() + 1,
-        text: data?.reply?.output?.text || "Không có phản hồi.",
+        text: data?.reply || data?.output?.text || "Không có phản hồi.",
         sender: "bot",
         time: new Date().toLocaleTimeString("vi-VN", {
           hour: "2-digit",

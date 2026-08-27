@@ -640,10 +640,10 @@ export const getFilterProvince = () => {
   });
 };
 
-export const getFilterProgram = (appliedFilters, force = false) =>
-  postChart(
-    payloads.filterProgramPayload,
-    appliedFilters,
-    ["allFilters"],
-    force,
-  );
+export const getFilterProgram = () => {
+  const userId = sessionStorage.getItem("user_id");
+  return axiosClient.post(apiRoute, {
+    ...payloads.filterProgramPayload,
+    user_id: userId,
+  });
+};

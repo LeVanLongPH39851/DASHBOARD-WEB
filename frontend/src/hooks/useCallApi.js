@@ -256,5 +256,6 @@ export const useFilterProvinceReturnApi = () => {
   return useApi(getChart.getFilterProvince);
 };
 
-export const useFilterProgramReturnApi = () =>
-  createChartHook(getChart.getFilterProgram)();
+export const useFilterProgramReturnApi = () => {
+  return useApi(getChart.getFilterProgram);
+};

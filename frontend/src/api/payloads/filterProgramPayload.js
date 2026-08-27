@@ -8,8 +8,6 @@ export const filterProgramPayload = {
     "force": false,
     "queries": [
         {
-            "time_range": "DATEADD(DATETIME(\"today\"),-1, DAY) : DATEADD(DATETIME(\"today\"),-1, SECOND)",
-            "granularity": "date",
             "filters": [],
             "extras": {
                 "having": "",
@@ -27,11 +25,11 @@ export const filterProgramPayload = {
                 ]
             ],
             "annotation_layers": [],
-            "row_limit": 10000,
+            "row_limit": 1000,
             "series_limit": 0,
             "order_desc": true,
             "url_params": {
-                "native_filters_key": "bqBRzQqCDO6Q3EuDzjgYnd-86WSu9BH4U4rwudIJ3WKsK8Ubg1uUWied3l7cXUqs"
+                "native_filters_key": "OSAFt2VfUEGmEqLJjr2B4bVdMVmMBby2KYh68jB0u_BCm3uFqD09QEpvZ8MELsgO"
             },
             "custom_params": {},
             "custom_form_data": {}
@@ -49,17 +47,14 @@ export const filterProgramPayload = {
         ],
         "adhoc_filters": [],
         "extra_filters": [],
-        "extra_form_data": {
-            "time_range": "DATEADD(DATETIME(\"today\"),-1, DAY) : DATEADD(DATETIME(\"today\"),-1, SECOND)"
-        },
-        "granularity_sqla": "date",
+        "extra_form_data": {},
         "metrics": [
             "count"
         ],
         "row_limit": 10000,
         "showSearch": true,
         "url_params": {
-            "native_filters_key": "bqBRzQqCDO6Q3EuDzjgYnd-86WSu9BH4U4rwudIJ3WKsK8Ubg1uUWied3l7cXUqs"
+            "native_filters_key": "OSAFt2VfUEGmEqLJjr2B4bVdMVmMBby2KYh68jB0u_BCm3uFqD09QEpvZ8MELsgO"
         },
         "inView": true,
         "viz_type": "filter_select",
@@ -72,5 +67,5 @@ export const filterProgramPayload = {
     },
     "result_format": "json",
     "result_type": "full"
-  }
+}
 };

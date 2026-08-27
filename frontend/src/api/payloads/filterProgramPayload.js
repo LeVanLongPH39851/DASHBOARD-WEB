@@ -25,7 +25,7 @@ export const filterProgramPayload = {
                 ]
             ],
             "annotation_layers": [],
-            "row_limit": 1000,
+            "row_limit": 10000,
             "series_limit": 0,
             "order_desc": true,
             "url_params": {

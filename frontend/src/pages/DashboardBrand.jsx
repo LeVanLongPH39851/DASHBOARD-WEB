@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useMemo } from "react";
 import NumberCard from "../components/charts/NumberCard";
 import Filter from "../components/layouts/filters/Filter";
 import { METRIC_SPOTS, METRICS } from "../utils/metricInfor";
@@ -26,7 +26,12 @@ import Header from "../components/layouts/headers/Header";
 import BreadCrumb from "../components/layouts/headers/BreadCrumb";
 import InforTab from "../components/layouts/headers/InforTab";
 import InforFilter from "../components/layouts/headers/InforFilter";
-import { useDashboardStateGlobals } from "../context/DashboardFilterContext";
+import {
+  useDarkMode,
+  useIsOpen,
+  useScreenMd,
+  useHorizontal,
+} from "../context/DashboardFilterContext";
 import NumberWithTrendChart from "../components/charts/NumberWithTrendChart";
 import NameChart from "../components/layouts/components/NameChart";
 import { transformNumberWithTrendData } from "../utils/transfromApiNumberWithTrendChart";
@@ -49,35 +54,57 @@ import { LABEL_SPOT } from "../utils/label";
 
 const DashboardContent = () => {
   const dashboard = useDashboardData();
-  const { stateGlobals, setStateGlobals } = useDashboardStateGlobals();
+  const { value: darkMode, setValue: setDarkMode } = useDarkMode();
+  const { value: isOpen, setValue: setIsOpen } = useIsOpen();
+  const { value: screenMd, setValue: setScreenMd } = useScreenMd();
+  const { value: horizontal, setValue: setHorizontal } = useHorizontal();
   const { user, userLoading } = useCurrentUser();
 
-  const scopeFilterData = {
-    filterProvince: dashboard.isLoading.filterProvinceData
-      ? [{ Loading: "Loading" }]
-      : dashboard.filterProvinceData?.data,
-    filterProgram: dashboard.isLoading.filterProgramData
-      ? [{ Loading: "Loading" }]
-      : dashboard.filterProgramData?.data,
-    filterProduct: dashboard.isLoading.filterProductData
-      ? [{ Loading: "Loading" }]
-      : dashboard.filterProductData?.data,
-    filterGroup: dashboard.isLoading.filterGroupData
-      ? [{ Loading: "Loading" }]
-      : dashboard.filterGroupData?.data,
-    filterCampaign: dashboard.isLoading.filterCampaignData
-      ? [{ Loading: "Loading" }]
-      : dashboard.filterCampaignData?.data,
-    filterBrand: dashboard.isLoading.filterBrandData
-      ? [{ Loading: "Loading" }]
-      : dashboard.filterBrandData?.data,
-    filterAdvertiser: dashboard.isLoading.filterAdvertiserData
-      ? [{ Loading: "Loading" }]
-      : dashboard.filterAdvertiserData?.data,
-    filterAdcode: dashboard.isLoading.filterAdcodeData
-      ? [{ Loading: "Loading" }]
-      : dashboard.filterAdcodeData?.data,
-  };
+  const scopeFilterData = useMemo(() => {
+    return {
+      filterProvince: dashboard.isLoading.filterProvinceData
+        ? [{ Loading: "Loading" }]
+        : dashboard.filterProvinceData?.data,
+      filterProgram: dashboard.isLoading.filterProgramData
+        ? [{ Loading: "Loading" }]
+        : dashboard.filterProgramData?.data,
+      filterProduct: dashboard.isLoading.filterProductData
+        ? [{ Loading: "Loading" }]
+        : dashboard.filterProductData?.data,
+      filterGroup: dashboard.isLoading.filterGroupData
+        ? [{ Loading: "Loading" }]
+        : dashboard.filterGroupData?.data,
+      filterCampaign: dashboard.isLoading.filterCampaignData
+        ? [{ Loading: "Loading" }]
+        : dashboard.filterCampaignData?.data,
+      filterBrand: dashboard.isLoading.filterBrandData
+        ? [{ Loading: "Loading" }]
+        : dashboard.filterBrandData?.data,
+      filterAdvertiser: dashboard.isLoading.filterAdvertiserData
+        ? [{ Loading: "Loading" }]
+        : dashboard.filterAdvertiserData?.data,
+      filterAdcode: dashboard.isLoading.filterAdcodeData
+        ? [{ Loading: "Loading" }]
+        : dashboard.filterAdcodeData?.data,
+    };
+  }, [
+    dashboard.isLoading.filterProvinceData,
+    dashboard.filterProvinceData,
+    dashboard.isLoading.filterProgramData,
+    dashboard.filterProgramData,
+    dashboard.isLoading.filterProductData,
+    dashboard.filterProductData,
+    dashboard.isLoading.filterGroupData,
+    dashboard.filterGroupData,
+    dashboard.isLoading.filterCampaignData,
+    dashboard.filterCampaignData,
+    dashboard.isLoading.filterBrandData,
+    dashboard.filterBrandData,
+    dashboard.isLoading.filterAdvertiserData,
+    dashboard.filterAdvertiserData,
+    dashboard.isLoading.filterAdcodeData,
+    dashboard.filterAdcodeData,
+  ]);
 
   return (
     <main className="font-family-be-vietnam-pro w-full h-full tracking-[0.1px] overflow-x-clip">
@@ -85,7 +112,7 @@ const DashboardContent = () => {
       <div className="flex w-full h-full bg-background-light dark:bg-background-dark transition-all duration-300">
         <FilterSpot filters={scopeFilterData} />
         <div
-          className={`${stateGlobals.isOpen && !stateGlobals.horizontal ? "w-[84%] max-md:w-full" : "w-full"} transition-all duration-300 bg-background-dashboard dark:bg-background-dashboard-dark`}
+          className={`${isOpen && !horizontal ? "w-[84%] max-md:w-full" : "w-full"} transition-all duration-300 bg-background-dashboard dark:bg-background-dashboard-dark`}
         >
           <BreadCrumb dashboardName="BÁO CÁO CHO NHÃN HÀNG" />
           <div className="bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300">
@@ -96,9 +123,7 @@ const DashboardContent = () => {
                 {
                   id: "overview",
                   label: "Báo cáo cho nhãn hàng",
-                  icon: !stateGlobals.darkMode
-                    ? iconOverview
-                    : iconOverviewDark,
+                  icon: !darkMode ? iconOverview : iconOverviewDark,
                   iconActive: iconOverviewActive,
                   content: (
                     <section
@@ -123,137 +148,161 @@ const DashboardContent = () => {
                           <NumberCard
                             title={"Số lượng Campaign"}
                             description={false}
-                            value={
-                              !dashboard.isLoading.countCampaignNumberData
-                                ? dashboard.countCampaignNumberData?.data
-                                  ? formatNumber(
-                                      dashboard.countCampaignNumberData
-                                        ?.data[0]["COUNT_DISTINCT(Campaign)"],
-                                      { isPercent: false },
-                                    )
-                                  : "-"
-                                : "isLoading"
-                            }
+                            value={useMemo(
+                              () =>
+                                !dashboard.isLoading.countCampaignNumberData
+                                  ? dashboard.countCampaignNumberData?.data
+                                    ? formatNumber(
+                                        dashboard.countCampaignNumberData
+                                          ?.data[0]["COUNT_DISTINCT(Campaign)"],
+                                        { isPercent: false },
+                                      )
+                                    : "-"
+                                  : "isLoading",
+                              [dashboard.isLoading.countCampaignNumberData],
+                            )}
                             icon={METRIC_SPOTS.count.icon}
                             background={METRIC_SPOTS.count.background}
                             widthIcon={METRIC_SPOTS.count.widthIcon}
-                            refetch={() =>
-                              dashboard.refetch("countCampaignNumberData")
-                            }
+                            refetch={useCallback(
+                              () =>
+                                dashboard.refetch("countCampaignNumberData"),
+                              [dashboard.isLoading.countCampaignNumberData],
+                            )}
                           />
                           <NumberCard
                             title={"Số lượng Spot"}
                             description={false}
-                            value={
-                              !dashboard.isLoading.countSpotNumberData
-                                ? dashboard.countSpotNumberData?.data
-                                  ? formatNumber(
-                                      dashboard.countSpotNumberData?.data[0]
-                                        .count,
-                                      { isPercent: false },
-                                    )
-                                  : "-"
-                                : "isLoading"
-                            }
+                            value={useMemo(
+                              () =>
+                                !dashboard.isLoading.countSpotNumberData
+                                  ? dashboard.countSpotNumberData?.data
+                                    ? formatNumber(
+                                        dashboard.countSpotNumberData?.data[0]
+                                          .count,
+                                        { isPercent: false },
+                                      )
+                                    : "-"
+                                  : "isLoading",
+                              [dashboard.isLoading.countSpotNumberData],
+                            )}
                             icon={METRIC_SPOTS.count.icon}
                             background={METRIC_SPOTS.count.background}
                             widthIcon={METRIC_SPOTS.count.widthIcon}
-                            refetch={() =>
-                              dashboard.refetch("countSpotNumberData")
-                            }
+                            refetch={useCallback(
+                              () => dashboard.refetch("countSpotNumberData"),
+                              [dashboard.isLoading.countSpotNumberData],
+                            )}
                           />
                           <NumberCard
                             title={"Thời lượng Spot (Phút)"}
                             description={false}
-                            value={
-                              !dashboard.isLoading.durationSpotNumberData
-                                ? dashboard.durationSpotNumberData?.data
-                                  ? formatNumber(
-                                      dashboard.durationSpotNumberData?.data[0]
-                                        .total_duration,
-                                      { isPercent: false },
-                                    )
-                                  : "-"
-                                : "isLoading"
-                            }
+                            value={useMemo(
+                              () =>
+                                !dashboard.isLoading.durationSpotNumberData
+                                  ? dashboard.durationSpotNumberData?.data
+                                    ? formatNumber(
+                                        dashboard.durationSpotNumberData
+                                          ?.data[0].total_duration,
+                                        { isPercent: false },
+                                      )
+                                    : "-"
+                                  : "isLoading",
+                              [dashboard.isLoading.durationSpotNumberData],
+                            )}
                             icon={METRIC_SPOTS.duration.icon}
                             background={METRIC_SPOTS.duration.background}
                             widthIcon={METRIC_SPOTS.duration.widthIcon}
-                            refetch={() =>
-                              dashboard.refetch("durationSpotNumberData")
-                            }
+                            refetch={useCallback(
+                              () => dashboard.refetch("durationSpotNumberData"),
+                              [dashboard.isLoading.durationSpotNumberData],
+                            )}
                           />
                           <NumberCard
                             title={"Tổng chi phí (Triệu VND)"}
                             description={false}
-                            value={
-                              !dashboard.isLoading.spendVNDNumberData
-                                ? dashboard.spendVNDNumberData?.data
-                                  ? formatNumber(
-                                      dashboard.spendVNDNumberData?.data[0]
-                                        .price,
-                                      { isPercent: false },
-                                    )
-                                  : "-"
-                                : "isLoading"
-                            }
+                            value={useMemo(
+                              () =>
+                                !dashboard.isLoading.spendVNDNumberData
+                                  ? dashboard.spendVNDNumberData?.data
+                                    ? formatNumber(
+                                        dashboard.spendVNDNumberData?.data[0]
+                                          .price,
+                                        { isPercent: false },
+                                      )
+                                    : "-"
+                                  : "isLoading",
+                              [dashboard.isLoading.spendVNDNumberData],
+                            )}
                             icon={METRIC_SPOTS.spend_vnd.icon}
                             background={METRIC_SPOTS.spend_vnd.background}
                             widthIcon={METRIC_SPOTS.spend_vnd.widthIcon}
-                            refetch={() =>
-                              dashboard.refetch("spendVNDNumberData")
-                            }
+                            refetch={useCallback(
+                              () => dashboard.refetch("spendVNDNumberData"),
+                              [dashboard.isLoading.spendVNDNumberData],
+                            )}
                           />
                           <NumberCard
                             title={"Reach"}
                             description={false}
-                            value={
-                              !dashboard.isLoading.reachNumberData
-                                ? dashboard.reachNumberData?.data
-                                  ? formatNumber(
-                                      dashboard.reachNumberData?.data[0].reach,
-                                      { isPercent: false },
-                                    )
-                                  : "-"
-                                : "isLoading"
-                            }
+                            value={useMemo(
+                              () =>
+                                !dashboard.isLoading.reachNumberData
+                                  ? dashboard.reachNumberData?.data
+                                    ? formatNumber(
+                                        dashboard.reachNumberData?.data[0]
+                                          .reach,
+                                        { isPercent: false },
+                                      )
+                                    : "-"
+                                  : "isLoading",
+                              [dashboard.isLoading.reachNumberData],
+                            )}
                             icon={METRICS.ave_reach.icon}
                             background={METRICS.ave_reach.background}
                             widthIcon={METRICS.ave_reach.widthIcon}
-                            refetch={() => dashboard.refetch("reachNumberData")}
+                            refetch={useCallback(
+                              () => dashboard.refetch("reachNumberData"),
+                              [dashboard.isLoading.reachNumberData],
+                            )}
                           />
                           <NumberCard
                             title={"Tần suất"}
                             description={false}
-                            value={
-                              !dashboard.isLoading.frequencyNumberData
-                                ? dashboard.frequencyNumberData?.data
-                                  ? formatNumber(
-                                      dashboard.frequencyNumberData?.data[0]
-                                        .frequency,
-                                      { isPercent: false },
-                                    )
-                                  : "-"
-                                : "isLoading"
-                            }
+                            value={useMemo(
+                              () =>
+                                !dashboard.isLoading.frequencyNumberData
+                                  ? dashboard.frequencyNumberData?.data
+                                    ? formatNumber(
+                                        dashboard.frequencyNumberData?.data[0]
+                                          .frequency,
+                                        { isPercent: false },
+                                      )
+                                    : "-"
+                                  : "isLoading",
+                              [dashboard.isLoading.frequencyNumberData],
+                            )}
                             icon={METRICS.rating.icon}
                             background={METRICS.rating.background}
                             widthIcon={METRICS.rating.widthIcon}
-                            refetch={() =>
-                              dashboard.refetch("frequencyNumberData")
-                            }
+                            refetch={useCallback(
+                              () => dashboard.refetch("frequencyNumberData"),
+                              [dashboard.isLoading.frequencyNumberData],
+                            )}
                           />
                         </div>
                         <div className="w-full pb-6 max-lg:pb-5 max-md:pb-4">
                           <TableChart
-                            data={
-                              !dashboard.isLoading.allTableBrandData
-                                ? transformTableChartData(
-                                    dashboard.allTableBrandData?.data,
-                                    dashboard.allTableBrandData?.colnames,
-                                  )
-                                : "isLoading"
-                            }
+                            data={useMemo(
+                              () =>
+                                !dashboard.isLoading.allTableBrandData
+                                  ? transformTableChartData(
+                                      dashboard.allTableBrandData?.data,
+                                      dashboard.allTableBrandData?.colnames,
+                                    )
+                                  : "isLoading",
+                              [dashboard.isLoading.allTableBrandData],
+                            )}
                             height={"450px"}
                             fontSize={CUSTOM_CHART.tableChart.fontSize}
                             fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -262,27 +311,32 @@ const DashboardContent = () => {
                             description={false}
                             fullScreen={true}
                             showPagination={false}
-                            customCol={{
-                              "Ngành hàng": { minSize: 150, maxSize: 250 },
-                              "Sản phẩm": { minSize: 200, maxSize: 300 },
-                              "Nhà quảng cáo": { minSize: 200, maxSize: 300 },
-                              "Nhãn hàng": { minSize: 150, maxSize: 250 },
-                            }}
-                            refetch={() =>
-                              dashboard.refetch("allTableBrandData")
-                            }
+                            customCol={useMemo(() => {
+                              return {
+                                "Ngành hàng": { minSize: 150, maxSize: 250 },
+                                "Sản phẩm": { minSize: 200, maxSize: 300 },
+                                "Nhà quảng cáo": { minSize: 200, maxSize: 300 },
+                                "Nhãn hàng": { minSize: 150, maxSize: 250 },
+                              };
+                            }, [])}
+                            refetch={useCallback(
+                              () => dashboard.refetch("allTableBrandData"),
+                              [dashboard.isLoading.allTableBrandData],
+                            )}
                           />
                         </div>
                         <div className="w-full grid grid-cols-2 max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4">
                           <TableChart
-                            data={
-                              !dashboard.isLoading.allTableDeviceData
-                                ? transformTableChartData(
-                                    dashboard.allTableDeviceData?.data,
-                                    dashboard.allTableDeviceData?.colnames,
-                                  )
-                                : "isLoading"
-                            }
+                            data={useMemo(
+                              () =>
+                                !dashboard.isLoading.allTableDeviceData
+                                  ? transformTableChartData(
+                                      dashboard.allTableDeviceData?.data,
+                                      dashboard.allTableDeviceData?.colnames,
+                                    )
+                                  : "isLoading",
+                              [dashboard.isLoading.allTableDeviceData],
+                            )}
                             height={"300px"}
                             fontSize={CUSTOM_CHART.tableChart.fontSize}
                             fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -291,19 +345,22 @@ const DashboardContent = () => {
                             description={false}
                             fullScreen={true}
                             showPagination={false}
-                            refetch={() =>
-                              dashboard.refetch("allTableDeviceData")
-                            }
+                            refetch={useCallback(
+                              () => dashboard.refetch("allTableDeviceData"),
+                              [dashboard.isLoading.allTableDeviceData],
+                            )}
                           />
                           <TableChart
-                            data={
-                              !dashboard.isLoading.allTablePlatformData
-                                ? transformTableChartData(
-                                    dashboard.allTablePlatformData?.data,
-                                    dashboard.allTablePlatformData?.colnames,
-                                  )
-                                : "isLoading"
-                            }
+                            data={useMemo(
+                              () =>
+                                !dashboard.isLoading.allTablePlatformData
+                                  ? transformTableChartData(
+                                      dashboard.allTablePlatformData?.data,
+                                      dashboard.allTablePlatformData?.colnames,
+                                    )
+                                  : "isLoading",
+                              [dashboard.isLoading.allTablePlatformData],
+                            )}
                             height={"300px"}
                             fontSize={CUSTOM_CHART.tableChart.fontSize}
                             fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -314,21 +371,24 @@ const DashboardContent = () => {
                             }
                             description={false}
                             showPagination={false}
-                            refetch={() =>
-                              dashboard.refetch("allTablePlatformData")
-                            }
+                            refetch={useCallback(
+                              () => dashboard.refetch("allTablePlatformData"),
+                              [dashboard.isLoading.allTablePlatformData],
+                            )}
                           />
                         </div>
                         <div className="w-full grid grid-cols-2 max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4">
                           <PieChart
-                            data={
-                              !dashboard.isLoading.viewPiePlatformData
-                                ? transformPieChartData(
-                                    dashboard.viewPiePlatformData?.data,
-                                    dashboard.viewPiePlatformData?.colnames,
-                                  )
-                                : "isLoading"
-                            }
+                            data={useMemo(
+                              () =>
+                                !dashboard.isLoading.viewPiePlatformData
+                                  ? transformPieChartData(
+                                      dashboard.viewPiePlatformData?.data,
+                                      dashboard.viewPiePlatformData?.colnames,
+                                    )
+                                  : "isLoading",
+                              [dashboard.isLoading.viewPiePlatformData],
+                            )}
                             height={CUSTOM_CHART.pieChart.height}
                             fontSize={CUSTOM_CHART.pieChart.fontSize}
                             fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -339,19 +399,23 @@ const DashboardContent = () => {
                             innerRadius={CUSTOM_CHART.pieChart.innerRadius}
                             border={false}
                             center={true}
-                            refetch={() =>
-                              dashboard.refetch("viewPiePlatformData")
-                            }
+                            refetch={useCallback(
+                              () => dashboard.refetch("viewPiePlatformData"),
+                              [dashboard.isLoading.viewPiePlatformData],
+                            )}
                           />
                           <BarChart
-                            data={
-                              !dashboard.isLoading.percentPlatformViewData
-                                ? transformBarChartData(
-                                    dashboard.percentPlatformViewData?.data,
-                                    dashboard.percentPlatformViewData?.colnames,
-                                  )
-                                : "isLoading"
-                            }
+                            data={useMemo(
+                              () =>
+                                !dashboard.isLoading.percentPlatformViewData
+                                  ? transformBarChartData(
+                                      dashboard.percentPlatformViewData?.data,
+                                      dashboard.percentPlatformViewData
+                                        ?.colnames,
+                                    )
+                                  : "isLoading",
+                              [dashboard.isLoading.percentPlatformViewData],
+                            )}
                             height={CUSTOM_CHART.barChart.height}
                             fontSize={CUSTOM_CHART.barChart.fontSize}
                             fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -360,24 +424,29 @@ const DashboardContent = () => {
                             description={false}
                             orientation={""}
                             showPercent={true}
-                            refetch={() =>
-                              dashboard.refetch("percentPlatformViewData")
-                            }
+                            refetch={useCallback(
+                              () =>
+                                dashboard.refetch("percentPlatformViewData"),
+                              [dashboard.isLoading.percentPlatformViewData],
+                            )}
                           />
                         </div>
                         <div className="w-full pb-6 max-lg:pb-5 max-md:pb-4">
                           <TableChart
-                            data={
-                              !dashboard.isLoading.allTableTopProgramData
-                                ? transformTableChartData(
-                                    dashboard.allTableTopProgramData?.data,
-                                    dashboard.allTableTopProgramData?.colnames,
-                                    null,
-                                    [],
-                                    LABEL_SPOT,
-                                  )
-                                : "isLoading"
-                            }
+                            data={useMemo(
+                              () =>
+                                !dashboard.isLoading.allTableTopProgramData
+                                  ? transformTableChartData(
+                                      dashboard.allTableTopProgramData?.data,
+                                      dashboard.allTableTopProgramData
+                                        ?.colnames,
+                                      null,
+                                      [],
+                                      LABEL_SPOT,
+                                    )
+                                  : "isLoading",
+                              [dashboard.isLoading.allTableTopProgramData],
+                            )}
                             height={"400px"}
                             fontSize={CUSTOM_CHART.tableChart.fontSize}
                             fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -386,29 +455,34 @@ const DashboardContent = () => {
                             description={false}
                             showPagination={false}
                             fullScreen={true}
-                            customCol={{
-                              "Nhãn hàng": { minSize: 120, maxSize: 350 },
-                              "Chương trình": { minSize: 120, maxSize: 250 },
-                              Kênh: { minSize: 0, maxSize: 20 },
-                            }}
-                            refetch={() =>
-                              dashboard.refetch("allTableTopProgramData")
-                            }
+                            customCol={useMemo(() => {
+                              return {
+                                "Nhãn hàng": { minSize: 120, maxSize: 350 },
+                                "Chương trình": { minSize: 120, maxSize: 250 },
+                                Kênh: { minSize: 0, maxSize: 20 },
+                              };
+                            }, [])}
+                            refetch={useCallback(
+                              () => dashboard.refetch("allTableTopProgramData"),
+                              [dashboard.isLoading.allTableTopProgramData],
+                            )}
                           />
                         </div>
                         <div className="w-full pb-6 max-lg:pb-5 max-md:pb-4">
                           <TableChart
-                            data={
-                              !dashboard.isLoading.adcodeProgramData
-                                ? transformTableChartData(
-                                    dashboard.adcodeProgramData?.data,
-                                    dashboard.adcodeProgramData?.colnames,
-                                    null,
-                                    [],
-                                    LABEL_SPOT,
-                                  )
-                                : "isLoading"
-                            }
+                            data={useMemo(
+                              () =>
+                                !dashboard.isLoading.adcodeProgramData
+                                  ? transformTableChartData(
+                                      dashboard.adcodeProgramData?.data,
+                                      dashboard.adcodeProgramData?.colnames,
+                                      null,
+                                      [],
+                                      LABEL_SPOT,
+                                    )
+                                  : "isLoading",
+                              [dashboard.isLoading.adcodeProgramData],
+                            )}
                             height={"400px"}
                             fontSize={CUSTOM_CHART.tableChart.fontSize}
                             fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -417,26 +491,31 @@ const DashboardContent = () => {
                             description={false}
                             showPagination={false}
                             fullScreen={true}
-                            customCol={{
-                              "Chương trình": { minSize: 120, maxSize: 150 },
-                              "Khung giờ": { minSize: 40, maxSize: 150 },
-                              Adcode: { minSize: 40, maxSize: 150 },
-                            }}
-                            refetch={() =>
-                              dashboard.refetch("adcodeProgramData")
-                            }
+                            customCol={useMemo(() => {
+                              return {
+                                "Chương trình": { minSize: 120, maxSize: 150 },
+                                "Khung giờ": { minSize: 40, maxSize: 150 },
+                                Adcode: { minSize: 40, maxSize: 150 },
+                              };
+                            }, [])}
+                            refetch={useCallback(
+                              () => dashboard.refetch("adcodeProgramData"),
+                              [dashboard.isLoading.adcodeProgramData],
+                            )}
                           />
                         </div>
                         <div className="w-full grid grid-cols-2 max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4">
                           <PieChart
-                            data={
-                              !dashboard.isLoading.sosPieBrandGroupData
-                                ? transformPieChartData(
-                                    dashboard.sosPieBrandGroupData?.data,
-                                    dashboard.sosPieBrandGroupData?.colnames,
-                                  )
-                                : "isLoading"
-                            }
+                            data={useMemo(
+                              () =>
+                                !dashboard.isLoading.sosPieBrandGroupData
+                                  ? transformPieChartData(
+                                      dashboard.sosPieBrandGroupData?.data,
+                                      dashboard.sosPieBrandGroupData?.colnames,
+                                    )
+                                  : "isLoading",
+                              [dashboard.isLoading.sosPieBrandGroupData],
+                            )}
                             height={CUSTOM_CHART.pieChart.height}
                             fontSize={CUSTOM_CHART.pieChart.fontSize}
                             fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -446,19 +525,23 @@ const DashboardContent = () => {
                             donut={CUSTOM_CHART.pieChart.donut}
                             innerRadius={CUSTOM_CHART.pieChart.innerRadius}
                             border={false}
-                            refetch={() =>
-                              dashboard.refetch("sosPieBrandGroupData")
-                            }
+                            refetch={useCallback(
+                              () => dashboard.refetch("sosPieBrandGroupData"),
+                              [dashboard.isLoading.sosPieBrandGroupData],
+                            )}
                           />
                           <PieChart
-                            data={
-                              !dashboard.isLoading.sosPieBrandProductData
-                                ? transformPieChartData(
-                                    dashboard.sosPieBrandProductData?.data,
-                                    dashboard.sosPieBrandProductData?.colnames,
-                                  )
-                                : "isLoading"
-                            }
+                            data={useMemo(
+                              () =>
+                                !dashboard.isLoading.sosPieBrandProductData
+                                  ? transformPieChartData(
+                                      dashboard.sosPieBrandProductData?.data,
+                                      dashboard.sosPieBrandProductData
+                                        ?.colnames,
+                                    )
+                                  : "isLoading",
+                              [dashboard.isLoading.sosPieBrandProductData],
+                            )}
                             height={CUSTOM_CHART.pieChart.height}
                             fontSize={CUSTOM_CHART.pieChart.fontSize}
                             fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -468,19 +551,22 @@ const DashboardContent = () => {
                             donut={CUSTOM_CHART.pieChart.donut}
                             innerRadius={CUSTOM_CHART.pieChart.innerRadius}
                             border={false}
-                            refetch={() =>
-                              dashboard.refetch("sosPieBrandProductData")
-                            }
+                            refetch={useCallback(
+                              () => dashboard.refetch("sosPieBrandProductData"),
+                              [dashboard.isLoading.sosPieBrandProductData],
+                            )}
                           />
                           <PieChart
-                            data={
-                              !dashboard.isLoading.sovPieBrandGroupData
-                                ? transformPieChartData(
-                                    dashboard.sovPieBrandGroupData?.data,
-                                    dashboard.sovPieBrandGroupData?.colnames,
-                                  )
-                                : "isLoading"
-                            }
+                            data={useMemo(
+                              () =>
+                                !dashboard.isLoading.sovPieBrandGroupData
+                                  ? transformPieChartData(
+                                      dashboard.sovPieBrandGroupData?.data,
+                                      dashboard.sovPieBrandGroupData?.colnames,
+                                    )
+                                  : "isLoading",
+                              [dashboard.isLoading.sovPieBrandGroupData],
+                            )}
                             height={CUSTOM_CHART.pieChart.height}
                             fontSize={CUSTOM_CHART.pieChart.fontSize}
                             fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -490,19 +576,23 @@ const DashboardContent = () => {
                             donut={CUSTOM_CHART.pieChart.donut}
                             innerRadius={CUSTOM_CHART.pieChart.innerRadius}
                             border={false}
-                            refetch={() =>
-                              dashboard.refetch("sovPieBrandGroupData")
-                            }
+                            refetch={useCallback(
+                              () => dashboard.refetch("sovPieBrandGroupData"),
+                              [dashboard.isLoading.sovPieBrandGroupData],
+                            )}
                           />
                           <PieChart
-                            data={
-                              !dashboard.isLoading.sovPieBrandProductData
-                                ? transformPieChartData(
-                                    dashboard.sovPieBrandProductData?.data,
-                                    dashboard.sovPieBrandProductData?.colnames,
-                                  )
-                                : "isLoading"
-                            }
+                            data={useMemo(
+                              () =>
+                                !dashboard.isLoading.sovPieBrandProductData
+                                  ? transformPieChartData(
+                                      dashboard.sovPieBrandProductData?.data,
+                                      dashboard.sovPieBrandProductData
+                                        ?.colnames,
+                                    )
+                                  : "isLoading",
+                              [dashboard.isLoading.sovPieBrandProductData],
+                            )}
                             height={CUSTOM_CHART.pieChart.height}
                             fontSize={CUSTOM_CHART.pieChart.fontSize}
                             fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -512,21 +602,25 @@ const DashboardContent = () => {
                             donut={CUSTOM_CHART.pieChart.donut}
                             innerRadius={CUSTOM_CHART.pieChart.innerRadius}
                             border={false}
-                            refetch={() =>
-                              dashboard.refetch("sovPieBrandProductData")
-                            }
+                            refetch={useCallback(
+                              () => dashboard.refetch("sovPieBrandProductData"),
+                              [dashboard.isLoading.sovPieBrandProductData],
+                            )}
                           />
                         </div>
                         <div className="w-full grid grid-cols-2 max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4">
                           <BarChart
-                            data={
-                              !dashboard.isLoading.spendVNDBarChannelData
-                                ? transformBarChartData(
-                                    dashboard.spendVNDBarChannelData?.data,
-                                    dashboard.spendVNDBarChannelData?.colnames,
-                                  )
-                                : "isLoading"
-                            }
+                            data={useMemo(
+                              () =>
+                                !dashboard.isLoading.spendVNDBarChannelData
+                                  ? transformBarChartData(
+                                      dashboard.spendVNDBarChannelData?.data,
+                                      dashboard.spendVNDBarChannelData
+                                        ?.colnames,
+                                    )
+                                  : "isLoading",
+                              [dashboard.isLoading.spendVNDBarChannelData],
+                            )}
                             height={CUSTOM_CHART.barChart.height}
                             fontSize={CUSTOM_CHART.barChart.fontSize}
                             fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -536,20 +630,23 @@ const DashboardContent = () => {
                             description={false}
                             orientation={"horizontal"}
                             colorZoom="red"
-                            refetch={() =>
-                              dashboard.refetch("spendVNDBarChannelData")
-                            }
+                            refetch={useCallback(
+                              () => dashboard.refetch("spendVNDBarChannelData"),
+                              [dashboard.isLoading.spendVNDBarChannelData],
+                            )}
                           />
                           <BarChart
-                            data={
-                              !dashboard.isLoading.spendVNDBarFirstLevelData
-                                ? transformBarChartData(
-                                    dashboard.spendVNDBarFirstLevelData?.data,
-                                    dashboard.spendVNDBarFirstLevelData
-                                      ?.colnames,
-                                  )
-                                : "isLoading"
-                            }
+                            data={useMemo(
+                              () =>
+                                !dashboard.isLoading.spendVNDBarFirstLevelData
+                                  ? transformBarChartData(
+                                      dashboard.spendVNDBarFirstLevelData?.data,
+                                      dashboard.spendVNDBarFirstLevelData
+                                        ?.colnames,
+                                    )
+                                  : "isLoading",
+                              [dashboard.isLoading.spendVNDBarFirstLevelData],
+                            )}
                             height={CUSTOM_CHART.barChart.height}
                             fontSize={CUSTOM_CHART.barChart.fontSize}
                             fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -561,19 +658,23 @@ const DashboardContent = () => {
                             description={false}
                             orientation={"horizontal"}
                             colorZoom="red"
-                            refetch={() =>
-                              dashboard.refetch("spendVNDBarFirstLevelData")
-                            }
+                            refetch={useCallback(
+                              () =>
+                                dashboard.refetch("spendVNDBarFirstLevelData"),
+                              [dashboard.isLoading.spendVNDBarFirstLevelData],
+                            )}
                           />
                           <BarChart
-                            data={
-                              !dashboard.isLoading.reachBarChannelData
-                                ? transformBarChartData(
-                                    dashboard.reachBarChannelData?.data,
-                                    dashboard.reachBarChannelData?.colnames,
-                                  )
-                                : "isLoading"
-                            }
+                            data={useMemo(
+                              () =>
+                                !dashboard.isLoading.reachBarChannelData
+                                  ? transformBarChartData(
+                                      dashboard.reachBarChannelData?.data,
+                                      dashboard.reachBarChannelData?.colnames,
+                                    )
+                                  : "isLoading",
+                              [dashboard.isLoading.reachBarChannelData],
+                            )}
                             height={CUSTOM_CHART.barChart.height}
                             fontSize={CUSTOM_CHART.barChart.fontSize}
                             fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -583,19 +684,23 @@ const DashboardContent = () => {
                             description={false}
                             orientation={"horizontal"}
                             colorZoom="red"
-                            refetch={() =>
-                              dashboard.refetch("reachBarChannelData")
-                            }
+                            refetch={useCallback(
+                              () => dashboard.refetch("reachBarChannelData"),
+                              [dashboard.isLoading.reachBarChannelData],
+                            )}
                           />
                           <BarChart
-                            data={
-                              !dashboard.isLoading.reachBarFirstLevelData
-                                ? transformBarChartData(
-                                    dashboard.reachBarFirstLevelData?.data,
-                                    dashboard.reachBarFirstLevelData?.colnames,
-                                  )
-                                : "isLoading"
-                            }
+                            data={useMemo(
+                              () =>
+                                !dashboard.isLoading.reachBarFirstLevelData
+                                  ? transformBarChartData(
+                                      dashboard.reachBarFirstLevelData?.data,
+                                      dashboard.reachBarFirstLevelData
+                                        ?.colnames,
+                                    )
+                                  : "isLoading",
+                              [dashboard.isLoading.reachBarFirstLevelData],
+                            )}
                             height={CUSTOM_CHART.barChart.height}
                             fontSize={CUSTOM_CHART.barChart.fontSize}
                             fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -605,25 +710,28 @@ const DashboardContent = () => {
                             description={false}
                             orientation={"horizontal"}
                             colorZoom="red"
-                            refetch={() =>
-                              dashboard.refetch("reachBarFirstLevelData")
-                            }
+                            refetch={useCallback(
+                              () => dashboard.refetch("reachBarFirstLevelData"),
+                              [dashboard.isLoading.reachBarFirstLevelData],
+                            )}
                           />
                         </div>
                         <div className="w-full pb-6 max-lg:pb-5 max-md:pb-4">
                           <BarChart
-                            data={
-                              !dashboard.isLoading.spendVNDBarDateData
-                                ? transformBarChartData(
-                                    dashboard.spendVNDBarDateData?.data,
-                                    dashboard.spendVNDBarDateData?.colnames,
-                                  )
-                                : "isLoading"
-                            }
+                            data={useMemo(
+                              () =>
+                                !dashboard.isLoading.spendVNDBarDateData
+                                  ? transformBarChartData(
+                                      dashboard.spendVNDBarDateData?.data,
+                                      dashboard.spendVNDBarDateData?.colnames,
+                                    )
+                                  : "isLoading",
+                              [dashboard.isLoading.spendVNDBarDateData],
+                            )}
                             height={CUSTOM_CHART.barChart.height}
                             fontSize={CUSTOM_CHART.barChart.fontSize}
                             fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                            colors={["rgba(255, 204, 0, 1)"]}
+                            colors={useMemo(() => ["rgba(255, 204, 0, 1)"], [])}
                             fontWeight={CUSTOM_CHART.barChart.fontWeight}
                             nameChart={
                               "Xu hướng quảng cáo THEO NGÀY (Triệu VND)"
@@ -637,18 +745,21 @@ const DashboardContent = () => {
                         </div>
                         <div className="w-full pb-6 max-lg:pb-5 max-md:pb-4">
                           <BarChart
-                            data={
-                              !dashboard.isLoading.spendVNDBarTimebandData
-                                ? transformBarChartData(
-                                    dashboard.spendVNDBarTimebandData?.data,
-                                    dashboard.spendVNDBarTimebandData?.colnames,
-                                  )
-                                : "isLoading"
-                            }
+                            data={useMemo(
+                              () =>
+                                !dashboard.isLoading.spendVNDBarTimebandData
+                                  ? transformBarChartData(
+                                      dashboard.spendVNDBarTimebandData?.data,
+                                      dashboard.spendVNDBarTimebandData
+                                        ?.colnames,
+                                    )
+                                  : "isLoading",
+                              [dashboard.isLoading.spendVNDBarTimebandData],
+                            )}
                             height={CUSTOM_CHART.barChart.height}
                             fontSize={CUSTOM_CHART.barChart.fontSize}
                             fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                            colors={["rgba(255, 204, 0, 1)"]}
+                            colors={useMemo(() => ["rgba(255, 204, 0, 1)"], [])}
                             fontWeight={CUSTOM_CHART.barChart.fontWeight}
                             nameChart={
                               "Xu hướng quảng cáo theo khung giờ (Triệu VND)"
@@ -656,21 +767,25 @@ const DashboardContent = () => {
                             description={false}
                             orientation={""}
                             maxVisibleItems={true}
-                            refetch={() =>
-                              dashboard.refetch("spendVNDBarTimebandData")
-                            }
+                            refetch={useCallback(
+                              () =>
+                                dashboard.refetch("spendVNDBarTimebandData"),
+                              [dashboard.isLoading.spendVNDBarTimebandData],
+                            )}
                           />
                         </div>
                         <div className="w-full pb-6 max-lg:pb-5 max-md:pb-4">
                           <BarChart
-                            data={
-                              !dashboard.isLoading.grpBarBrandData
-                                ? transformBarChartData(
-                                    dashboard.grpBarBrandData?.data,
-                                    dashboard.grpBarBrandData?.colnames,
-                                  )
-                                : "isLoading"
-                            }
+                            data={useMemo(
+                              () =>
+                                !dashboard.isLoading.grpBarBrandData
+                                  ? transformBarChartData(
+                                      dashboard.grpBarBrandData?.data,
+                                      dashboard.grpBarBrandData?.colnames,
+                                    )
+                                  : "isLoading",
+                              [dashboard.isLoading.grpBarBrandData],
+                            )}
                             height={CUSTOM_CHART.barChart.height}
                             fontSize={CUSTOM_CHART.barChart.fontSize}
                             fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -679,7 +794,10 @@ const DashboardContent = () => {
                             description={false}
                             orientation={""}
                             formatterValue={2}
-                            refetch={() => dashboard.refetch("grpBarBrandData")}
+                            refetch={useCallback(
+                              () => dashboard.refetch("grpBarBrandData"),
+                              [dashboard.isLoading.grpBarBrandData],
+                            )}
                           />
                         </div>
                       </div>
@@ -691,12 +809,8 @@ const DashboardContent = () => {
                 },
                 {
                   id: "ad_monitoring_report",
-                  label: !stateGlobals.screen_md
-                    ? "Ad monitoring report"
-                    : "Ad monitoring",
-                  icon: !stateGlobals.darkMode
-                    ? iconRatingByMinute
-                    : iconRatingByMinuteDark,
+                  label: !screenMd ? "Ad monitoring report" : "Ad monitoring",
+                  icon: !darkMode ? iconRatingByMinute : iconRatingByMinuteDark,
                   iconActive: iconRatingByMinuteActive,
                   content: (
                     <section
@@ -719,17 +833,20 @@ const DashboardContent = () => {
                       <div className="px-6 max-lg:px-5 max-md:px-4">
                         <div className="w-full py-6 max-lg:py-5 max-md:py-4">
                           <TableChart
-                            data={
-                              !dashboard.isLoading.allTableMonitoringData
-                                ? transformTableChartData(
-                                    dashboard.allTableMonitoringData?.data,
-                                    dashboard.allTableMonitoringData?.colnames,
-                                    null,
-                                    [],
-                                    LABEL_SPOT,
-                                  )
-                                : "isLoading"
-                            }
+                            data={useMemo(
+                              () =>
+                                !dashboard.isLoading.allTableMonitoringData
+                                  ? transformTableChartData(
+                                      dashboard.allTableMonitoringData?.data,
+                                      dashboard.allTableMonitoringData
+                                        ?.colnames,
+                                      null,
+                                      [],
+                                      LABEL_SPOT,
+                                    )
+                                  : "isLoading",
+                              [dashboard.isLoading.allTableMonitoringData],
+                            )}
                             height={"600px"}
                             fontSize={CUSTOM_CHART.tableChart.fontSize}
                             fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -738,73 +855,76 @@ const DashboardContent = () => {
                             description={false}
                             showPagination={true}
                             fullScreen={true}
-                            customCol={{
-                              Tuần: {
-                                align: "text-center",
-                                justify: "justify-center",
-                              },
-                              "Chương trình": {
-                                minSize: 200,
-                                maxSize: 300,
-                                overflow: true,
-                                justify: "justify-center",
-                                align: "text-center",
-                                weight: 600,
-                              },
-                              "Thời lượng Spot": {
-                                align: "text-center",
-                                justify: "justify-center",
-                              },
-                              Break: {
-                                align: "text-center",
-                                justify: "justify-center",
-                              },
-                              Position: {
-                                align: "text-center",
-                                justify: "justify-center",
-                              },
-                              "Chi phí (Triệu VND)": {
-                                align: "text-center",
-                                justify: "justify-center",
-                              },
-                              Reach: {
-                                align: "text-center",
-                                justify: "justify-center",
-                              },
-                              "Chiến dịch": {
-                                minSize: 220,
-                                maxSize: 320,
-                                overflow: true,
-                              },
-                              "Loại Spot": {
-                                minSize: 120,
-                                maxSize: 150,
-                                overflow: true,
-                              },
-                              "Ngành hàng": {
-                                minSize: 120,
-                                maxSize: 190,
-                                overflow: true,
-                              },
-                              "Sản phẩm": {
-                                minSize: 120,
-                                maxSize: 190,
-                                overflow: true,
-                              },
-                              "Nhãn hàng": {
-                                minSize: 180,
-                                maxSize: 240,
-                                overflow: true,
-                              },
-                              "Nhà quảng cáo": {
-                                minSize: 180,
-                                maxSize: 240,
-                                overflow: true,
-                              },
-                            }}
-                            refetch={() =>
-                              dashboard.refetch("allTableMonitoringData")
-                            }
+                            customCol={useMemo(() => {
+                              return {
+                                Tuần: {
+                                  align: "text-center",
+                                  justify: "justify-center",
+                                },
+                                "Chương trình": {
+                                  minSize: 200,
+                                  maxSize: 300,
+                                  overflow: true,
+                                  justify: "justify-center",
+                                  align: "text-center",
+                                  weight: 600,
+                                },
+                                "Thời lượng Spot": {
+                                  align: "text-center",
+                                  justify: "justify-center",
+                                },
+                                Break: {
+                                  align: "text-center",
+                                  justify: "justify-center",
+                                },
+                                Position: {
+                                  align: "text-center",
+                                  justify: "justify-center",
+                                },
+                                "Chi phí (Triệu VND)": {
+                                  align: "text-center",
+                                  justify: "justify-center",
+                                },
+                                Reach: {
+                                  align: "text-center",
+                                  justify: "justify-center",
+                                },
+                                "Chiến dịch": {
+                                  minSize: 220,
+                                  maxSize: 320,
+                                  overflow: true,
+                                },
+                                "Loại Spot": {
+                                  minSize: 120,
+                                  maxSize: 150,
+                                  overflow: true,
+                                },
+                                "Ngành hàng": {
+                                  minSize: 120,
+                                  maxSize: 190,
+                                  overflow: true,
+                                },
+                                "Sản phẩm": {
+                                  minSize: 120,
+                                  maxSize: 190,
+                                  overflow: true,
+                                },
+                                "Nhãn hàng": {
+                                  minSize: 180,
+                                  maxSize: 240,
+                                  overflow: true,
+                                },
+                                "Nhà quảng cáo": {
+                                  minSize: 180,
+                                  maxSize: 240,
+                                  overflow: true,
+                                },
+                              };
+                            }, [])}
+                            refetch={useCallback(
+                              () => dashboard.refetch("allTableMonitoringData"),
+                              [dashboard.isLoading.allTableMonitoringData],
+                            )}
                           />
                         </div>
                       </div>

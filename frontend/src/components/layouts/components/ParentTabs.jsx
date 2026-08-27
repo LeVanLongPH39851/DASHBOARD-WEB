@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+} from "react";
 import { useCurrentTab } from "../../../context/DashboardFilterContext";
 
 const ParentTabs = ({
@@ -10,7 +16,7 @@ const ParentTabs = ({
   zIndex = "z-100",
   countTab = "max-md:grid-cols-4",
 }) => {
-  // console.log("ParentTabs"); 
+  // console.log("ParentTabs");
 
   const [height, setHeight] = useState(0);
 
@@ -23,7 +29,7 @@ const ParentTabs = ({
     setHeight((prev) => (prev === h ? prev : h));
   }, [document.getElementById("BreadCrumb")?.getBoundingClientRect()?.height]);
 
-  tabs = tabs.filter(Boolean);
+  const filteredTabs = useMemo(() => tabs.filter(Boolean), [tabs]);
   const { value: currentTab, setValue: setCurrentTab } = useCurrentTab();
   const [activeTab, setActiveTab] = useState(defaultTab || tabs[0]?.id);
   const [underlineStyle, setUnderlineStyle] = useState({ left: 0, width: 0 });
@@ -37,7 +43,7 @@ const ParentTabs = ({
   // Update underline sau khi DOM render
   const updateUnderlinePosition = useCallback(() => {
     requestAnimationFrame(() => {
-      const activeIndex = tabs.findIndex((tab) => tab.id === activeTab);
+      const activeIndex = filteredTabs.findIndex((tab) => tab.id === activeTab);
       const currentTab = tabsRef.current[activeIndex];
       if (currentTab) {
         setUnderlineStyle({
@@ -109,7 +115,7 @@ const ParentTabs = ({
         className={`${currentVariant.container} ${stickyClasses}`}
         style={{ top: `${window.innerWidth < 1025 ? "auto" : height + "px"}` }}
       >
-        {tabs.map((tab, index) => (
+        {filteredTabs.map((tab, index) => (
           <button
             key={`${uniqueId}-${tab.id}`}
             ref={(el) => {

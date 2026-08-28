@@ -27,6 +27,7 @@ function App() {
         <Route path="/brand" element={<DashboardBrand />} />
         <Route path="/world-cup-2026" element={<DashboardWorldCup />} />
       </Routes>
+      <ChatBot />
     </BrowserRouter>
   );
 }

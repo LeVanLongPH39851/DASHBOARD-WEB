@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import chatbotClient from "../../../api/chatbotClient";
+import axiosClient from "../../../api/axiosClient";
 
 const ChatBot = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -54,7 +54,7 @@ const ChatBot = () => {
     setIsLoading(true);
 
     try {
-      const { data } = await chatbotClient.post("/api/query", {
+      const { data } = await axiosClient.post("/api/query", {
         // message: trimmed,
         question: trimmed,
       });

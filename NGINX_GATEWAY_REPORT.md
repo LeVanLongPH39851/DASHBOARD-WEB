@@ -60,7 +60,7 @@ Port `8082` là cổng duy nhất accessible từ bên ngoài, map vào port `80
 
 | URL Prefix | Upstream | Rate Limit | Timeout | Ghi chú |
 |---|---|---|---|---|
-| `/api/superset` | `backend:5000` | 10 req/s (burst=5) | 600s | Superset BI queries |
+| `/api/superset` | `backend:5000` | 50 req/s (burst=100) | 600s | Superset BI queries |
 | `/api/doris/processlist` | `backend:5000` | Không | 600s | Xem tiến trình Doris |
 | `/api/kill-user` | `backend:5000` | Không | 600s | Dừng query đang chạy |
 | `/api/query` | `100.100.11.2:8010` | 1 req/10s | 120s | Chatbot AI (external) |

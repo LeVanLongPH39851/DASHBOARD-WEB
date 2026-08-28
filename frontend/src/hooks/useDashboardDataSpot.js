@@ -297,7 +297,10 @@ export const useDashboardData = () => {
     }
 
     // Pass true to force refetch with fresh data from server
-    return refetchMap[key](true);
+    return refetchMap[key](true).catch((err) => {
+      console.error(`Lỗi khi refetch ${key}:`, err);
+      return null;
+    });
   };
 
   return {

@@ -55,6 +55,7 @@ const BarChart = ({
           nameChart={nameChart}
           description={description}
           display={displayName}
+          refetch={refetch}
         />
         {window.location.pathname.includes("/world-cup-2026") ? (
           <LoadingWorldCup
@@ -76,6 +77,7 @@ const BarChart = ({
           nameChart={nameChart}
           description={description}
           display={displayName}
+          refetch={refetch}
         />
         <NoData
           height={(!screenMd ? (!screenLg ? height : 300) : 220) + heightPlus}

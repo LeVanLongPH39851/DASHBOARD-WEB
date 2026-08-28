@@ -275,7 +275,7 @@ const PivotTableChart = ({
   if (isLoading) {
     return (
       <div className={`${displayName ? 'p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : ''}`} style={{ fontFamily }}>
-        <NameChart nameChart={nameChart} description={description} display={displayName} fullScreen={fullScreen} />
+        <NameChart nameChart={nameChart} description={description} display={displayName} fullScreen={fullScreen} refetch={refetch} />
         <div className='h-13 max-lg:h-1 max-md:h-9.25'></div>
         <Loading height={!stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : '320px' : '240px'} />
       </div>
@@ -285,7 +285,7 @@ const PivotTableChart = ({
   if (isEmptyData) {
     return (
       <div className={`${displayName ? 'p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component' : ''}`} style={{ fontFamily }}>
-        <NameChart nameChart={nameChart} description={description} display={displayName} fullScreen={fullScreen} />
+        <NameChart nameChart={nameChart} description={description} display={displayName} fullScreen={fullScreen} refetch={refetch} />
         <div className='h-13 max-lg:h-1 max-md:h-9.25'></div>
         <NoData height={!stateGlobals.screen_md ? !stateGlobals.screen_lg ? height : '320px' : '240px'} />
       </div>

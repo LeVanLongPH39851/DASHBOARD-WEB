@@ -39,14 +39,14 @@ const TreeMapChart = ({
   if (data === "isLoading") {
     return (
       <div className="p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component">
-        <NameChart nameChart={nameChart} description={description} />
+        <NameChart nameChart={nameChart} description={description} refetch={refetch} />
         <Loading height={!screenMd ? (!screenLg ? height : 290) : 240} />
       </div>
     );
   } else if (!data) {
     return (
       <div className="p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component">
-        <NameChart nameChart={nameChart} description={description} />
+        <NameChart nameChart={nameChart} description={description} refetch={refetch} />
         <NoData height={!screenMd ? (!screenLg ? height : 290) : 240} />
       </div>
     );

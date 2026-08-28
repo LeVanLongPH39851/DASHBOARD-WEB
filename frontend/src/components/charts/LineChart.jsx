@@ -64,6 +64,7 @@ const LineChart = ({
           nameChart={nameChart}
           description={description}
           fullScreen={fullScreen}
+          refetch={refetch}
         />
         {window.location.pathname.includes("/world-cup-2026") ? (
           <LoadingWorldCup
@@ -74,13 +75,14 @@ const LineChart = ({
         )}
       </div>
     );
-  } else if (!data.labels.length > 0) {
+  } else if (!data || !data?.labels?.length) {
     return (
       <div className="p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component">
         <NameChart
           nameChart={nameChart}
           description={description}
           fullScreen={fullScreen}
+          refetch={refetch}
         />
         <NoData height={!screenMd ? (!screenLg ? height : 350) : 240} />
       </div>

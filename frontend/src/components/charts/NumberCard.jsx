@@ -32,6 +32,7 @@ const NumberCard = ({
           icon={icon}
           width={widthIcon}
           backgound={background}
+          refetch={refetch}
         />
         {window.location.pathname.includes("/world-cup-2026") ? (
           <LoadingNumberWC height={"50px"} />
@@ -52,6 +53,7 @@ const NumberCard = ({
           icon={icon}
           width={widthIcon}
           backgound={background}
+          refetch={refetch}
         />
         <NoData />
       </div>

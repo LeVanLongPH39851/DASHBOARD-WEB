@@ -79,6 +79,7 @@ const TableChart = ({
           description={description}
           display={displayName}
           fullScreen={fullScreen}
+          refetch={refetch}
         />
         <div className="h-13 max-lg:h-11 max-md:h-9.25"></div>
         {window.location.pathname.includes("/world-cup-2026") ? (
@@ -131,6 +132,7 @@ const TableChart = ({
           description={description}
           display={displayName}
           fullScreen={fullScreen}
+          refetch={refetch}
         />
         <div className="h-13 max-lg:h-11 max-md:h-9.25"></div>
         <NoData

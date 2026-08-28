@@ -50,6 +50,7 @@ const NumberWithTrendChart = ({
           icon={icon}
           width="w-5.5 max-lg:w-5"
           backgound="bg-background-succes-type-2 dark:bg-background-succes-type-2-dark"
+          refetch={refetch}
         />
         <Loading height={!screenMd ? (!screenLg ? 270 : 236.56) : 195} />
       </div>

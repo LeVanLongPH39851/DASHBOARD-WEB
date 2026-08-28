@@ -237,7 +237,10 @@ export const useDashboardData = () => {
       console.warn(`Không tìm thấy API với key: ${key}`);
       return Promise.resolve(null);
     }
-    return refetchMap[key](true);
+    return refetchMap[key](true).catch((err) => {
+      console.error(`Lỗi khi refetch ${key}:`, err);
+      return null;
+    });
   };
 
   return {

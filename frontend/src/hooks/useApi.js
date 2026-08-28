@@ -10,7 +10,7 @@ export const useApi = (apiFn, params = [], options = {}) => {
   // ✅ THÊM: refetch manual (backup cho trường hợp cần)
   const refetch = useCallback(
     (force = false) => {
-      if (!enabled || shouldSkip) return Promise.resolve(null);
+      if (!enabled || (shouldSkip && !force)) return Promise.resolve(null);
       setLoading(true);
       setError(null);
       // var isKill = false;

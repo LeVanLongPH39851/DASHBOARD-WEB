@@ -635,14 +635,10 @@ const DashboardContent = () => {
                             legendTop={true}
                             fullScreen={true}
                             textOverflow={true}
-                            refetch={useMemo(
+                            refetch={useCallback(
                               () =>
-                                !dashboard.isLoading
-                                  ? dashboard.refetch(
-                                      "ratingLineMinuteVTV6Data",
-                                    )
-                                  : "isLoading",
-                              [dashboard.isLoading.ratingLineMinuteVTV6Data],
+                                dashboard.refetch("ratingLineMinuteVTV6Data"),
+                              [dashboard],
                             )}
                           />
                         </div>

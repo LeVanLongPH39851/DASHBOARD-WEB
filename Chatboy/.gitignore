@@ -7,3 +7,4 @@ draft.txt
 .codex
 logs
 framework-text2sql/
+.env

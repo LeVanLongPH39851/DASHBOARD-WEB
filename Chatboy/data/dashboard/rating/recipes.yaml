@@ -1,0 +1,43 @@
+recipes:
+  direct_aggregate:
+    handler: src.core.text_to_sql.recipes.direct_aggregate:DirectAggregateRecipe
+    requires_join_profile: false
+    allowed_functions: [SUM, COUNT, AVG, MIN, MAX, NULLIF, BITMAP_UNION_COUNT]
+
+  channel_metric:
+    handler: src.core.text_to_sql.recipes.channel_metric:ChannelMetricRecipe
+    requires_join_profile: true
+    default_limit: 50000
+    allowed_functions: [SUM, COUNT, NULLIF, BITMAP_UNION_COUNT]
+    allowed_symbols:
+      - rating_ott.duration_view
+      - rating_ott.distinct_user_by_day
+      - rating_ott.channel_name_tvd
+      - rating_ott.date
+      - dim_weight.weight
+      - dim_coef.view_coef
+      - dim_coef.user_coef
+      - dim_population.total
+
+  program_metric:
+    handler: src.core.text_to_sql.recipes.program_metric:ProgramMetricRecipe
+    requires_join_profile: false
+    default_limit: 50000
+    allowed_functions: [IF, SUM, COUNT, AVG, MAX, NULLIF, BITMAP_UNION_COUNT]
+    allowed_symbols:
+      - airtime_grouped.airtime_duration
+      - airtime_total.total_airtime_duration
+      - view_grouped.view_duration
+      - view_total.total_view_duration
+      - rating_ott.duration_view
+      - rating_ott.distinct_user_by_day
+      - rating_ott.event_duration
+      - rating_ott.program_name
+      - rating_ott.firstlevel_vn
+      - rating_ott.channel_name_tvd
+      - rating_ott.epg_id_hash
+      - rating_ott.date
+      - dim_weight.weight
+      - dim_coef.view_coef
+      - dim_coef.user_coef
+      - dim_population.total

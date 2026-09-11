@@ -1,0 +1,23 @@
+services:
+  chatbot-dashboard-rating:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: chatbot_dashboard_rating
+    restart: unless-stopped
+    ports:
+      - "8010:8010"
+    volumes:
+      - ./data/dashboard/rating/values:/app/data/dashboard/rating/values
+      - ./logs:/app/logs
+    env_file:
+      - .env
+    environment:
+      - PORT=8010
+      - PYTHONUNBUFFERED=1
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8010/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s

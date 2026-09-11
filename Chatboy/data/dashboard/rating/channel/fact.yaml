@@ -1,0 +1,21 @@
+fact_contract:
+  table_id: agg_info_channel
+  date_column: date
+  base_grain:
+    - date
+    - channel_name_tvd
+    - time_band
+    - province_name
+  predicates:
+    - column: province_name
+      operator: ne
+      values: [Không rõ]
+      parameter_prefix: channel_unknown_province
+      when_dimensions:
+        - agg_info_channel.province
+        - agg_info_channel.region
+    - column: key_city
+      operator: is_not_null
+      parameter_prefix: channel_key_city
+      when_dimensions:
+        - agg_info_channel.key_city

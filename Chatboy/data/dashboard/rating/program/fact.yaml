@@ -1,0 +1,27 @@
+fact_contract:
+  table_id: agg_info_program
+  date_column: date
+  base_grain:
+    - date
+    - channel_name_tvd
+    - program_name
+    - start_time
+    - end_time
+    - epg_id_hash
+  predicates:
+    - column: firstlevel_vn
+      operator: not_in
+      values: [Quảng cáo, Quảng bá]
+      parameter_prefix: program_excluded_category
+    - column: province_name
+      operator: ne
+      values: [Không rõ]
+      parameter_prefix: program_unknown_province
+      when_dimensions:
+        - agg_info_program.province
+        - agg_info_program.region
+    - column: key_city
+      operator: is_not_null
+      parameter_prefix: program_key_city
+      when_dimensions:
+        - agg_info_program.key_city

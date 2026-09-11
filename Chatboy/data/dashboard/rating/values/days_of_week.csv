@@ -1,0 +1,8 @@
+canonical_value,alias,sort_order,group_name,active
+Monday,thứ hai,1,weekday,true
+Tuesday,thứ ba,2,weekday,true
+Wednesday,thứ tư,3,weekday,true
+Thursday,thứ năm,4,weekday,true
+Friday,thứ sáu,5,weekday,true
+Saturday,thứ bảy,6,weekend,true
+Sunday,chủ nhật,7,weekend,true

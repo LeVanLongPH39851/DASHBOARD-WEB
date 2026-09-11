@@ -1,0 +1,276 @@
+tables:
+  agg_info_channel:
+    physical_name: data_dashboard_rating.agg_info_channel
+    fact_family: channel
+    grain:
+      - date
+      - channel_name_tvd
+      - province_name
+      - time_band
+
+    columns:
+      - date
+      - channel_name_tvd
+      - province_name
+      - time_band
+      - regional_name
+      - days_of_week
+      - platform
+      - key_city
+      - event_category_name
+      - duration_view
+      - view
+      - count_records
+      - bm_user_id
+
+  agg_info_program: 
+    physical_name: data_dashboard_rating.agg_info_program
+    fact_family: program
+    grain:
+      - date
+      - channel_name_tvd
+      - program_name
+      - start_time
+      - end_time
+      - epg_id_hash
+    columns:
+      - date
+      - date_ott
+      - channel_name_tvd
+      - program_name
+      - start_time
+      - end_time
+      - firstlevel_vn
+      - name_vn
+      - description
+      - event_duration
+      - province_name
+      - key_city
+      - regional_name
+      - days_of_week
+      - platform
+      - event_category_name
+      - epg_id_hash
+      - duration_view
+      - bm_user_id
+      - view
+
+  weight_reach_v2:
+    physical_name: data_dashboard_rating.weight_reach_v2
+    grain: 
+      - date
+      - province
+      - channel_name_tvd
+    columns:
+      - date
+      - province
+      - channel_name_tvd
+      - weight
+      - daily_view
+      - coeff
+      - channel_weight
+
+  province_statistics:
+    physical_name: data_dashboard_rating.province_statistics
+    grain:
+      - province
+    columns:
+      - province
+      - total_base
+      - total
+
+  coef_statistics:
+    physical_name: data_dashboard_rating.coef_statistics
+    grain:
+      - date
+    columns:
+      - date
+      - view_coef
+      - user_coef
+
+constants:
+  rating_reference_minutes: 1080
+  rating_reference_hours: 18
+  weighted_default_limit: 50000
+
+join_profiles:
+  # Toàn quốc, tính riêng từng kênh; weight nối theo ngày + kênh.
+  national_channel_weight:
+    fact_table: agg_info_channel
+    joins:
+      - name: weight
+        table: weight_reach_v2
+        columns: [date, weight, province, channel_name_tvd]
+        on: [[date, date], [channel_name_tvd, channel_name_tvd]]
+        filters: {}
+      - name: coef
+        table: coef_statistics
+        columns: [date, view_coef, user_coef]
+        on: [[date, date]]
+        filters: {}
+      - name: population
+        table: province_statistics
+        columns: [province, total]
+        on: []
+        scalar: true # ON 1 = 1
+        filters: {}
+
+  # Toàn quốc, gộp tất cả kênh; dùng weight của kênh Total, nối theo ngày.
+  national_total_weight:
+    fact_table: agg_info_channel
+    joins:
+      - name: weight
+        table: weight_reach_v2
+        columns: [date, weight, province]
+        on: [[date, date]]
+        filters: {}
+      - name: coef
+        table: coef_statistics
+        columns: [date, view_coef, user_coef]
+        on: [[date, date]]
+        filters: {}
+      - name: population
+        table: province_statistics
+        columns: [province, total]
+        on: []
+        scalar: true # ON 1 = 1
+        filters: {}
+
+  # Theo tỉnh, tính riêng từng kênh; weight/population nối theo tỉnh + kênh.
+  province_channel_weight:
+    fact_table: agg_info_channel
+    joins:
+      - name: weight
+        table: weight_reach_v2
+        columns: [date, weight, province, channel_name_tvd]
+        on: [[date, date], [province_name, province], [channel_name_tvd, channel_name_tvd]]
+        filters: {}
+      - name: coef
+        table: coef_statistics
+        columns: [date, view_coef, user_coef]
+        on: [[date, date]]
+        filters: {}
+      - name: population
+        table: province_statistics
+        columns: [province, total]
+        on: [[province_name, province]]
+        filters: {}
+
+  # Theo tỉnh, gộp kênh; weight/population nối theo tỉnh.
+  province_total_weight:
+    fact_table: agg_info_channel
+    joins:
+      - name: weight
+        table: weight_reach_v2
+        columns: [date, weight, province]
+        on: [[date, date], [province_name, province]]
+        filters: {}
+      - name: coef
+        table: coef_statistics
+        columns: [date, view_coef, user_coef]
+        on: [[date, date]]
+        filters: {}
+      - name: population
+        table: province_statistics
+        columns: [province, total]
+        on: [[province_name, province]]
+        filters: {}
+
+  # Theo vùng, tính riêng từng kênh; regional_name nối với province của dimension.
+  regional_channel_weight:
+    fact_table: agg_info_channel
+    joins:
+      - name: weight
+        table: weight_reach_v2
+        columns: [date, weight, province, channel_name_tvd]
+        on: [[date, date], [regional_name, province], [channel_name_tvd, channel_name_tvd]]
+        filters: {}
+      - name: coef
+        table: coef_statistics
+        columns: [date, view_coef, user_coef]
+        on: [[date, date]]
+        filters: {}
+      - name: population
+        table: province_statistics
+        columns: [province, total]
+        on: [[regional_name, province]]
+        filters: {}
+
+  # Theo vùng, gộp kênh; regional_name nối với province của dimension.
+  regional_total_weight:
+    fact_table: agg_info_channel
+    joins:
+      - name: weight
+        table: weight_reach_v2
+        columns: [date, weight, province]
+        on: [[date, date], [regional_name, province]]
+        filters: {}
+      - name: coef
+        table: coef_statistics
+        columns: [date, view_coef, user_coef]
+        on: [[date, date]]
+        filters: {}
+      - name: population
+        table: province_statistics
+        columns: [province, total]
+        on: [[regional_name, province]]
+        filters: {}
+
+  # Program Dashboard luôn nối weight theo ngày + kênh, kể cả khi không group theo kênh.
+  agg_info_program_national_channel_weight:
+    fact_table: agg_info_program
+    joins:
+      - name: weight
+        table: weight_reach_v2
+        columns: [date, weight, province, channel_name_tvd]
+        on: [[date, date], [channel_name_tvd, channel_name_tvd]]
+        filters: {}
+      - name: coef
+        table: coef_statistics
+        columns: [date, view_coef, user_coef]
+        on: [[date, date]]
+        filters: {}
+      - name: population
+        table: province_statistics
+        columns: [province, total]
+        on: []
+        scalar: true
+        filters: {}
+
+  agg_info_program_province_channel_weight:
+    fact_table: agg_info_program
+    joins:
+      - name: weight
+        table: weight_reach_v2
+        columns: [date, weight, province, channel_name_tvd]
+        on: [[date, date], [province_name, province], [channel_name_tvd, channel_name_tvd]]
+        filters: {}
+      - name: coef
+        table: coef_statistics
+        columns: [date, view_coef, user_coef]
+        on: [[date, date]]
+        filters: {}
+      - name: population
+        table: province_statistics
+        columns: [province, total]
+        on: [[province_name, province]]
+        filters: {}
+
+  agg_info_program_regional_channel_weight:
+    fact_table: agg_info_program
+    joins:
+      - name: weight
+        table: weight_reach_v2
+        columns: [date, weight, province, channel_name_tvd]
+        on: [[date, date], [regional_name, province], [channel_name_tvd, channel_name_tvd]]
+        filters: {}
+      - name: coef
+        table: coef_statistics
+        columns: [date, view_coef, user_coef]
+        on: [[date, date]]
+        filters: {}
+      - name: population
+        table: province_statistics
+        columns: [province, total]
+        on: [[regional_name, province]]
+        filters: {}

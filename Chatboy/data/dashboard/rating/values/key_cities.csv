@@ -1,0 +1,3 @@
+entity_id,label,canonical_value,operator,active
+key_city.major,4 TP lớn,4 TP lớn,=,true
+key_city.other,Ngoài 4 TP lớn,,IS NULL,true

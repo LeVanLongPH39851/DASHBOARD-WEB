@@ -1,0 +1,420 @@
+metrics:
+  program_airtime_duration:
+    id: program.airtime_duration
+    label: Thời lượng phát chương trình
+    description: >
+      Tổng THỜI LƯỢNG PHÁT SÓNG (broadcast/airtime) tuyệt đối theo giây của
+      chương trình/thể loại, tức là thời gian chương trình ĐƯỢC LÊN SÓNG (theo
+      lịch phát EPG), KHÔNG liên quan đến việc có bao nhiêu người xem hay xem
+      bao lâu. Dùng khi câu hỏi hỏi về thời lượng LÊN SÓNG, không hỏi tỷ lệ,
+      và không hỏi về hành vi xem của khán giả.
+    unit: second
+    disambiguation: >
+      Khác program_weighted_view_duration: đây đo thời gian PHÁT SÓNG (broadcast
+      side), còn weighted_view_duration đo thời gian XEM của khán giả (audience
+      side) — hai khái niệm hoàn toàn khác nhau dù cùng liên quan "thời lượng".
+      Khác 2 metric airtime_share_*_percent: đây là con số TUYỆT ĐỐI (giây),
+      không phải tỷ lệ phần trăm.
+    aliases: [thời lượng phát, thời lượng phát chương trình, tổng thời lượng phát chương trình, thời lượng phát các thể loại, thời lượng lên sóng chương trình]
+    output_name: program_airtime_duration
+    source_table: data_dashboard_rating.agg_info_program
+    recipe: program_metric
+    calculation: airtime_duration
+    fact_family: program
+    semantic_key: airtime_duration
+    supported_dimensions: &program_supported_dimensions
+      [agg_info_program.date, agg_info_program.date_ott, agg_info_program.channel,
+       agg_info_program.program_name, agg_info_program.start_time, agg_info_program.end_time,
+       agg_info_program.category_level1, agg_info_program.category_name,
+       agg_info_program.description, agg_info_program.province, agg_info_program.key_city,
+       agg_info_program.region, agg_info_program.day_of_week, agg_info_program.platform,
+       agg_info_program.event_category]
+    required_dimensions: []
+    denominator_scope: none
+    unit: second
+    default_dimensions: [agg_info_program.category_level1]
+
+  program_airtime_share_all_categories_percent:
+    id: program.airtime_share_all_categories_percent
+    label: Tỷ lệ thời lượng phát của thể loại trên tất cả thể loại
+    description: >
+      Phần trăm THỜI LƯỢNG PHÁT SÓNG của MỘT thể loại trên TỔNG thời lượng phát
+      sóng của TẤT CẢ các thể loại hợp lệ trong cùng phạm vi lọc (mẫu số là
+      toàn bộ danh mục thể loại đang tồn tại, không giới hạn theo những thể
+      loại người dùng nêu tên). Dùng khi câu hỏi hỏi "thể loại X chiếm bao
+      nhiêu % tổng thời lượng phát" mà không giới hạn so sánh trong một nhóm
+      thể loại cụ thể được liệt kê.
+    unit: percent
+    disambiguation: >
+      Khác program_airtime_share_selected_categories_percent: mẫu số (denominator)
+      ở đây là TẤT CẢ thể loại (all_categories), còn ở kia mẫu số chỉ là NHÓM
+      thể loại được người dùng CHỈ ĐỊNH TƯỜNG MINH trong câu hỏi
+      (selected_categories) — cùng một thể loại sẽ cho ra % khác nhau tùy mẫu
+      số. Nếu câu hỏi chỉ nêu tên 2+ thể loại cụ thể để so sánh tỷ trọng với
+      nhau (không tính các thể loại khác), dùng selected_categories_percent
+      thay vì all_categories_percent.
+    aliases: [tỷ lệ thời lượng phát, phần trăm thời lượng phát, tỷ trọng thời lượng phát, thời lượng phát chiếm bao nhiêu phần trăm, tỷ lệ thời lượng phát theo thể loại]
+    output_name: program_airtime_share_percent
+    source_table: data_dashboard_rating.agg_info_program
+    recipe: program_metric
+    calculation: airtime_share_all_categories_percent
+    fact_family: program
+    semantic_key: airtime_share_all_categories_percent
+    supported_dimensions: *program_supported_dimensions
+    required_dimensions: [agg_info_program.category_level1]
+    denominator_scope: all_categories
+    unit: percent
+    default_dimensions: [agg_info_program.category_level1]
+
+  program_airtime_share_selected_categories_percent:
+    id: program.airtime_share_selected_categories_percent
+    label: Tỷ lệ thời lượng phát trong nhóm thể loại được chọn
+    description: >
+      Phần trăm thời lượng phát sóng của TỪNG thể loại trên tổng thời lượng
+      phát sóng của CHỈ RIÊNG nhóm thể loại được NÊU TÊN TƯỜNG MINH trong câu
+      hỏi (mẫu số bị giới hạn trong tập thể loại được chọn, không tính các thể
+      loại khác không được nhắc đến). Dùng khi câu hỏi so sánh tỷ trọng giữa
+      một nhóm thể loại cụ thể với nhau.
+    unit: percent
+    disambiguation: >
+      Khác program_airtime_share_all_categories_percent: mẫu số ở đây CHỈ gồm
+      các thể loại được người dùng liệt kê tường minh (ví dụ "phim truyện, thể
+      thao, tin tức" — % tính trên tổng 3 thể loại này), không phải trên toàn
+      bộ thể loại hệ thống. Yêu cầu câu hỏi phải nêu rõ từ 2 thể loại trở lên
+      để mẫu số có ý nghĩa so sánh.
+    aliases: [so sánh tỷ lệ thời lượng phát các thể loại, tỷ trọng thời lượng phát trong nhóm, cơ cấu thời lượng phát nhóm thể loại]
+    output_name: program_airtime_selected_share_percent
+    source_table: data_dashboard_rating.agg_info_program
+    recipe: program_metric
+    calculation: airtime_share_selected_categories_percent
+    fact_family: program
+    semantic_key: airtime_share_selected_categories_percent
+    supported_dimensions: *program_supported_dimensions
+    required_dimensions: [agg_info_program.category_level1]
+    denominator_scope: selected_categories
+    unit: percent
+    default_dimensions: [agg_info_program.category_level1]
+
+  program_view_duration:
+    id: program.view_duration
+    label: Thời gian xem chương trình
+    description: >
+      Tổng THỜI GIAN XEM (view duration) tuyệt đối theo giây của khán giả đối với
+      chương trình/thể loại, tức là thời gian khán giả ĐÃ XEM trong khoảng thời
+      gian truy vấn, KHÔNG áp trọng số dân số. Dùng khi câu hỏi hỏi về thời gian
+      xem hoặc thời lượng xem tuyệt đối (giây), không hỏi tỷ lệ.
+    unit: second
+    disambiguation: >
+      Khác program_airtime_duration: đây đo thời gian KHÁN GIẢ XEM (viewing duration,
+      audience side), còn airtime_duration đo thời gian PHÁT SÓNG của chương trình
+      (broadcast duration, broadcast side). Khác program_weighted_view_duration:
+      đây là tổng giây xem trực tiếp không áp trọng số dân số, còn
+      weighted_view_duration tính bằng GIỜ và có nhân hệ số trọng số dân số.
+      Khác 2 metric view_duration_share_*_percent: đây là con số TUYỆT ĐỐI (giây),
+      không phải tỷ lệ phần trăm.
+    aliases: [thời gian xem, tổng thời gian xem, thời gian xem chương trình, tổng thời gian xem chương trình, thời gian xem các thể loại, thời gian xem của thể loại, thời gian xem theo thể loại]
+    output_name: program_view_duration
+    source_table: data_dashboard_rating.agg_info_program
+    recipe: program_metric
+    calculation: view_duration
+    fact_family: program
+    semantic_key: view_duration
+    supported_dimensions: *program_supported_dimensions
+    required_dimensions: []
+    denominator_scope: none
+    unit: second
+    default_dimensions: [agg_info_program.category_level1]
+
+  program_view_duration_share_all_categories_percent:
+    id: program.view_duration_share_all_categories_percent
+    label: Tỷ lệ thời gian xem của thể loại trên tất cả thể loại
+    description: >
+      Phần trăm THỜI GIAN XEM của MỘT thể loại trên TỔNG thời gian xem của TẤT CẢ
+      các thể loại hợp lệ trong cùng phạm vi lọc (mẫu số là toàn bộ danh mục thể
+      loại đang tồn tại, không giới hạn theo những thể loại người dùng nêu tên).
+      Dùng khi câu hỏi hỏi "thể loại X chiếm bao nhiêu % tổng thời gian xem" mà
+      không giới hạn so sánh trong một nhóm thể loại cụ thể được liệt kê.
+    unit: percent
+    disambiguation: >
+      Khác program_view_duration_share_selected_categories_percent: mẫu số (denominator)
+      ở đây là TẤT CẢ thể loại (all_categories), còn ở kia mẫu số chỉ là NHÓM
+      thể loại được người dùng CHỈ ĐỊNH TƯỜNG MINH trong câu hỏi (selected_categories) —
+      cùng một thể loại sẽ cho ra % khác nhau tùy mẫu số. Nếu câu hỏi chỉ nêu tên 2+
+      thể loại cụ thể để so sánh tỷ trọng với nhau (không tính các thể loại khác),
+      dùng selected_categories_percent thay vì all_categories_percent.
+      Khác program_airtime_share_all_categories_percent: đây đo thời gian KHÁN GIẢ
+      XEM (viewing duration), còn airtime_share đo thời gian PHÁT SÓNG (broadcast schedule).
+      Khác program_viewing_time_share_percent: viewing_time_share_percent dùng công
+      thức riêng có rating cap và thời lượng phát bình quân, còn đây là tỷ trọng thời
+      gian xem thông thường.
+    aliases: [tỷ lệ thời gian xem, tỷ lệ thời lượng xem, phần trăm thời gian xem, phần trăm thời lượng xem, tỷ trọng thời gian xem, tỷ trọng thời lượng xem, thời gian xem chiếm bao nhiêu phần trăm, thời lượng xem chiếm bao nhiêu phần trăm, tỷ lệ thời gian xem theo thể loại, tỷ lệ thời lượng xem theo thể loại, tỷ lệ thời gian xem của thể loại trên tất cả thể loại, tỷ lệ thời lượng xem của thể loại trên tất cả thể loại]
+    output_name: program_view_duration_share_percent
+    source_table: data_dashboard_rating.agg_info_program
+    recipe: program_metric
+    calculation: view_duration_share_all_categories_percent
+    fact_family: program
+    semantic_key: view_duration_share_all_categories_percent
+    supported_dimensions: *program_supported_dimensions
+    required_dimensions: [agg_info_program.category_level1]
+    denominator_scope: all_categories
+    unit: percent
+    default_dimensions: [agg_info_program.category_level1]
+
+  program_view_duration_share_selected_categories_percent:
+    id: program.view_duration_share_selected_categories_percent
+    label: Tỷ lệ thời gian xem trong nhóm thể loại được chọn
+    description: >
+      Phần trăm thời gian xem của TỪNG thể loại trên tổng thời gian xem của CHỈ
+      RIÊNG nhóm thể loại được NÊU TÊN TƯỜNG MINH trong câu hỏi (mẫu số bị giới
+      hạn trong tập thể loại được chọn, không tính các thể loại khác không được
+      nhắc đến). Dùng khi câu hỏi so sánh tỷ trọng thời gian xem giữa một nhóm
+      thể loại cụ thể với nhau.
+    unit: percent
+    disambiguation: >
+      Khác program_view_duration_share_all_categories_percent: mẫu số ở đây CHỈ
+      gồm các thể loại được người dùng liệt kê tường minh (ví dụ "phim truyện, thể
+      thao, tin tức" — % tính trên tổng 3 thể loại này), không phải trên toàn bộ
+      thể loại hệ thống. Yêu cầu câu hỏi phải nêu rõ từ 2 thể loại trở lên để mẫu
+      số có ý nghĩa so sánh. Khác program_airtime_share_selected_categories_percent:
+      đây là thời gian KHÁN GIẢ XEM, không phải thời lượng PHÁT SÓNG.
+    aliases: [so sánh tỷ lệ thời gian xem các thể loại, so sánh tỷ lệ thời lượng xem các thể loại, tỷ trọng thời gian xem trong nhóm, tỷ trọng thời lượng xem trong nhóm, cơ cấu thời gian xem nhóm thể loại, cơ cấu thời lượng xem nhóm thể loại, tỷ lệ thời gian xem trong nhóm thể loại được chọn, tỷ lệ thời lượng xem trong nhóm thể loại được chọn]
+    output_name: program_view_duration_selected_share_percent
+    source_table: data_dashboard_rating.agg_info_program
+    recipe: program_metric
+    calculation: view_duration_share_selected_categories_percent
+    fact_family: program
+    semantic_key: view_duration_share_selected_categories_percent
+    supported_dimensions: *program_supported_dimensions
+    required_dimensions: [agg_info_program.category_level1]
+    denominator_scope: selected_categories
+    unit: percent
+    default_dimensions: [agg_info_program.category_level1]
+
+  program_weighted_view_duration:
+    id: program.weighted_view_duration
+    label: Thời lượng xem chương trình
+    description: >
+      Tổng THỜI LƯỢNG XEM của khán giả đối với chương trình, đã áp TRỌNG SỐ
+      dân số (weighted), đơn vị GIỜ. Đây là chỉ số phía KHÁN GIẢ (audience
+      side) — đo bao lâu người xem đã xem chương trình — khác hoàn toàn với
+      airtime_duration vốn đo thời gian chương trình LÊN SÓNG.
+    unit: hour
+    disambiguation: >
+      Khác program_airtime_duration: đây đo thời gian KHÁN GIẢ XEM (đơn vị
+      giờ, có trọng số dân số), còn airtime_duration đo thời gian PHÁT SÓNG
+      (đơn vị giây, không liên quan khán giả). Khác program_rating_absolute
+      và program_rating_percent: đây là TỔNG thời lượng xem cộng dồn (không
+      chuẩn hóa theo phút/thời điểm), còn các metric rating đo mức độ xem tại
+      một đơn vị thời gian (người/phút).
+    aliases: [thời lượng xem, thời gian xem, tổng thời lượng, tổng thời lượng xem, thời lượng xem chương trình, thời gian xem chương trình, tổng thời lượng xem chương trình, thời lượng xem thể loại, thời lượng xem của thể loại, thời lượng xem các thể loại, thời gian xem trực tiếp, thời lượng xem trực tiếp]
+    output_name: program_weighted_view_duration
+    source_table: data_dashboard_rating.agg_info_program
+    recipe: program_metric
+    calculation: weighted_view_duration
+    join_profile: agg_info_program_national_channel_weight
+    fact_family: program
+    semantic_key: total_view_duration
+    supported_dimensions: *program_supported_dimensions
+    required_dimensions: []
+    unit: hour
+
+  program_viewing_time_share_percent:
+    id: program.viewing_time_share_percent
+    label: Tỷ lệ thời gian xem (%) chương trình
+    description: >
+      Tỷ lệ PHẦN TRĂM thời gian xem của chương trình, tính theo công thức
+      riêng của Dashboard Program — có áp dụng RATING CAP (giới hạn trần cho
+      giá trị rating trước khi tính) và THỜI LƯỢNG PHÁT BÌNH QUÂN (average
+      airtime) trong công thức, khác với cách tính share thông thường. Đây là
+      chỉ số TỔNG HỢP kết hợp cả yếu tố cường độ xem lẫn thời lượng phát sóng.
+    unit: percent
+    disambiguation: >
+      Khác program_rating_percent: rating_percent chỉ đơn thuần là rating quy
+      đổi %/population, còn viewing_time_share_percent dùng công thức riêng có
+      rating cap và thời lượng phát bình quân — không phải phép chia đơn giản.
+      Khác 2 metric airtime_share_*_percent: viewing_time_share_percent đo tỷ
+      trọng dựa trên HÀNH VI XEM của khán giả (viewing time), còn
+      airtime_share_* đo tỷ trọng THỜI LƯỢNG PHÁT SÓNG (broadcast schedule),
+      không liên quan trực tiếp đến số người xem thực tế.
+    aliases: [tỷ lệ thời gian xem, tỷ lệ thời lượng xem chương trình, viewing time share]
+    output_name: program_viewing_time_share_percent
+    source_table: data_dashboard_rating.agg_info_program
+    recipe: program_metric
+    calculation: viewing_time_share_percent
+    join_profile: agg_info_program_national_channel_weight
+    fact_family: program
+    semantic_key: viewing_time_share_percent
+    supported_dimensions: *program_supported_dimensions
+    required_dimensions: []
+    unit: percent
+
+  program_rating_absolute:
+    id: program.rating_absolute
+    label: Rating chương trình
+    description: >
+      Rating của chương trình tính theo đơn vị NGƯỜI/PHÚT (person-per-minute) —
+      số người xem bình quân trong mỗi phút phát sóng, có áp dụng NGƯỠNG REACH
+      90% theo công thức Dashboard Program (loại trừ các trường hợp reach quá
+      thấp làm sai lệch kết quả). Đây là thang đo TUYỆT ĐỐI, chưa quy đổi % dân
+      số.
+    unit: người/phút (không phải %)
+    disambiguation: >
+      Khác program_rating_percent: đây là thang đo TUYỆT ĐỐI (người/phút),
+      chưa chia cho population; program_rating_percent là kết quả của
+      rating_absolute chia cho dân số thị trường (population). Nếu người dùng
+      chỉ nói "rating chương trình" không kèm "%", ưu tiên metric này. Khác
+      program_weighted_view_duration: rating_absolute là chỉ số CƯỜNG ĐỘ xem
+      trung bình theo phút, không phải tổng thời lượng cộng dồn.
+    aliases: [rating chương trình, rating của chương trình, rating thể loại, rating của thể loại]
+    output_name: program_rating
+    source_table: data_dashboard_rating.agg_info_program
+    recipe: program_metric
+    calculation: rating
+    join_profile: agg_info_program_national_channel_weight
+    fact_family: program
+    semantic_key: rating_absolute
+    supported_dimensions: *program_supported_dimensions
+    required_dimensions: []
+
+  program_rating_percent:
+    id: program.rating_percent
+    label: Rating (%) chương trình
+    description: >
+      Rating người/phút của chương trình (program_rating_absolute) được CHIA
+      CHO population trong phạm vi thị trường đang lọc, cho ra kết quả dạng
+      PHẦN TRĂM dân số. Dùng để so sánh mức độ xem giữa các chương trình/khu
+      vực có quy mô dân số khác nhau một cách công bằng.
+    unit: percent
+    disambiguation: >
+      Khác program_rating_absolute: đây đã CHUẨN HÓA theo % population, trong
+      khi rating_absolute là thang đo tuyệt đối (người/phút) chưa chia dân số.
+      Chỉ dùng metric này khi câu hỏi có kèm "%", "phần trăm", hoặc "tỷ lệ" đi
+      cùng từ "rating chương trình". Khác program_viewing_time_share_percent:
+      rating_percent đo mức độ xem tại một ĐƠN VỊ THỜI GIAN (phút) quy đổi %,
+      còn viewing_time_share_percent đo tỷ trọng THỜI GIAN XEM có áp rating cap
+      và thời lượng phát bình quân — công thức và ý nghĩa khác nhau.
+    aliases: [rating% chương trình, rating phần trăm chương trình, tỷ lệ rating chương trình, rating percent chương trình]
+    output_name: program_rating_percent
+    source_table: data_dashboard_rating.agg_info_program
+    recipe: program_metric
+    calculation: rating_percent
+    join_profile: agg_info_program_national_channel_weight
+    fact_family: program
+    semantic_key: rating_percent
+    supported_dimensions: *program_supported_dimensions
+    required_dimensions: []
+    unit: percent
+
+  program_average_reach:
+    id: program.average_reach
+    label: Average Reach chương trình
+    description: >
+      SỐ LƯỢNG KHÁN GIẢ bình quân (không phải %) đã xem chương trình, tính có
+      áp dụng trọng số dân số (population weight) và hệ số người dùng (user
+      coefficient) trên MỖI LƯỢT PHÁT theo lịch EPG (mỗi lần chương trình lên
+      sóng theo lịch được tính là một lượt phát riêng để tính bình quân khán
+      giả).
+    unit: số người (count of people)
+    disambiguation: >
+      Khác program_reach_percent: average_reach là SỐ NGƯỜI tuyệt đối, còn
+      reach_percent là average_reach CHIA cho population, ra kết quả %. Khác
+      program_rating_absolute: average_reach đo QUY MÔ khán giả (số người), còn
+      rating_absolute đo CƯỜNG ĐỘ xem theo đơn vị người/phút — hai cách tính
+      khác nhau dù cùng liên quan đến khán giả.
+    aliases: [average reach chương trình, ave reach chương trình, reach trung bình chương trình, khán giả bình quân chương trình]
+    output_name: program_ave_reach
+    source_table: data_dashboard_rating.agg_info_program
+    recipe: program_metric
+    calculation: average_reach
+    join_profile: agg_info_program_national_channel_weight
+    fact_family: program
+    semantic_key: average_reach
+    supported_dimensions: *program_supported_dimensions
+    required_dimensions: []
+
+  program_reach_percent:
+    id: program.reach_percent
+    label: Reach (%) chương trình
+    description: >
+      program_average_reach (số khán giả bình quân tuyệt đối) được CHIA CHO
+      population trong phạm vi thị trường đang lọc, cho ra kết quả dạng PHẦN
+      TRĂM dân số đã tiếp cận được chương trình — đo ĐỘ PHỦ chuẩn hóa theo %,
+      không phải cường độ xem.
+    unit: percent
+    disambiguation: >
+      Khác program_average_reach: đây là % đã chuẩn hóa theo dân số, còn
+      average_reach là số người tuyệt đối chưa chia dân số. Chỉ dùng metric
+      này khi câu hỏi có kèm "%"/"phần trăm"/"tỷ lệ" cùng từ "reach chương
+      trình". Khác program_rating_percent: reach_percent đo ĐỘ PHỦ (đã xem hay
+      chưa, không quan tâm bao lâu), còn rating_percent đo CƯỜNG ĐỘ xem trung
+      bình theo phút.
+    aliases: [reach% chương trình, reach phần trăm chương trình, tỷ lệ reach chương trình]
+    output_name: program_reach_percent
+    source_table: data_dashboard_rating.agg_info_program
+    recipe: program_metric
+    calculation: reach_percent
+    join_profile: agg_info_program_national_channel_weight
+    fact_family: program
+    semantic_key: reach_percent
+    supported_dimensions: *program_supported_dimensions
+    required_dimensions: []
+    unit: percent
+
+  program_count:
+    id: program.program_count
+    label: Số lượng chương trình
+    description: >
+      Tổng số lượng chương trình duy nhất phát sóng trong khoảng thời gian và
+      bộ lọc được chọn. Dùng khi câu hỏi hỏi có bao nhiêu chương trình, số
+      chương trình phát sóng, đếm số chương trình, số show.
+    unit: count
+    aliases: [số lượng chương trình, số chương trình, tổng số chương trình, bao nhiêu chương trình, đếm chương trình, số show, có bao nhiêu chương trình, số lượng show, bao nhiêu show, đếm số chương trình]
+    output_name: program_count
+    source_table: data_dashboard_rating.agg_info_program
+    recipe: program_metric
+    calculation: program_count
+    fact_family: program
+    semantic_key: program_count
+    supported_dimensions: *program_supported_dimensions
+    required_dimensions: []
+    denominator_scope: none
+    default_dimensions: []
+
+  category_count:
+    id: program.category_count
+    label: Số lượng thể loại
+    description: >
+      Tổng số lượng thể loại chương trình duy nhất phát sóng trong khoảng thời
+      gian và bộ lọc được chọn. Dùng khi câu hỏi hỏi có bao nhiêu thể loại, số
+      thể loại, đếm thể loại, tổng số thể loại, bao nhiêu thể loại.
+    unit: thể loại (count)
+    aliases: [số lượng thể loại, số thể loại, tổng số thể loại, bao nhiêu thể loại, đếm thể loại, có bao nhiêu thể loại, số nhóm thể loại, bao nhiêu nhóm thể loại, có bao nhiêu thể loại chương trình, bao nhiêu thể loại chương trình]
+    output_name: category_count
+    source_table: data_dashboard_rating.agg_info_program
+    recipe: program_metric
+    calculation: category_count
+    fact_family: program
+    semantic_key: category_count
+    supported_dimensions: *program_supported_dimensions
+    required_dimensions: []
+    denominator_scope: none
+    default_dimensions: []
+
+  channel_count:
+    id: program.channel_count
+    label: Số lượng kênh
+    description: >
+      Tổng số lượng kênh truyền hình duy nhất phát sóng chương trình trong
+      khoảng thời gian và bộ lọc được chọn.
+    unit: kênh (count)
+    aliases: [số lượng kênh, số kênh, tổng số kênh, bao nhiêu kênh, đếm kênh, có bao nhiêu kênh, số lượng kênh phát sóng, bao nhiêu kênh phát sóng, đếm số kênh]
+    output_name: channel_count
+    source_table: data_dashboard_rating.agg_info_program
+    recipe: program_metric
+    calculation: channel_count
+    fact_family: program
+    semantic_key: channel_count
+    supported_dimensions: *program_supported_dimensions
+    required_dimensions: []
+    denominator_scope: none
+    default_dimensions: []

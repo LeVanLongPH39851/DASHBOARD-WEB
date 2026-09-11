@@ -1,0 +1,157 @@
+dimensions:
+  agg_info_channel:
+  - id: date
+    column: date
+    label: Ngày
+    aliases: [ngày, thời gian, date]
+    semantic_type: time
+  - id: channel
+    column: channel_name_tvd
+    label: Kênh truyền hình
+    aliases: [kênh, kênh truyền hình, đài, channel]
+    value_dictionary: values/channels.csv
+    metric_bundle:
+      - rating.rating_absolute
+      - rating.rating_percent
+      - rating.average_reach
+      - rating.reach_percent
+      - rating.minute_per_user_day
+  - id: time_band
+    column: time_band
+    label: Khung giờ
+    aliases: [khung giờ, dải giờ, giờ, time band]
+    value_dictionary: values/time_bands.csv
+    metric_bundle: [rating.rating_absolute, rating.rating_percent, rating.average_reach, rating.reach_percent, rating.minute_per_user_day]
+  - id: province
+    column: province_name
+    label: Tỉnh thành
+    aliases: [tỉnh, thành phố, tỉnh thành, province, city]
+    value_dictionary: values/provinces.csv
+    metric_bundle: [rating.rating_absolute, rating.rating_percent, rating.average_reach, rating.reach_percent, rating.minute_per_user_day]
+  - id: region
+    column: regional_name
+    label: Vùng
+    aliases: [vùng, miền, khu vực, region]
+    value_dictionary: values/regions.csv
+    metric_bundle: [rating.rating_absolute, rating.rating_percent, rating.average_reach, rating.reach_percent, rating.minute_per_user_day]
+  - id: day_of_week
+    column: days_of_week
+    label: Ngày trong tuần
+    aliases: [ngày trong tuần, thứ, weekday, day of week, cuối tuần]
+    value_dictionary: values/days_of_week.csv
+    metric_bundle: [rating.rating_absolute, rating.rating_percent, rating.average_reach, rating.reach_percent, rating.minute_per_user_day]
+  - id: platform
+    column: platform
+    label: Nền tảng
+    aliases: [nền tảng, thiết bị, platform]
+    value_dictionary: values/platforms.csv
+    metric_bundle: [rating.rating_absolute, rating.rating_percent, rating.average_reach, rating.reach_percent, rating.minute_per_user_day]
+  - id: key_city
+    column: key_city
+    label: Thành phố trọng điểm
+    aliases: [4 thành phố lớn, 4 tp lớn, thành phố lớn, key city]
+    value_dictionary: values/key_cities.csv
+    metric_bundle: [rating.rating_absolute, rating.rating_percent, rating.average_reach, rating.reach_percent, rating.minute_per_user_day]
+  - id: event_category
+    column: event_category_name
+    label: Hình thức xem
+    aliases: [hình thức xem, loại hình xem, xem trực tiếp, xem lại, event category]
+    value_dictionary: values/event_categories.csv
+    metric_bundle: [rating.rating_absolute, rating.rating_percent, rating.average_reach, rating.reach_percent, rating.minute_per_user_day]
+
+  agg_info_program:
+  - id: date
+    column: date
+    label: Ngày
+    aliases: [ngày, thời gian, date]
+    semantic_type: time
+  - id: date_ott
+    column: date_ott
+    label: Ngày OTT
+    aliases: [ngày ott, date ott]
+    semantic_type: time
+  - id: channel
+    column: channel_name_tvd
+    label: Kênh truyền hình
+    aliases: [kênh, kênh truyền hình, đài, channel]
+    value_dictionary: values/channels.csv
+    metric_bundle: &program_metric_bundle
+      [program.rating_absolute, program.rating_percent, program.weighted_view_duration,
+       program.average_reach, program.reach_percent, program.viewing_time_share_percent]
+  - id: program_name
+    column: program_name
+    label: Tên chương trình
+    aliases: [chương trình, tên chương trình, show, ctrinh, program name]
+    free_text: true
+    matching:
+      strategy: doris_ngram
+      expose_values_to_llm: false
+      table: data_dashboard_rating.mv_program_info_detail_epg
+      column: program_name
+      ngram_size: 4
+      top_k: 5
+      minimum_score: 0.8
+    metric_bundle: *program_metric_bundle
+  - id: start_time
+    column: start_time
+    label: Giờ bắt đầu
+    aliases: [giờ bắt đầu, khung giờ phát, start time]
+    metric_bundle: *program_metric_bundle
+  - id: end_time
+    column: end_time
+    label: Giờ kết thúc
+    aliases: [giờ kết thúc, end time]
+    metric_bundle: *program_metric_bundle
+  - id: category_level1
+    column: firstlevel_vn
+    label: Thể loại
+    aliases: [thể loại, nhóm thể loại, firstlevel]
+    value_dictionary: values/firstlevel_vn.csv
+    metric_bundle: *program_metric_bundle
+  - id: category_name
+    column: name_vn
+    label: Tên thể loại
+    aliases: [thể loại chi tiết, tên thể loại, category name]
+    metric_bundle: *program_metric_bundle
+  - id: description
+    column: description
+    label: Mô tả chương trình
+    aliases: [mô tả chương trình, mô tả nội dung, description]
+    free_text: true
+    metric_bundle: *program_metric_bundle
+  - id: province
+    column: province_name
+    label: Tỉnh thành
+    aliases: [tỉnh, thành phố, tỉnh thành, province, city]
+    value_dictionary: values/provinces.csv
+    metric_bundle: *program_metric_bundle
+  - id: key_city
+    column: key_city
+    label: Thành phố trọng điểm
+    aliases: [thành phố trọng điểm, key city, nhóm thành phố lớn]
+    value_dictionary: values/key_cities.csv
+    metric_bundle: *program_metric_bundle
+  - id: region
+    column: regional_name
+    label: Vùng
+    aliases: [vùng, khu vực, region]
+    value_dictionary: values/regions.csv
+    metric_bundle: *program_metric_bundle
+  - id: day_of_week
+    column: days_of_week
+    label: Ngày trong tuần
+    aliases: [ngày trong tuần, thứ, days of week, weekday]
+    value_dictionary: values/days_of_week.csv
+    metric_bundle: *program_metric_bundle
+  - id: platform
+    column: platform
+    label: Nền tảng
+    aliases: [nền tảng, thiết bị, platform]
+    value_dictionary: values/platforms.csv
+    metric_bundle: *program_metric_bundle
+  - id: event_category
+    column: event_category_name
+    label: Hình thức xem
+    aliases: [hình thức xem, trực tiếp, xem lại, live, tsv, time shift, live/time shift, live timeshift, time shifted view]
+    value_dictionary: values/event_categories.csv
+    metric_bundle: *program_metric_bundle

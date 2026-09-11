@@ -1,0 +1,7 @@
+measures:
+  duration_view:
+    expression: SUM(duration_view)
+    output_alias: duration_view
+  distinct_user_by_day:
+    expression: BITMAP_UNION_COUNT(bm_user_id)
+    output_alias: distinct_user_by_day

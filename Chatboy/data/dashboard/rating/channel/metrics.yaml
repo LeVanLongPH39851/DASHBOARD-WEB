@@ -1,0 +1,199 @@
+metrics:
+  channel_total_channel_views:
+    id: rating.total_channel_views
+    label: Lượt xem
+    description: >
+      Tổng SỐ LƯỢT XEM (view events) ghi nhận được trên kênh trong khoảng thời
+      gian truy vấn — mỗi lần một thiết bị/người xem bắt đầu xem được tính là
+      một lượt, KHÔNG khử trùng lặp theo người xem (một người có thể tạo nhiều
+      lượt xem). Đây là một chỉ số ĐẾM (count), không phải chỉ số thời lượng
+      hay tỷ lệ phần trăm dân số.
+    unit: lượt (count)
+    disambiguation: >
+      Khác channel_average_reach: "lượt xem" đếm số LẦN XEM (có thể trùng người),
+      còn average_reach đếm số NGƯỜI KHÁC NHAU đã xem (distinct audience). Khác
+      channel_total_view_duration: đây là số lượt, không phải tổng thời gian xem.
+    expression: SUM(view)
+    output_alias: [lượt xem, tổng lượt xem, số lượt xem, views, total views]
+    output_name: total_channel_views
+    source_table: data_dashboard_rating.agg_info_channel
+    recipe: direct_aggregate
+    fact_family: channel
+    semantic_key: total_channel_views
+    supported_dimensions: &channel_supported_dimensions
+      [agg_info_channel.date, agg_info_channel.channel, agg_info_channel.time_band,
+       agg_info_channel.province, agg_info_channel.region, agg_info_channel.day_of_week,
+       agg_info_channel.platform, agg_info_channel.key_city, agg_info_channel.event_category]
+    required_dimensions: []
+
+  channel_total_view_duration:
+    id: rating.total_view_duration
+    label: Thời lượng xem
+    description: >
+      Tổng THỜI GIAN XEM (tính bằng giây) cộng dồn của tất cả người xem trên
+      kênh trong khoảng thời gian truy vấn. Đây là chỉ số TỔNG (sum) thô, chưa
+      chia trung bình theo người dùng hay theo ngày — nếu cần giá trị bình quân
+      trên mỗi người/ngày, dùng channel_minute_per_user_day.
+    unit: giây (seconds)
+    disambiguation: >
+      Khác channel_minute_per_user_day: đây là TỔNG cộng dồn toàn kênh, không
+      phải giá trị bình quân trên mỗi người dùng mỗi ngày. Khác
+      channel_total_channel_views: đây đo THỜI GIAN, không đo SỐ LƯỢT.
+    expression: SUM(duration_view)
+    output_alias: [thời lượng xem, tổng thời lượng, duration, watch time, thời gian xem]
+    output_name: total_view_duration
+    source_table: data_dashboard_rating.agg_info_channel
+    recipe: direct_aggregate
+    fact_family: channel
+    semantic_key: total_view_duration
+    supported_dimensions: *channel_supported_dimensions
+    required_dimensions: []
+
+  channel_rating_percent:
+    id: rating.rating_percent
+    label: Rating (%)
+    description: >
+      Tỷ lệ PHẦN TRĂM dân số mục tiêu (population) đang xem kênh tại một thời
+      điểm/khoảng thời gian, tính trên thời lượng xem đã được áp trọng số dân
+      số (population weight) theo hệ số view. Đây là chỉ số CHUẨN HÓA theo %
+      dân số, dùng để so sánh mức độ xem giữa các kênh/khu vực có quy mô dân số
+      khác nhau một cách công bằng.
+    unit: phần trăm (%)
+    disambiguation: >
+      Khác channel_rating_absolute: rating_percent đã CHUẨN HÓA về thang % trên
+      tổng dân số mục tiêu, trong khi rating_absolute là chỉ số rating ở thang
+      đo tuyệt đối (chưa quy đổi %). Nếu người dùng hỏi "rating" mà không có
+      chữ "%" hoặc "phần trăm" đi kèm, mặc định hiểu là channel_rating_absolute;
+      nếu có "%"/"phần trăm"/"tỷ lệ", dùng channel_rating_percent. Khác
+      channel_reach_percent: rating_percent đo mức độ xem tại một thời điểm
+      (trung bình theo phút), còn reach_percent đo tỷ lệ NGƯỜI ĐÃ TỪNG xem
+      ít nhất một lần trong kỳ (không quan tâm xem lâu hay ngắn).
+    aliases: [rating%, rating %, rating percent, rating percentage, rating phần trăm, tỷ lệ rating]
+    output_name: rating_percent
+    source_table: data_dashboard_rating.agg_info_channel
+    recipe: channel_metric
+    calculation: rating_percent
+    join_profile: national_channel_weight
+    fact_family: channel
+    semantic_key: rating_percent
+    supported_dimensions: *channel_supported_dimensions
+    required_dimensions: []
+
+  channel_reach_percent:
+    id: rating.reach_percent
+    label: Reach (%)
+    description: >
+      Tỷ lệ PHẦN TRĂM dân số mục tiêu đã XEM KÊNH ÍT NHẤT MỘT LẦN (dù chỉ một
+      khoảnh khắc) trong khoảng thời gian truy vấn — đo ĐỘ PHỦ (coverage) chứ
+      không đo cường độ xem liên tục. Một người xem 1 phút hay xem cả ngày đều
+      được tính là "đã reach" như nhau.
+    unit: phần trăm (%)
+    disambiguation: >
+      Khác channel_rating_percent: reach_percent đo ĐỘ PHỦ (có xem hay không,
+      bất kể thời lượng), còn rating_percent đo CƯỜNG ĐỘ xem trung bình tại một
+      thời điểm. Khác channel_average_reach: reach_percent là tỷ lệ % trên dân
+      số, còn average_reach là con số tuyệt đối (số người, không phải %).
+    aliases: [reach%, reach %, reach percent, tỷ lệ reach]
+    output_name: reach_percent
+    source_table: data_dashboard_rating.agg_info_channel
+    recipe: channel_metric
+    calculation: reach_percent
+    join_profile: national_channel_weight
+    fact_family: channel
+    semantic_key: reach_percent
+    supported_dimensions: *channel_supported_dimensions
+    required_dimensions: []
+    
+  channel_rating_absolute:
+    id: rating.rating_absolute
+    label: Rating
+    description: >
+      Chỉ số RATING ở thang đo TUYỆT ĐỐI theo kênh (đã áp trọng số dân số qua
+      join_profile nhưng CHƯA quy đổi ra phần trăm) — phản ánh mức độ xem trung
+      bình theo đơn vị đo lường chuẩn của ngành rating truyền hình, không phải
+      tỷ lệ % dân số.
+    unit: điểm rating tuyệt đối (không phải %)
+    disambiguation: >
+      Khác channel_rating_percent: đây là thang đo tuyệt đối, KHÔNG phải %.
+      Khi người dùng chỉ nói "rating" một cách chung chung, ưu tiên hiểu là
+      metric này trừ khi câu hỏi có kèm ký hiệu "%" hoặc chữ "phần trăm"/"tỷ
+      lệ", khi đó chuyển sang channel_rating_percent.
+    aliases: [rating, rating tuyệt đối, average rating, rating bình quân, biến động rating, rating timeband, rating theo khung giờ]
+    output_name: rating
+    source_table: data_dashboard_rating.agg_info_channel
+    recipe: channel_metric
+    calculation: rating
+    join_profile: national_channel_weight
+    fact_family: channel
+    semantic_key: rating_absolute
+    supported_dimensions: *channel_supported_dimensions
+    required_dimensions: []
+
+  channel_average_reach:
+    id: rating.average_reach
+    label: Average Reach
+    description: >
+      SỐ LƯỢNG NGƯỜI (không phải %) bình quân đã xem kênh trong khoảng thời
+      gian truy vấn — ước tính quy mô khán giả tuyệt đối (distinct audience
+      size), đã khử trùng lặp theo người xem, khác với channel_total_channel_views
+      vốn đếm số lượt xem có thể trùng người.
+    unit: số người (count of people)
+    disambiguation: >
+      Khác channel_reach_percent: average_reach là SỐ NGƯỜI tuyệt đối, còn
+      reach_percent là TỶ LỆ % trên tổng dân số. Khác
+      channel_total_channel_views: average_reach đã khử trùng lặp theo người
+      (distinct), còn total_channel_views đếm số lượt xem (có thể trùng người).
+    aliases: [average reach, ave reach, reach, reach trung bình, reach tuyệt đối, ave reach timeband, average reach timeband, biến động reach, reach theo khung giờ, khán giả bình quân, số người xem bình quân]
+    output_name: ave_reach
+    source_table: data_dashboard_rating.agg_info_channel
+    recipe: channel_metric
+    calculation: average_reach
+    join_profile: national_channel_weight
+    fact_family: channel
+    semantic_key: average_reach
+    supported_dimensions: *channel_supported_dimensions
+    required_dimensions: []
+
+  channel_minute_per_user_day:
+    id: rating.minute_per_user_day
+    label: Phút xem/người/ngày
+    description: >
+      Số PHÚT XEM BÌNH QUÂN trên mỗi người dùng, tính theo mỗi ngày — chỉ số
+      CƯỜNG ĐỘ GẮN BÓ (engagement/stickiness) đo mức độ xem trung bình của một
+      người dùng điển hình trong một ngày, đã chuẩn hóa cả theo số người dùng
+      lẫn theo số ngày trong kỳ.
+    unit: phút/người/ngày
+    disambiguation: >
+      Khác channel_total_view_duration: đây là giá trị BÌNH QUÂN trên mỗi
+      người dùng mỗi ngày (đã chia cho số người và số ngày), còn
+      total_view_duration là TỔNG thời gian xem cộng dồn chưa chia trung bình.
+      Dùng metric này khi câu hỏi có ý "bình quân", "trung bình mỗi người",
+      "mỗi ngày" đi kèm thời lượng xem.
+    aliases: [minute per user day, phút trên người dùng mỗi ngày, phút người dùng ngày]
+    output_name: minute_per_user_day
+    source_table: data_dashboard_rating.agg_info_channel
+    recipe: channel_metric
+    calculation: minute_per_user_day
+    join_profile: national_channel_weight
+    fact_family: channel
+    semantic_key: minute_per_user_day
+    supported_dimensions: *channel_supported_dimensions
+    required_dimensions: []
+
+  channel_count:
+    id: rating.channel_count
+    label: Số lượng kênh
+    description: >
+      Tổng số lượng kênh truyền hình duy nhất (distinct channel) trong khoảng
+      thời gian và bộ lọc được chọn. Dùng khi câu hỏi hỏi có bao nhiêu kênh,
+      tổng số kênh, đếm số kênh, số kênh truyền hình, có bao nhiêu kênh.
+    unit: kênh (count)
+    expression: COUNT(DISTINCT channel_name_tvd)
+    aliases: [số lượng kênh, số kênh, tổng số kênh, bao nhiêu kênh, đếm kênh, có bao nhiêu kênh, số lượng kênh truyền hình, có bao nhiêu kênh truyền hình, bao nhiêu kênh truyền hình, đếm số kênh]
+    output_name: channel_count
+    source_table: data_dashboard_rating.agg_info_channel
+    recipe: direct_aggregate
+    fact_family: channel
+    semantic_key: channel_count
+    supported_dimensions: *channel_supported_dimensions
+    required_dimensions: []

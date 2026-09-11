@@ -1,0 +1,315 @@
+patterns:
+  metric_lookup:
+    description: >
+      Tra cứu giá trị của MỘT metric duy nhất tại một thời điểm/khoảng thời gian
+      hoặc theo một bộ lọc cụ thể (ví dụ: kênh, chương trình, khu vực), KHÔNG
+      thực hiện so sánh giữa các đối tượng, KHÔNG group by theo dimension, và
+      KHÔNG xếp hạng. Đây là pattern "mặc định" khi câu hỏi chỉ hỏi một con số
+      đơn lẻ hoặc tổng/bình quân gộp chung cho toàn bộ khoảng thời gian đã chọn
+      (ví dụ: "Rating từ tháng 1 đến tháng 6 là bao nhiêu", "Reach của 3 tháng 6,7,8",
+      "Thời lượng phát sóng của VTV3 tuần trước").
+    disambiguation: >
+      Khác dimension_breakdown ở chỗ không group theo dimension (trả về một con
+      số duy nhất, không phải danh sách). Khác rank_lookup vì không có Top-N.
+      Khác trend_analysis: metric_lookup tính một con số tổng/bình quân duy nhất cho
+      cả khoảng thời gian (ví dụ: "rating từ tháng 1 đến tháng 6 là bao nhiêu", "reach của 3 tháng 6,7,8").
+      Chỉ dùng trend_analysis khi câu hỏi hỏi diễn biến/xu hướng/tăng giảm theo từng mốc thời gian
+      (ví dụ: "rating từ tháng 1 đến tháng 6 như thế nào", "xu hướng rating theo tháng").
+    examples:
+      - Rating VTV1 hôm nay là bao nhiêu?
+      - Thời lượng phát sóng của VTV3 tuần trước?
+      - Rating trung bình khung giờ vàng của HTV7 tháng 6?
+      - reach% của 4 TP lớn là bao nhiêu?
+    query_shape: aggregate
+    required_fields: [metric]
+    default_order: []
+    limit:
+      required: false
+    compute_handler: null
+    narration_prompt_id: metric_lookup
+    routing:
+      - priority: 0
+        fallback: true
+
+  dimension_listing:
+    description: >
+      Liệt kê danh sách các giá trị duy nhất (DISTINCT) của một hoặc nhiều dimension
+      (ví dụ: danh sách các chương trình trên kênh VTV1, các kênh phát trong khung
+      giờ 18h-20h, các thể loại của kênh...) theo bộ lọc cụ thể, KHÔNG tính toán
+      các metric đo lường phức tạp (rating, reach, view duration...). Chỉ trả về
+      danh sách tên/thực thể thuần túy từ database.
+    disambiguation: >
+      Khác dimension_breakdown vì không tính toán hay trả về metric (rating, reach,
+      share...), chỉ lấy danh sách các giá trị phân biệt (DISTINCT).
+    examples:
+      - Các chương trình được phát sóng ở kênh VTV1 là gì?
+      - Các kênh được phát trong thời gian từ 18h-20h
+      - Kênh VTV3 chiếu những thể loại nào?
+    query_shape: breakdown
+    required_fields: [dimensions]
+    default_order:
+      - target: dimension
+        direction: asc
+    limit:
+      required: true
+      default: 100
+    compute_handler: null
+    narration_prompt_id: dimension_listing
+    routing:
+      - priority: 950
+        requires_metric: false
+        requires_unfiltered_dimensions: true
+        phrase_groups:
+          - [cac, nhung, danh sach, gom nhung, chieu nhung, gom cac, phat nhung]
+
+  dimension_breakdown:
+    description: >
+      Phân rã (breakdown) một metric theo một hoặc nhiều dimension (ví dụ: theo
+      kênh, theo khung giờ, theo khu vực, theo thể loại chương trình) nhằm liệt
+      kê giá trị của metric ở TỪNG nhóm. KHÔNG mang ý nghĩa xếp hạng (không cần
+      sắp theo thứ tự cao-thấp có chủ đích) và KHÔNG so sánh trực tiếp giữa các
+      nhóm với nhau — chỉ đơn thuần liệt kê/group by.
+    disambiguation: >
+      Khác rank_lookup/rank_comparison vì không yêu cầu Top-N hay thứ hạng.
+      Khác dimension_comparison vì không tập trung vào việc đối chiếu 2+ giá trị
+      cụ thể của cùng một dimension mà liệt kê toàn bộ nhóm theo dimension.
+    examples:
+      - Rating các kênh trong khung giờ vàng hôm qua
+      - Thời lượng phát sóng theo thể loại chương trình tháng 7
+      - Rating VTV1 theo từng khung giờ trong ngày
+    query_shape: breakdown
+    required_fields: [metric, dimensions]
+    default_order:
+      - target: dimension
+        direction: asc
+    limit:
+      required: true
+      default: 100
+    compute_handler: null
+    narration_prompt_id: dimension_breakdown
+    routing:
+      - priority: 910
+        requires_unfiltered_dimensions: true
+        phrase_groups:
+          - [bien dong, bien thien, phan bo, co cau]
+          - [theo, theo tung, phan theo, chia theo]
+      - priority: 100
+        requires_unfiltered_dimensions: true
+        phrase_groups:
+          - [theo, theo tung, phan theo, chia theo]
+
+  period_comparison:
+    description: >
+      So sánh giá trị của MỘT metric giữa HAI thời điểm hoặc hai kỳ thời gian
+      (ví dụ: tháng này với tháng trước, hôm nay với hôm qua, quý này với quý
+      cùng kỳ năm trước). Trọng tâm là trục THỜI GIAN — cần ít nhất hai mốc/khoảng
+      thời gian tường minh trong câu hỏi. Nếu thiếu thông tin thời gian, hệ thống
+      cần hỏi lại người dùng để làm rõ hai kỳ cần so sánh.
+    disambiguation: >
+      Khác dimension_comparison vì trục so sánh ở đây là THỜI GIAN, không phải
+      giá trị của một dimension khác (kênh, khu vực...). Khác trend_analysis vì
+      chỉ so sánh đúng hai kỳ, không phân tích diễn biến qua nhiều kỳ liên tiếp.
+    examples:
+      - So sánh rating VTV1 tháng 7 với tháng 6
+      - Rating VTV1 hôm nay so với hôm qua
+      - Thời lượng phát sóng quý 2 so với quý 1 năm nay
+    query_shape: breakdown
+    required_fields: [metric, time_range]
+    default_order:
+      - target: dimension
+        direction: asc
+    limit:
+      required: false
+    compute_handler: src.core.text_to_sql.pattern_computes:compute_period_comparison
+    narration_prompt_id: period_comparison
+    requires_time_dimension: true
+    context:
+      requires_explicit_time: true
+      minimum_time_buckets: 2
+      missing_time_fields: [time_range, time_grain]
+      clarification: Hãy bổ sung hai kỳ hoặc khoảng thời gian cần so sánh.
+      suggestions:
+        - So sánh rating VTV1 tháng 7 với tháng 6
+        - Rating VTV1 hôm nay so với hôm qua
+    routing:
+      - priority: 600
+        minimum_time_expressions: 1
+        phrase_groups:
+          - [so sanh, vs, so voi, tang giam, chenh lech]
+
+  dimension_comparison:
+    description: >
+      So sánh giá trị của một metric giữa HAI hoặc NHIỀU giá trị cụ thể của
+      CÙNG MỘT dimension (ví dụ: VTV1 so với VTV3, Hà Nội so với TP.HCM, live so
+      với time-shift), tại cùng một thời điểm hoặc khoảng thời gian (không phải
+      so sánh giữa các kỳ). Yêu cầu người dùng nêu rõ ít nhất 2 giá trị lọc
+      (filter values) thuộc cùng một dimension để đối chiếu.
+    disambiguation: >
+      Khác period_comparison vì trục so sánh là GIÁ TRỊ CỦA DIMENSION (kênh, khu
+      vực, hình thức xem...), không phải hai kỳ thời gian khác nhau. Khác
+      rank_comparison vì không yêu cầu xếp hạng Top-N, chỉ đối chiếu các giá trị
+      được chỉ định tường minh.
+    examples:
+      - So sánh rating VTV1 và VTV3 hôm qua
+      - Rating live so với time-shift của VTV1 tuần này
+      - So sánh thời lượng xem giữa Hà Nội và TP.HCM
+    query_shape: breakdown
+    required_fields: [metric, dimensions, filters]
+    default_order:
+      - target: dimension
+        direction: asc
+    limit:
+      required: false
+    compute_handler: src.core.text_to_sql.pattern_computes:compute_dimension_comparison
+    narration_prompt_id: dimension_comparison
+    group_filtered_dimensions: true
+    routing:
+      - priority: 660
+        minimum_filter_values: 2
+        maximum_time_expressions: 1
+        phrase_groups:
+          - [live time shift, live timeshift]
+      - priority: 650
+        minimum_filter_values: 2
+        maximum_time_expressions: 1
+        phrase_groups:
+          - [so sanh, vs, so voi, chenh lech]
+
+  rank_comparison:
+    description: >
+      So sánh các đối tượng trong Top-N theo một metric, đồng thời trả về các
+      chỉ số phân tích bổ sung: thứ hạng (rank), tỷ trọng (share) trên tổng, và
+      khoảng cách (gap) so với vị trí dẫn đầu. Dùng khi câu hỏi vừa có ý xếp
+      hạng (top, cao nhất...) vừa có ý so sánh/phân tích cơ cấu (so sánh, tỷ
+      trọng, phân bổ, đóng góp...).
+    disambiguation: >
+      Khác rank_lookup vì không chỉ liệt kê Top-N đơn thuần mà còn tính toán
+      thêm tỷ trọng và khoảng cách với top đầu. Khác dimension_comparison vì
+      dựa trên xếp hạng tự động (Top-N) thay vì các giá trị filter được người
+      dùng chỉ định tường minh. Khác share_distribution vì có yếu tố thứ hạng
+      (ranking) đi kèm, không chỉ đơn thuần tính tỷ trọng.
+    examples:
+      - So sánh top 5 kênh có rating cao nhất và tỷ trọng đóng góp
+      - Top 10 chương trình rating cao nhất, chênh lệch bao nhiêu so với vị trí 1?
+      - Xếp hạng và tỷ trọng thời lượng phát sóng các kênh
+    query_shape: ranking
+    required_fields: [metric, dimensions, limit]
+    default_order:
+      - target: primary_metric
+        direction: desc
+    limit:
+      required: true
+      default: 10
+    compute_handler: src.core.text_to_sql.pattern_computes:compute_rank_comparison
+    narration_prompt_id: rank_comparison
+    routing:
+      - priority: 800
+        phrase_groups:
+          - [top, cao nhat, thap nhat, xep hang, nhieu nhat, it nhat]
+          - [so sanh, vs, so voi, tang giam, chenh lech, ty trong, phan bo, co cau, dong gop]
+
+  rank_lookup:
+    description: >
+      Liệt kê danh sách Top-N theo một metric (ví dụ: top 10 kênh có rating cao
+      nhất) hoặc tìm giá trị cao nhất/thấp nhất, mà KHÔNG cần tính thêm các chỉ
+      số so sánh chi tiết như tỷ trọng hay khoảng cách với vị trí đầu. Đây là
+      dạng xếp hạng đơn giản, chỉ trả về danh sách đã sắp xếp.
+    disambiguation: >
+      Khác rank_comparison vì không tính tỷ trọng/khoảng cách, chỉ là danh sách
+      xếp hạng thuần túy. Nếu câu hỏi chỉ có từ khóa xếp hạng (top, cao nhất...)
+      mà không có từ khóa so sánh/tỷ trọng/cơ cấu, ưu tiên pattern này.
+    examples:
+      - Top 10 kênh có rating cao nhất hôm nay
+      - Chương trình nào có rating thấp nhất tuần này?
+      - Xếp hạng các kênh theo thời lượng phát sóng
+    query_shape: ranking
+    required_fields: [metric, dimensions]
+    default_order:
+      - target: primary_metric
+        direction: desc
+    limit:
+      required: true
+      default: 10
+    compute_handler: null
+    narration_prompt_id: rank_lookup
+    routing:
+      - priority: 700
+        phrase_groups:
+          - [top, cao nhat, thap nhat, xep hang, nhieu nhat, it nhat]
+
+  trend_analysis:
+    description: >
+      Phân tích xu hướng biến động của một metric qua NHIỀU kỳ liên tiếp (theo
+      ngày, tuần, hoặc tháng), nhằm quan sát diễn biến tăng/giảm theo từng mốc thời gian
+      (ví dụ: "Rating từ tháng 1 đến tháng 6 như thế nào", "Xu hướng rating VTV1 theo ngày trong tháng 7",
+      "Biến động thời lượng phát sóng theo tuần trong quý 2").
+    disambiguation: >
+      Khác metric_lookup ở chỗ: trend_analysis theo dõi chuỗi diễn biến qua từng mốc thời gian
+      (câu hỏi thường chứa "như thế nào", "xu hướng", "biến động", "diễn biến", "tăng trưởng", "theo ngày/tuần/tháng").
+      Nếu câu hỏi chỉ hỏi giá trị tổng thể/bình quân của metric trong khoảng thời gian
+      ("là bao nhiêu", "reach của 3 tháng 6,7,8"), dùng metric_lookup.
+      Khác period_comparison: period_comparison chỉ so sánh đúng HAI kỳ cụ thể,
+      còn trend_analysis theo dõi diễn biến qua một CHUỖI nhiều kỳ liên tiếp.
+    examples:
+      - Rating từ tháng 1 đến tháng 6 như thế nào?
+      - Tăng trưởng rating VTV1 trong 7 ngày qua
+      - Xu hướng rating VTV1 theo ngày trong tháng 7
+      - Biến động thời lượng phát sóng theo tuần trong quý 2
+    query_shape: trend
+    required_fields: [metric, dimensions]
+    default_order:
+      - target: dimension
+        direction: asc
+    limit:
+      required: false
+    compute_handler: src.core.text_to_sql.pattern_computes:compute_trend
+    narration_prompt_id: trend_analysis
+    requires_time_dimension: true
+    context:
+      requires_explicit_time: true
+      minimum_time_buckets: 2
+      missing_time_fields: [time_range, time_grain]
+      clarification: Hãy bổ sung khoảng thời gian và kỳ phân tích theo ngày, tuần hoặc tháng.
+      suggestions:
+        - Tăng trưởng VTV1 trong 7 ngày qua
+        - Xu hướng VTV1 theo ngày trong tháng 7
+        - So sánh VTV1 tháng 7 với tháng 6
+    routing:
+      - priority: 900
+        phrase_groups:
+          - [trend, xu huong, theo ngay, theo tuan, theo thang, bien dong]
+      - priority: 550
+        phrase_groups:
+          - [tang truong]
+
+  share_distribution:
+    description: >
+      Tính tỷ trọng (share), phân phối hoặc phần trăm đóng góp của các nhóm
+      (theo dimension) trên tổng thể metric, ví dụ tỷ trọng thời lượng phát
+      sóng của từng kênh trên tổng thời lượng toàn hệ thống. Trọng tâm là cơ
+      cấu/đóng góp phần trăm, KHÔNG nhất thiết đi kèm xếp hạng Top-N.
+    disambiguation: >
+      Khác rank_comparison: share_distribution không yêu cầu yếu tố xếp hạng
+      (Top-N) đi kèm — chỉ tập trung vào tỷ lệ phần trăm/cơ cấu. Nếu câu hỏi
+      vừa có "top/xếp hạng" vừa có "tỷ trọng", ưu tiên rank_comparison (priority
+      cao hơn) thay vì share_distribution.
+    examples:
+      - Tỷ trọng thời lượng phát sóng của các kênh tháng 7
+      - Cơ cấu đóng góp rating theo khu vực
+      - Tỷ lệ thời lượng xem theo khung giờ trong ngày
+    query_shape: breakdown
+    required_fields: [metric, dimensions]
+    default_order:
+      - target: primary_metric
+        direction: desc
+    limit:
+      required: false
+    compute_handler: src.core.text_to_sql.pattern_computes:compute_share
+    narration_prompt_id: share_distribution
+    routing:
+      - priority: 520
+        phrase_groups:
+          - [ty le thoi luong phat, ty le thoi luong xem]
+      - priority: 500
+        phrase_groups:
+          - [ty trong, phan bo, co cau, dong gop]

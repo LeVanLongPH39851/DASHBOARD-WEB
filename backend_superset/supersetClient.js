@@ -154,7 +154,10 @@ class SupersetClient {
       const csrfResponse = await fetch(`${this.baseUrl}/api/v1/security/csrf_token/`, {
         method: 'GET',
         headers: {
-          'Cookie': sessionCookie
+          'Cookie': sessionCookie,
+          'Accept': 'application/json',
+          'Referer': `${this.baseUrl}/superset/dashboard/`,
+          'X-Requested-With': 'XMLHttpRequest'
         }
       });
 

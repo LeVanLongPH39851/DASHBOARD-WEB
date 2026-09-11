@@ -1,0 +1,32 @@
+recipe_id: channel_metric
+
+calculations:
+  rating:
+    expression: SUM(rating_ott.duration_view * dim_weight.weight * dim_coef.view_coef) / 60 / ({rating_reference_hours} * 60 * COUNT(DISTINCT rating_ott.date))
+    required_measures: [duration_view]
+    required_joins: [weight, coef, population]
+    execution_strategy: aggregate
+
+  rating_percent:
+    expression: SUM(rating_ott.duration_view * dim_weight.weight * dim_coef.view_coef) * 100 / ({rating_reference_hours} * 60 * COUNT(DISTINCT rating_ott.date) * 60 * SUM(DISTINCT dim_population.total))
+    required_measures: [duration_view]
+    required_joins: [weight, coef, population]
+    execution_strategy: aggregate
+
+  average_reach:
+    expression: SUM(rating_ott.distinct_user_by_day * dim_weight.weight * dim_coef.user_coef) / COUNT(DISTINCT rating_ott.date)
+    required_measures: [distinct_user_by_day]
+    required_joins: [weight, coef, population]
+    execution_strategy: aggregate
+
+  reach_percent:
+    expression: SUM(rating_ott.distinct_user_by_day * dim_weight.weight * dim_coef.user_coef) * 100 / (COUNT(DISTINCT rating_ott.date) * SUM(DISTINCT dim_population.total))
+    required_measures: [distinct_user_by_day]
+    required_joins: [weight, coef, population]
+    execution_strategy: aggregate
+
+  minute_per_user_day:
+    expression: SUM(rating_ott.duration_view * dim_weight.weight * dim_coef.view_coef) / 60 / NULLIF(SUM(rating_ott.distinct_user_by_day * dim_weight.weight * dim_coef.user_coef), 0)
+    required_measures: [duration_view, distinct_user_by_day]
+    required_joins: [weight, coef, population]
+    execution_strategy: aggregate

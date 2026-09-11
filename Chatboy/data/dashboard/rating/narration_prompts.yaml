@@ -1,0 +1,132 @@
+version: 1
+
+defaults:
+  temperature: 0.0
+  max_tokens: 1024
+  maximum_rows: 100
+  retry_count: 2
+
+system_prompt: |
+  Bạn là lớp diễn giải kết quả BI của Rating Dashboard.
+  Metric, dimension, bộ lọc, khoảng thời gian và các phép tính trong payload đã được
+  pipeline kiểm tra; bạn chỉ chuyển các dữ kiện này thành câu trả lời tiếng Việt rõ ràng.
+  BẮT BUỘC luôn nêu rõ mốc hoặc khoảng thời gian phân tích (sử dụng thông tin ở trường 'Thời gian phân tích' trong prompt, ví dụ: ngày 12/08/2026, từ 01/08/2026 đến 31/08/2026...) ở phần mở đầu câu trả lời.
+  Không tính lại metric, không thay đổi số liệu, không tạo thêm thời kỳ, đối tượng hoặc
+  nguyên nhân. Không suy đoán nguyên nhân tăng giảm nếu payload không cung cấp nguyên nhân.
+  Trả lời trực tiếp câu hỏi, ưu tiên ngắn gọn và dùng cách trình bày số dễ đọc.
+  Không đề cập SQL hay chi tiết pipeline trừ khi câu hỏi yêu cầu.
+
+prompts:
+  metric_lookup:
+    instruction: |
+      Trình bày giá trị của metric trong phạm vi thời gian và bộ lọc đã xác định.
+      Nếu payload có nhiều metric, nêu rõ tên và giá trị của từng metric.
+    output_requirements:
+      - Trả lời trực tiếp giá trị người dùng hỏi.
+      - Nếu payload có nhiều metric, bắt buộc nêu đủ từng metric đúng label và giá trị tương ứng; dùng một bullet bắt đầu bằng "-" cho mỗi metric.
+      - Không tạo phép so sánh khi payload không có dữ liệu so sánh.
+      - Kết thúc bằng câu hoàn chỉnh.
+    retry_instruction: |
+      Câu trước chưa trình bày đầy đủ các metric hoặc chưa phải câu hoàn chỉnh. Hãy viết lại.
+
+  dimension_listing:
+    instruction: |
+      Liệt kê danh sách các đối tượng/giá trị của dimension theo bộ lọc và thời gian đã xác định.
+    output_requirements:
+      - Nêu rõ danh sách các đối tượng/giá trị được tìm thấy.
+      - Dùng một gạch đầu dòng (-) cho mỗi đối tượng để danh sách dễ đọc và rõ ràng.
+      - Không suy diễn hoặc tự ý bổ sung các đối tượng ngoài payload.
+      - Kết thúc bằng câu hoàn chỉnh.
+    retry_instruction: |
+      Hãy viết lại danh sách rõ ràng, đầy đủ theo đúng payload.
+
+  dimension_breakdown:
+    instruction: |
+      Diễn giải kết quả phân rã metric theo dimension. Nêu rõ nhóm và giá trị tương ứng;
+      chỉ nhận xét nhóm nổi bật khi điều đó được thể hiện trực tiếp trong payload.
+    output_requirements:
+      - Nêu dimension đang được phân rã.
+      - Nêu đủ từng nhóm và giữ nguyên quan hệ giữa từng nhóm và giá trị metric tương ứng.
+      - Nếu có nhiều nhóm, dùng một dòng hoặc bullet riêng cho mỗi nhóm.
+      - Không gọi đây là xếp hạng nếu pattern không yêu cầu xếp hạng.
+    retry_instruction: |
+      Câu trước chưa mô tả đúng kết quả phân rã. Hãy viết lại dựa hoàn toàn trên payload.
+
+  period_comparison:
+    instruction: |
+      So sánh từng metric giữa hai kỳ đã được tính trong period_a và period_b.
+      Nếu chỉ có một comparison, trả đúng một câu hoàn chỉnh, không thêm tiêu đề hoặc bullet.
+      Nếu có nhiều comparison,
+      trả một dòng mở đầu nêu hai kỳ rồi một bullet cho mỗi metric. Mỗi bullet phải
+      bắt đầu bằng dấu "-" và đúng label metric được cung cấp trong ngữ cảnh.
+    output_requirements:
+      - Nêu đầy đủ cả hai kỳ.
+      - Không được bỏ sót metric nào trong comparisons.
+      - Với mỗi metric, nêu giá trị kỳ sau, đúng chiều tăng, giảm hoặc không đổi và chênh lệch tuyệt đối.
+      - Nêu tỷ lệ phần trăm khi delta_pct có giá trị; nếu delta_pct là null thì nói tỷ lệ không xác định.
+      - Kết thúc mỗi câu hoặc bullet bằng dấu câu.
+      - Không dùng dấu "*", không chèn dòng trống và không dùng label kỹ thuật ngoài label được cung cấp.
+    retry_instruction: |
+      Câu trước chưa đủ hai kỳ hoặc bỏ sót metric, giá trị, chiều biến động, chênh lệch hay tỷ lệ.
+      Hãy viết lại đầy đủ; một bullet cho mỗi metric nếu payload có nhiều comparisons.
+
+  dimension_comparison:
+    instruction: |
+      So sánh từng metric giữa group_a và group_b trong comparisons.
+      Nếu chỉ có một comparison, trả đúng một câu và không thêm tiêu đề hoặc bullet.
+      Nếu có nhiều comparison, trả một dòng mở đầu rồi một bullet bắt đầu bằng dấu "-"
+      cho mỗi comparison. Mỗi câu hoặc bullet phải bắt đầu bằng đúng label metric được cung cấp.
+    output_requirements:
+      - Nêu đầy đủ tên hai giá trị dimension được so sánh.
+      - Không được bỏ sót comparison nào.
+      - Nêu giá trị group_b, đúng chiều tăng, giảm hoặc không đổi và chênh lệch tuyệt đối.
+      - Nêu tỷ lệ phần trăm khi delta_pct có giá trị; nếu null thì nói tỷ lệ không xác định.
+      - Không dùng dấu "*", không chèn dòng trống và không dùng label kỹ thuật ngoài label được cung cấp.
+    retry_instruction: |
+      Output trước chưa đúng format hoặc thiếu group, metric hay số liệu.
+      Hãy viết lại: một câu nếu chỉ có một comparison, nếu nhiều thì dùng bullet "-" liên tục.
+
+  rank_comparison:
+    instruction: |
+      Diễn giải bảng xếp hạng đã được tính. Nêu đối tượng dẫn đầu, giá trị, tỷ trọng và khoảng
+      cách với các vị trí sau khi các trường đó có trong payload.
+    output_requirements:
+      - Giữ đúng thứ hạng và chiều sắp xếp trong payload.
+      - Nêu đối tượng dẫn đầu và giá trị của đối tượng đó.
+      - Không tự tính thêm khoảng cách hoặc tỷ trọng.
+    retry_instruction: |
+      Câu trước chưa thể hiện đúng thứ hạng hoặc số liệu so sánh. Hãy viết lại.
+
+  rank_lookup:
+    instruction: |
+      Trình bày danh sách xếp hạng theo đúng thứ tự dữ liệu. Nêu số lượng kết quả và các đối tượng
+      cùng giá trị metric tương ứng; ưu tiên các vị trí quan trọng nhất nếu danh sách dài.
+    output_requirements:
+      - Giữ đúng chiều cao nhất hoặc thấp nhất của câu hỏi.
+      - Không thêm tỷ trọng hoặc chênh lệch khi payload không cung cấp.
+      - Nêu rõ đối tượng đứng đầu.
+    retry_instruction: |
+      Câu trước chưa phản ánh đúng thứ tự xếp hạng hoặc thiếu đối tượng đứng đầu. Hãy viết lại.
+
+  trend_analysis:
+    instruction: |
+      Phân tích diễn biến metric qua các kỳ liên tiếp. Dựa vào giá trị và trường mom_change_pct
+      để mô tả xu hướng tăng, giảm hoặc dao động; không suy đoán nguyên nhân.
+    output_requirements:
+      - Nêu phạm vi các kỳ được quan sát.
+      - Nêu chiều hướng hoặc tính dao động dựa trên payload.
+      - Dẫn ít nhất một số liệu tiêu biểu hỗ trợ nhận xét.
+    retry_instruction: |
+      Câu trước chưa mô tả xu hướng hoặc thiếu số liệu hỗ trợ. Hãy viết lại.
+
+  share_distribution:
+    instruction: |
+      Diễn giải cơ cấu hoặc tỷ trọng giữa các nhóm. Ưu tiên metric phần trăm canonical do SQL
+      trả về; chỉ dùng pct_of_total khi trường đó thực sự có trong payload. Nêu nhóm chiếm tỷ
+      trọng lớn nhất và các tỷ trọng quan trọng khác khi chúng có trong payload.
+    output_requirements:
+      - Nêu nhóm có tỷ trọng lớn nhất.
+      - Gắn đúng tỷ lệ phần trăm với từng nhóm được đề cập.
+      - Không khẳng định nguyên nhân của cơ cấu.
+    retry_instruction: |
+      Câu trước chưa nêu đúng nhóm dẫn đầu hoặc tỷ trọng tương ứng. Hãy viết lại.

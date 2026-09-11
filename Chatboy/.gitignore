@@ -1,0 +1,9 @@
+.git
+.venv
+__pycache__
+docs
+draft.txt
+.agents
+.codex
+logs
+framework-text2sql/

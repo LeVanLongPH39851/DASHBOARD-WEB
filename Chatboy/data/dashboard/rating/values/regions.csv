@@ -1,0 +1,24 @@
+canonical_value,alias,alias_type,priority,active
+Đồng bằng sông Cửu Long,Đồng bằng sông Cửu Long,canonical,100,true
+Đồng bằng sông Cửu Long,ĐBSCL,abbreviation,90,true
+Đồng bằng sông Cửu Long,ĐB SCL,abbreviation,90,true
+Đồng bằng sông Cửu Long,ĐB sông Cửu Long,abbreviation,85,true
+Đồng bằng sông Cửu Long,Miền Tây,business_alias,80,true
+Trung du và miền núi phía Bắc,Trung du và miền núi phía Bắc,canonical,100,true
+Trung du và miền núi phía Bắc,Trung du miền núi phía Bắc,short_name,90,true
+Trung du và miền núi phía Bắc,TD&MNPB,abbreviation,90,true
+Trung du và miền núi phía Bắc,TDMNPB,abbreviation,90,true
+Trung du và miền núi phía Bắc,Trung du Bắc,business_alias,70,true
+Đồng bằng sông Hồng,Đồng bằng sông Hồng,canonical,100,true
+Đồng bằng sông Hồng,ĐBSH,abbreviation,90,true
+Đồng bằng sông Hồng,ĐB Sông Hồng,abbreviation,85,true
+Bắc Trung Bộ,Bắc Trung Bộ,canonical,100,true
+Bắc Trung Bộ,BTB,abbreviation,90,true
+Nam Trung Bộ và Tây Nguyên,Nam Trung Bộ và Tây Nguyên,canonical,100,true
+Nam Trung Bộ và Tây Nguyên,Nam Trung Bộ Tây Nguyên,short_name,90,true
+Nam Trung Bộ và Tây Nguyên,NTB&TN,abbreviation,90,true
+Nam Trung Bộ và Tây Nguyên,NTBTN,abbreviation,90,true
+Nam Trung Bộ và Tây Nguyên,Nam Trung Bộ - Tây Nguyên,short_name,85,true
+Đông Nam Bộ,Đông Nam Bộ,canonical,100,true
+Đông Nam Bộ,ĐNB,abbreviation,90,true
+Đông Nam Bộ,DNB,abbreviation,90,true

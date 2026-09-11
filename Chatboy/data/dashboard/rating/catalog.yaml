@@ -1,0 +1,16 @@
+version: 1
+maximum_dimensions: 3
+
+modules:
+  - program/catalog.yaml
+  - channel/catalog.yaml
+
+sources:
+  domain: domain.yaml
+  tables: table.yaml
+  metrics: metrics_v3.yaml
+  dimensions: dimensions.yaml
+  patterns: patterns_v3.yaml
+  query_shapes: query_shapes.yaml
+  recipes: recipes.yaml
+  narration_prompts: narration_prompts.yaml

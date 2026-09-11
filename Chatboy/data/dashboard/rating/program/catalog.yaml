@@ -1,0 +1,8 @@
+version: 1
+id: program
+
+sources:
+  fact: fact.yaml
+  measures: measures.yaml
+  calculations: calculations.yaml
+  metrics: metrics.yaml

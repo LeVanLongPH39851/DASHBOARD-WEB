@@ -1,0 +1,106 @@
+recipe_id: program_metric
+
+calculations:
+  airtime_duration:
+    expression: SUM(airtime_grouped.airtime_duration)
+    required_measures: [event_duration]
+    required_joins: []
+    required_grain_keys: [epg_id_hash]
+    execution_strategy: scoped_denominator
+
+  airtime_share_all_categories_percent:
+    expression: airtime_grouped.airtime_duration * 100 / NULLIF(airtime_total.total_airtime_duration, 0)
+    required_measures: [event_duration]
+    required_joins: []
+    required_grain_keys: [epg_id_hash]
+    execution_strategy: scoped_denominator
+
+  airtime_share_selected_categories_percent:
+    expression: airtime_grouped.airtime_duration * 100 / NULLIF(airtime_total.total_airtime_duration, 0)
+    required_measures: [event_duration]
+    required_joins: []
+    required_grain_keys: [epg_id_hash]
+    execution_strategy: scoped_denominator
+
+  view_duration:
+    expression: SUM(view_grouped.view_duration)
+    required_measures: [duration_view]
+    required_joins: []
+    required_grain_keys: [epg_id_hash]
+    execution_strategy: scoped_denominator
+
+  view_duration_share_all_categories_percent:
+    expression: view_grouped.view_duration * 100 / NULLIF(view_total.total_view_duration, 0)
+    required_measures: [duration_view]
+    required_joins: []
+    required_grain_keys: [epg_id_hash]
+    execution_strategy: scoped_denominator
+
+  view_duration_share_selected_categories_percent:
+    expression: view_grouped.view_duration * 100 / NULLIF(view_total.total_view_duration, 0)
+    required_measures: [duration_view]
+    required_joins: []
+    required_grain_keys: [epg_id_hash]
+    execution_strategy: scoped_denominator
+
+  weighted_view_duration:
+    expression: SUM(rating_ott.duration_view * dim_weight.weight * dim_coef.view_coef) / 3600
+    required_measures: [duration_view]
+    required_joins: [weight, coef]
+    execution_strategy: aggregate
+
+  rating:
+    expression: IF(SUM(rating_ott.duration_view * dim_coef.view_coef) / 60 / NULLIF(SUM(rating_ott.event_duration) / 60, 0) <= SUM(rating_ott.distinct_user_by_day * dim_coef.user_coef) / NULLIF(COUNT(DISTINCT rating_ott.epg_id_hash), 0) * 0.9, SUM(rating_ott.duration_view * dim_weight.weight * dim_coef.view_coef) / 60 / NULLIF(SUM(rating_ott.event_duration) / 60, 0), SUM(rating_ott.distinct_user_by_day * dim_weight.weight * dim_coef.user_coef) / NULLIF(COUNT(DISTINCT rating_ott.epg_id_hash), 0) * 0.9)
+    required_measures: [duration_view, distinct_user_by_day, event_duration]
+    required_joins: [weight, coef]
+    required_grain_keys: [epg_id_hash]
+    execution_strategy: aggregate
+
+  rating_percent:
+    expression: IF(SUM(rating_ott.duration_view * dim_coef.view_coef) / 60 / NULLIF(SUM(rating_ott.event_duration) / 60, 0) <= SUM(rating_ott.distinct_user_by_day * dim_coef.user_coef) / NULLIF(COUNT(DISTINCT rating_ott.epg_id_hash), 0) * 0.9, SUM(rating_ott.duration_view * dim_weight.weight * dim_coef.view_coef) / 60 / NULLIF(SUM(rating_ott.event_duration) / 60, 0), SUM(rating_ott.distinct_user_by_day * dim_weight.weight * dim_coef.user_coef) / NULLIF(COUNT(DISTINCT rating_ott.epg_id_hash), 0) * 0.9) * 100 / NULLIF(SUM(DISTINCT dim_population.total), 0)
+    required_measures: [duration_view, distinct_user_by_day, event_duration]
+    required_joins: [weight, coef, population]
+    required_grain_keys: [epg_id_hash]
+    execution_strategy: aggregate
+
+  average_reach:
+    expression: SUM(rating_ott.distinct_user_by_day * dim_weight.weight * dim_coef.user_coef) / NULLIF(COUNT(DISTINCT rating_ott.epg_id_hash), 0)
+    required_measures: [distinct_user_by_day]
+    required_joins: [weight, coef]
+    required_grain_keys: [epg_id_hash]
+    execution_strategy: aggregate
+
+  reach_percent:
+    expression: SUM(rating_ott.distinct_user_by_day * dim_weight.weight * dim_coef.user_coef) / NULLIF(COUNT(DISTINCT rating_ott.epg_id_hash), 0) * 100 / NULLIF(SUM(DISTINCT dim_population.total), 0)
+    required_measures: [distinct_user_by_day]
+    required_joins: [weight, coef, population]
+    required_grain_keys: [epg_id_hash]
+    execution_strategy: aggregate
+
+  viewing_time_share_percent:
+    expression: (IF(SUM(rating_ott.duration_view * dim_coef.view_coef) / 60 / NULLIF(SUM(rating_ott.event_duration) / 60, 0) <= SUM(rating_ott.distinct_user_by_day * dim_coef.user_coef) / NULLIF(COUNT(DISTINCT rating_ott.epg_id_hash), 0) * 0.9, SUM(rating_ott.duration_view * dim_weight.weight * dim_coef.view_coef) / 60, SUM(rating_ott.duration_view * dim_weight.weight) * (SUM(rating_ott.distinct_user_by_day * dim_coef.user_coef) / NULLIF(COUNT(DISTINCT rating_ott.epg_id_hash), 0) * 0.9 / NULLIF(SUM(rating_ott.duration_view) / 60 / NULLIF(SUM(rating_ott.event_duration) / 60, 0), 0)) / 60) / NULLIF(SUM(rating_ott.distinct_user_by_day * dim_weight.weight * dim_coef.user_coef) / NULLIF(COUNT(DISTINCT rating_ott.epg_id_hash), 0) * COUNT(DISTINCT rating_ott.epg_id_hash), 0)) * 100 / NULLIF(AVG(rating_ott.event_duration) / 60, 0)
+    required_measures: [duration_view, distinct_user_by_day, event_duration]
+    required_joins: [weight, coef]
+    required_grain_keys: [epg_id_hash]
+    execution_strategy: aggregate
+
+  program_count:
+    expression: COUNT(DISTINCT rating_ott.program_name)
+    required_measures: [program_count]
+    required_joins: []
+    required_grain_keys: []
+    execution_strategy: aggregate
+
+  category_count:
+    expression: COUNT(DISTINCT rating_ott.firstlevel_vn)
+    required_measures: [firstlevel_vn]
+    required_joins: []
+    required_grain_keys: []
+    execution_strategy: aggregate
+
+  channel_count:
+    expression: COUNT(DISTINCT rating_ott.channel_name_tvd)
+    required_measures: []
+    required_joins: []
+    required_grain_keys: []
+    execution_strategy: aggregate

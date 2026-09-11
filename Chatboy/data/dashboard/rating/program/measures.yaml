@@ -1,0 +1,16 @@
+measures:
+  duration_view:
+    expression: SUM(duration_view)
+    output_alias: duration_view
+  distinct_user_by_day:
+    expression: BITMAP_UNION_COUNT(bm_user_id)
+    output_alias: distinct_user_by_day
+  event_duration:
+    expression: MAX(event_duration)
+    output_alias: event_duration
+  program_count:
+    expression: COUNT(DISTINCT program_name)
+    output_alias: program_cnt
+  firstlevel_vn:
+    expression: MAX(firstlevel_vn)
+    output_alias: firstlevel_vn

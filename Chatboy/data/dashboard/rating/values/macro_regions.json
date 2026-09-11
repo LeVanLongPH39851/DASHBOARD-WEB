@@ -1,0 +1,42 @@
+{
+  "Miền Bắc": [
+    "Lai Châu",
+    "Phú Thọ",
+    "TP Hải Phòng",
+    "Bắc Ninh",
+    "Sơn La",
+    "TP Hà Nội",
+    "Ninh Bình",
+    "Điện Biên",
+    "Lào Cai",
+    "Tuyên Quang",
+    "Hưng Yên",
+    "Thái Nguyên",
+    "Quảng Ninh",
+    "Cao Bằng",
+    "Lạng Sơn"
+  ],
+  "Miền Trung": [
+    "Nghệ An",
+    "Đắk Lắk",
+    "Hà Tĩnh",
+    "Thanh Hóa",
+    "TP Huế",
+    "Khánh Hòa",
+    "Quảng Trị",
+    "Lâm Đồng",
+    "TP Đà Nẵng",
+    "Gia Lai",
+    "Quảng Ngãi"
+  ],
+  "Miền Nam": [
+    "TP HCM",
+    "Tây Ninh",
+    "Cà Mau",
+    "TP Cần Thơ",
+    "Đồng Tháp",
+    "Đồng Nai",
+    "Vĩnh Long",
+    "An Giang"
+  ]
+}

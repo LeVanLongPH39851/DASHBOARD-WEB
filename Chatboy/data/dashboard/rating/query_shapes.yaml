@@ -1,0 +1,14 @@
+query_shapes:
+  aggregate:
+    description: Một hoặc nhiều KPI tổng; giữ nguyên hành vi group-by hiện tại nếu plan có dimension.
+
+  breakdown:
+    description: KPI được phân rã theo một hoặc nhiều dimension.
+
+  ranking:
+    description: Kết quả phân nhóm có ý nghĩa xếp hạng.
+    min_dimensions: 1
+    dimension_error: ranking_requires_dimension
+
+  trend:
+    description: Chuỗi kết quả theo dimension đã được semantic resolver chọn.

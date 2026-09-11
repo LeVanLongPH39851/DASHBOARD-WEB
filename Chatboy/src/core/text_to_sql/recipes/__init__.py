@@ -1,0 +1,1 @@
+"""Catalog-selected recipe implementations."""

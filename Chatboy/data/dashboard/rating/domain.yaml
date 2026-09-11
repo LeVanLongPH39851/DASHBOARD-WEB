@@ -1,0 +1,21 @@
+domain: RATING
+dialect: doris
+
+default_database: data_dashboard_rating
+default_table: agg_info_channel
+default_limit: 100
+maximum_limit: 50000
+
+allowed_statement_types:
+  - SELECT
+
+forbidden_keywords:
+  - INSERT
+  - UPDATE
+  - DELETE
+  - DROP
+  - ALTER
+  - TRUNCATE
+  - CREATE
+  - GRANT
+  - REVOKE

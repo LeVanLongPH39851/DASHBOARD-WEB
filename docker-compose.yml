@@ -71,11 +71,11 @@ services:
     networks:
       - app-network
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:3022/"]
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3022/"]
       interval: 5s
       timeout: 3s
       retries: 10
-      start_period: 10s
+      start_period: 15s
 
   chatbot:
     build:

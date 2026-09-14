@@ -22,7 +22,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         {/* <Route path="/" element={<PublicRoute><Login /></PublicRoute>}/> */}
-        <Route path="/rating" element={<Dashboard />} />
+        <Route path="/rating" element={<BaoTri />} />
         <Route path="/spot" element={<DashboardSpot />} />
         <Route path="/brand" element={<DashboardBrand />} />
         <Route path="/world-cup-2026" element={<DashboardWorldCup />} />

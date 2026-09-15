@@ -1,0 +1,67 @@
+apiVersion: 1
+
+groups:
+  - orgId: 1
+    name: nginx-gateway-alerts
+    folder: Alerts
+    interval: 30s
+    rules:
+
+      - uid: alert-429-any
+        title: "429 Rate Limit Triggered"
+        condition: C
+
+        data:
+          # Query Loki — instant query, lấy count 429 trong 1 phút qua
+          - refId: A
+            queryType: instant
+            relativeTimeRange:
+              from: 60
+              to: 0
+            datasourceUid: P8E80F9AEF21F6940
+            model:
+              expr: 'sum(count_over_time({job="nginx-gateway", status="429"}[1m]))'
+              queryType: instant
+              refId: A
+
+          # Reduce → lấy last value thành 1 số
+          - refId: B
+            queryType: ''
+            relativeTimeRange:
+              from: 60
+              to: 0
+            datasourceUid: "__expr__"
+            model:
+              type: reduce
+              refId: B
+              reducer: last
+              expression: A
+
+          # Threshold → fire nếu > 0
+          - refId: C
+            queryType: ''
+            relativeTimeRange:
+              from: 60
+              to: 0
+            datasourceUid: "__expr__"
+            model:
+              type: threshold
+              refId: C
+              expression: B
+              conditions:
+                - evaluator:
+                    type: gt
+                    params: [0]
+                  operator:
+                    type: and
+                  query:
+                    params: [B]
+
+        for: 0s
+
+        labels:
+          severity: warning
+
+        annotations:
+          summary: "429 Rate Limit bị kích hoạt"
+          description: "Có request bị từ chối do rate limit trong 1 phút qua trên nginx gateway."

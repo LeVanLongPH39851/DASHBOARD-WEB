@@ -1,0 +1,22 @@
+global:
+  scrape_interval: 15s      # hỏi exporter mỗi 15 giây
+  evaluation_interval: 15s  # evaluate alert rule mỗi 15 giây
+
+scrape_configs:
+
+  # nginx-exporter: connections active, requests/s từ stub_status
+  # service name trong docker-compose = nginx-exporter_w
+  - job_name: 'nginx'
+    static_configs:
+      - targets: ['nginx-exporter_w:9113']
+
+  # cAdvisor: CPU, RAM, Network I/O của từng container
+  # metric quan trọng: container_cpu_usage_seconds_total, container_memory_usage_bytes
+  - job_name: 'cadvisor'
+    static_configs:
+      - targets: ['cadvisor_w:8080']
+
+  # Prometheus tự monitor chính nó — hữu ích để biết scrape có đang chạy tốt không
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']

@@ -1,0 +1,45 @@
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+
+positions:
+  # Promtail ghi lại đang đọc đến dòng nào trong file log
+  # → restart không đọc lại từ đầu, không bị duplicate log trong Loki
+  filename: /tmp/positions.yaml
+
+clients:
+  # Trỏ về loki_w nội bộ trong cùng app-network
+  - url: http://loki_w:3100/loki/api/v1/push
+
+scrape_configs:
+  - job_name: nginx-gateway
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: nginx-gateway
+          __path__: /var/log/nginx/access.log
+
+    pipeline_stages:
+      # Parse từng dòng log dưới dạng JSON
+      # Các field sau khi parse có thể dùng để filter trong Grafana
+      - json:
+          expressions:
+            status:                  status
+            method:                  method
+            uri:                     uri
+            request_time:            request_time
+            upstream_addr:           upstream_addr
+            upstream_response_time:  upstream_response_time
+
+      # Promote status và method thành Loki label → filter nhanh như {status="200"}
+      # Không promote uri vì có quá nhiều giá trị → tốn RAM (high cardinality)
+      - labels:
+          status:
+          method:
+
+      # Dùng field time trong JSON làm timestamp của log entry
+      # Nếu bỏ stage này, Loki sẽ dùng thời điểm nhận được log → không chính xác
+      - timestamp:
+          source: time
+          format: RFC3339

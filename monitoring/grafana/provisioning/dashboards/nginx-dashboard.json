@@ -1,132 +1,133 @@
 {
   "title": "DASHBOARD-WEB Monitoring",
   "uid": "dashboard-web-monitoring",
-  "timezone": "browser",
+  "timezone": "utc",
   "refresh": "30s",
   "time": { "from": "now-1h", "to": "now" },
   "panels": [
 
     {
-      "id": 1,
-      "title": "Request Rate by Status Code (req/s)",
-      "description": "Số request mỗi giây, phân theo HTTP status. 429 = rate limit bị kích hoạt, 5xx = lỗi backend.",
-      "type": "timeseries",
-      "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 },
-      "datasource": { "type": "loki", "uid": "P8E80F9AEF21F6940" },
-      "targets": [
-        {
-          "expr": "sum by (status) (rate({job=\"nginx-gateway\"}[1m]))",
-          "legendFormat": "status {{status}}",
-          "queryType": "range",
-          "refId": "A"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "custom": { "lineWidth": 2, "fillOpacity": 10 },
-          "unit": "reqps"
-        },
-        "overrides": [
-          { "matcher": { "id": "byName", "options": "status 200" }, "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "green" } }] },
-          { "matcher": { "id": "byName", "options": "status 429" }, "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "orange" } }] },
-          { "matcher": { "id": "byName", "options": "status 500" }, "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "red" } }] }
-        ]
-      },
-      "options": { "tooltip": { "mode": "multi" }, "legend": { "displayMode": "list", "placement": "bottom" } }
-    },
-
-    {
-      "id": 2,
-      "title": "Latency Percentiles — p90 / p95 / p99 (seconds)",
-      "description": "Thời gian xử lý request từ nginx đến khi trả về client. p99 cao > 2s thường chỉ backend đang chậm.",
-      "type": "timeseries",
-      "gridPos": { "x": 12, "y": 0, "w": 12, "h": 8 },
-      "datasource": { "type": "loki", "uid": "P8E80F9AEF21F6940" },
-      "targets": [
-        {
-          "expr": "quantile_over_time(0.90, {job=\"nginx-gateway\"} | json | unwrap request_time [5m]) by ()",
-          "legendFormat": "p90",
-          "queryType": "range",
-          "refId": "A"
-        },
-        {
-          "expr": "quantile_over_time(0.95, {job=\"nginx-gateway\"} | json | unwrap request_time [5m]) by ()",
-          "legendFormat": "p95",
-          "queryType": "range",
-          "refId": "B"
-        },
-        {
-          "expr": "quantile_over_time(0.99, {job=\"nginx-gateway\"} | json | unwrap request_time [5m]) by ()",
-          "legendFormat": "p99",
-          "queryType": "range",
-          "refId": "C"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "custom": { "lineWidth": 2, "fillOpacity": 5 },
-          "unit": "s",
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              { "color": "green", "value": null },
-              { "color": "orange", "value": 1 },
-              { "color": "red", "value": 2 }
-            ]
-          }
-        },
-        "overrides": [
-          { "matcher": { "id": "byName", "options": "p90" }, "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "blue" } }] },
-          { "matcher": { "id": "byName", "options": "p95" }, "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "orange" } }] },
-          { "matcher": { "id": "byName", "options": "p99" }, "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "red" } }] }
-        ]
-      },
-      "options": { "tooltip": { "mode": "multi" }, "legend": { "displayMode": "list", "placement": "bottom" } }
-    },
-
-    {
-      "id": 6,
-      "title": "429 Rate Limit — theo từng API (mỗi 15s)",
-      "description": "/api/superset: rate limit 50r/s — /api/query (chatbot): rate limit 6r/m (1 req/10s)",
-      "type": "timeseries",
-      "gridPos": { "x": 0, "y": 16, "w": 24, "h": 8 },
-      "datasource": { "type": "loki", "uid": "P8E80F9AEF21F6940" },
-      "targets": [
-        {
-          "expr": "sum(count_over_time({job=\"nginx-gateway\", status=\"429\"} | json | uri=~\"/api/superset.*\" [15s]))",
-          "legendFormat": "/api/superset",
-          "queryType": "range",
-          "refId": "A"
-        },
-        {
-          "expr": "sum(count_over_time({job=\"nginx-gateway\", status=\"429\"} | json | uri=\"/api/query\" [15s]))",
-          "legendFormat": "/api/query (chatbot)",
-          "queryType": "range",
-          "refId": "B"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "short",
-          "custom": { "lineWidth": 2, "fillOpacity": 15, "drawStyle": "bars" }
-        },
-        "overrides": [
-          { "matcher": { "id": "byName", "options": "/api/superset" },     "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "orange" } }] },
-          { "matcher": { "id": "byName", "options": "/api/query (chatbot)" }, "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "red" } }] }
-        ]
-      },
+      "id": 20,
+      "title": "",
+      "type": "text",
+      "gridPos": { "x": 0, "y": 0, "w": 24, "h": 2 },
       "options": {
-        "tooltip": { "mode": "multi" },
-        "legend": { "displayMode": "list", "placement": "bottom" }
+        "mode": "markdown",
+        "content": "## Traffic & Availability"
       }
     },
 
     {
-      "id": 5,
-      "title": "Total Requests mỗi 30s",
-      "description": "Tổng số request gửi tới nginx gateway trong từng khoảng 30 giây",
+      "id": 10,
+      "title": "Health Check /api/health",
+      "description": "Số lần health check trả 200 (OK) vs khác 200 (FAIL) trong 5 phút. FAIL > 0 = backend có vấn đề.",
+      "type": "stat",
+      "gridPos": { "x": 0, "y": 2, "w": 4, "h": 4 },
+      "datasource": { "type": "loki", "uid": "P8E80F9AEF21F6940" },
+      "targets": [
+        {
+          "expr": "sum(count_over_time({job=\"nginx-gateway\", status=\"200\"} | json | uri=\"/api/health\" [5m]))",
+          "legendFormat": "OK",
+          "queryType": "instant",
+          "refId": "A"
+        },
+        {
+          "expr": "sum(count_over_time({job=\"nginx-gateway\", status!=\"200\"} | json | uri=\"/api/health\" [5m])) or vector(0)",
+          "legendFormat": "FAIL",
+          "queryType": "instant",
+          "refId": "B"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": { "unit": "short", "color": { "mode": "thresholds" },
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }
+        },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "FAIL" },
+            "properties": [
+              { "id": "thresholds", "value": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "red", "value": 1 }] } },
+              { "id": "color", "value": { "mode": "thresholds" } }
+            ]
+          }
+        ]
+      },
+      "options": { "reduceOptions": { "calcs": ["sum"] }, "colorMode": "background", "graphMode": "none", "orientation": "horizontal" }
+    },
+
+    {
+      "id": 21,
+      "title": "Total Requests (15m)",
+      "type": "stat",
+      "gridPos": { "x": 4, "y": 2, "w": 4, "h": 4 },
+      "datasource": { "type": "loki", "uid": "P8E80F9AEF21F6940" },
+      "targets": [
+        {
+          "expr": "sum(count_over_time({job=\"nginx-gateway\"}[15m]))",
+          "legendFormat": "Total",
+          "queryType": "instant",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": { "unit": "short", "color": { "mode": "fixed", "fixedColor": "blue" } }
+      },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "none" }
+    },
+
+    {
+      "id": 22,
+      "title": "429 Rate Limit (1h)",
+      "type": "stat",
+      "gridPos": { "x": 8, "y": 2, "w": 4, "h": 4 },
+      "datasource": { "type": "loki", "uid": "P8E80F9AEF21F6940" },
+      "targets": [
+        {
+          "expr": "sum(count_over_time({job=\"nginx-gateway\", status=\"429\"}[1h])) or vector(0)",
+          "legendFormat": "429",
+          "queryType": "instant",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": { "unit": "short",
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "orange", "value": 1 }] },
+          "color": { "mode": "thresholds" }
+        }
+      },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "none" }
+    },
+
+    {
+      "id": 1,
+      "title": "Request Rate by Status (req/s)",
+      "description": "Request mỗi giây theo status code. 429 = rate limit, 5xx = lỗi backend.",
       "type": "timeseries",
-      "gridPos": { "x": 0, "y": 8, "w": 24, "h": 8 },
+      "gridPos": { "x": 12, "y": 2, "w": 12, "h": 8 },
+      "datasource": { "type": "loki", "uid": "P8E80F9AEF21F6940" },
+      "targets": [
+        {
+          "expr": "sum by (status) (rate({job=\"nginx-gateway\"}[1m]))",
+          "legendFormat": "{{status}}",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": { "custom": { "lineWidth": 2, "fillOpacity": 10 }, "unit": "reqps" },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "200" }, "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "green" } }] },
+          { "matcher": { "id": "byName", "options": "429" }, "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "orange" } }] },
+          { "matcher": { "id": "byName", "options": "500" }, "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "red" } }] }
+        ]
+      },
+      "options": { "tooltip": { "mode": "multi" }, "legend": { "displayMode": "list", "placement": "bottom" } }
+    },
+
+    {
+      "id": 5,
+      "title": "Total Requests mỗi 30s (theo status)",
+      "type": "timeseries",
+      "gridPos": { "x": 0, "y": 6, "w": 12, "h": 8 },
       "datasource": { "type": "loki", "uid": "P8E80F9AEF21F6940" },
       "targets": [
         {
@@ -137,65 +138,171 @@
         }
       ],
       "fieldConfig": {
-        "defaults": {
-          "unit": "short",
-          "custom": { "lineWidth": 2, "fillOpacity": 15, "drawStyle": "bars" }
-        },
+        "defaults": { "unit": "short", "custom": { "lineWidth": 2, "fillOpacity": 15, "drawStyle": "bars" } },
         "overrides": [
           { "matcher": { "id": "byName", "options": "200" }, "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "green" } }] },
           { "matcher": { "id": "byName", "options": "429" }, "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "orange" } }] },
-          { "matcher": { "id": "byName", "options": "500" }, "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "red" } }] },
           { "matcher": { "id": "byName", "options": "404" }, "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "yellow" } }] }
         ]
       },
-      "options": {
-        "tooltip": { "mode": "multi" },
-        "legend": { "displayMode": "list", "placement": "bottom" }
-      }
+      "options": { "tooltip": { "mode": "multi" }, "legend": { "displayMode": "list", "placement": "bottom" } }
+    },
+
+    {
+      "id": 30,
+      "title": "",
+      "type": "text",
+      "gridPos": { "x": 0, "y": 14, "w": 24, "h": 2 },
+      "options": { "mode": "markdown", "content": "## Latency" }
+    },
+
+    {
+      "id": 2,
+      "title": "Latency p90 / p95 / p99 (all routes)",
+      "description": "Toàn bộ route gộp lại. p99 > 2s = cần điều tra.",
+      "type": "timeseries",
+      "gridPos": { "x": 0, "y": 16, "w": 12, "h": 8 },
+      "datasource": { "type": "loki", "uid": "P8E80F9AEF21F6940" },
+      "targets": [
+        {
+          "expr": "quantile_over_time(0.90, {job=\"nginx-gateway\"} | json | unwrap request_time [5m]) by ()",
+          "legendFormat": "p90", "queryType": "range", "refId": "A"
+        },
+        {
+          "expr": "quantile_over_time(0.95, {job=\"nginx-gateway\"} | json | unwrap request_time [5m]) by ()",
+          "legendFormat": "p95", "queryType": "range", "refId": "B"
+        },
+        {
+          "expr": "quantile_over_time(0.99, {job=\"nginx-gateway\"} | json | unwrap request_time [5m]) by ()",
+          "legendFormat": "p99", "queryType": "range", "refId": "C"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": { "unit": "s", "custom": { "lineWidth": 2, "fillOpacity": 5 } },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "p90" }, "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "blue" } }] },
+          { "matcher": { "id": "byName", "options": "p95" }, "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "orange" } }] },
+          { "matcher": { "id": "byName", "options": "p99" }, "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "red" } }] }
+        ]
+      },
+      "options": { "tooltip": { "mode": "multi" }, "legend": { "displayMode": "list", "placement": "bottom" } }
+    },
+
+    {
+      "id": 12,
+      "title": "p99 Latency by Route",
+      "description": "/api/query timeout 120s, /api/superset timeout 600s — ngưỡng chấp nhận khác nhau.",
+      "type": "timeseries",
+      "gridPos": { "x": 12, "y": 16, "w": 12, "h": 8 },
+      "datasource": { "type": "loki", "uid": "P8E80F9AEF21F6940" },
+      "targets": [
+        {
+          "expr": "quantile_over_time(0.99, {job=\"nginx-gateway\"} | json | unwrap request_time [5m]) by (uri)",
+          "legendFormat": "{{uri}}", "queryType": "range", "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": { "unit": "s", "custom": { "lineWidth": 2, "fillOpacity": 5 } }
+      },
+      "options": { "tooltip": { "mode": "multi" }, "legend": { "displayMode": "table", "placement": "right", "calcs": ["lastNotNull", "mean"] } }
+    },
+
+    {
+      "id": 40,
+      "title": "",
+      "type": "text",
+      "gridPos": { "x": 0, "y": 24, "w": 24, "h": 2 },
+      "options": { "mode": "markdown", "content": "## Rate Limiting & Backend Distribution" }
+    },
+
+    {
+      "id": 6,
+      "title": "429 Rate Limit — /api/superset vs /api/query (mỗi 15s)",
+      "description": "Superset: 50r/s burst=100 — Chatbot: 6r/m (1req/10s).",
+      "type": "timeseries",
+      "gridPos": { "x": 0, "y": 26, "w": 12, "h": 8 },
+      "datasource": { "type": "loki", "uid": "P8E80F9AEF21F6940" },
+      "targets": [
+        {
+          "expr": "sum(count_over_time({job=\"nginx-gateway\", status=\"429\"} | json | uri=~\"/api/superset.*\" [15s]))",
+          "legendFormat": "/api/superset", "queryType": "range", "refId": "A"
+        },
+        {
+          "expr": "sum(count_over_time({job=\"nginx-gateway\", status=\"429\"} | json | uri=\"/api/query\" [15s]))",
+          "legendFormat": "/api/query (chatbot)", "queryType": "range", "refId": "B"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": { "unit": "short", "custom": { "lineWidth": 2, "fillOpacity": 15, "drawStyle": "bars" } },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "/api/superset" }, "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "orange" } }] },
+          { "matcher": { "id": "byName", "options": "/api/query (chatbot)" }, "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "red" } }] }
+        ]
+      },
+      "options": { "tooltip": { "mode": "multi" }, "legend": { "displayMode": "list", "placement": "bottom" } }
+    },
+
+    {
+      "id": 13,
+      "title": "Upstream Distribution — Backend Pool (req/min)",
+      "description": "Request phân bổ vào backend-1/2/3. least_conn nên 3 con phải tương đối đều — lệch nhiều = 1 con đang chậm.",
+      "type": "timeseries",
+      "gridPos": { "x": 12, "y": 26, "w": 12, "h": 8 },
+      "datasource": { "type": "loki", "uid": "P8E80F9AEF21F6940" },
+      "targets": [
+        {
+          "expr": "sum by (upstream_addr) (count_over_time({job=\"nginx-gateway\"} | json | uri=~\"/api/superset.*\" [1m]))",
+          "legendFormat": "{{upstream_addr}}", "queryType": "range", "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": { "unit": "short", "custom": { "lineWidth": 2, "fillOpacity": 10, "drawStyle": "bars", "stacking": { "mode": "normal" } } }
+      },
+      "options": { "tooltip": { "mode": "multi" }, "legend": { "displayMode": "table", "placement": "right", "calcs": ["lastNotNull", "mean"] } }
+    },
+
+    {
+      "id": 50,
+      "title": "",
+      "type": "text",
+      "gridPos": { "x": 0, "y": 34, "w": 24, "h": 2 },
+      "options": { "mode": "markdown", "content": "## Infrastructure" }
     },
 
     {
       "id": 3,
-      "title": "Container CPU Usage per Service",
-      "description": "CPU của từng container. Nếu backend-1/2/3 lệch nhau nhiều → load balancing có vấn đề.",
+      "title": "Container CPU Usage",
+      "description": "CPU từng container. Backend-1/2/3 lệch nhiều = load balancing có vấn đề.",
       "type": "timeseries",
-      "gridPos": { "x": 0, "y": 24, "w": 12, "h": 8 },
+      "gridPos": { "x": 0, "y": 36, "w": 12, "h": 8 },
       "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
       "targets": [
         {
           "expr": "sum by (id) (rate(container_cpu_usage_seconds_total{id=~\"/docker.*\"}[1m]))",
-          "legendFormat": "{{ id }}",
-          "refId": "A"
+          "legendFormat": "{{id}}", "refId": "A"
         }
       ],
       "fieldConfig": {
-        "defaults": {
-          "custom": { "lineWidth": 1, "fillOpacity": 5 },
-          "unit": "percentunit"
-        }
+        "defaults": { "unit": "percentunit", "custom": { "lineWidth": 1, "fillOpacity": 5 } }
       },
       "options": { "tooltip": { "mode": "multi" }, "legend": { "displayMode": "table", "placement": "right", "calcs": ["lastNotNull"] } }
     },
 
     {
       "id": 4,
-      "title": "Container Memory Usage per Service",
-      "description": "RAM của từng container theo thời gian. Tăng liên tục không giảm = memory leak.",
+      "title": "Container Memory Usage",
+      "description": "RAM từng container. Tăng liên tục không giảm = memory leak.",
       "type": "timeseries",
-      "gridPos": { "x": 12, "y": 24, "w": 12, "h": 8 },
+      "gridPos": { "x": 12, "y": 36, "w": 12, "h": 8 },
       "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
       "targets": [
         {
           "expr": "container_memory_usage_bytes{id=~\"/docker.*\"}",
-          "legendFormat": "{{ id }}",
-          "refId": "A"
+          "legendFormat": "{{id}}", "refId": "A"
         }
       ],
       "fieldConfig": {
-        "defaults": {
-          "custom": { "lineWidth": 1, "fillOpacity": 5 },
-          "unit": "bytes"
-        }
+        "defaults": { "unit": "bytes", "custom": { "lineWidth": 1, "fillOpacity": 5 } }
       },
       "options": { "tooltip": { "mode": "multi" }, "legend": { "displayMode": "table", "placement": "right", "calcs": ["lastNotNull"] } }
     }
@@ -203,7 +310,6 @@
   ],
 
   "templating": { "list": [] },
-
   "schemaVersion": 38,
-  "version": 1
+  "version": 3
 }

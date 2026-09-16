@@ -8,9 +8,9 @@ contactPoints:
       - uid: telegram-receiver
         type: telegram
         settings:
-          botToken: '8615385595:AAEvKvPJ9LaoDor654rJCv66AiOaydHd-DM'
+          bottoken: '8615385595:AAEvKvPJ9LaoDor654rJCv66AiOaydHd-DM'
           chatid: '-1004473506382'
-          message_thread_id: '3'
+          message_thread_id: '14'
           parse_mode: HTML
           message: |-
             {{ if eq .Status "firing" }}<b>🔴 [FIRING] {{ .CommonLabels.alertname }}</b>{{ else }}<b>✅ [RESOLVED] {{ .CommonLabels.alertname }}</b>{{ end }}

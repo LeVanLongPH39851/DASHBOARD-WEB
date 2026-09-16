@@ -7,12 +7,11 @@ groups:
     interval: 30s
     rules:
 
+      # ── Alert 1: 429 rate limit bị trigger ────────────────────
       - uid: alert-429-any
         title: "429 Rate Limit Triggered"
         condition: C
-
         data:
-          # Query Loki — instant query, lấy count 429 trong 1 phút qua
           - refId: A
             queryType: instant
             relativeTimeRange:
@@ -23,8 +22,6 @@ groups:
               expr: 'sum(count_over_time({job="nginx-gateway", status="429"}[1m]))'
               queryType: instant
               refId: A
-
-          # Reduce → lấy last value thành 1 số
           - refId: B
             queryType: ''
             relativeTimeRange:
@@ -36,8 +33,6 @@ groups:
               refId: B
               reducer: last
               expression: A
-
-          # Threshold → fire nếu > 0
           - refId: C
             queryType: ''
             relativeTimeRange:
@@ -49,19 +44,116 @@ groups:
               refId: C
               expression: B
               conditions:
-                - evaluator:
-                    type: gt
-                    params: [0]
-                  operator:
-                    type: and
-                  query:
-                    params: [B]
-
+                - evaluator: { type: gt, params: [0] }
+                  operator: { type: and }
+                  query: { params: [B] }
         for: 0s
-
         labels:
           severity: warning
-
         annotations:
           summary: "429 Rate Limit bị kích hoạt"
-          description: "Có request bị từ chối do rate limit trong 1 phút qua trên nginx gateway."
+          description: "Có request bị từ chối do rate limit trong 1 phút qua."
+
+      # ── Alert 2: Gateway không có traffic trong 5 phút ────────
+      # Logic: nếu nginx hoàn toàn không có log nào → gateway down
+      # hoặc không có ai gọi vào (ít xảy ra trong giờ hành chính)
+      - uid: alert-gateway-down
+        title: "Gateway No Traffic (possible down)"
+        condition: C
+        noDataState: Alerting    # nodata = không có log = gateway down → fire luôn
+        execErrState: Alerting   # lỗi query cũng fire để không bị bỏ sót
+        data:
+          - refId: A
+            queryType: instant
+            relativeTimeRange:
+              from: 300   # 5 phút
+              to: 0
+            datasourceUid: P8E80F9AEF21F6940
+            model:
+              expr: 'sum(count_over_time({job="nginx-gateway"}[5m]))'
+              queryType: instant
+              refId: A
+          - refId: B
+            queryType: ''
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: "__expr__"
+            model:
+              type: reduce
+              refId: B
+              reducer: last
+              expression: A
+          - refId: C
+            queryType: ''
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: "__expr__"
+            model:
+              type: threshold
+              refId: C
+              expression: B
+              conditions:
+                # Fire khi count = 0 (không có log nào trong 5 phút)
+                - evaluator: { type: lt, params: [1] }
+                  operator: { type: and }
+                  query: { params: [B] }
+        for: 5m   # phải duy trì 5 phút mới fire, tránh false alarm khi traffic thấp tạm thời
+        labels:
+          severity: critical
+        annotations:
+          summary: "Gateway có thể đang down"
+          description: "Không có request nào ghi vào nginx log trong 5 phút qua. Kiểm tra container nginx_w."
+
+      # ── Alert 3: Backend trả lỗi liên tục (502/503/504) ───────
+      # 502 = nginx kết nối được backend nhưng backend không respond đúng
+      # 503 = nginx không kết nối được backend (upstream down)
+      # 504 = upstream timeout
+      - uid: alert-backend-error
+        title: "Backend Errors (5xx)"
+        condition: C
+        data:
+          - refId: A
+            queryType: instant
+            relativeTimeRange:
+              from: 120   # 2 phút
+              to: 0
+            datasourceUid: P8E80F9AEF21F6940
+            model:
+              expr: 'sum(count_over_time({job="nginx-gateway", status=~"5.."}[2m]))'
+              queryType: instant
+              refId: A
+          - refId: B
+            queryType: ''
+            relativeTimeRange:
+              from: 120
+              to: 0
+            datasourceUid: "__expr__"
+            model:
+              type: reduce
+              refId: B
+              reducer: last
+              expression: A
+          - refId: C
+            queryType: ''
+            relativeTimeRange:
+              from: 120
+              to: 0
+            datasourceUid: "__expr__"
+            model:
+              type: threshold
+              refId: C
+              expression: B
+              conditions:
+                # Fire khi có hơn 3 lỗi 5xx trong 2 phút
+                # threshold = 3 để tránh false alarm từ lỗi đơn lẻ
+                - evaluator: { type: gt, params: [3] }
+                  operator: { type: and }
+                  query: { params: [B] }
+        for: 0s
+        labels:
+          severity: critical
+        annotations:
+          summary: "Backend đang trả lỗi 5xx"
+          description: "Hơn 3 request bị lỗi 5xx trong 2 phút qua. Kiểm tra backend-1/2/3 hoặc chatbot."

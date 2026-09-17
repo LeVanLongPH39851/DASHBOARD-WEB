@@ -7,26 +7,24 @@ groups:
     interval: 30s
     rules:
 
-      # ── Alert 1: 429 rate limit bị trigger ────────────────────
-      - uid: alert-429-any
-        title: "429 Rate Limit Triggered"
+      # ── Alert 1a: 429 chatbot ─────────────────────────────────
+      - uid: alert-429-chatbot
+        title: "429 Rate Limit - Chatbot"
         condition: C
+        noDataState: OK
+        execErrState: Alerting
         data:
           - refId: A
             queryType: instant
-            relativeTimeRange:
-              from: 60
-              to: 0
+            relativeTimeRange: { from: 120, to: 0 }
             datasourceUid: P8E80F9AEF21F6940
             model:
-              expr: 'sum(count_over_time({job="nginx-gateway", status="429"}[1m]))'
+              expr: 'sum(count_over_time({job="nginx-gateway", status="429"} | json | uri=~"^/api/query" [2m]))'
               queryType: instant
               refId: A
           - refId: B
             queryType: ''
-            relativeTimeRange:
-              from: 60
-              to: 0
+            relativeTimeRange: { from: 120, to: 0 }
             datasourceUid: "__expr__"
             model:
               type: reduce
@@ -35,24 +33,65 @@ groups:
               expression: A
           - refId: C
             queryType: ''
-            relativeTimeRange:
-              from: 60
-              to: 0
+            relativeTimeRange: { from: 120, to: 0 }
             datasourceUid: "__expr__"
             model:
               type: threshold
               refId: C
               expression: B
               conditions:
-                - evaluator: { type: gt, params: [0] }
+                - evaluator: { type: gt, params: [5] }
                   operator: { type: and }
                   query: { params: [B] }
         for: 0s
         labels:
           severity: warning
         annotations:
-          summary: "429 Rate Limit bị kích hoạt"
-          description: "Có request bị từ chối do rate limit trong 1 phút qua."
+          summary: "Chatbot bị rate limit nhiều bất thường"
+          description: "{{ $values.B.Value | printf \"%.0f\" }} request /api/query bị 429 trong 2 phút qua (ngưỡng: 5)."
+
+      # ── Alert 1b: 429 superset ────────────────────────────────
+      - uid: alert-429-superset
+        title: "429 Rate Limit - Superset"
+        condition: C
+        noDataState: OK
+        execErrState: Alerting
+        data:
+          - refId: A
+            queryType: instant
+            relativeTimeRange: { from: 120, to: 0 }
+            datasourceUid: P8E80F9AEF21F6940
+            model:
+              expr: 'sum(count_over_time({job="nginx-gateway", status="429"} | json | uri=~"^/api/superset" [2m]))'
+              queryType: instant
+              refId: A
+          - refId: B
+            queryType: ''
+            relativeTimeRange: { from: 120, to: 0 }
+            datasourceUid: "__expr__"
+            model:
+              type: reduce
+              refId: B
+              reducer: last
+              expression: A
+          - refId: C
+            queryType: ''
+            relativeTimeRange: { from: 120, to: 0 }
+            datasourceUid: "__expr__"
+            model:
+              type: threshold
+              refId: C
+              expression: B
+              conditions:
+                - evaluator: { type: gt, params: [50] }
+                  operator: { type: and }
+                  query: { params: [B] }
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Superset bị rate limit bất thường"
+          description: "{{ $values.B.Value | printf \"%.0f\" }} request /api/superset bị 429 trong 2 phút qua (ngưỡng: 50)."
 
       # ── Alert 2: Gateway không có traffic trong 5 phút ────────
       # Logic: nếu nginx hoàn toàn không có log nào → gateway down
@@ -104,31 +143,26 @@ groups:
           severity: critical
         annotations:
           summary: "Gateway có thể đang down"
-          description: "Không có request nào ghi vào nginx log trong 5 phút qua. Kiểm tra container nginx_w."
+          description: "Không có request nào ghi vào nginx log trong 5 phút qua (count={{ $values.B.Value | printf \"%.0f\" }}). Kiểm tra container nginx_w."
 
-      # ── Alert 3: Backend trả lỗi liên tục (502/503/504) ───────
-      # 502 = nginx kết nối được backend nhưng backend không respond đúng
-      # 503 = nginx không kết nối được backend (upstream down)
-      # 504 = upstream timeout
-      - uid: alert-backend-error
-        title: "Backend Errors (5xx)"
+      # ── Alert 3a: Backend errors — Superset ───────────────────
+      - uid: alert-backend-error-superset
+        title: "Backend Errors (5xx) - Superset"
         condition: C
+        noDataState: OK
+        execErrState: Alerting
         data:
           - refId: A
             queryType: instant
-            relativeTimeRange:
-              from: 120   # 2 phút
-              to: 0
+            relativeTimeRange: { from: 120, to: 0 }
             datasourceUid: P8E80F9AEF21F6940
             model:
-              expr: 'sum(count_over_time({job="nginx-gateway", status=~"5.."}[2m]))'
+              expr: 'sum(count_over_time({job="nginx-gateway", status=~"5.."} | json | uri=~"^/api/superset" [2m]))'
               queryType: instant
               refId: A
           - refId: B
             queryType: ''
-            relativeTimeRange:
-              from: 120
-              to: 0
+            relativeTimeRange: { from: 120, to: 0 }
             datasourceUid: "__expr__"
             model:
               type: reduce
@@ -137,17 +171,13 @@ groups:
               expression: A
           - refId: C
             queryType: ''
-            relativeTimeRange:
-              from: 120
-              to: 0
+            relativeTimeRange: { from: 120, to: 0 }
             datasourceUid: "__expr__"
             model:
               type: threshold
               refId: C
               expression: B
               conditions:
-                # Fire khi có hơn 3 lỗi 5xx trong 2 phút
-                # threshold = 3 để tránh false alarm từ lỗi đơn lẻ
                 - evaluator: { type: gt, params: [3] }
                   operator: { type: and }
                   query: { params: [B] }
@@ -155,5 +185,48 @@ groups:
         labels:
           severity: critical
         annotations:
-          summary: "Backend đang trả lỗi 5xx"
-          description: "Hơn 3 request bị lỗi 5xx trong 2 phút qua. Kiểm tra backend-1/2/3 hoặc chatbot."
+          summary: "Superset đang trả lỗi 5xx"
+          description: "{{ $values.B.Value | printf \"%.0f\" }} request /api/superset bị lỗi 5xx trong 2 phút qua (ngưỡng: 3). Kiểm tra backend-1/2/3."
+
+      # ── Alert 3b: Backend errors — Chatbot ────────────────────
+      - uid: alert-backend-error-chatbot
+        title: "Backend Errors (5xx) - Chatbot"
+        condition: C
+        noDataState: OK
+        execErrState: Alerting
+        data:
+          - refId: A
+            queryType: instant
+            relativeTimeRange: { from: 120, to: 0 }
+            datasourceUid: P8E80F9AEF21F6940
+            model:
+              expr: 'sum(count_over_time({job="nginx-gateway", status=~"5.."} | json | uri=~"^/api/query" [2m]))'
+              queryType: instant
+              refId: A
+          - refId: B
+            queryType: ''
+            relativeTimeRange: { from: 120, to: 0 }
+            datasourceUid: "__expr__"
+            model:
+              type: reduce
+              refId: B
+              reducer: last
+              expression: A
+          - refId: C
+            queryType: ''
+            relativeTimeRange: { from: 120, to: 0 }
+            datasourceUid: "__expr__"
+            model:
+              type: threshold
+              refId: C
+              expression: B
+              conditions:
+                - evaluator: { type: gt, params: [3] }
+                  operator: { type: and }
+                  query: { params: [B] }
+        for: 0s
+        labels:
+          severity: critical
+        annotations:
+          summary: "Chatbot đang trả lỗi 5xx"
+          description: "{{ $values.B.Value | printf \"%.0f\" }} request /api/query bị lỗi 5xx trong 2 phút qua (ngưỡng: 3). Kiểm tra chatbot service."

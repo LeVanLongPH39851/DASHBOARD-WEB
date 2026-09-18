@@ -241,7 +241,7 @@
       "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
       "targets": [
         {
-          "expr": "sum by (id) (rate(container_cpu_usage_seconds_total{id=~\"/docker.*\"}[1m]))",
+          "expr": "sum by (id) (rate(container_cpu_usage_seconds_total{id=~\"/docker.*|/kubepods.*\"}[1m]))",
           "legendFormat": "{{id}}", "refId": "A"
         }
       ],
@@ -260,7 +260,7 @@
       "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
       "targets": [
         {
-          "expr": "container_memory_usage_bytes{id=~\"/docker.*\"}",
+          "expr": "container_memory_usage_bytes{id=~\"/docker.*|/kubepods.*\"}",
           "legendFormat": "{{id}}", "refId": "A"
         }
       ],

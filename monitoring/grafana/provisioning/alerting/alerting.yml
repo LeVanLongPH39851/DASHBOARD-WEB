@@ -15,7 +15,7 @@ contactPoints:
           message: |-
             {{ if eq .Status "firing" }}<b>🔴 [Có lỗi] {{ .CommonLabels.alertname }}</b>{{ else }}<b>✅ [Đã hết lỗi] {{ .CommonLabels.alertname }}</b>{{ end }}
 
-            {{ range .Alerts }}
+            {{ range .Alerts -}}
             <b>Máy chủ:</b> <code>{{ .Labels.instance }}</code>
             <b>Mức độ:</b> <code>{{ if eq .Labels.severity "critical" }}Nghiêm trọng{{ else if eq .Labels.severity "warning" }}Cảnh báo{{ else }}{{ .Labels.severity }}{{ end }}</code>
             <b>Mô tả:</b> {{ .Annotations.description }}
@@ -35,7 +35,7 @@ contactPoints:
           message: |-
             <b>🔴 [CẢNH BÁO SỰ KIỆN] {{ .CommonLabels.alertname }}</b>
 
-            {{ range .Alerts }}
+            {{ range .Alerts -}}
             <b>Máy chủ:</b> <code>{{ .Labels.instance }}</code>
             <b>Mức độ:</b> <code>{{ if eq .Labels.severity "critical" }}Nghiêm trọng{{ else if eq .Labels.severity "warning" }}Cảnh báo{{ else }}{{ .Labels.severity }}{{ end }}</code>
             <b>Mô tả:</b> {{ .Annotations.description }}

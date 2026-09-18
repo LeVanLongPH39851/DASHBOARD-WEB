@@ -13,16 +13,46 @@ contactPoints:
           message_thread_id: '14'
           parse_mode: HTML
           message: |-
-            {{ if eq .Status "firing" }}<b>🔴 [FIRING] {{ .CommonLabels.alertname }}</b>{{ else }}<b>✅ [RESOLVED] {{ .CommonLabels.alertname }}</b>{{ end }}
+            {{ if eq .Status "firing" }}<b>🔴 [Có lỗi] {{ .CommonLabels.alertname }}</b>{{ else }}<b>✅ [Đã hết lỗi] {{ .CommonLabels.alertname }}</b>{{ end }}
 
             {{ range .Alerts }}
-            <b>Instance:</b> <code>{{ .Labels.instance }}</code>
-            <b>Severity:</b> <code>{{ .Labels.severity }}</code>
-            <b>Description:</b> {{ .Annotations.description }}
+            <b>Máy chủ:</b> <code>{{ .Labels.instance }}</code>
+            <b>Mức độ:</b> <code>{{ if eq .Labels.severity "critical" }}Nghiêm trọng{{ else if eq .Labels.severity "warning" }}Cảnh báo{{ else }}{{ .Labels.severity }}{{ end }}</code>
+            <b>Mô tả:</b> {{ .Annotations.description }}
             {{ end }}
           disableResolveMessage: false
+
+  - orgId: 1
+    name: telegram-no-resolved
+    receivers:
+      - uid: telegram-receiver-no-resolved
+        type: telegram
+        settings:
+          bottoken: '8615385595:AAEvKvPJ9LaoDor654rJCv66AiOaydHd-DM'
+          chatid: '-1004473506382'
+          message_thread_id: '14'
+          parse_mode: HTML
+          message: |-
+            <b>🔴 [CẢNH BÁO SỰ KIỆN] {{ .CommonLabels.alertname }}</b>
+
+            {{ range .Alerts }}
+            <b>Máy chủ:</b> <code>{{ .Labels.instance }}</code>
+            <b>Mức độ:</b> <code>{{ if eq .Labels.severity "critical" }}Nghiêm trọng{{ else if eq .Labels.severity "warning" }}Cảnh báo{{ else }}{{ .Labels.severity }}{{ end }}</code>
+            <b>Mô tả:</b> {{ .Annotations.description }}
+            {{ end }}
+          disableResolveMessage: true
 
 # Notification policy — rule nào dùng contact point nào
 policies:
   - orgId: 1
     receiver: telegram-endpoint   # default receiver cho tất cả alert
+    group_by:
+      - alertname
+      - severity
+    group_wait: 30s
+    group_interval: 10m
+    repeat_interval: 24h
+    routes:
+      - receiver: telegram-no-resolved
+        matchers:
+          - alert_type = event

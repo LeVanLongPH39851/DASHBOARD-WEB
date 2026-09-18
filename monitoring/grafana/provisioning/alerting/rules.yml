@@ -12,14 +12,14 @@ groups:
         title: "429 Rate Limit - Chatbot"
         condition: C
         noDataState: OK
-        execErrState: Alerting
+        execErrState: Error
         data:
           - refId: A
             queryType: instant
             relativeTimeRange: { from: 120, to: 0 }
             datasourceUid: P8E80F9AEF21F6940
             model:
-              expr: 'sum(count_over_time({job="nginx-gateway", status="429"} | json | uri=~"^/api/query" [2m]))'
+              expr: 'sum(count_over_time({job="nginx-gateway", status="429"} | json | uri=~"^/api/query" [2m])) or vector(0)'
               queryType: instant
               refId: A
           - refId: B
@@ -46,6 +46,7 @@ groups:
         for: 0s
         labels:
           severity: warning
+          alert_type: event
         annotations:
           summary: "Chatbot bị rate limit nhiều bất thường"
           description: "{{ $values.B.Value | printf \"%.0f\" }} request /api/query bị 429 trong 2 phút qua (ngưỡng: 5)."
@@ -55,14 +56,14 @@ groups:
         title: "429 Rate Limit - Superset"
         condition: C
         noDataState: OK
-        execErrState: Alerting
+        execErrState: Error
         data:
           - refId: A
             queryType: instant
             relativeTimeRange: { from: 120, to: 0 }
             datasourceUid: P8E80F9AEF21F6940
             model:
-              expr: 'sum(count_over_time({job="nginx-gateway", status="429"} | json | uri=~"^/api/superset" [2m]))'
+              expr: 'sum(count_over_time({job="nginx-gateway", status="429"} | json | uri=~"^/api/superset" [2m])) or vector(0)'
               queryType: instant
               refId: A
           - refId: B
@@ -89,75 +90,24 @@ groups:
         for: 1m
         labels:
           severity: warning
+          alert_type: event
         annotations:
           summary: "Superset bị rate limit bất thường"
           description: "{{ $values.B.Value | printf \"%.0f\" }} request /api/superset bị 429 trong 2 phút qua (ngưỡng: 50)."
-
-      # ── Alert 2: Gateway không có traffic trong 5 phút ────────
-      # Logic: nếu nginx hoàn toàn không có log nào → gateway down
-      # hoặc không có ai gọi vào (ít xảy ra trong giờ hành chính)
-      - uid: alert-gateway-down
-        title: "Gateway No Traffic (possible down)"
-        condition: C
-        noDataState: Alerting    # nodata = không có log = gateway down → fire luôn
-        execErrState: Alerting   # lỗi query cũng fire để không bị bỏ sót
-        data:
-          - refId: A
-            queryType: instant
-            relativeTimeRange:
-              from: 300   # 5 phút
-              to: 0
-            datasourceUid: P8E80F9AEF21F6940
-            model:
-              expr: 'sum(count_over_time({job="nginx-gateway"}[5m]))'
-              queryType: instant
-              refId: A
-          - refId: B
-            queryType: ''
-            relativeTimeRange:
-              from: 300
-              to: 0
-            datasourceUid: "__expr__"
-            model:
-              type: reduce
-              refId: B
-              reducer: last
-              expression: A
-          - refId: C
-            queryType: ''
-            relativeTimeRange:
-              from: 300
-              to: 0
-            datasourceUid: "__expr__"
-            model:
-              type: threshold
-              refId: C
-              expression: B
-              conditions:
-                # Fire khi count = 0 (không có log nào trong 5 phút)
-                - evaluator: { type: lt, params: [1] }
-                  operator: { type: and }
-                  query: { params: [B] }
-        for: 5m   # phải duy trì 5 phút mới fire, tránh false alarm khi traffic thấp tạm thời
-        labels:
-          severity: critical
-        annotations:
-          summary: "Gateway có thể đang down"
-          description: "Không có request nào ghi vào nginx log trong 5 phút qua (count={{ $values.B.Value | printf \"%.0f\" }}). Kiểm tra container nginx_w."
 
       # ── Alert 3a: Backend errors — Superset ───────────────────
       - uid: alert-backend-error-superset
         title: "Backend Errors (5xx) - Superset"
         condition: C
         noDataState: OK
-        execErrState: Alerting
+        execErrState: Error
         data:
           - refId: A
             queryType: instant
             relativeTimeRange: { from: 120, to: 0 }
             datasourceUid: P8E80F9AEF21F6940
             model:
-              expr: 'sum(count_over_time({job="nginx-gateway", status=~"5.."} | json | uri=~"^/api/superset" [2m]))'
+              expr: 'sum(count_over_time({job="nginx-gateway", status=~"5.."} | json | uri=~"^/api/superset" [2m])) or vector(0)'
               queryType: instant
               refId: A
           - refId: B
@@ -184,6 +134,7 @@ groups:
         for: 0s
         labels:
           severity: critical
+          alert_type: event
         annotations:
           summary: "Superset đang trả lỗi 5xx"
           description: "{{ $values.B.Value | printf \"%.0f\" }} request /api/superset bị lỗi 5xx trong 2 phút qua (ngưỡng: 3). Kiểm tra backend-1/2/3."
@@ -193,14 +144,14 @@ groups:
         title: "Backend Errors (5xx) - Chatbot"
         condition: C
         noDataState: OK
-        execErrState: Alerting
+        execErrState: Error
         data:
           - refId: A
             queryType: instant
             relativeTimeRange: { from: 120, to: 0 }
             datasourceUid: P8E80F9AEF21F6940
             model:
-              expr: 'sum(count_over_time({job="nginx-gateway", status=~"5.."} | json | uri=~"^/api/query" [2m]))'
+              expr: 'sum(count_over_time({job="nginx-gateway", status=~"5.."} | json | uri=~"^/api/query" [2m])) or vector(0)'
               queryType: instant
               refId: A
           - refId: B
@@ -227,6 +178,7 @@ groups:
         for: 0s
         labels:
           severity: critical
+          alert_type: event
         annotations:
           summary: "Chatbot đang trả lỗi 5xx"
           description: "{{ $values.B.Value | printf \"%.0f\" }} request /api/query bị lỗi 5xx trong 2 phút qua (ngưỡng: 3). Kiểm tra chatbot service."

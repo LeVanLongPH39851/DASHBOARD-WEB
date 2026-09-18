@@ -33,14 +33,14 @@ const InforFilterItem = ({
 
   const { appliedFilters, setAppliedFilters } = useDashboardFilters();
   const { filterValues, setFilterValues } = useDashboardFilterValues();
-  const { darkMode, setValue: setDarkMode } = useDarkMode();
+  const { value: darkMode, setValue: setDarkMode } = useDarkMode();
   const { crossFilters, setCrossFilters } = useDashboardCrossFilters();
 
   const displayValue = Array.isArray(valueFilters)
     ? valueFilters
-        .map((item) => VALUE_LABEL[item] ?? item)
-        .filter((item) => item !== "")
-        .join(space)
+      .map((item) => VALUE_LABEL[item] ?? item)
+      .filter((item) => item !== "")
+      .join(space)
     : (VALUE_LABEL[valueFilters] ?? valueFilters);
   if (!displayValue) return null;
   return (

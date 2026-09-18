@@ -29,9 +29,10 @@ const PieChart = ({
   suffix = "",
   legendHorizontal = false,
   center = false,
+  maxLegend = false,
   crossFilter = false,
   keyChart = false,
-  refetch = undefined,
+  refetch = undefined
 }) => {
   // console.log("PieChart");
 
@@ -66,9 +67,9 @@ const PieChart = ({
     series.length > 0
       ? series
       : labels.map((name, i) => ({
-          name,
-          value: values[i] || 0,
-        }));
+        name,
+        value: values[i] || 0,
+      }));
 
   const getEChartsData = useCallback(() => {
     if (chartRef.current) {
@@ -258,32 +259,34 @@ const PieChart = ({
 
     legend: enableLegend
       ? {
-          type: "scroll",
-          orient: !screenMd && !legendHorizontal ? "vertical" : "horizontal",
-          left: 0,
-          top: 0,
-          itemWidth: !screenMd ? (!screenLg ? 13 : 12) : 10,
-          itemHeight: !screenMd ? (!screenLg ? 13 : 12) : 10,
-          icon: "circle",
-          itemGap: 8,
-          data: legendData,
-          textStyle: {
-            fontSize: !screenMd
-              ? !screenLg
-                ? fontSize?.legend
-                : "11px"
-              : "10.5px",
-            color: !darkMode
-              ? "rgba(30, 27, 57, 1)"
-              : "rgba(225, 225, 225, 0.9)",
-            fontWeight: fontWeight?.legend,
-            fontFamily: fontFamily,
-            letterSpacing: "0.1px",
-          },
-        }
-      : {
-          show: false,
+        type: "scroll",
+        orient: !screenMd && !legendHorizontal ? "vertical" : "horizontal",
+        left: 0,
+        top: 0,
+        itemWidth: !screenMd ? (!screenLg ? 13 : 12) : 10,
+        itemHeight: !screenMd ? (!screenLg ? 13 : 12) : 10,
+        icon: "circle",
+        itemGap: 8,
+        data: legendData,
+        formatter: (name) =>
+          maxLegend ? (name?.length > maxLegend ? name.slice(0, maxLegend) + "..." : name) : name,
+        textStyle: {
+          fontSize: !screenMd
+            ? !screenLg
+              ? fontSize?.legend
+              : "11px"
+            : "10.5px",
+          color: !darkMode
+            ? "rgba(30, 27, 57, 1)"
+            : "rgba(225, 225, 225, 0.9)",
+          fontWeight: fontWeight?.legend,
+          fontFamily: fontFamily,
+          letterSpacing: "0.1px",
         },
+      }
+      : {
+        show: false,
+      },
 
     series: [
       {

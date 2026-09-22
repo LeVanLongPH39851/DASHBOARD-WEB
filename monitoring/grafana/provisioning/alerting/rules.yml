@@ -182,3 +182,122 @@ groups:
         annotations:
           summary: "Chatbot đang trả lỗi 5xx"
           description: "{{ $values.B.Value | printf \"%.0f\" }} request /api/query bị lỗi 5xx trong 2 phút qua (ngưỡng: 3). Kiểm tra chatbot service."
+
+  - orgId: 1
+    name: container-health
+    folder: Alerts
+    interval: 30s
+    rules:
+
+      # - uid: alert-container-cpu-high
+      #   title: "Container CPU cao"
+      #   condition: A
+      #   noDataState: OK
+      #   execErrState: Error
+      #   data:
+      #     - refId: A
+      #       queryType: instant
+      #       relativeTimeRange: { from: 300, to: 0 }
+      #       datasourceUid: PBFA97CFB590B2093
+      #       model:
+      #         expr: '100 * sum by (id, container_label_com_docker_compose_service) (rate(container_cpu_usage_seconds_total{job="cadvisor",container_label_com_docker_compose_project="dashboard-web",container_label_com_docker_compose_service=~".+",container_label_com_docker_compose_service!="cadvisor_w"}[5m])) > 80'
+      #         queryType: instant
+      #         refId: A
+      #   for: 5m
+      #   labels:
+      #     severity: warning
+      #     alert_type: container
+      #   annotations:
+      #     summary: "CPU cao: {{ $labels.container_label_com_docker_compose_service }}"
+      #     description: "Container {{ $labels.container_label_com_docker_compose_service }} đang dùng {{ $values.A.Value | printf \"%.0f\" }}% CPU trong ít nhất 5 phút (ngưỡng: 80%)."
+
+      - uid: alert-container-memory-high
+        title: "Container memory gần giới hạn"
+        condition: A
+        noDataState: OK
+        execErrState: Error
+        data:
+          - refId: A
+            queryType: instant
+            relativeTimeRange: { from: 300, to: 0 }
+            datasourceUid: PBFA97CFB590B2093
+            model:
+              expr: '(100 * container_memory_working_set_bytes{job="cadvisor",container_label_com_docker_compose_project="dashboard-web",container_label_com_docker_compose_service=~".+",container_label_com_docker_compose_service!="cadvisor_w"} / container_spec_memory_limit_bytes{job="cadvisor",container_label_com_docker_compose_project="dashboard-web",container_label_com_docker_compose_service=~".+",container_label_com_docker_compose_service!="cadvisor_w"}) > 85 and on (id) container_spec_memory_limit_bytes{job="cadvisor",container_label_com_docker_compose_project="dashboard-web",container_label_com_docker_compose_service=~".+",container_label_com_docker_compose_service!="cadvisor_w"} > 0'
+              instant: true
+              range: false
+              queryType: instant
+              refId: A
+        for: 5m
+        labels:
+          severity: critical
+          alert_type: container
+        annotations:
+          summary: "Memory gần giới hạn: {{ $labels.container_label_com_docker_compose_service }}"
+          description: "Container {{ $labels.container_label_com_docker_compose_service }} đang dùng {{ $values.A.Value | printf \"%.0f\" }}% memory limit trong ít nhất 5 phút (ngưỡng: 85%)."
+      - uid: alert-container-down
+        title: "Container bị down"
+        condition: A
+        noDataState: OK
+        execErrState: Error
+        data:
+          - refId: A
+            queryType: instant
+            relativeTimeRange: { from: 300, to: 0 }
+            datasourceUid: PBFA97CFB590B2093
+            model:
+              expr: '(time() - container_last_seen{job="cadvisor",container_label_com_docker_compose_project="dashboard-web",container_label_com_docker_compose_service=~".+",container_label_com_docker_compose_service!="cadvisor_w"}) > 150'
+              instant: true
+              range: false
+              queryType: instant
+              refId: A
+        for: 30s
+        labels:
+          severity: critical
+          alert_type: container
+        annotations:
+          summary: "Container bị down: {{ $labels.container_label_com_docker_compose_service }}"
+          description: "Container {{ $labels.container_label_com_docker_compose_service }} không được cAdvisor nhìn thấy trong hơn {{ if $values.A }}{{ $values.A.Value | printf \"%.0f\" }}{{ else }}150+{{ end }} giây."
+
+      # - uid: alert-container-restarts
+      #   title: "Container restart bất thường"
+      #   condition: A
+      #   noDataState: OK
+      #   execErrState: Error
+      #   data:
+      #     - refId: A
+      #       queryType: instant
+      #       relativeTimeRange: { from: 600, to: 0 }
+      #       datasourceUid: PBFA97CFB590B2093
+      #       model:
+      #         expr: 'changes(container_start_time_seconds{job="cadvisor",container_label_com_docker_compose_project="dashboard-web",container_label_com_docker_compose_service=~".+",container_label_com_docker_compose_service!="cadvisor_w"}[10m]) > 0'
+      #         queryType: instant
+      #         refId: A
+      #   for: 1m
+      #   labels:
+      #     severity: warning
+      #     alert_type: container
+      #   annotations:
+      #     summary: "Container vừa restart: {{ $labels.container_label_com_docker_compose_service }}"
+      #     description: "Container {{ $labels.container_label_com_docker_compose_service }} đã restart ít nhất một lần trong 10 phút qua."
+
+      # - uid: alert-container-count-low
+      #   title: "Tổng số container giảm"
+      #   condition: A
+      #   noDataState: OK
+      #   execErrState: Error
+      #   data:
+      #     - refId: A
+      #       queryType: instant
+      #       relativeTimeRange: { from: 120, to: 0 }
+      #       datasourceUid: PBFA97CFB590B2093
+      #       model:
+      #         expr: 'count(count by (id) (container_cpu_usage_seconds_total{job="cadvisor",container_label_com_docker_compose_project="dashboard-web",container_label_com_docker_compose_service=~".+",container_label_com_docker_compose_service!="cadvisor_w"})) < 11'
+      #         queryType: instant
+      #         refId: A
+      #   for: 1m
+      #   labels:
+      #     severity: critical
+      #     alert_type: container
+      #   annotations:
+      #     summary: "Tổng số container thấp hơn cấu hình"
+      #     description: "Chỉ còn {{ $values.A.Value | printf \"%.0f\" }}/11 container ứng dụng đang chạy."

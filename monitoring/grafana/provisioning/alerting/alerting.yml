@@ -16,7 +16,7 @@ contactPoints:
             {{ if eq .Status "firing" }}<b>🔴 [Có lỗi] {{ .CommonLabels.alertname }}</b>{{ else }}<b>✅ [Đã hết lỗi] {{ .CommonLabels.alertname }}</b>{{ end }}
 
             {{ range .Alerts -}}
-            <b>Máy chủ:</b> <code>{{ .Labels.instance }}</code>
+            <b>Container:</b> <code>{{ .Labels.container_label_com_docker_compose_service }}</code>
             <b>Mức độ:</b> <code>{{ if eq .Labels.severity "critical" }}Nghiêm trọng{{ else if eq .Labels.severity "warning" }}Cảnh báo{{ else }}{{ .Labels.severity }}{{ end }}</code>
             <b>Mô tả:</b> {{ .Annotations.description }}
             {{ end }}
@@ -36,7 +36,7 @@ contactPoints:
             <b>🔴 [CẢNH BÁO SỰ KIỆN] {{ .CommonLabels.alertname }}</b>
 
             {{ range .Alerts -}}
-            <b>Máy chủ:</b> <code>{{ .Labels.instance }}</code>
+            <b>Container:</b> <code>{{ .Labels.container_label_com_docker_compose_service }}</code>
             <b>Mức độ:</b> <code>{{ if eq .Labels.severity "critical" }}Nghiêm trọng{{ else if eq .Labels.severity "warning" }}Cảnh báo{{ else }}{{ .Labels.severity }}{{ end }}</code>
             <b>Mô tả:</b> {{ .Annotations.description }}
             {{ end }}
@@ -53,6 +53,15 @@ policies:
     group_interval: 10m
     repeat_interval: 24h
     routes:
+      - receiver: telegram-endpoint
+        matchers:
+          - alert_type = container
+        group_by: ['...']
+        group_wait: 10s
+        group_interval: 1m
+        repeat_interval: 1h
       - receiver: telegram-no-resolved
         matchers:
           - alert_type = event
+
+# Alert rules are provisioned from rules.yml.

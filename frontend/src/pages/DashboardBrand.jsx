@@ -134,7 +134,7 @@ const DashboardContent = () => {
                         inforTab={"Báo cáo cho nhãn hàng"}
                         maxInsert={
                           dashboard?.maxInsertData?.data?.[0]?.[
-                          "MAX(check_time)"
+                            "MAX(check_time)"
                           ]
                         }
                       />
@@ -153,10 +153,10 @@ const DashboardContent = () => {
                                 !dashboard.isLoading.countCampaignNumberData
                                   ? dashboard.countCampaignNumberData?.data
                                     ? formatNumber(
-                                      dashboard.countCampaignNumberData
-                                        ?.data[0]["COUNT_DISTINCT(Campaign)"],
-                                      { isPercent: false },
-                                    )
+                                        dashboard.countCampaignNumberData
+                                          ?.data[0]["COUNT_DISTINCT(Campaign)"],
+                                        { isPercent: false },
+                                      )
                                     : "-"
                                   : "isLoading",
                               [dashboard.isLoading.countCampaignNumberData],
@@ -178,10 +178,10 @@ const DashboardContent = () => {
                                 !dashboard.isLoading.countSpotNumberData
                                   ? dashboard.countSpotNumberData?.data
                                     ? formatNumber(
-                                      dashboard.countSpotNumberData?.data[0]
-                                        .count,
-                                      { isPercent: false },
-                                    )
+                                        dashboard.countSpotNumberData?.data[0]
+                                          .count,
+                                        { isPercent: false },
+                                      )
                                     : "-"
                                   : "isLoading",
                               [dashboard.isLoading.countSpotNumberData],
@@ -202,10 +202,10 @@ const DashboardContent = () => {
                                 !dashboard.isLoading.durationSpotNumberData
                                   ? dashboard.durationSpotNumberData?.data
                                     ? formatNumber(
-                                      dashboard.durationSpotNumberData
-                                        ?.data[0].total_duration,
-                                      { isPercent: false },
-                                    )
+                                        dashboard.durationSpotNumberData
+                                          ?.data[0].total_duration,
+                                        { isPercent: false },
+                                      )
                                     : "-"
                                   : "isLoading",
                               [dashboard.isLoading.durationSpotNumberData],
@@ -226,10 +226,10 @@ const DashboardContent = () => {
                                 !dashboard.isLoading.spendVNDNumberData
                                   ? dashboard.spendVNDNumberData?.data
                                     ? formatNumber(
-                                      dashboard.spendVNDNumberData?.data[0]
-                                        .price,
-                                      { isPercent: false },
-                                    )
+                                        dashboard.spendVNDNumberData?.data[0]
+                                          .price,
+                                        { isPercent: false },
+                                      )
                                     : "-"
                                   : "isLoading",
                               [dashboard.isLoading.spendVNDNumberData],
@@ -250,10 +250,10 @@ const DashboardContent = () => {
                                 !dashboard.isLoading.reachNumberData
                                   ? dashboard.reachNumberData?.data
                                     ? formatNumber(
-                                      dashboard.reachNumberData?.data[0]
-                                        .reach,
-                                      { isPercent: false },
-                                    )
+                                        dashboard.reachNumberData?.data[0]
+                                          .reach,
+                                        { isPercent: false },
+                                      )
                                     : "-"
                                   : "isLoading",
                               [dashboard.isLoading.reachNumberData],
@@ -274,10 +274,10 @@ const DashboardContent = () => {
                                 !dashboard.isLoading.frequencyNumberData
                                   ? dashboard.frequencyNumberData?.data
                                     ? formatNumber(
-                                      dashboard.frequencyNumberData?.data[0]
-                                        .frequency,
-                                      { isPercent: false },
-                                    )
+                                        dashboard.frequencyNumberData?.data[0]
+                                          .frequency,
+                                        { isPercent: false },
+                                      )
                                     : "-"
                                   : "isLoading",
                               [dashboard.isLoading.frequencyNumberData],
@@ -297,9 +297,12 @@ const DashboardContent = () => {
                               () =>
                                 !dashboard.isLoading.allTableBrandData
                                   ? transformTableChartData(
-                                    dashboard.allTableBrandData?.data,
-                                    dashboard.allTableBrandData?.colnames,
-                                  )
+                                      dashboard.allTableBrandData?.data,
+                                      dashboard.allTableBrandData?.colnames,
+                                      null,
+                                      [],
+                                      LABEL_SPOT,
+                                    )
                                   : "isLoading",
                               [dashboard.isLoading.allTableBrandData],
                             )}
@@ -331,9 +334,9 @@ const DashboardContent = () => {
                               () =>
                                 !dashboard.isLoading.allTableDeviceData
                                   ? transformTableChartData(
-                                    dashboard.allTableDeviceData?.data,
-                                    dashboard.allTableDeviceData?.colnames,
-                                  )
+                                      dashboard.allTableDeviceData?.data,
+                                      dashboard.allTableDeviceData?.colnames,
+                                    )
                                   : "isLoading",
                               [dashboard.isLoading.allTableDeviceData],
                             )}
@@ -355,9 +358,9 @@ const DashboardContent = () => {
                               () =>
                                 !dashboard.isLoading.allTablePlatformData
                                   ? transformTableChartData(
-                                    dashboard.allTablePlatformData?.data,
-                                    dashboard.allTablePlatformData?.colnames,
-                                  )
+                                      dashboard.allTablePlatformData?.data,
+                                      dashboard.allTablePlatformData?.colnames,
+                                    )
                                   : "isLoading",
                               [dashboard.isLoading.allTablePlatformData],
                             )}
@@ -383,9 +386,9 @@ const DashboardContent = () => {
                               () =>
                                 !dashboard.isLoading.viewPiePlatformData
                                   ? transformPieChartData(
-                                    dashboard.viewPiePlatformData?.data,
-                                    dashboard.viewPiePlatformData?.colnames,
-                                  )
+                                      dashboard.viewPiePlatformData?.data,
+                                      dashboard.viewPiePlatformData?.colnames,
+                                    )
                                   : "isLoading",
                               [dashboard.isLoading.viewPiePlatformData],
                             )}
@@ -409,10 +412,10 @@ const DashboardContent = () => {
                               () =>
                                 !dashboard.isLoading.percentPlatformViewData
                                   ? transformBarChartData(
-                                    dashboard.percentPlatformViewData?.data,
-                                    dashboard.percentPlatformViewData
-                                      ?.colnames,
-                                  )
+                                      dashboard.percentPlatformViewData?.data,
+                                      dashboard.percentPlatformViewData
+                                        ?.colnames,
+                                    )
                                   : "isLoading",
                               [dashboard.isLoading.percentPlatformViewData],
                             )}
@@ -437,13 +440,13 @@ const DashboardContent = () => {
                               () =>
                                 !dashboard.isLoading.allTableTopProgramData
                                   ? transformTableChartData(
-                                    dashboard.allTableTopProgramData?.data,
-                                    dashboard.allTableTopProgramData
-                                      ?.colnames,
-                                    null,
-                                    [],
-                                    LABEL_SPOT,
-                                  )
+                                      dashboard.allTableTopProgramData?.data,
+                                      dashboard.allTableTopProgramData
+                                        ?.colnames,
+                                      null,
+                                      [],
+                                      LABEL_SPOT,
+                                    )
                                   : "isLoading",
                               [dashboard.isLoading.allTableTopProgramData],
                             )}
@@ -474,12 +477,12 @@ const DashboardContent = () => {
                               () =>
                                 !dashboard.isLoading.adcodeProgramData
                                   ? transformTableChartData(
-                                    dashboard.adcodeProgramData?.data,
-                                    dashboard.adcodeProgramData?.colnames,
-                                    null,
-                                    [],
-                                    LABEL_SPOT,
-                                  )
+                                      dashboard.adcodeProgramData?.data,
+                                      dashboard.adcodeProgramData?.colnames,
+                                      null,
+                                      [],
+                                      LABEL_SPOT,
+                                    )
                                   : "isLoading",
                               [dashboard.isLoading.adcodeProgramData],
                             )}
@@ -510,9 +513,9 @@ const DashboardContent = () => {
                               () =>
                                 !dashboard.isLoading.sosPieBrandGroupData
                                   ? transformPieChartData(
-                                    dashboard.sosPieBrandGroupData?.data,
-                                    dashboard.sosPieBrandGroupData?.colnames,
-                                  )
+                                      dashboard.sosPieBrandGroupData?.data,
+                                      dashboard.sosPieBrandGroupData?.colnames,
+                                    )
                                   : "isLoading",
                               [dashboard.isLoading.sosPieBrandGroupData],
                             )}
@@ -536,10 +539,10 @@ const DashboardContent = () => {
                               () =>
                                 !dashboard.isLoading.sosPieBrandProductData
                                   ? transformPieChartData(
-                                    dashboard.sosPieBrandProductData?.data,
-                                    dashboard.sosPieBrandProductData
-                                      ?.colnames,
-                                  )
+                                      dashboard.sosPieBrandProductData?.data,
+                                      dashboard.sosPieBrandProductData
+                                        ?.colnames,
+                                    )
                                   : "isLoading",
                               [dashboard.isLoading.sosPieBrandProductData],
                             )}
@@ -563,9 +566,9 @@ const DashboardContent = () => {
                               () =>
                                 !dashboard.isLoading.sovPieBrandGroupData
                                   ? transformPieChartData(
-                                    dashboard.sovPieBrandGroupData?.data,
-                                    dashboard.sovPieBrandGroupData?.colnames,
-                                  )
+                                      dashboard.sovPieBrandGroupData?.data,
+                                      dashboard.sovPieBrandGroupData?.colnames,
+                                    )
                                   : "isLoading",
                               [dashboard.isLoading.sovPieBrandGroupData],
                             )}
@@ -589,10 +592,10 @@ const DashboardContent = () => {
                               () =>
                                 !dashboard.isLoading.sovPieBrandProductData
                                   ? transformPieChartData(
-                                    dashboard.sovPieBrandProductData?.data,
-                                    dashboard.sovPieBrandProductData
-                                      ?.colnames,
-                                  )
+                                      dashboard.sovPieBrandProductData?.data,
+                                      dashboard.sovPieBrandProductData
+                                        ?.colnames,
+                                    )
                                   : "isLoading",
                               [dashboard.isLoading.sovPieBrandProductData],
                             )}
@@ -618,10 +621,10 @@ const DashboardContent = () => {
                               () =>
                                 !dashboard.isLoading.spendVNDBarChannelData
                                   ? transformBarChartData(
-                                    dashboard.spendVNDBarChannelData?.data,
-                                    dashboard.spendVNDBarChannelData
-                                      ?.colnames,
-                                  )
+                                      dashboard.spendVNDBarChannelData?.data,
+                                      dashboard.spendVNDBarChannelData
+                                        ?.colnames,
+                                    )
                                   : "isLoading",
                               [dashboard.isLoading.spendVNDBarChannelData],
                             )}
@@ -644,10 +647,10 @@ const DashboardContent = () => {
                               () =>
                                 !dashboard.isLoading.spendVNDBarFirstLevelData
                                   ? transformBarChartData(
-                                    dashboard.spendVNDBarFirstLevelData?.data,
-                                    dashboard.spendVNDBarFirstLevelData
-                                      ?.colnames,
-                                  )
+                                      dashboard.spendVNDBarFirstLevelData?.data,
+                                      dashboard.spendVNDBarFirstLevelData
+                                        ?.colnames,
+                                    )
                                   : "isLoading",
                               [dashboard.isLoading.spendVNDBarFirstLevelData],
                             )}
@@ -673,9 +676,9 @@ const DashboardContent = () => {
                               () =>
                                 !dashboard.isLoading.reachBarChannelData
                                   ? transformBarChartData(
-                                    dashboard.reachBarChannelData?.data,
-                                    dashboard.reachBarChannelData?.colnames,
-                                  )
+                                      dashboard.reachBarChannelData?.data,
+                                      dashboard.reachBarChannelData?.colnames,
+                                    )
                                   : "isLoading",
                               [dashboard.isLoading.reachBarChannelData],
                             )}
@@ -698,10 +701,10 @@ const DashboardContent = () => {
                               () =>
                                 !dashboard.isLoading.reachBarFirstLevelData
                                   ? transformBarChartData(
-                                    dashboard.reachBarFirstLevelData?.data,
-                                    dashboard.reachBarFirstLevelData
-                                      ?.colnames,
-                                  )
+                                      dashboard.reachBarFirstLevelData?.data,
+                                      dashboard.reachBarFirstLevelData
+                                        ?.colnames,
+                                    )
                                   : "isLoading",
                               [dashboard.isLoading.reachBarFirstLevelData],
                             )}
@@ -726,9 +729,9 @@ const DashboardContent = () => {
                               () =>
                                 !dashboard.isLoading.spendVNDBarDateData
                                   ? transformBarChartData(
-                                    dashboard.spendVNDBarDateData?.data,
-                                    dashboard.spendVNDBarDateData?.colnames,
-                                  )
+                                      dashboard.spendVNDBarDateData?.data,
+                                      dashboard.spendVNDBarDateData?.colnames,
+                                    )
                                   : "isLoading",
                               [dashboard.isLoading.spendVNDBarDateData],
                             )}
@@ -753,10 +756,10 @@ const DashboardContent = () => {
                               () =>
                                 !dashboard.isLoading.spendVNDBarTimebandData
                                   ? transformBarChartData(
-                                    dashboard.spendVNDBarTimebandData?.data,
-                                    dashboard.spendVNDBarTimebandData
-                                      ?.colnames,
-                                  )
+                                      dashboard.spendVNDBarTimebandData?.data,
+                                      dashboard.spendVNDBarTimebandData
+                                        ?.colnames,
+                                    )
                                   : "isLoading",
                               [dashboard.isLoading.spendVNDBarTimebandData],
                             )}
@@ -784,9 +787,9 @@ const DashboardContent = () => {
                               () =>
                                 !dashboard.isLoading.grpBarBrandData
                                   ? transformBarChartData(
-                                    dashboard.grpBarBrandData?.data,
-                                    dashboard.grpBarBrandData?.colnames,
-                                  )
+                                      dashboard.grpBarBrandData?.data,
+                                      dashboard.grpBarBrandData?.colnames,
+                                    )
                                   : "isLoading",
                               [dashboard.isLoading.grpBarBrandData],
                             )}
@@ -825,7 +828,7 @@ const DashboardContent = () => {
                         inforTab={"Ad monitoring report"}
                         maxInsert={
                           dashboard?.maxInsertData?.data?.[0]?.[
-                          "MAX(check_time)"
+                            "MAX(check_time)"
                           ]
                         }
                       />
@@ -841,13 +844,13 @@ const DashboardContent = () => {
                               () =>
                                 !dashboard.isLoading.allTableMonitoringData
                                   ? transformTableChartData(
-                                    dashboard.allTableMonitoringData?.data,
-                                    dashboard.allTableMonitoringData
-                                      ?.colnames,
-                                    null,
-                                    [],
-                                    LABEL_SPOT,
-                                  )
+                                      dashboard.allTableMonitoringData?.data,
+                                      dashboard.allTableMonitoringData
+                                        ?.colnames,
+                                      null,
+                                      [],
+                                      LABEL_SPOT,
+                                    )
                                   : "isLoading",
                               [dashboard.isLoading.allTableMonitoringData],
                             )}

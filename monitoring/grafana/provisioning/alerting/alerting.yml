@@ -82,5 +82,8 @@ policies:
       - receiver: telegram-no-resolved
         matchers:
           - alert_type = event
+        group_wait: 0s        # Có lỗi là bắn Telegram luôn lập tức
+        group_interval: 1m    # Nếu lỗi dồn dập chỉ gom trong 1 phút
+        repeat_interval: 24h  # Kệ nó (vì event dập ngay nên không bao giờ dính repeat)
 
 # Alert rules are provisioned from rules.yml.

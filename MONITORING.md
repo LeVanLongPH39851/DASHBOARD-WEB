@@ -70,7 +70,7 @@ nginx_w ghi request → /var/log/nginx/access.log (JSON format)
 nginx-exporter_w đọc http://nginx_w:8080/stub_status
 cadvisor_w đọc Docker cgroups (/sys, /var/lib/docker)
     → prometheus_w scrape mỗi 15s
-        → Grafana query PromQL để vẽ dashboard
+        → Grafana query PromQL để vẽ dashboard và evaluate alert rule
 ```
 
 ---
@@ -96,7 +96,7 @@ monitoring/
         │   └── cadvisor-dashboard.json     # Dashboard container metrics
         │
         └── alerting/
-            ├── alerting.yml                # Contact point Telegram
+            ├── alerting.yml                # Contact points + Notification policies
             └── rules.yml                   # Alert rules
 ```
 
@@ -110,8 +110,8 @@ Nói với Prometheus: scrape ai, ở đâu, bao lâu một lần.
 
 ```yaml
 scrape_configs:
-  - job_name: 'nginx'     # metric connections/requests từ stub_status
-  - job_name: 'cadvisor'  # metric CPU/RAM từng container
+  - job_name: 'nginx'      # metric connections/requests từ stub_status
+  - job_name: 'cadvisor'   # metric CPU/RAM từng container
   - job_name: 'prometheus' # Prometheus tự monitor chính nó
 ```
 
@@ -176,27 +176,57 @@ Truy cập: `http://localhost:3000/d/cadvisor-containers`
 
 ### `alerting/alerting.yml`
 
-Khai báo **contact point** Telegram — nơi Grafana gửi notification khi alert fire.
+Khai báo **contact points** và **notification policies**.
+
+#### Contact points
+
+| Name | Mô tả |
+|---|---|
+| `telegram-endpoint` | Gửi cả firing lẫn resolved (dùng cho alert memory) |
+| `telegram-no-resolved` | Chỉ gửi firing, không gửi resolved (dùng cho alert event 429/5xx) |
+| `telegram-no-resolved-container` | Chỉ gửi firing, không gửi resolved (dùng cho alert container down) |
+
+Tất cả đều gửi về cùng 1 Telegram group, cùng thread `VTVRatings`.
+
+#### Notification policies
 
 ```
-Contact point: telegram-endpoint
-  → Bot Token + Chat ID + Thread ID
-  → Message template HTML (FIRING / RESOLVED)
+default → telegram-endpoint (group theo alertname + severity)
+  ├── alert_type = container → telegram-no-resolved-container
+  │     group_by: [...] (mỗi container = 1 tin riêng)
+  │     repeat mỗi 1h
+  └── alert_type = event    → telegram-no-resolved
+        (group theo alertname)
+        repeat mỗi 24h (default)
 ```
 
 ---
 
 ### `alerting/rules.yml`
 
-3 alert rule hiện tại:
+Chia thành 2 group:
 
-| Rule | Điều kiện | Severity | For |
-|---|---|---|---|
-| `429 Rate Limit Triggered` | count 429 trong 1 phút > 0 | warning | ngay lập tức |
-| `Gateway No Traffic` | không có log nào trong 5 phút | critical | 5 phút |
-| `Backend Errors (5xx)` | hơn 3 lỗi 5xx trong 2 phút | critical | ngay lập tức |
+#### Group `nginx-gateway-alerts` (evaluate mỗi 30s, datasource: Loki)
 
-`Gateway No Traffic` được cấu hình `noDataState: Alerting` — có nghĩa là khi Loki không có data (nginx down, không ghi log) thì Grafana vẫn fire alert thay vì im lặng.
+| Rule | Điều kiện | Severity | For | alert_type |
+|---|---|---|---|---|
+| `429 Rate Limit - Chatbot` | > 5 request `/api/query` bị 429 trong 2 phút | warning | ngay lập tức | event |
+| `429 Rate Limit - Superset` | > 50 request `/api/superset` bị 429 trong 2 phút | warning | 1 phút | event |
+| `Backend Errors (5xx) - Superset` | > 3 lỗi 5xx trên `/api/superset` trong 2 phút | critical | ngay lập tức | event |
+| `Backend Errors (5xx) - Chatbot` | > 3 lỗi 5xx trên `/api/query` trong 2 phút | critical | ngay lập tức | event |
+
+#### Group `container-health` (evaluate mỗi 30s, datasource: Prometheus/cAdvisor)
+
+| Rule | Điều kiện | Severity | For | alert_type |
+|---|---|---|---|---|
+| `Container memory gần giới hạn` | memory usage > 85% limit liên tục 5 phút | critical | 5 phút | container |
+| `Container bị down` | `time() - container_last_seen > 150s` | critical | 30 giây | container |
+
+**Lưu ý về rule `Container bị down`:**
+- Ngưỡng 150s (2.5 phút) là do cAdvisor cache metric 2 phút sau khi container stop — đặt thấp hơn sẽ không bao giờ trigger.
+- `noDataState: OK` — khi metric biến mất hoàn toàn (container đã bị xóa hẳn), rule tự resolve thay vì giữ firing mãi.
+- Độ trễ phát hiện thực tế: ~3–3.5 phút sau khi container stop.
+- Mỗi container down = 1 tin Telegram riêng (nhờ `group_by: ['...']`).
 
 ---
 
@@ -207,11 +237,12 @@ Contact point: telegram-endpoint
 | Grafana | `http://localhost:3000` | admin / admin |
 | Dashboard chính | `http://localhost:3000/d/dashboard-web-monitoring` | |
 | Nginx Logs | `http://localhost:3000/d/nginx-logs/nginx-logs` | |
-| cAdvisor | `http://localhost:3000/d/cadvisor-containers` | |
+| cAdvisor Dashboard | `http://localhost:3000/d/cadvisor-containers` | |
 
 ---
 
-## Những gì chưa có (known gaps)
+## Known gaps
 
 - **Service-level metric**: hiện tại chỉ đo từ tầng gateway. Nếu `/api/query` chậm, biết được "chậm" nhưng chưa biết chậm ở đâu (code, LLM call, hay network).
 - **Load testing**: các ngưỡng rate limit (50r/s superset, 6r/m chatbot) được đặt tay, chưa được validate bằng load test thực tế.
+- **Container down detection lag**: do giới hạn cache của cAdvisor, độ trễ tối thiểu luôn là ~2 phút — không thể rút ngắn chỉ bằng cấu hình alert.

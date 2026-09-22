@@ -41,8 +41,27 @@ contactPoints:
             <b>Mô tả:</b> {{ .Annotations.description }}
             {{ end }}
           disableResolveMessage: true
+  - orgId: 1
+    name: telegram-no-resolved-container
+    receivers:
+      - uid: telegram-receiver-no-resolved-container
+        type: telegram
+        settings:
+          bottoken: '8615385595:AAEvKvPJ9LaoDor654rJCv66AiOaydHd-DM'
+          chatid: '-1004473506382'
+          message_thread_id: '14'
+          parse_mode: HTML
+          message: |-
+            <b>🔴 [Container bị down] {{ .CommonLabels.alertname }}</b>
 
-# Notification policy — rule nào dùng contact point nào
+            {{ range .Alerts -}}
+            <b>Container:</b> <code>{{ .Labels.container_label_com_docker_compose_service }}</code>
+            <b>Mức độ:</b> <code>Nghiêm trọng</code>
+            <b>Mô tả:</b> {{ .Annotations.description }}
+            {{ end }}
+          disableResolveMessage: true
+
+
 policies:
   - orgId: 1
     receiver: telegram-endpoint   # default receiver cho tất cả alert
@@ -53,7 +72,7 @@ policies:
     group_interval: 10m
     repeat_interval: 24h
     routes:
-      - receiver: telegram-endpoint
+      - receiver: telegram-no-resolved-container
         matchers:
           - alert_type = container
         group_by: ['...']

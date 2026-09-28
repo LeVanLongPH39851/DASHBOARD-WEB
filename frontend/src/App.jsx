@@ -27,7 +27,7 @@ function App() {
         <Route path="/spot" element={<DashboardSpot />} />
         <Route path="/brand" element={<DashboardBrand />} />
         <Route path="/world-cup-2026" element={<DashboardWorldCup />} />
-        <Route path="/vietnam-today" element={<VietnamToday />} />
+        <Route path="/survey" element={<VietnamToday />} />
       </Routes>
     </BrowserRouter>
   );

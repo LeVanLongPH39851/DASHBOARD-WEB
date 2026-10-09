@@ -98,8 +98,6 @@ const DashboardContent = () => {
     dashboard.isLoading.filterAdcodeData,
   ]);
 
-  console.log(dashboard.isLoading.spendVNDNumberData);
-
   return (
     <main className="font-family-be-vietnam-pro w-full h-full tracking-[0.1px] overflow-x-clip">
       <Header username={user?.username} />

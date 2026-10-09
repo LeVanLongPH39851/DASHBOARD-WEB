@@ -29,6 +29,7 @@ const LineChart = ({
   fontWeight,
   nameChart,
   description,
+  displayName = true,
   enableZoom = true,
   colors = {},
   showLabel = true,
@@ -59,11 +60,14 @@ const LineChart = ({
 
   if (data === "isLoading") {
     return (
-      <div className="p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component">
+      <div
+        className={`${displayName ? "p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component" : ""}`}
+      >
         <NameChart
           nameChart={nameChart}
           description={description}
           fullScreen={fullScreen}
+          display={displayName}
           refetch={refetch}
         />
         {window.location.pathname.includes("/world-cup-2026") ? (
@@ -77,11 +81,14 @@ const LineChart = ({
     );
   } else if (!data || !data?.labels?.length) {
     return (
-      <div className="p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component">
+      <div
+        className={`${displayName ? "p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component" : ""}`}
+      >
         <NameChart
           nameChart={nameChart}
           description={description}
           fullScreen={fullScreen}
+          display={displayName}
           refetch={refetch}
         />
         <NoData height={!screenMd ? (!screenLg ? height : 350) : 240} />
@@ -734,10 +741,13 @@ const LineChart = ({
   };
 
   return (
-    <div className="p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component">
+    <div
+      className={`${displayName ? "p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component" : ""}`}
+    >
       <NameChart
         nameChart={nameChart}
         description={description}
+        display={displayName}
         getChartData={getEChartsData}
         fullScreen={fullScreen}
         refetch={refetch}

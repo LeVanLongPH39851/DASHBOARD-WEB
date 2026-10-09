@@ -59,6 +59,11 @@ export const LABEL = {
   "Đội tuyển": "ĐỘI TUYỂN",
   "Số trận đấu": "SỐ TRẬN ĐẤU",
   retention_rate: "Tỷ lệ thời\ngian xem (%)",
+  category_name: "Category",
+  country: "Country",
+  total_time_viewing: "Total Time Viewing",
+  province_name: "Province",
+  Total_Views: "Total Views",
 };
 
 export const LABEL_SPOT = {

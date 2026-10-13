@@ -4,6 +4,13 @@ import { buildPayloadWithFilters } from "./payload_vietnamtodays/buildPayloadWit
 
 const apiRoute = import.meta.env.VITE_API_ROUTE;
 
+const copiedChartsDisabledFilters = [
+  "timebandFilters",
+  "firstLevelFilters",
+  "programFilters",
+  "startTimeFilters",
+];
+
 const postChart = async (
   basePayload,
   appliedFilters,
@@ -101,9 +108,9 @@ export const chart1073 = (appliedFilters, force = false) =>
     force,
   );
 
-export const chart628 = (appliedFilters, force = false) =>
+export const chart1065 = (appliedFilters, force = false) =>
   postChart(
-    payloads.chart628,
+    payloads.chart1065,
     appliedFilters,
     [
       "timebandFilters",
@@ -114,9 +121,9 @@ export const chart628 = (appliedFilters, force = false) =>
     force,
   );
 
-export const chart627 = (appliedFilters, force = false) =>
+export const chart1027 = (appliedFilters, force = false) =>
   postChart(
-    payloads.chart627,
+    payloads.chart1027,
     appliedFilters,
     [
       "timebandFilters",
@@ -127,9 +134,69 @@ export const chart627 = (appliedFilters, force = false) =>
     force,
   );
 
-export const chart630 = (appliedFilters, force = false) =>
+export const chart1091 = (appliedFilters, force = false) =>
+  postChart(payloads.chart1091, appliedFilters, copiedChartsDisabledFilters, force);
+
+export const chart1108 = (appliedFilters, force = false) =>
+  postChart(payloads.chart1108, appliedFilters, copiedChartsDisabledFilters, force);
+
+export const chart1107 = (appliedFilters, force = false) =>
+  postChart(payloads.chart1107, appliedFilters, copiedChartsDisabledFilters, force);
+
+export const chart1105 = (appliedFilters, force = false) =>
+  postChart(payloads.chart1105, appliedFilters, copiedChartsDisabledFilters, force);
+
+export const chart1104 = (appliedFilters, force = false) =>
+  postChart(payloads.chart1104, appliedFilters, copiedChartsDisabledFilters, force);
+
+export const chart1103 = (appliedFilters, force = false) =>
+  postChart(payloads.chart1103, appliedFilters, copiedChartsDisabledFilters, force);
+
+export const chart1090 = (appliedFilters, force = false) =>
+  postChart(payloads.chart1090, appliedFilters, copiedChartsDisabledFilters, force);
+
+export const chart1102 = (appliedFilters, force = false) =>
+  postChart(payloads.chart1102, appliedFilters, copiedChartsDisabledFilters, force);
+
+export const chart1097 = (appliedFilters, force = false) =>
+  postChart(payloads.chart1097, appliedFilters, copiedChartsDisabledFilters, force);
+
+export const chart1093 = (appliedFilters, force = false) =>
+  postChart(payloads.chart1093, appliedFilters, copiedChartsDisabledFilters, force);
+
+export const chart1092 = (appliedFilters, force = false) =>
+  postChart(payloads.chart1092, appliedFilters, copiedChartsDisabledFilters, force);
+
+export const chart1109 = (appliedFilters, force = false) =>
+  postChart(payloads.chart1109, appliedFilters, copiedChartsDisabledFilters, force);
+
+export const chart1208 = (appliedFilters, force = false) =>
+  postChart(payloads.chart1208, appliedFilters, copiedChartsDisabledFilters, force);
+
+export const chart1211 = (appliedFilters, force = false) =>
+  postChart(payloads.chart1211, appliedFilters, copiedChartsDisabledFilters, force);
+
+export const chart1205 = (appliedFilters, force = false) =>
+  postChart(payloads.chart1205, appliedFilters, copiedChartsDisabledFilters, force);
+
+export const chart1212 = (appliedFilters, force = false) =>
+  postChart(payloads.chart1212, appliedFilters, copiedChartsDisabledFilters, force);
+
+export const chart1088 = (appliedFilters, force = false) =>
+  postChart(payloads.chart1088, appliedFilters, copiedChartsDisabledFilters, force);
+
+export const chart1079 = (appliedFilters, force = false) =>
+  postChart(payloads.chart1079, appliedFilters, copiedChartsDisabledFilters, force);
+
+export const chart1086 = (appliedFilters, force = false) =>
+  postChart(payloads.chart1086, appliedFilters, copiedChartsDisabledFilters, force);
+
+export const chart1087 = (appliedFilters, force = false) =>
+  postChart(payloads.chart1087, appliedFilters, copiedChartsDisabledFilters, force);
+
+export const chart1042 = (appliedFilters, force = false) =>
   postChart(
-    payloads.chart630,
+    payloads.chart1042,
     appliedFilters,
     [
       "timebandFilters",
@@ -140,9 +207,9 @@ export const chart630 = (appliedFilters, force = false) =>
     force,
   );
 
-export const chart629 = (appliedFilters, force = false) =>
+export const chart1066 = (appliedFilters, force = false) =>
   postChart(
-    payloads.chart629,
+    payloads.chart1066,
     appliedFilters,
     [
       "timebandFilters",
@@ -153,9 +220,9 @@ export const chart629 = (appliedFilters, force = false) =>
     force,
   );
 
-export const chart639 = (appliedFilters, force = false) =>
+export const chart1044 = (appliedFilters, force = false) =>
   postChart(
-    payloads.chart639,
+    payloads.chart1044,
     appliedFilters,
     [
       "timebandFilters",
@@ -166,9 +233,9 @@ export const chart639 = (appliedFilters, force = false) =>
     force,
   );
 
-export const chart640 = (appliedFilters, force = false) =>
+export const chart1037 = (appliedFilters, force = false) =>
   postChart(
-    payloads.chart640,
+    payloads.chart1037,
     appliedFilters,
     [
       "timebandFilters",
@@ -179,9 +246,9 @@ export const chart640 = (appliedFilters, force = false) =>
     force,
   );
 
-export const chart647 = (appliedFilters, force = false) =>
+export const chart1038 = (appliedFilters, force = false) =>
   postChart(
-    payloads.chart647,
+    payloads.chart1038,
     appliedFilters,
     [
       "timebandFilters",
@@ -192,9 +259,9 @@ export const chart647 = (appliedFilters, force = false) =>
     force,
   );
 
-export const chart646 = (appliedFilters, force = false) =>
+export const chart1045 = (appliedFilters, force = false) =>
   postChart(
-    payloads.chart646,
+    payloads.chart1045,
     appliedFilters,
     [
       "timebandFilters",
@@ -218,9 +285,9 @@ export const chart1084 = (appliedFilters, force = false) =>
     force,
   );
 
-export const chart656 = (appliedFilters, force = false) =>
+export const chart1036 = (appliedFilters, force = false) =>
   postChart(
-    payloads.chart656,
+    payloads.chart1036,
     appliedFilters,
     [
       "timebandFilters",
@@ -231,9 +298,9 @@ export const chart656 = (appliedFilters, force = false) =>
     force,
   );
 
-export const chart655 = (appliedFilters, force = false) =>
+export const chart1043 = (appliedFilters, force = false) =>
   postChart(
-    payloads.chart655,
+    payloads.chart1043,
     appliedFilters,
     [
       "timebandFilters",
@@ -244,9 +311,9 @@ export const chart655 = (appliedFilters, force = false) =>
     force,
   );
 
-export const chart657 = (appliedFilters, force = false) =>
+export const chart1032 = (appliedFilters, force = false) =>
   postChart(
-    payloads.chart657,
+    payloads.chart1032,
     appliedFilters,
     [
       "timebandFilters",
@@ -270,9 +337,9 @@ export const chart1072 = (appliedFilters, force = false) =>
     force,
   );
 
-export const chart651 = (appliedFilters, force = false) =>
+export const chart1049 = (appliedFilters, force = false) =>
   postChart(
-    payloads.chart651,
+    payloads.chart1049,
     appliedFilters,
     [
       "timebandFilters",
@@ -283,9 +350,9 @@ export const chart651 = (appliedFilters, force = false) =>
     force,
   );
 
-export const chart653 = (appliedFilters, force = false) =>
+export const chart1096 = (appliedFilters, force = false) =>
   postChart(
-    payloads.chart653,
+    payloads.chart1096,
     appliedFilters,
     [
       "timebandFilters",
@@ -296,9 +363,9 @@ export const chart653 = (appliedFilters, force = false) =>
     force,
   );
 
-export const chart654 = (appliedFilters, force = false) =>
+export const chart1046 = (appliedFilters, force = false) =>
   postChart(
-    payloads.chart654,
+    payloads.chart1046,
     appliedFilters,
     [
       "timebandFilters",
@@ -309,9 +376,9 @@ export const chart654 = (appliedFilters, force = false) =>
     force,
   );
 
-export const chart673 = (appliedFilters, force = false) =>
+export const chart1054 = (appliedFilters, force = false) =>
   postChart(
-    payloads.chart673,
+    payloads.chart1054,
     appliedFilters,
     [
       "timebandFilters",
@@ -340,25 +407,25 @@ export const chart1077 = (appliedFilters, force = false) =>
     force,
   );
 
-export const chart633 = (appliedFilters, force = false) =>
+export const chart1029 = (appliedFilters, force = false) =>
   postChart(
-    payloads.chart633,
+    payloads.chart1029,
     appliedFilters,
     ["firstLevelFilters", "programFilters", "startTimeFilters"],
     force,
   );
 
-export const chart642 = (appliedFilters, force = false) =>
+export const chart1048 = (appliedFilters, force = false) =>
   postChart(
-    payloads.chart642,
+    payloads.chart1048,
     appliedFilters,
     ["firstLevelFilters", "programFilters", "startTimeFilters"],
     force,
   );
 
-export const chart632 = (appliedFilters, force = false) =>
+export const chart1028 = (appliedFilters, force = false) =>
   postChart(
-    payloads.chart632,
+    payloads.chart1028,
     appliedFilters,
     ["firstLevelFilters", "programFilters", "startTimeFilters"],
     force,
@@ -372,9 +439,9 @@ export const chart1080 = (appliedFilters, force = false) =>
     force,
   );
 
-export const chart634 = (appliedFilters, force = false) =>
+export const chart1068 = (appliedFilters, force = false) =>
   postChart(
-    payloads.chart634,
+    payloads.chart1068,
     appliedFilters,
     ["firstLevelFilters", "programFilters", "startTimeFilters"],
     force,
@@ -388,33 +455,33 @@ export const chart1083 = (appliedFilters, force = false) =>
     force,
   );
 
-export const chart635 = (appliedFilters, force = false) =>
+export const chart1047 = (appliedFilters, force = false) =>
   postChart(
-    payloads.chart635,
+    payloads.chart1047,
     appliedFilters,
     ["firstLevelFilters", "programFilters", "startTimeFilters"],
     force,
   );
 
-export const chart677 = (appliedFilters, force = false) =>
+export const chart1071 = (appliedFilters, force = false) =>
   postChart(
-    payloads.chart677,
+    payloads.chart1071,
     appliedFilters,
     ["firstLevelFilters", "programFilters", "startTimeFilters"],
     force,
   );
 
-export const chart666 = (appliedFilters, force = false) =>
+export const chart1041 = (appliedFilters, force = false) =>
   postChart(
-    payloads.chart666,
+    payloads.chart1041,
     appliedFilters,
     ["firstLevelFilters", "programFilters", "startTimeFilters"],
     force,
   );
 
-export const chart665 = (appliedFilters, force = false) =>
+export const chart1040 = (appliedFilters, force = false) =>
   postChart(
-    payloads.chart665,
+    payloads.chart1040,
     appliedFilters,
     ["firstLevelFilters", "programFilters", "startTimeFilters"],
     force,
@@ -428,9 +495,9 @@ export const chart1089 = (appliedFilters, force = false) =>
     force,
   );
 
-export const chart636 = (appliedFilters, force = false) =>
+export const chart1094 = (appliedFilters, force = false) =>
   postChart(
-    payloads.chart636,
+    payloads.chart1094,
     appliedFilters,
     ["firstLevelFilters", "programFilters", "startTimeFilters"],
     force,
@@ -444,17 +511,17 @@ export const chart1082 = (appliedFilters, force = false) =>
 export const chart1078 = (appliedFilters, force = false) =>
   postChart(payloads.chart1078, appliedFilters, ["timebandFilters"], force);
 
-export const chart669 = (appliedFilters, force = false) =>
-  postChart(payloads.chart669, appliedFilters, ["timebandFilters"], force);
+export const chart1052 = (appliedFilters, force = false) =>
+  postChart(payloads.chart1052, appliedFilters, ["timebandFilters"], force);
 
-export const chart670 = (appliedFilters, force = false) =>
-  postChart(payloads.chart670, appliedFilters, ["timebandFilters"], force);
+export const chart1051 = (appliedFilters, force = false) =>
+  postChart(payloads.chart1051, appliedFilters, ["timebandFilters"], force);
 
-export const chart671 = (appliedFilters, force = false) =>
-  postChart(payloads.chart671, appliedFilters, ["timebandFilters"], force);
+export const chart1050 = (appliedFilters, force = false) =>
+  postChart(payloads.chart1050, appliedFilters, ["timebandFilters"], force);
 
-export const chart672 = (appliedFilters, force = false) =>
-  postChart(payloads.chart672, appliedFilters, ["timebandFilters"], force);
+export const chart1053 = (appliedFilters, force = false) =>
+  postChart(payloads.chart1053, appliedFilters, ["timebandFilters"], force);
 
 export const chart1210 = (appliedFilters, force = false) =>
   postChart(payloads.chart1210, appliedFilters, ["timebandFilters"], force);
@@ -462,14 +529,14 @@ export const chart1210 = (appliedFilters, force = false) =>
 export const chart1209 = (appliedFilters, force = false) =>
   postChart(payloads.chart1209, appliedFilters, ["timebandFilters"], force);
 
-export const chart645 = (appliedFilters, force = false) =>
-  postChart(payloads.chart645, appliedFilters, ["timebandFilters"], force);
+export const chart1095 = (appliedFilters, force = false) =>
+  postChart(payloads.chart1095, appliedFilters, ["timebandFilters"], force);
 
 // Tab Rating By Minute
 
-export const chart680 = (appliedFilters, force = false) =>
+export const chart1070 = (appliedFilters, force = false) =>
   postChart(
-    payloads.chart680,
+    payloads.chart1070,
     appliedFilters,
     [
       "eventFilters",
@@ -481,9 +548,9 @@ export const chart680 = (appliedFilters, force = false) =>
     force,
   );
 
-export const chart678 = (appliedFilters, force = false) =>
+export const chart1069 = (appliedFilters, force = false) =>
   postChart(
-    payloads.chart678,
+    payloads.chart1069,
     appliedFilters,
     [
       "eventFilters",
@@ -496,9 +563,9 @@ export const chart678 = (appliedFilters, force = false) =>
     force,
   );
 
-export const chart681 = (appliedFilters, force = false) =>
+export const chart1055 = (appliedFilters, force = false) =>
   postChart(
-    payloads.chart681,
+    payloads.chart1055,
     appliedFilters,
     [
       "eventFilters",
@@ -509,6 +576,45 @@ export const chart681 = (appliedFilters, force = false) =>
     ],
     force,
   );
+
+export const chart1056 = (appliedFilters, force = false) =>
+  postChart(payloads.chart1056, appliedFilters, ["timebandFilters"], force);
+
+export const chart1057 = (appliedFilters, force = false) =>
+  postChart(payloads.chart1057, appliedFilters, ["timebandFilters"], force);
+
+export const chart1058 = (appliedFilters, force = false) =>
+  postChart(payloads.chart1058, appliedFilters, ["timebandFilters"], force);
+
+export const chart1059 = (appliedFilters, force = false) =>
+  postChart(payloads.chart1059, appliedFilters, ["timebandFilters"], force);
+
+export const chart1060 = (appliedFilters, force = false) =>
+  postChart(payloads.chart1060, appliedFilters, ["timebandFilters"], force);
+
+export const chart1061 = (appliedFilters, force = false) =>
+  postChart(payloads.chart1061, appliedFilters, ["timebandFilters"], force);
+
+export const chart1062 = (appliedFilters, force = false) =>
+  postChart(payloads.chart1062, appliedFilters, ["timebandFilters"], force);
+
+export const chart1063 = (appliedFilters, force = false) =>
+  postChart(payloads.chart1063, appliedFilters, ["timebandFilters"], force);
+
+export const chart1064 = (appliedFilters, force = false) =>
+  postChart(payloads.chart1064, appliedFilters, ["timebandFilters"], force);
+
+export const chart1067 = (appliedFilters, force = false) =>
+  postChart(payloads.chart1067, appliedFilters, ["timebandFilters"], force);
+
+export const chart1213 = (appliedFilters, force = false) =>
+  postChart(payloads.chart1213, appliedFilters, ["timebandFilters"], force);
+
+export const chart1214 = (appliedFilters, force = false) =>
+  postChart(payloads.chart1214, appliedFilters, ["timebandFilters"], force);
+
+export const chart1215 = (appliedFilters, force = false) =>
+  postChart(payloads.chart1215, appliedFilters, ["timebandFilters"], force);
 
 export const getMaxInsert = () => {
   const userId = sessionStorage.getItem("user_id");

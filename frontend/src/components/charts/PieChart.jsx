@@ -32,7 +32,7 @@ const PieChart = ({
   maxLegend = false,
   crossFilter = false,
   keyChart = false,
-  refetch = undefined
+  refetch = undefined,
 }) => {
   // console.log("PieChart");
 
@@ -45,14 +45,22 @@ const PieChart = ({
   if (data === "isLoading") {
     return (
       <div className="p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component">
-        <NameChart nameChart={nameChart} description={description} refetch={refetch} />
+        <NameChart
+          nameChart={nameChart}
+          description={description}
+          refetch={refetch}
+        />
         <Loading height={!screenMd ? (!screenLg ? height : 250) : 210} />
       </div>
     );
   } else if (!data) {
     return (
       <div className="p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component">
-        <NameChart nameChart={nameChart} description={description} refetch={refetch} />
+        <NameChart
+          nameChart={nameChart}
+          description={description}
+          refetch={refetch}
+        />
         <NoData height={!screenMd ? (!screenLg ? height : 250) : 210} />
       </div>
     );
@@ -67,9 +75,9 @@ const PieChart = ({
     series.length > 0
       ? series
       : labels.map((name, i) => ({
-        name,
-        value: values[i] || 0,
-      }));
+          name,
+          value: values[i] || 0,
+        }));
 
   const getEChartsData = useCallback(() => {
     if (chartRef.current) {
@@ -259,34 +267,38 @@ const PieChart = ({
 
     legend: enableLegend
       ? {
-        type: "scroll",
-        orient: !screenMd && !legendHorizontal ? "vertical" : "horizontal",
-        left: 0,
-        top: 0,
-        itemWidth: !screenMd ? (!screenLg ? 13 : 12) : 10,
-        itemHeight: !screenMd ? (!screenLg ? 13 : 12) : 10,
-        icon: "circle",
-        itemGap: 8,
-        data: legendData,
-        formatter: (name) =>
-          maxLegend ? (name?.length > maxLegend ? name.slice(0, maxLegend) + "..." : name) : name,
-        textStyle: {
-          fontSize: !screenMd
-            ? !screenLg
-              ? fontSize?.legend
-              : "11px"
-            : "10.5px",
-          color: !darkMode
-            ? "rgba(30, 27, 57, 1)"
-            : "rgba(225, 225, 225, 0.9)",
-          fontWeight: fontWeight?.legend,
-          fontFamily: fontFamily,
-          letterSpacing: "0.1px",
-        },
-      }
+          type: "scroll",
+          orient: !screenMd && !legendHorizontal ? "vertical" : "horizontal",
+          left: 0,
+          top: 0,
+          itemWidth: !screenMd ? (!screenLg ? 13 : 12) : 10,
+          itemHeight: !screenMd ? (!screenLg ? 13 : 12) : 10,
+          icon: "circle",
+          itemGap: 8,
+          data: legendData,
+          formatter: (name) =>
+            maxLegend
+              ? name?.length > maxLegend
+                ? name.slice(0, maxLegend) + "..."
+                : name
+              : name,
+          textStyle: {
+            fontSize: !screenMd
+              ? !screenLg
+                ? fontSize?.legend
+                : "11px"
+              : "10.5px",
+            color: !darkMode
+              ? "rgba(30, 27, 57, 1)"
+              : "rgba(225, 225, 225, 0.9)",
+            fontWeight: fontWeight?.legend,
+            fontFamily: fontFamily,
+            letterSpacing: "0.1px",
+          },
+        }
       : {
-        show: false,
-      },
+          show: false,
+        },
 
     series: [
       {

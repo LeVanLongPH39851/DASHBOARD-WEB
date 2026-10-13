@@ -1,5 +1,5 @@
 // src/components/Filter.jsx
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import DateRangeFilter from "./components/DataRangeFilter";
 import ButtonFilter from "./components/ButtonFilter";
 import SelectMultiFilter from "./components/SelectMultiFilter";

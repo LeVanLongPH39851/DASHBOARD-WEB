@@ -27,6 +27,8 @@ import Header from "../components/layouts/headers/Header";
 import BreadCrumb from "../components/layouts/headers/BreadCrumb";
 import InforTab from "../components/layouts/headers/InforTab";
 import InforFilter from "../components/layouts/headers/InforFilter";
+import { LABEL_VIETNAMTODAY } from "../utils/label";
+import Title from "../components/layouts/components/Title";
 import {
   useDarkMode,
   useIsOpen,
@@ -207,7 +209,7 @@ const DashboardContent = () => {
                               CUSTOM_CHART.lineChart.lineChartTimebandRegional
                                 .showTopNSeries
                             }
-                            xAxisTitle={"Ngày"}
+                            xAxisTitle={"Date"}
                             refetch={useCallback(
                               () => dashboard.refetch("chart1089Data"),
                               [dashboard.isLoading.chart1089Data],
@@ -246,7 +248,7 @@ const DashboardContent = () => {
                               CUSTOM_CHART.lineChart.lineChartTimebandChannel
                                 .showTopNSeries
                             }
-                            xAxisTitle={"Ngày"}
+                            xAxisTitle={"Date"}
                             refetch={useCallback(
                               () => dashboard.refetch("chart1083Data"),
                               [dashboard.isLoading.chart1083Data],
@@ -276,10 +278,6 @@ const DashboardContent = () => {
                             description={false}
                             orientation={""}
                             stack={true}
-                            colorZoom={
-                              CUSTOM_CHART.barChart.barChartArea.rating
-                                .colorZoom
-                            }
                             refetch={useCallback(
                               () => dashboard.refetch("chart1084Data"),
                               [dashboard.isLoading.chart1084Data],
@@ -307,10 +305,6 @@ const DashboardContent = () => {
                             description={false}
                             orientation={""}
                             stack={true}
-                            colorZoom={
-                              CUSTOM_CHART.barChart.barChartArea.rating
-                                .colorZoom
-                            }
                             refetch={useCallback(
                               () => dashboard.refetch("chart1072Data"),
                               [dashboard.isLoading.chart1072Data],
@@ -335,15 +329,18 @@ const DashboardContent = () => {
                             fontWeight={CUSTOM_CHART.pieChart.fontWeight}
                             nameChart={"Watch Time by Content Category"}
                             description={false}
-                            colors={{
-                              "News & Current Affairs": "#6BD3B3",
-                              "Life - Styles": "#EE5960",
-                              Documentary: "#408184",
-                              Entertainment: "#66CBE2",
-                              "Educational & Training": "#5470C6",
-                              Sports: "#FF874E",
-                              "Events/Specials": "#03748E",
-                            }}
+                            colors={useMemo(
+                              () => ({
+                                "News & Current Affairs": "#6BD3B3",
+                                "Life - Styles": "#EE5960",
+                                Documentary: "#408184",
+                                Entertainment: "#66CBE2",
+                                "Educational & Training": "#5470C6",
+                                Sports: "#FF874E",
+                                "Events/Specials": "#03748E",
+                              }),
+                              [],
+                            )}
                             donut={CUSTOM_CHART.pieChart.donut}
                             innerRadius={CUSTOM_CHART.pieChart.innerRadius}
                             refetch={useCallback(
@@ -363,7 +360,10 @@ const DashboardContent = () => {
                             description={false}
                             rowField="category_name"
                             columnField="event_category_name"
-                            valueField={["Avg.Reach", "Views", "Watch Time"]}
+                            valueField={useMemo(
+                              () => ["Avg.Reach", "Views", "Watch Time"],
+                              [],
+                            )}
                             aggType="sum"
                             height={
                               CUSTOM_CHART.tableChart.tableChartChannel.height
@@ -371,6 +371,7 @@ const DashboardContent = () => {
                             fontSize={CUSTOM_CHART.tableChart.fontSize}
                             fontFamily={CUSTOM_CHART.allChart.fontFamily}
                             fontWeight={CUSTOM_CHART.tableChart.fontWeight}
+                            labelTables={LABEL_VIETNAMTODAY}
                             fullScreen={true}
                             refetch={useCallback(
                               () => dashboard.refetch("chart1078Data"),
@@ -391,11 +392,14 @@ const DashboardContent = () => {
                             description={false}
                             rowField="country"
                             columnField="event_category_name"
-                            valueField={[
-                              "ave_reach_1",
-                              "Total_Views",
-                              "total_time_viewing",
-                            ]}
+                            valueField={useMemo(
+                              () => [
+                                "ave_reach_1",
+                                "Total_Views",
+                                "total_time_viewing",
+                              ],
+                              [],
+                            )}
                             aggType="sum"
                             height={
                               CUSTOM_CHART.tableChart.tableChartChannel.height
@@ -403,6 +407,7 @@ const DashboardContent = () => {
                             fontSize={CUSTOM_CHART.tableChart.fontSize}
                             fontFamily={CUSTOM_CHART.allChart.fontFamily}
                             fontWeight={CUSTOM_CHART.tableChart.fontWeight}
+                            labelTables={LABEL_VIETNAMTODAY}
                             fullScreen={true}
                             refetch={useCallback(
                               () => dashboard.refetch("chart1210Data"),
@@ -421,11 +426,14 @@ const DashboardContent = () => {
                             description={false}
                             rowField="province_name"
                             columnField="event_category_name"
-                            valueField={[
-                              "ave_reach_1",
-                              "Total_Views",
-                              "total_time_viewing",
-                            ]}
+                            valueField={useMemo(
+                              () => [
+                                "ave_reach_1",
+                                "Total_Views",
+                                "total_time_viewing",
+                              ],
+                              [],
+                            )}
                             aggType="sum"
                             height={
                               CUSTOM_CHART.tableChart.tableChartChannel.height
@@ -433,6 +441,7 @@ const DashboardContent = () => {
                             fontSize={CUSTOM_CHART.tableChart.fontSize}
                             fontFamily={CUSTOM_CHART.allChart.fontFamily}
                             fontWeight={CUSTOM_CHART.tableChart.fontWeight}
+                            labelTables={LABEL_VIETNAMTODAY}
                             fullScreen={true}
                             refetch={useCallback(
                               () => dashboard.refetch("chart1209Data"),
@@ -650,7 +659,7 @@ const DashboardContent = () => {
                   content: (
                     <section
                       className="bg-background-dashboard dark:bg-background-dashboard-dark transiton-all duration-300"
-                      id="target_capture_channel"
+                      id="target_capture_live"
                     >
                       <InforTab
                         inforTab={"Live TV"}
@@ -662,832 +671,961 @@ const DashboardContent = () => {
                       />
                       <InforFilter filters={scopeFilterData} />
                       <div className="px-6 max-lg:px-5 max-md:px-4 py-6 max-lg:py-5 max-md:py-4">
-                        <div className="px-6 max-lg:px-5 max-md:px-0 pt-4 max-lg:pt-3 max-md:pt-0 bg-background-black-4 max-md:bg-background-dashboard dark:bg-background-dark max-md:dark:bg-background-dashboard-dark rounded-2xl">
-                          <NormalTabs
-                            tabs={[
-                              {
-                                id: "%",
-                                label: "(%)",
-                                content: (
-                                  <>
-                                    <div className="w-full pb-6 max-lg:pb-5 max-md:pb-4">
-                                      <LineChart
-                                        data={useMemo(
-                                          () =>
-                                            !dashboard.isLoading.chart642Data
-                                              ? transformMixedChartData(
-                                                  dashboard.chart642Data?.data,
-                                                  "date",
-                                                  dashboard.chart642Data
-                                                    ?.colnames,
-                                                )
-                                              : "isLoading",
-                                          [dashboard.isLoading.chart642Data],
-                                        )}
-                                        height={CUSTOM_CHART.lineChart.height}
-                                        fontSize={
-                                          CUSTOM_CHART.lineChart.fontSize
-                                        }
-                                        fontFamily={
-                                          CUSTOM_CHART.allChart.fontFamily
-                                        }
-                                        fontWeight={
-                                          CUSTOM_CHART.lineChart.fontWeight
-                                        }
-                                        nameChart={
-                                          CUSTOM_CHART.lineChart
-                                            .lineChartPercentDateChannel.rating
-                                            .name
-                                        }
-                                        description={
-                                          CUSTOM_CHART.lineChart
-                                            .lineChartPercentDateChannel.rating
-                                            .description
-                                        }
-                                        colors={
-                                          CUSTOM_CHART.lineChart.colorChannel
-                                        }
-                                        smooth={CUSTOM_CHART.lineChart.smooth}
-                                        symbolSize={
-                                          CUSTOM_CHART.lineChart.symbolSize
-                                        }
-                                        lineWidth={
-                                          CUSTOM_CHART.lineChart.lineWidth
-                                        }
-                                        areaStyle={
-                                          CUSTOM_CHART.lineChart.areaStyle
-                                        }
-                                        stack={CUSTOM_CHART.lineChart.stack}
-                                        showTopNSeries={
-                                          CUSTOM_CHART.lineChart.showTopNSeries
-                                        }
-                                        crossFilter={"channels"}
-                                        keyChart={"chart642Data"}
-                                        refetch={useCallback(
-                                          () =>
-                                            dashboard.refetch("chart642Data"),
-                                          [dashboard.isLoading.chart642Data],
-                                        )}
-                                      />
-                                    </div>
-                                    <div className="w-full pb-6 max-lg:pb-5 max-md:pb-4">
-                                      <LineChart
-                                        data={useMemo(
-                                          () =>
-                                            !dashboard.isLoading.chart633Data
-                                              ? transformMixedChartData(
-                                                  dashboard.chart633Data?.data,
-                                                  "date",
-                                                  dashboard.chart633Data
-                                                    ?.colnames,
-                                                )
-                                              : "isLoading",
-                                          [dashboard.isLoading.chart633Data],
-                                        )}
-                                        height={CUSTOM_CHART.lineChart.height}
-                                        fontSize={
-                                          CUSTOM_CHART.lineChart.fontSize
-                                        }
-                                        fontFamily={
-                                          CUSTOM_CHART.allChart.fontFamily
-                                        }
-                                        fontWeight={
-                                          CUSTOM_CHART.lineChart.fontWeight
-                                        }
-                                        nameChart={
-                                          CUSTOM_CHART.lineChart
-                                            .lineChartPercentDateChannel
-                                            .aveReach.name
-                                        }
-                                        description={
-                                          CUSTOM_CHART.lineChart
-                                            .lineChartPercentDateChannel
-                                            .aveReach.description
-                                        }
-                                        colors={
-                                          CUSTOM_CHART.lineChart.colorChannel
-                                        }
-                                        smooth={CUSTOM_CHART.lineChart.smooth}
-                                        symbolSize={
-                                          CUSTOM_CHART.lineChart.symbolSize
-                                        }
-                                        lineWidth={
-                                          CUSTOM_CHART.lineChart.lineWidth
-                                        }
-                                        areaStyle={
-                                          CUSTOM_CHART.lineChart.areaStyle
-                                        }
-                                        stack={CUSTOM_CHART.lineChart.stack}
-                                        showTopNSeries={
-                                          CUSTOM_CHART.lineChart.showTopNSeries
-                                        }
-                                        crossFilter={"channels"}
-                                        keyChart={"chart633Data"}
-                                        refetch={useCallback(
-                                          () =>
-                                            dashboard.refetch("chart633Data"),
-                                          [dashboard.isLoading.chart633Data],
-                                        )}
-                                      />
-                                    </div>
-                                    <div className="w-full pb-6 max-lg:pb-5 max-md:pb-0">
-                                      <TreeMapChart
-                                        data={useMemo(
-                                          () =>
-                                            !dashboard.isLoading.chart632Data
-                                              ? transformTreeMapData(
-                                                  dashboard.chart632Data?.data,
-                                                  dashboard.chart632Data
-                                                    ?.colnames,
-                                                )
-                                              : "isLoading",
-                                          [dashboard.isLoading.chart632Data],
-                                        )}
-                                        height={
-                                          CUSTOM_CHART.treeMapChart.height
-                                        }
-                                        fontSize={
-                                          CUSTOM_CHART.treeMapChart.fontSize
-                                        }
-                                        fontFamily={
-                                          CUSTOM_CHART.allChart.fontFamily
-                                        }
-                                        fontWeight={
-                                          CUSTOM_CHART.treeMapChart.fontWeight
-                                        }
-                                        nameChart={
-                                          CUSTOM_CHART.treeMapChart
-                                            .treeMapChartPercentChannel.name
-                                        }
-                                        description={
-                                          CUSTOM_CHART.treeMapChart
-                                            .treeMapChartPercentChannel
-                                            .description
-                                        }
-                                        colors={
-                                          CUSTOM_CHART.treeMapChart.colorChannel
-                                        }
-                                        crossFilter={"channels"}
-                                        keyChart={"chart632Data"}
-                                        refetch={useCallback(
-                                          () =>
-                                            dashboard.refetch("chart632Data"),
-                                          [dashboard.isLoading.chart632Data],
-                                        )}
-                                      />
-                                    </div>
-                                  </>
-                                ),
-                              },
-                              {
-                                id: "000",
-                                label: "(000)",
-                                content: (
-                                  <>
-                                    <div className="w-full pb-6 max-lg:pb-5 max-md:pb-4">
-                                      <LineChart
-                                        data={useMemo(
-                                          () =>
-                                            !dashboard.isLoading.chart634Data
-                                              ? transformMixedChartData(
-                                                  dashboard.chart634Data?.data,
-                                                  "Khung giờ",
-                                                  dashboard.chart634Data
-                                                    ?.colnames,
-                                                )
-                                              : "isLoading",
-                                          [dashboard.isLoading.chart634Data],
-                                        )}
-                                        height={CUSTOM_CHART.lineChart.height}
-                                        fontSize={
-                                          CUSTOM_CHART.lineChart.fontSize
-                                        }
-                                        fontFamily={
-                                          CUSTOM_CHART.allChart.fontFamily
-                                        }
-                                        fontWeight={
-                                          CUSTOM_CHART.lineChart.fontWeight
-                                        }
-                                        nameChart={
-                                          CUSTOM_CHART.lineChart
-                                            .lineChartTimebandChannel.rating
-                                            .name
-                                        }
-                                        description={
-                                          CUSTOM_CHART.lineChart
-                                            .lineChartTimebandChannel.rating
-                                            .description
-                                        }
-                                        colors={
-                                          CUSTOM_CHART.lineChart.colorChannel
-                                        }
-                                        smooth={CUSTOM_CHART.lineChart.smooth}
-                                        symbolSize={
-                                          CUSTOM_CHART.lineChart.symbolSize
-                                        }
-                                        lineWidth={
-                                          CUSTOM_CHART.lineChart.lineWidth
-                                        }
-                                        areaStyle={
-                                          CUSTOM_CHART.lineChart.areaStyle
-                                        }
-                                        stack={CUSTOM_CHART.lineChart.stack}
-                                        showTopNSeries={
-                                          CUSTOM_CHART.lineChart
-                                            .lineChartTimebandChannel
-                                            .showTopNSeries
-                                        }
-                                        xAxisTitle={
-                                          CUSTOM_CHART.lineChart.xAxisTitle
-                                        }
-                                        crossFilter={"channels"}
-                                        keyChart={"chart634Data"}
-                                        refetch={useCallback(
-                                          () =>
-                                            dashboard.refetch("chart634Data"),
-                                          [dashboard.isLoading.chart634Data],
-                                        )}
-                                      />
-                                    </div>
-                                    <div className="w-full pb-6 max-lg:pb-5 max-md:pb-4">
-                                      <LineChart
-                                        data={useMemo(
-                                          () =>
-                                            !dashboard.isLoading.chart635Data
-                                              ? transformMixedChartData(
-                                                  dashboard.chart635Data?.data,
-                                                  "date",
-                                                  dashboard.chart635Data
-                                                    ?.colnames,
-                                                )
-                                              : "isLoading",
-                                          [dashboard.isLoading.chart635Data],
-                                        )}
-                                        height={CUSTOM_CHART.lineChart.height}
-                                        fontSize={
-                                          CUSTOM_CHART.lineChart.fontSize
-                                        }
-                                        fontFamily={
-                                          CUSTOM_CHART.allChart.fontFamily
-                                        }
-                                        fontWeight={
-                                          CUSTOM_CHART.lineChart.fontWeight
-                                        }
-                                        nameChart={
-                                          CUSTOM_CHART.lineChart
-                                            .lineChartDateChannel.rating.name
-                                        }
-                                        description={
-                                          CUSTOM_CHART.lineChart
-                                            .lineChartDateChannel.rating
-                                            .description
-                                        }
-                                        colors={
-                                          CUSTOM_CHART.lineChart.colorChannel
-                                        }
-                                        smooth={CUSTOM_CHART.lineChart.smooth}
-                                        symbolSize={
-                                          CUSTOM_CHART.lineChart.symbolSize
-                                        }
-                                        lineWidth={
-                                          CUSTOM_CHART.lineChart.lineWidth
-                                        }
-                                        areaStyle={
-                                          CUSTOM_CHART.lineChart.areaStyle
-                                        }
-                                        stack={CUSTOM_CHART.lineChart.stack}
-                                        showTopNSeries={
-                                          CUSTOM_CHART.lineChart.showTopNSeries
-                                        }
-                                        crossFilter={"channels"}
-                                        keyChart={"chart635Data"}
-                                        refetch={useCallback(
-                                          () =>
-                                            dashboard.refetch("chart635Data"),
-                                          [dashboard.isLoading.chart635Data],
-                                        )}
-                                      />
-                                    </div>
-                                    <div className="w-full pb-6 max-lg:pb-5 max-md:pb-4">
-                                      <LineChart
-                                        data={useMemo(
-                                          () =>
-                                            !dashboard.isLoading.chart677Data
-                                              ? transformMixedChartData(
-                                                  dashboard.chart677Data?.data,
-                                                  "date",
-                                                  dashboard.chart677Data
-                                                    ?.colnames,
-                                                )
-                                              : "isLoading",
-                                          [dashboard.isLoading.chart677Data],
-                                        )}
-                                        height={CUSTOM_CHART.lineChart.height}
-                                        fontSize={
-                                          CUSTOM_CHART.lineChart.fontSize
-                                        }
-                                        fontFamily={
-                                          CUSTOM_CHART.allChart.fontFamily
-                                        }
-                                        fontWeight={
-                                          CUSTOM_CHART.lineChart.fontWeight
-                                        }
-                                        nameChart={
-                                          CUSTOM_CHART.lineChart
-                                            .lineChartDateChannel.aveReach.name
-                                        }
-                                        description={
-                                          CUSTOM_CHART.lineChart
-                                            .lineChartDateChannel.aveReach
-                                            .description
-                                        }
-                                        colors={
-                                          CUSTOM_CHART.lineChart.colorChannel
-                                        }
-                                        smooth={CUSTOM_CHART.lineChart.smooth}
-                                        symbolSize={
-                                          CUSTOM_CHART.lineChart.symbolSize
-                                        }
-                                        lineWidth={
-                                          CUSTOM_CHART.lineChart.lineWidth
-                                        }
-                                        areaStyle={
-                                          CUSTOM_CHART.lineChart.areaStyle
-                                        }
-                                        stack={CUSTOM_CHART.lineChart.stack}
-                                        showTopNSeries={
-                                          CUSTOM_CHART.lineChart.showTopNSeries
-                                        }
-                                        crossFilter={"channels"}
-                                        keyChart={"chart677Data"}
-                                        refetch={useCallback(
-                                          () =>
-                                            dashboard.refetch("chart677Data"),
-                                          [dashboard.isLoading.chart677Data],
-                                        )}
-                                      />
-                                    </div>
-                                    <div className="w-full pb-6 max-lg:pb-5 max-md:pb-4">
-                                      <div
-                                        className={`p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}
-                                      >
-                                        <NameChart
-                                          nameChart={
-                                            "Rating và Ave.Reach của thể loại theo thị trường"
+                        <div className="w-full grid grid-cols-4 max-lg:grid-cols-4 max-md:grid-cols-2 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4">
+                          <NumberCard
+                            title={"Avg.Reach"}
+                            description={
+                              "Trung bình mỗi ngày tiếp cận được bao nhiêu khán giả (Chỉ áp dụng Live TV)."
+                            }
+                            value={useMemo(
+                              () =>
+                                !dashboard.isLoading.chart1027Data
+                                  ? dashboard.chart1027Data?.data
+                                    ? formatNumber(
+                                        dashboard.chart1027Data?.data[0]
+                                          .ave_reach_1,
+                                        { isPercent: false },
+                                      )
+                                    : "-"
+                                  : "isLoading",
+                              [dashboard.isLoading.chart1027Data],
+                            )}
+                            icon={METRIC_VIETNAMTODAYS.ave_reach.icon}
+                            background={
+                              METRIC_VIETNAMTODAYS.ave_reach.background
+                            }
+                            widthIcon={METRIC_VIETNAMTODAYS.ave_reach.widthIcon}
+                            refetch={useCallback(
+                              () => dashboard.refetch("chart1027Data"),
+                              [dashboard.isLoading.chart1027Data],
+                            )}
+                          />
+                          <NumberCard
+                            title={"Total Views"}
+                            description={
+                              "Tổng số lượt xem hợp lệ phát sinh trong kỳ (Chỉ áp dụng Live TV). (Quy định lượt xem hợp lệ: Live TV >= 30 giây)"
+                            }
+                            value={useMemo(
+                              () =>
+                                !dashboard.isLoading.chart1065Data
+                                  ? dashboard.chart1065Data?.data
+                                    ? formatNumber(
+                                        dashboard.chart1065Data?.data[0]
+                                          .total_view,
+                                        { isPercent: false },
+                                      )
+                                    : "-"
+                                  : "isLoading",
+                              [dashboard.isLoading.chart1065Data],
+                            )}
+                            icon={METRIC_VIETNAMTODAYS.rating.icon}
+                            background={METRIC_VIETNAMTODAYS.rating.background}
+                            widthIcon={METRIC_VIETNAMTODAYS.rating.widthIcon}
+                            refetch={useCallback(
+                              () => dashboard.refetch("chart1065Data"),
+                              [dashboard.isLoading.chart1065Data],
+                            )}
+                          />
+                          <NumberCard
+                            title={"Total Watch Time"}
+                            description={
+                              "Tổng thời gian thực tế người dùng theo dõi nội dung trong kỳ (Chỉ áp dụng Live TV)."
+                            }
+                            value={useMemo(
+                              () =>
+                                !dashboard.isLoading.chart1066Data
+                                  ? dashboard.chart1066Data?.data
+                                    ? formatNumber(
+                                        dashboard.chart1066Data?.data[0]
+                                          .total_time_viewing,
+                                        { isPercent: false },
+                                      )
+                                    : "-"
+                                  : "isLoading",
+                              [dashboard.isLoading.chart1066Data],
+                            )}
+                            icon={METRIC_VIETNAMTODAYS.rating.icon}
+                            background={METRIC_VIETNAMTODAYS.rating.background}
+                            widthIcon={METRIC_VIETNAMTODAYS.rating.widthIcon}
+                            refetch={useCallback(
+                              () => dashboard.refetch("chart1066Data"),
+                              [dashboard.isLoading.chart1066Data],
+                            )}
+                          />
+                          <NumberCard
+                            title={"Minute/Viewer/Day"}
+                            description={
+                              "Thời lượng xem trung bình thực tế của 1 khán giả trong 1 ngày (Chỉ áp dụng Live TV)."
+                            }
+                            value={useMemo(
+                              () =>
+                                !dashboard.isLoading.chart1042Data
+                                  ? dashboard.chart1042Data?.data
+                                    ? dashboard.chart1042Data?.data[0]?.[
+                                        "minute/user/date"
+                                      ]?.toLocaleString(undefined, {
+                                        maximumFractionDigits: 2,
+                                      })
+                                    : "-"
+                                  : "isLoading",
+                              [dashboard.isLoading.chart1042Data],
+                            )}
+                            icon={METRIC_VIETNAMTODAYS.rating.icon}
+                            background={METRIC_VIETNAMTODAYS.rating.background}
+                            widthIcon={METRIC_VIETNAMTODAYS.rating.widthIcon}
+                            refetch={useCallback(
+                              () => dashboard.refetch("chart1042Data"),
+                              [dashboard.isLoading.chart1042Data],
+                            )}
+                          />
+                        </div>
+                        <div className="w-full pb-6 max-lg:pb-5 max-md:pb-4">
+                          <div className="px-6 max-lg:px-5 max-md:px-0 pt-4 max-lg:pt-3 max-md:pt-0 bg-background-black-4 max-md:bg-background-dashboard dark:bg-background-dark max-md:dark:bg-background-dashboard-dark rounded-2xl">
+                            <ChildTabs
+                              tabs={[
+                                {
+                                  id: "avg_reach",
+                                  label: "Avg.Reach",
+                                  content: (
+                                    <>
+                                      <div className="w-full pb-6 max-lg:pb-5 max-md:pb-4">
+                                        <LineChart
+                                          data={useMemo(
+                                            () =>
+                                              !dashboard.isLoading.chart1028Data
+                                                ? transformMixedChartData(
+                                                    dashboard.chart1028Data
+                                                      ?.data,
+                                                    "date",
+                                                    dashboard.chart1028Data
+                                                      ?.colnames,
+                                                  )
+                                                : "isLoading",
+                                            [dashboard.isLoading.chart1028Data],
+                                          )}
+                                          height={CUSTOM_CHART.lineChart.height}
+                                          fontSize={
+                                            CUSTOM_CHART.lineChart.fontSize
                                           }
+                                          fontFamily={
+                                            CUSTOM_CHART.allChart.fontFamily
+                                          }
+                                          fontWeight={
+                                            CUSTOM_CHART.lineChart.fontWeight
+                                          }
+                                          nameChart={"Avg.Reach by Day"}
                                           description={false}
-                                          opacity={true}
-                                        />
-                                        <ChildTabs
-                                          tabs={[
-                                            {
-                                              id: CUSTOM_TAB.childTabArea
-                                                .regional.id,
-                                              label:
-                                                CUSTOM_TAB.childTabArea.regional
-                                                  .label,
-                                              content: (
-                                                <TableChart
-                                                  data={useMemo(
-                                                    () =>
-                                                      !dashboard.isLoading
-                                                        .chart669Data
-                                                        ? transformTableChartData(
-                                                            dashboard
-                                                              .chart669Data
-                                                              ?.data,
-                                                            dashboard
-                                                              .chart669Data
-                                                              ?.colnames,
-                                                          )
-                                                        : "isLoading",
-                                                    [
-                                                      dashboard.isLoading
-                                                        .chart669Data,
-                                                    ],
-                                                  )}
-                                                  height={"450px"}
-                                                  fontSize={
-                                                    CUSTOM_CHART.tableChart
-                                                      .fontSize
-                                                  }
-                                                  fontFamily={
-                                                    CUSTOM_CHART.allChart
-                                                      .fontFamily
-                                                  }
-                                                  fontWeight={
-                                                    CUSTOM_CHART.tableChart
-                                                      .fontWeight
-                                                  }
-                                                  nameChart={
-                                                    "Rating và Ave.Reach của thể loại theo thị trường"
-                                                  }
-                                                  description={false}
-                                                  displayName={false}
-                                                  showSTT={false}
-                                                  showPagination={true}
-                                                  customCol={
-                                                    CUSTOM_CHART.tableChart
-                                                      .tableProgramChannel
-                                                      .programArea.customCol
-                                                  }
-                                                  crossFilter={true}
-                                                  keyChart={"chart669Data"}
-                                                  refetch={useCallback(
-                                                    () =>
-                                                      dashboard.refetch(
-                                                        "chart669Data",
-                                                      ),
-                                                    [
-                                                      dashboard.isLoading
-                                                        .chart669Data,
-                                                    ],
-                                                  )}
-                                                />
+                                          colors={
+                                            CUSTOM_CHART.lineChart.colorChannel
+                                          }
+                                          smooth={CUSTOM_CHART.lineChart.smooth}
+                                          symbolSize={
+                                            CUSTOM_CHART.lineChart.symbolSize
+                                          }
+                                          lineWidth={
+                                            CUSTOM_CHART.lineChart.lineWidth
+                                          }
+                                          areaStyle={true}
+                                          stack={CUSTOM_CHART.lineChart.stack}
+                                          showTopNSeries={
+                                            CUSTOM_CHART.lineChart
+                                              .lineChartPercentTimebandChannel
+                                              .showTopNSeries
+                                          }
+                                          xAxisTitle={"Date"}
+                                          refetch={useCallback(
+                                            () =>
+                                              dashboard.refetch(
+                                                "chart1028Data",
                                               ),
-                                            },
-                                            {
-                                              id: CUSTOM_TAB.childTabArea
-                                                .key_city.id,
-                                              label:
-                                                CUSTOM_TAB.childTabArea.key_city
-                                                  .label,
-                                              content: (
-                                                <TableChart
-                                                  data={useMemo(
-                                                    () =>
-                                                      !dashboard.isLoading
-                                                        .chart670Data
-                                                        ? transformTableChartData(
-                                                            dashboard
-                                                              .chart670Data
-                                                              ?.data,
-                                                            dashboard
-                                                              .chart670Data
-                                                              ?.colnames,
-                                                          )
-                                                        : "isLoading",
-                                                    [
-                                                      dashboard.isLoading
-                                                        .chart670Data,
-                                                    ],
-                                                  )}
-                                                  height={"450px"}
-                                                  fontSize={
-                                                    CUSTOM_CHART.tableChart
-                                                      .fontSize
-                                                  }
-                                                  fontFamily={
-                                                    CUSTOM_CHART.allChart
-                                                      .fontFamily
-                                                  }
-                                                  fontWeight={
-                                                    CUSTOM_CHART.tableChart
-                                                      .fontWeight
-                                                  }
-                                                  nameChart={
-                                                    "Rating và Ave.Reach của thể loại theo thị trường"
-                                                  }
-                                                  description={false}
-                                                  displayName={false}
-                                                  showSTT={false}
-                                                  showPagination={true}
-                                                  customCol={
-                                                    CUSTOM_CHART.tableChart
-                                                      .tableProgramChannel
-                                                      .programArea.customCol
-                                                  }
-                                                  crossFilter={true}
-                                                  keyChart={"chart669Data"}
-                                                  refetch={useCallback(
-                                                    () =>
-                                                      dashboard.refetch(
-                                                        "chart670Data",
-                                                      ),
-                                                    [
-                                                      dashboard.isLoading
-                                                        .chart670Data,
-                                                    ],
-                                                  )}
-                                                />
-                                              ),
-                                            },
-                                            {
-                                              id: CUSTOM_TAB.childTabArea
-                                                .province.id,
-                                              label:
-                                                CUSTOM_TAB.childTabArea.province
-                                                  .label,
-                                              content: (
-                                                <TableChart
-                                                  data={useMemo(
-                                                    () =>
-                                                      !dashboard.isLoading
-                                                        .chart671Data
-                                                        ? transformTableChartData(
-                                                            dashboard
-                                                              .chart671Data
-                                                              ?.data,
-                                                            dashboard
-                                                              .chart671Data
-                                                              ?.colnames,
-                                                          )
-                                                        : "isLoading",
-                                                    [
-                                                      dashboard.isLoading
-                                                        .chart671Data,
-                                                    ],
-                                                  )}
-                                                  height={"450px"}
-                                                  fontSize={
-                                                    CUSTOM_CHART.tableChart
-                                                      .fontSize
-                                                  }
-                                                  fontFamily={
-                                                    CUSTOM_CHART.allChart
-                                                      .fontFamily
-                                                  }
-                                                  fontWeight={
-                                                    CUSTOM_CHART.tableChart
-                                                      .fontWeight
-                                                  }
-                                                  nameChart={
-                                                    "Rating và Ave.Reach của thể loại theo thị trường"
-                                                  }
-                                                  description={false}
-                                                  displayName={false}
-                                                  showSTT={false}
-                                                  showPagination={true}
-                                                  customCol={
-                                                    CUSTOM_CHART.tableChart
-                                                      .tableProgramChannel
-                                                      .programArea.customCol
-                                                  }
-                                                  crossFilter={true}
-                                                  keyChart={"chart670Data"}
-                                                  refetch={useCallback(
-                                                    () =>
-                                                      dashboard.refetch(
-                                                        "chart671Data",
-                                                      ),
-                                                    [
-                                                      dashboard.isLoading
-                                                        .chart671Data,
-                                                    ],
-                                                  )}
-                                                />
-                                              ),
-                                            },
-                                            {
-                                              id: CUSTOM_TAB.childTabArea.others
-                                                .id,
-                                              label:
-                                                CUSTOM_TAB.childTabArea.others
-                                                  .label,
-                                              content: (
-                                                <TableChart
-                                                  data={useMemo(
-                                                    () =>
-                                                      !dashboard.isLoading
-                                                        .chart672Data
-                                                        ? transformTableChartData(
-                                                            dashboard
-                                                              .chart672Data
-                                                              ?.data,
-                                                            dashboard
-                                                              .chart672Data
-                                                              ?.colnames,
-                                                          )
-                                                        : "isLoading",
-                                                    [
-                                                      dashboard.isLoading
-                                                        .chart672Data,
-                                                    ],
-                                                  )}
-                                                  height={"450px"}
-                                                  fontSize={
-                                                    CUSTOM_CHART.tableChart
-                                                      .fontSize
-                                                  }
-                                                  fontFamily={
-                                                    CUSTOM_CHART.allChart
-                                                      .fontFamily
-                                                  }
-                                                  fontWeight={
-                                                    CUSTOM_CHART.tableChart
-                                                      .fontWeight
-                                                  }
-                                                  nameChart={
-                                                    "Rating và Ave.Reach của thể loại theo thị trường"
-                                                  }
-                                                  description={false}
-                                                  displayName={false}
-                                                  showSTT={false}
-                                                  showPagination={true}
-                                                  customCol={
-                                                    CUSTOM_CHART.tableChart
-                                                      .tableProgramChannel
-                                                      .programArea.customCol
-                                                  }
-                                                  crossFilter={true}
-                                                  keyChart={"chart671Data"}
-                                                  refetch={useCallback(
-                                                    () =>
-                                                      dashboard.refetch(
-                                                        "chart672Data",
-                                                      ),
-                                                    [
-                                                      dashboard.isLoading
-                                                        .chart672Data,
-                                                    ],
-                                                  )}
-                                                />
-                                              ),
-                                            },
-                                          ]}
+                                            [dashboard.isLoading.chart1028Data],
+                                          )}
                                         />
                                       </div>
-                                    </div>
-                                    <div className="w-full pb-6 max-lg:pb-5 max-md:pb-4">
-                                      <LineChart
-                                        data={useMemo(
-                                          () =>
-                                            !dashboard.isLoading.chart666Data
-                                              ? transformMixedChartData(
-                                                  dashboard.chart666Data?.data,
-                                                  "Khung giờ",
-                                                  dashboard.chart666Data
-                                                    ?.colnames,
-                                                )
-                                              : "isLoading",
-                                          [dashboard.isLoading.chart666Data],
-                                        )}
-                                        height={CUSTOM_CHART.lineChart.height}
-                                        fontSize={
-                                          CUSTOM_CHART.lineChart.fontSize
-                                        }
-                                        fontFamily={
-                                          CUSTOM_CHART.allChart.fontFamily
-                                        }
-                                        fontWeight={
-                                          CUSTOM_CHART.lineChart.fontWeight
-                                        }
-                                        nameChart={
-                                          CUSTOM_CHART.lineChart
-                                            .lineChartTimebandDay.rating.name
-                                        }
-                                        description={
-                                          CUSTOM_CHART.lineChart
-                                            .lineChartTimebandDay.rating
-                                            .description
-                                        }
-                                        colors={
-                                          CUSTOM_CHART.lineChart.colorChannel
-                                        }
-                                        smooth={CUSTOM_CHART.lineChart.smooth}
-                                        symbolSize={
-                                          CUSTOM_CHART.lineChart.symbolSize
-                                        }
-                                        lineWidth={
-                                          CUSTOM_CHART.lineChart.lineWidth
-                                        }
-                                        areaStyle={
-                                          CUSTOM_CHART.lineChart.areaStyle
-                                        }
-                                        stack={CUSTOM_CHART.lineChart.stack}
-                                        showTopNSeries={
-                                          CUSTOM_CHART.lineChart
-                                            .lineChartTimebandDay.showTopNSeries
-                                        }
-                                        left={
-                                          CUSTOM_CHART.lineChart
-                                            .lineChartTimebandDay.left
-                                        }
-                                        xAxisTitle={
-                                          CUSTOM_CHART.lineChart.xAxisTitle
-                                        }
-                                        refetch={useCallback(
-                                          () =>
-                                            dashboard.refetch("chart666Data"),
-                                          [dashboard.isLoading.chart666Data],
-                                        )}
-                                      />
-                                    </div>
-                                    <div className="w-full pb-6 max-lg:pb-5 max-md:pb-4">
-                                      <LineChart
-                                        data={useMemo(
-                                          () =>
-                                            !dashboard.isLoading.chart665Data
-                                              ? transformMixedChartData(
-                                                  dashboard.chart665Data?.data,
-                                                  "Khung giờ",
-                                                  dashboard.chart665Data
-                                                    ?.colnames,
-                                                )
-                                              : "isLoading",
-                                          [dashboard.isLoading.chart665Data],
-                                        )}
-                                        height={CUSTOM_CHART.lineChart.height}
-                                        fontSize={
-                                          CUSTOM_CHART.lineChart.fontSize
-                                        }
-                                        fontFamily={
-                                          CUSTOM_CHART.allChart.fontFamily
-                                        }
-                                        fontWeight={
-                                          CUSTOM_CHART.lineChart.fontWeight
-                                        }
-                                        nameChart={
-                                          CUSTOM_CHART.lineChart
-                                            .lineChartTimebandDay.aveReach.name
-                                        }
-                                        description={
-                                          CUSTOM_CHART.lineChart
-                                            .lineChartTimebandDay.aveReach
-                                            .description
-                                        }
-                                        colors={
-                                          CUSTOM_CHART.lineChart.colorChannel
-                                        }
-                                        smooth={CUSTOM_CHART.lineChart.smooth}
-                                        symbolSize={
-                                          CUSTOM_CHART.lineChart.symbolSize
-                                        }
-                                        lineWidth={
-                                          CUSTOM_CHART.lineChart.lineWidth
-                                        }
-                                        areaStyle={
-                                          CUSTOM_CHART.lineChart.areaStyle
-                                        }
-                                        stack={CUSTOM_CHART.lineChart.stack}
-                                        showTopNSeries={
-                                          CUSTOM_CHART.lineChart
-                                            .lineChartTimebandDay.showTopNSeries
-                                        }
-                                        left={
-                                          CUSTOM_CHART.lineChart
-                                            .lineChartTimebandDay.left
-                                        }
-                                        xAxisTitle={
-                                          CUSTOM_CHART.lineChart.xAxisTitle
-                                        }
-                                        refetch={useCallback(
-                                          () =>
-                                            dashboard.refetch("chart665Data"),
-                                          [dashboard.isLoading.chart665Data],
-                                        )}
-                                      />
-                                    </div>
-                                    <div className="w-full pb-6 max-lg:pb-5 max-md:pb-0">
-                                      <TreeMapChart
-                                        data={useMemo(
-                                          () =>
-                                            !dashboard.isLoading.chart636Data
-                                              ? transformTreeMapData(
-                                                  dashboard.chart636Data?.data,
-                                                  dashboard.chart636Data
-                                                    ?.colnames,
-                                                )
-                                              : "isLoading",
-                                          [dashboard.isLoading.chart636Data],
-                                        )}
-                                        height={
-                                          CUSTOM_CHART.treeMapChart.height
-                                        }
-                                        fontSize={
-                                          CUSTOM_CHART.treeMapChart.fontSize
-                                        }
-                                        fontFamily={
-                                          CUSTOM_CHART.allChart.fontFamily
-                                        }
-                                        fontWeight={
-                                          CUSTOM_CHART.treeMapChart.fontWeight
-                                        }
-                                        nameChart={
-                                          CUSTOM_CHART.treeMapChart
-                                            .treeMapChartChannel.name
-                                        }
-                                        description={
-                                          CUSTOM_CHART.treeMapChart
-                                            .treeMapChartChannel.description
-                                        }
-                                        colors={
-                                          CUSTOM_CHART.treeMapChart.colorChannel
-                                        }
-                                        crossFilter={"channels"}
-                                        keyChart={"chart636Data"}
-                                        refetch={useCallback(
-                                          () =>
-                                            dashboard.refetch("chart636Data"),
-                                          [dashboard.isLoading.chart636Data],
-                                        )}
-                                      />
-                                    </div>
-                                  </>
-                                ),
-                              },
-                            ]}
+                                      <div className="w-full grid grid-cols-2 max-md:flex-wrap max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4">
+                                        <PieChart
+                                          data={useMemo(
+                                            () =>
+                                              !dashboard.isLoading.chart1047Data
+                                                ? transformPieChartData(
+                                                    dashboard.chart1047Data
+                                                      ?.data,
+                                                    dashboard.chart1047Data
+                                                      ?.colnames,
+                                                  )
+                                                : "isLoading",
+                                            [dashboard.isLoading.chart1047Data],
+                                          )}
+                                          height={CUSTOM_CHART.pieChart.height}
+                                          fontSize={
+                                            CUSTOM_CHART.pieChart.fontSize
+                                          }
+                                          fontFamily={
+                                            CUSTOM_CHART.allChart.fontFamily
+                                          }
+                                          fontWeight={
+                                            CUSTOM_CHART.pieChart.fontWeight
+                                          }
+                                          nameChart={
+                                            "Watch Time by Content Category"
+                                          }
+                                          center={true}
+                                          description={false}
+                                          donut={CUSTOM_CHART.pieChart.donut}
+                                          innerRadius={
+                                            CUSTOM_CHART.pieChart.innerRadius
+                                          }
+                                          border={false}
+                                          refetch={useCallback(
+                                            () =>
+                                              dashboard.refetch(
+                                                "chart1047Data",
+                                              ),
+                                            [dashboard.isLoading.chart1047Data],
+                                          )}
+                                        />
+                                        <TableChart
+                                          data={useMemo(
+                                            () =>
+                                              !dashboard.isLoading.chart1094Data
+                                                ? transformTableChartData(
+                                                    dashboard.chart1094Data
+                                                      ?.data,
+                                                    dashboard.chart1094Data
+                                                      ?.colnames,
+                                                    null,
+                                                    [],
+                                                    LABEL_VIETNAMTODAY,
+                                                  )
+                                                : "isLoading",
+                                            [dashboard.isLoading.chart1094Data],
+                                          )}
+                                          height={"400px"}
+                                          fontSize={
+                                            CUSTOM_CHART.tableChart.fontSize
+                                          }
+                                          fontFamily={
+                                            CUSTOM_CHART.allChart.fontFamily
+                                          }
+                                          fontWeight={
+                                            CUSTOM_CHART.tableChart.fontWeight
+                                          }
+                                          nameChart={
+                                            "Avg.Reach by Country - OTT"
+                                          }
+                                          description={false}
+                                          fullScreen={true}
+                                          refetch={useCallback(
+                                            () =>
+                                              dashboard.refetch(
+                                                "chart1094Data",
+                                              ),
+                                            [dashboard.isLoading.chart1094Data],
+                                          )}
+                                        />
+                                      </div>
+                                      <div className="w-full grid grid-cols-2 max-md:flex-wrap max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4">
+                                        <PieChart
+                                          data={useMemo(
+                                            () =>
+                                              !dashboard.isLoading.chart1044Data
+                                                ? transformPieChartData(
+                                                    dashboard.chart1044Data
+                                                      ?.data,
+                                                    dashboard.chart1044Data
+                                                      ?.colnames,
+                                                  )
+                                                : "isLoading",
+                                            [dashboard.isLoading.chart1044Data],
+                                          )}
+                                          height={CUSTOM_CHART.pieChart.height}
+                                          fontSize={
+                                            CUSTOM_CHART.pieChart.fontSize
+                                          }
+                                          fontFamily={
+                                            CUSTOM_CHART.allChart.fontFamily
+                                          }
+                                          fontWeight={
+                                            CUSTOM_CHART.pieChart.fontWeight
+                                          }
+                                          nameChart={"Avg.Reach by Device"}
+                                          center={true}
+                                          description={false}
+                                          donut={CUSTOM_CHART.pieChart.donut}
+                                          innerRadius={
+                                            CUSTOM_CHART.pieChart.innerRadius
+                                          }
+                                          refetch={useCallback(
+                                            () =>
+                                              dashboard.refetch(
+                                                "chart1044Data",
+                                              ),
+                                            [dashboard.isLoading.chart1044Data],
+                                          )}
+                                        />
+                                        <BarChart
+                                          data={useMemo(
+                                            () =>
+                                              !dashboard.isLoading.chart1037Data
+                                                ? transformBarChartData(
+                                                    dashboard.chart1037Data
+                                                      ?.data,
+                                                    dashboard.chart1037Data
+                                                      ?.colnames,
+                                                  )
+                                                : "isLoading",
+                                            [dashboard.isLoading.chart1037Data],
+                                          )}
+                                          height={CUSTOM_CHART.barChart.height}
+                                          fontSize={
+                                            CUSTOM_CHART.barChart.fontSize
+                                          }
+                                          fontFamily={
+                                            CUSTOM_CHART.allChart.fontFamily
+                                          }
+                                          colors={
+                                            CUSTOM_CHART.barChart.barChartArea
+                                              .rating.color
+                                          }
+                                          fontWeight={
+                                            CUSTOM_CHART.barChart.fontWeight
+                                          }
+                                          nameChart={
+                                            "Avg.Reach by Device - OTT"
+                                          }
+                                          description={false}
+                                          orientation={"horizontal"}
+                                          stack={true}
+                                          refetch={useCallback(
+                                            () =>
+                                              dashboard.refetch(
+                                                "chart1037Data",
+                                              ),
+                                            [dashboard.isLoading.chart1037Data],
+                                          )}
+                                        />
+                                      </div>
+                                    </>
+                                  ),
+                                },
+                                {
+                                  id: "rating",
+                                  label: "Rating",
+                                  content: (
+                                    <>
+                                      <div className="w-full pb-6 max-lg:pb-5 max-md:pb-4">
+                                        <LineChart
+                                          data={useMemo(
+                                            () =>
+                                              !dashboard.isLoading.chart1029Data
+                                                ? transformMixedChartData(
+                                                    dashboard.chart1029Data
+                                                      ?.data,
+                                                    "date",
+                                                    dashboard.chart1029Data
+                                                      ?.colnames,
+                                                  )
+                                                : "isLoading",
+                                            [dashboard.isLoading.chart1029Data],
+                                          )}
+                                          height={CUSTOM_CHART.lineChart.height}
+                                          fontSize={
+                                            CUSTOM_CHART.lineChart.fontSize
+                                          }
+                                          fontFamily={
+                                            CUSTOM_CHART.allChart.fontFamily
+                                          }
+                                          fontWeight={
+                                            CUSTOM_CHART.lineChart.fontWeight
+                                          }
+                                          nameChart={"Rating by Day"}
+                                          description={false}
+                                          colors={
+                                            CUSTOM_CHART.lineChart.colorChannel
+                                          }
+                                          smooth={CUSTOM_CHART.lineChart.smooth}
+                                          symbolSize={
+                                            CUSTOM_CHART.lineChart.symbolSize
+                                          }
+                                          lineWidth={
+                                            CUSTOM_CHART.lineChart.lineWidth
+                                          }
+                                          areaStyle={true}
+                                          stack={CUSTOM_CHART.lineChart.stack}
+                                          showTopNSeries={
+                                            CUSTOM_CHART.lineChart
+                                              .lineChartPercentTimebandChannel
+                                              .showTopNSeries
+                                          }
+                                          xAxisTitle={"Date"}
+                                          refetch={useCallback(
+                                            () =>
+                                              dashboard.refetch(
+                                                "chart1029Data",
+                                              ),
+                                            [dashboard.isLoading.chart1029Data],
+                                          )}
+                                        />
+                                      </div>
+                                      <div className="w-full grid grid-cols-2 max-md:flex-wrap max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4">
+                                        <PieChart
+                                          data={useMemo(
+                                            () =>
+                                              !dashboard.isLoading.chart1048Data
+                                                ? transformPieChartData(
+                                                    dashboard.chart1048Data
+                                                      ?.data,
+                                                    dashboard.chart1048Data
+                                                      ?.colnames,
+                                                  )
+                                                : "isLoading",
+                                            [dashboard.isLoading.chart1048Data],
+                                          )}
+                                          height={CUSTOM_CHART.pieChart.height}
+                                          fontSize={
+                                            CUSTOM_CHART.pieChart.fontSize
+                                          }
+                                          fontFamily={
+                                            CUSTOM_CHART.allChart.fontFamily
+                                          }
+                                          fontWeight={
+                                            CUSTOM_CHART.pieChart.fontWeight
+                                          }
+                                          nameChart={"Rating by Country"}
+                                          center={true}
+                                          description={false}
+                                          donut={CUSTOM_CHART.pieChart.donut}
+                                          innerRadius={
+                                            CUSTOM_CHART.pieChart.innerRadius
+                                          }
+                                          border={false}
+                                          refetch={useCallback(
+                                            () =>
+                                              dashboard.refetch(
+                                                "chart1048Data",
+                                              ),
+                                            [dashboard.isLoading.chart1048Data],
+                                          )}
+                                        />
+                                        <TableChart
+                                          data={useMemo(
+                                            () =>
+                                              !dashboard.isLoading.chart1095Data
+                                                ? transformTableChartData(
+                                                    dashboard.chart1095Data
+                                                      ?.data,
+                                                    dashboard.chart1095Data
+                                                      ?.colnames,
+                                                    null,
+                                                    [],
+                                                    LABEL_VIETNAMTODAY,
+                                                  )
+                                                : "isLoading",
+                                            [dashboard.isLoading.chart1095Data],
+                                          )}
+                                          height={"400px"}
+                                          fontSize={
+                                            CUSTOM_CHART.tableChart.fontSize
+                                          }
+                                          fontFamily={
+                                            CUSTOM_CHART.allChart.fontFamily
+                                          }
+                                          fontWeight={
+                                            CUSTOM_CHART.tableChart.fontWeight
+                                          }
+                                          nameChart={"Rating by Country - OTT"}
+                                          description={false}
+                                          fullScreen={true}
+                                          refetch={useCallback(
+                                            () =>
+                                              dashboard.refetch(
+                                                "chart1095Data",
+                                              ),
+                                            [dashboard.isLoading.chart1095Data],
+                                          )}
+                                        />
+                                      </div>
+                                      <div className="w-full grid grid-cols-2 max-md:flex-wrap max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4">
+                                        <PieChart
+                                          data={useMemo(
+                                            () =>
+                                              !dashboard.isLoading.chart1045Data
+                                                ? transformPieChartData(
+                                                    dashboard.chart1045Data
+                                                      ?.data,
+                                                    dashboard.chart1045Data
+                                                      ?.colnames,
+                                                  )
+                                                : "isLoading",
+                                            [dashboard.isLoading.chart1045Data],
+                                          )}
+                                          height={CUSTOM_CHART.pieChart.height}
+                                          fontSize={
+                                            CUSTOM_CHART.pieChart.fontSize
+                                          }
+                                          fontFamily={
+                                            CUSTOM_CHART.allChart.fontFamily
+                                          }
+                                          fontWeight={
+                                            CUSTOM_CHART.pieChart.fontWeight
+                                          }
+                                          nameChart={"Rating by Device"}
+                                          center={true}
+                                          description={false}
+                                          donut={CUSTOM_CHART.pieChart.donut}
+                                          innerRadius={
+                                            CUSTOM_CHART.pieChart.innerRadius
+                                          }
+                                          refetch={useCallback(
+                                            () =>
+                                              dashboard.refetch(
+                                                "chart1045Data",
+                                              ),
+                                            [dashboard.isLoading.chart1045Data],
+                                          )}
+                                        />
+                                        <BarChart
+                                          data={useMemo(
+                                            () =>
+                                              !dashboard.isLoading.chart1038Data
+                                                ? transformBarChartData(
+                                                    dashboard.chart1038Data
+                                                      ?.data,
+                                                    dashboard.chart1038Data
+                                                      ?.colnames,
+                                                  )
+                                                : "isLoading",
+                                            [dashboard.isLoading.chart1038Data],
+                                          )}
+                                          height={CUSTOM_CHART.barChart.height}
+                                          fontSize={
+                                            CUSTOM_CHART.barChart.fontSize
+                                          }
+                                          fontFamily={
+                                            CUSTOM_CHART.allChart.fontFamily
+                                          }
+                                          colors={
+                                            CUSTOM_CHART.barChart.barChartArea
+                                              .rating.color
+                                          }
+                                          fontWeight={
+                                            CUSTOM_CHART.barChart.fontWeight
+                                          }
+                                          nameChart={"Rating by Device - OTT"}
+                                          description={false}
+                                          orientation={"horizontal"}
+                                          stack={true}
+                                          refetch={useCallback(
+                                            () =>
+                                              dashboard.refetch(
+                                                "chart1038Data",
+                                              ),
+                                            [dashboard.isLoading.chart1038Data],
+                                          )}
+                                        />
+                                      </div>
+                                    </>
+                                  ),
+                                },
+                                {
+                                  id: "watch_time",
+                                  label: "Watch Time",
+                                  content: (
+                                    <>
+                                      <div className="w-full pb-6 max-lg:pb-5 max-md:pb-4">
+                                        <LineChart
+                                          data={useMemo(
+                                            () =>
+                                              !dashboard.isLoading.chart1068Data
+                                                ? transformMixedChartData(
+                                                    dashboard.chart1068Data
+                                                      ?.data,
+                                                    "date",
+                                                    dashboard.chart1068Data
+                                                      ?.colnames,
+                                                  )
+                                                : "isLoading",
+                                            [dashboard.isLoading.chart1068Data],
+                                          )}
+                                          height={CUSTOM_CHART.lineChart.height}
+                                          fontSize={
+                                            CUSTOM_CHART.lineChart.fontSize
+                                          }
+                                          fontFamily={
+                                            CUSTOM_CHART.allChart.fontFamily
+                                          }
+                                          fontWeight={
+                                            CUSTOM_CHART.lineChart.fontWeight
+                                          }
+                                          nameChart={"Watch Time by Day"}
+                                          description={false}
+                                          colors={
+                                            CUSTOM_CHART.lineChart.colorChannel
+                                          }
+                                          smooth={CUSTOM_CHART.lineChart.smooth}
+                                          symbolSize={
+                                            CUSTOM_CHART.lineChart.symbolSize
+                                          }
+                                          lineWidth={
+                                            CUSTOM_CHART.lineChart.lineWidth
+                                          }
+                                          areaStyle={true}
+                                          stack={CUSTOM_CHART.lineChart.stack}
+                                          showTopNSeries={
+                                            CUSTOM_CHART.lineChart
+                                              .lineChartPercentTimebandChannel
+                                              .showTopNSeries
+                                          }
+                                          xAxisTitle={"Date"}
+                                          refetch={useCallback(
+                                            () =>
+                                              dashboard.refetch(
+                                                "chart1068Data",
+                                              ),
+                                            [dashboard.isLoading.chart1068Data],
+                                          )}
+                                        />
+                                      </div>
+                                      <div className="w-full grid grid-cols-2 max-md:flex-wrap max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4">
+                                        <PieChart
+                                          data={useMemo(
+                                            () =>
+                                              !dashboard.isLoading.chart1049Data
+                                                ? transformPieChartData(
+                                                    dashboard.chart1049Data
+                                                      ?.data,
+                                                    dashboard.chart1049Data
+                                                      ?.colnames,
+                                                  )
+                                                : "isLoading",
+                                            [dashboard.isLoading.chart1049Data],
+                                          )}
+                                          height={CUSTOM_CHART.pieChart.height}
+                                          fontSize={
+                                            CUSTOM_CHART.pieChart.fontSize
+                                          }
+                                          fontFamily={
+                                            CUSTOM_CHART.allChart.fontFamily
+                                          }
+                                          fontWeight={
+                                            CUSTOM_CHART.pieChart.fontWeight
+                                          }
+                                          nameChart={"Watch Time by Country"}
+                                          center={true}
+                                          description={false}
+                                          donut={CUSTOM_CHART.pieChart.donut}
+                                          innerRadius={
+                                            CUSTOM_CHART.pieChart.innerRadius
+                                          }
+                                          border={false}
+                                          refetch={useCallback(
+                                            () =>
+                                              dashboard.refetch(
+                                                "chart1049Data",
+                                              ),
+                                            [dashboard.isLoading.chart1049Data],
+                                          )}
+                                        />
+                                        <TableChart
+                                          data={useMemo(
+                                            () =>
+                                              !dashboard.isLoading.chart1096Data
+                                                ? transformTableChartData(
+                                                    dashboard.chart1096Data
+                                                      ?.data,
+                                                    dashboard.chart1096Data
+                                                      ?.colnames,
+                                                    null,
+                                                    [],
+                                                    LABEL_VIETNAMTODAY,
+                                                  )
+                                                : "isLoading",
+                                            [dashboard.isLoading.chart1096Data],
+                                          )}
+                                          height={"400px"}
+                                          fontSize={
+                                            CUSTOM_CHART.tableChart.fontSize
+                                          }
+                                          fontFamily={
+                                            CUSTOM_CHART.allChart.fontFamily
+                                          }
+                                          fontWeight={
+                                            CUSTOM_CHART.tableChart.fontWeight
+                                          }
+                                          nameChart={
+                                            "Watch Time by Country - OTT"
+                                          }
+                                          description={false}
+                                          fullScreen={true}
+                                          refetch={useCallback(
+                                            () =>
+                                              dashboard.refetch(
+                                                "chart1096Data",
+                                              ),
+                                            [dashboard.isLoading.chart1096Data],
+                                          )}
+                                        />
+                                      </div>
+                                      <div className="w-full grid grid-cols-2 max-md:flex-wrap max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4">
+                                        <PieChart
+                                          data={useMemo(
+                                            () =>
+                                              !dashboard.isLoading.chart1046Data
+                                                ? transformPieChartData(
+                                                    dashboard.chart1046Data
+                                                      ?.data,
+                                                    dashboard.chart1046Data
+                                                      ?.colnames,
+                                                  )
+                                                : "isLoading",
+                                            [dashboard.isLoading.chart1046Data],
+                                          )}
+                                          height={CUSTOM_CHART.pieChart.height}
+                                          fontSize={
+                                            CUSTOM_CHART.pieChart.fontSize
+                                          }
+                                          fontFamily={
+                                            CUSTOM_CHART.allChart.fontFamily
+                                          }
+                                          fontWeight={
+                                            CUSTOM_CHART.pieChart.fontWeight
+                                          }
+                                          nameChart={
+                                            "Total Minutes Watched by Device"
+                                          }
+                                          center={true}
+                                          description={false}
+                                          donut={CUSTOM_CHART.pieChart.donut}
+                                          innerRadius={
+                                            CUSTOM_CHART.pieChart.innerRadius
+                                          }
+                                          refetch={useCallback(
+                                            () =>
+                                              dashboard.refetch(
+                                                "chart1046Data",
+                                              ),
+                                            [dashboard.isLoading.chart1046Data],
+                                          )}
+                                        />
+                                        <BarChart
+                                          data={useMemo(
+                                            () =>
+                                              !dashboard.isLoading.chart1043Data
+                                                ? transformBarChartData(
+                                                    dashboard.chart1043Data
+                                                      ?.data,
+                                                    dashboard.chart1043Data
+                                                      ?.colnames,
+                                                  )
+                                                : "isLoading",
+                                            [dashboard.isLoading.chart1043Data],
+                                          )}
+                                          height={CUSTOM_CHART.barChart.height}
+                                          fontSize={
+                                            CUSTOM_CHART.barChart.fontSize
+                                          }
+                                          fontFamily={
+                                            CUSTOM_CHART.allChart.fontFamily
+                                          }
+                                          colors={
+                                            CUSTOM_CHART.barChart.barChartArea
+                                              .rating.color
+                                          }
+                                          fontWeight={
+                                            CUSTOM_CHART.barChart.fontWeight
+                                          }
+                                          nameChart={
+                                            "Watch Time by Device - OTT"
+                                          }
+                                          description={false}
+                                          orientation={"horizontal"}
+                                          stack={true}
+                                          refetch={useCallback(
+                                            () =>
+                                              dashboard.refetch(
+                                                "chart1043Data",
+                                              ),
+                                            [dashboard.isLoading.chart1043Data],
+                                          )}
+                                        />
+                                      </div>
+                                    </>
+                                  ),
+                                },
+                              ]}
+                            />
+                          </div>
+                        </div>
+                        <div className="w-full grid grid-cols-2 max-md:flex-wrap max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4">
+                          <PieChart
+                            data={useMemo(
+                              () =>
+                                !dashboard.isLoading.chart1036Data
+                                  ? transformPieChartData(
+                                      dashboard.chart1036Data?.data,
+                                      dashboard.chart1036Data?.colnames,
+                                    )
+                                  : "isLoading",
+                              [dashboard.isLoading.chart1036Data],
+                            )}
+                            height={CUSTOM_CHART.pieChart.height}
+                            fontSize={CUSTOM_CHART.pieChart.fontSize}
+                            fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                            fontWeight={CUSTOM_CHART.pieChart.fontWeight}
+                            nameChart={"Airtime Share by Content Category"}
+                            colors={useMemo(
+                              () => ({
+                                "News & Current Affairs": "#6BD3B3",
+                                "Life - Styles": "#EE5960",
+                                Documentary: "#408184",
+                                Entertainment: "#66CBE2",
+                                "Educational & Training": "#5470C6",
+                                Sports: "#FF874E",
+                                "Events/Specials": "#03748E",
+                              }),
+                              [],
+                            )}
+                            description={false}
+                            donut={CUSTOM_CHART.pieChart.donut}
+                            innerRadius={CUSTOM_CHART.pieChart.innerRadius}
+                            refetch={useCallback(
+                              () => dashboard.refetch("chart1036Data"),
+                              [dashboard.isLoading.chart1036Data],
+                            )}
                           />
+                          <PieChart
+                            data={useMemo(
+                              () =>
+                                !dashboard.isLoading.chart1032Data
+                                  ? transformPieChartData(
+                                      dashboard.chart1032Data?.data,
+                                      dashboard.chart1032Data?.colnames,
+                                    )
+                                  : "isLoading",
+                              [dashboard.isLoading.chart1032Data],
+                            )}
+                            height={CUSTOM_CHART.pieChart.height}
+                            fontSize={CUSTOM_CHART.pieChart.fontSize}
+                            fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                            fontWeight={CUSTOM_CHART.pieChart.fontWeight}
+                            nameChart={"Viewing Time Share by Content Category"}
+                            colors={useMemo(
+                              () => ({
+                                "News & Current Affairs": "#6BD3B3",
+                                "Life - Styles": "#EE5960",
+                                Documentary: "#408184",
+                                Entertainment: "#66CBE2",
+                                "Educational & Training": "#5470C6",
+                                Sports: "#FF874E",
+                                "Events/Specials": "#03748E",
+                              }),
+                              [],
+                            )}
+                            description={false}
+                            donut={CUSTOM_CHART.pieChart.donut}
+                            innerRadius={CUSTOM_CHART.pieChart.innerRadius}
+                            refetch={useCallback(
+                              () => dashboard.refetch("chart1032Data"),
+                              [dashboard.isLoading.chart1032Data],
+                            )}
+                          />
+                        </div>
+                        <div className="w-ful">
+                          <div
+                            className={`p-6 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component relative`}
+                          >
+                            <NameChart
+                              nameChart={"Program Performance"}
+                              description={false}
+                              opacity={true}
+                            />
+                            <ChildTabs
+                              tabs={[
+                                {
+                                  id: "overview",
+                                  label: "Overview",
+                                  content: (
+                                    <TableChart
+                                      data={useMemo(
+                                        () =>
+                                          !dashboard.isLoading.chart1040Data
+                                            ? transformTableChartData(
+                                                dashboard.chart1040Data?.data,
+                                                dashboard.chart1040Data
+                                                  ?.colnames,
+                                                null,
+                                                [],
+                                                LABEL_VIETNAMTODAY,
+                                              )
+                                            : "isLoading",
+                                        [dashboard.isLoading.chart1040Data],
+                                      )}
+                                      height={"400px"}
+                                      fontSize={
+                                        CUSTOM_CHART.tableChart.fontSize
+                                      }
+                                      fontFamily={
+                                        CUSTOM_CHART.allChart.fontFamily
+                                      }
+                                      fontWeight={
+                                        CUSTOM_CHART.tableChart.fontWeight
+                                      }
+                                      nameChart={"Program Performance"}
+                                      description={false}
+                                      displayName={false}
+                                      fullScreen={true}
+                                      refetch={useCallback(
+                                        () =>
+                                          dashboard.refetch("chart1040Data"),
+                                        [dashboard.isLoading.chart1040Data],
+                                      )}
+                                    />
+                                  ),
+                                },
+                                {
+                                  id: "detail",
+                                  label: "Detail",
+                                  content: (
+                                    <TableChart
+                                      data={useMemo(
+                                        () =>
+                                          !dashboard.isLoading.chart1041Data
+                                            ? transformTableChartData(
+                                                dashboard.chart1041Data?.data,
+                                                dashboard.chart1041Data
+                                                  ?.colnames,
+                                                null,
+                                                [],
+                                                LABEL_VIETNAMTODAY,
+                                              )
+                                            : "isLoading",
+                                        [dashboard.isLoading.chart1041Data],
+                                      )}
+                                      height={"400px"}
+                                      fontSize={
+                                        CUSTOM_CHART.tableChart.fontSize
+                                      }
+                                      fontFamily={
+                                        CUSTOM_CHART.allChart.fontFamily
+                                      }
+                                      fontWeight={
+                                        CUSTOM_CHART.tableChart.fontWeight
+                                      }
+                                      nameChart={"Program Performance"}
+                                      description={false}
+                                      displayName={false}
+                                      fullScreen={true}
+                                      refetch={useCallback(
+                                        () =>
+                                          dashboard.refetch("chart1041Data"),
+                                        [dashboard.isLoading.chart1041Data],
+                                      )}
+                                    />
+                                  ),
+                                },
+                              ]}
+                            />
+                          </div>
                         </div>
                       </div>
                       <div className="px-6 max-lg:px-5 max-md:px-4 pb-6 max-lg:pb-5 max-md:pb-19 bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300">
@@ -1504,7 +1642,7 @@ const DashboardContent = () => {
                   content: (
                     <section
                       className="bg-background-dashboard dark:bg-background-dashboard-dark transiton-all duration-300"
-                      id="target_capture_program"
+                      id="target_capture_vod"
                     >
                       <InforTab
                         inforTab={"VOD"}
@@ -1516,52 +1654,771 @@ const DashboardContent = () => {
                       />
                       <InforFilter filters={scopeFilterData} />
                       <div className="px-6 max-lg:px-5 max-md:px-4">
+                        <div className="w-full grid grid-cols-5 max-lg:grid-cols-4 max-md:grid-cols-2 gap-6 max-lg:gap-5 max-md:gap-4 py-6 max-lg:py-5 max-md:py-4">
+                          <NumberCard
+                            title={"Uni Viewers"}
+                            description={
+                              "Tổng số khán giả thực tế đã xem VOD trong kỳ (đã loại bỏ trùng lặp)."
+                            }
+                            value={useMemo(
+                              () =>
+                                !dashboard.isLoading.chart1052Data
+                                  ? dashboard.chart1052Data?.data
+                                    ? formatNumber(
+                                        dashboard.chart1052Data?.data[0]?.[
+                                          "Unique users"
+                                        ],
+                                        { isPercent: false },
+                                      )
+                                    : "-"
+                                  : "isLoading",
+                              [dashboard.isLoading.chart1052Data],
+                            )}
+                            icon={METRIC_VIETNAMTODAYS.ave_reach.icon}
+                            background={
+                              METRIC_VIETNAMTODAYS.ave_reach.background
+                            }
+                            widthIcon={METRIC_VIETNAMTODAYS.ave_reach.widthIcon}
+                            refetch={useCallback(
+                              () => dashboard.refetch("chart1052Data"),
+                              [dashboard.isLoading.chart1052Data],
+                            )}
+                          />
+                          <NumberCard
+                            title={"Total Views"}
+                            description={
+                              "Tổng số lượt xem VOD hợp lệ trong kỳ (Lượt xem hợp lệ khi xem tối thiểu từ 15 giây)."
+                            }
+                            value={useMemo(
+                              () =>
+                                !dashboard.isLoading.chart1051Data
+                                  ? dashboard.chart1051Data?.data
+                                    ? formatNumber(
+                                        dashboard.chart1051Data?.data[0].Views,
+                                        { isPercent: false },
+                                      )
+                                    : "-"
+                                  : "isLoading",
+                              [dashboard.isLoading.chart1051Data],
+                            )}
+                            icon={METRIC_VIETNAMTODAYS.rating.icon}
+                            background={METRIC_VIETNAMTODAYS.rating.background}
+                            widthIcon={METRIC_VIETNAMTODAYS.rating.widthIcon}
+                            refetch={useCallback(
+                              () => dashboard.refetch("chart1051Data"),
+                              [dashboard.isLoading.chart1051Data],
+                            )}
+                          />
+                          <NumberCard
+                            title={"View/VOD"}
+                            description={
+                              "Số lượt xem trung bình đạt được trên mỗi video VOD."
+                            }
+                            value={useMemo(
+                              () =>
+                                !dashboard.isLoading.chart1050Data
+                                  ? dashboard.chart1050Data?.data
+                                    ? dashboard.chart1050Data?.data[0]?.[
+                                        "Avg Views/VOD"
+                                      ]?.toLocaleString(undefined, {
+                                        maximumFractionDigits: 2,
+                                      })
+                                    : "-"
+                                  : "isLoading",
+                              [dashboard.isLoading.chart1050Data],
+                            )}
+                            icon={METRIC_VIETNAMTODAYS.rating.icon}
+                            background={METRIC_VIETNAMTODAYS.rating.background}
+                            widthIcon={METRIC_VIETNAMTODAYS.rating.widthIcon}
+                            refetch={useCallback(
+                              () => dashboard.refetch("chart1050Data"),
+                              [dashboard.isLoading.chart1050Data],
+                            )}
+                          />
+                          <NumberCard
+                            title={"Time/View"}
+                            description={
+                              "Thời lượng xem trung bình trên mỗi lượt xem VOD."
+                            }
+                            value={useMemo(
+                              () =>
+                                !dashboard.isLoading.chart1054Data
+                                  ? dashboard.chart1054Data?.data
+                                    ? dashboard.chart1054Data?.data[0]?.[
+                                        "Avg Watch (Viewers)"
+                                      ]?.toLocaleString(undefined, {
+                                        maximumFractionDigits: 2,
+                                      })
+                                    : "-"
+                                  : "isLoading",
+                              [dashboard.isLoading.chart1054Data],
+                            )}
+                            icon={METRIC_VIETNAMTODAYS.rating.icon}
+                            background={METRIC_VIETNAMTODAYS.rating.background}
+                            widthIcon={METRIC_VIETNAMTODAYS.rating.widthIcon}
+                            refetch={useCallback(
+                              () => dashboard.refetch("chart1054Data"),
+                              [dashboard.isLoading.chart1054Data],
+                            )}
+                          />
+                          <NumberCard
+                            title={"View Duration"}
+                            description={
+                              "Tỷ lệ phần trăm thời lượng xem trung bình so với tổng độ dài của video VOD."
+                            }
+                            value={useMemo(
+                              () =>
+                                !dashboard.isLoading.chart1053Data
+                                  ? dashboard.chart1053Data?.data
+                                    ? formatNumber(
+                                        dashboard.chart1053Data?.data[0]?.[
+                                          "Avg View Duration (%)"
+                                        ],
+                                        { isPercent: true },
+                                      )
+                                    : "-"
+                                  : "isLoading",
+                              [dashboard.isLoading.chart1053Data],
+                            )}
+                            icon={METRIC_VIETNAMTODAYS.rating.icon}
+                            background={METRIC_VIETNAMTODAYS.rating.background}
+                            widthIcon={METRIC_VIETNAMTODAYS.rating.widthIcon}
+                            refetch={useCallback(
+                              () => dashboard.refetch("chart1053Data"),
+                              [dashboard.isLoading.chart1053Data],
+                            )}
+                          />
+                        </div>
+                        <div></div>
+                        <div></div>
+                        <div className="w-full pb-6 max-lg:pb-5 max-md:pb-4">
+                          <LineChart
+                            data={useMemo(
+                              () =>
+                                !dashboard.isLoading.chart1071Data
+                                  ? transformMixedChartData(
+                                      dashboard.chart1071Data?.data,
+                                      "date_local",
+                                      dashboard.chart1071Data?.colnames,
+                                    )
+                                  : "isLoading",
+                              [dashboard.isLoading.chart1071Data],
+                            )}
+                            height={CUSTOM_CHART.lineChart.height}
+                            fontSize={CUSTOM_CHART.lineChart.fontSize}
+                            fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                            fontWeight={CUSTOM_CHART.lineChart.fontWeight}
+                            nameChart={"Views & Users by Day"}
+                            description={
+                              CUSTOM_CHART.lineChart.lineChartTimebandRegional
+                                .description
+                            }
+                            colors={CUSTOM_CHART.lineChart.colorChannel}
+                            smooth={CUSTOM_CHART.lineChart.smooth}
+                            symbolSize={CUSTOM_CHART.lineChart.symbolSize}
+                            lineWidth={CUSTOM_CHART.lineChart.lineWidth}
+                            areaStyle={CUSTOM_CHART.lineChart.areaStyle}
+                            stack={CUSTOM_CHART.lineChart.stack}
+                            showTopNSeries={
+                              CUSTOM_CHART.lineChart.lineChartTimebandRegional
+                                .showTopNSeries
+                            }
+                            xAxisTitle={"Date"}
+                            refetch={useCallback(
+                              () => dashboard.refetch("chart1071Data"),
+                              [dashboard.isLoading.chart1071Data],
+                            )}
+                          />
+                        </div>
+                        <div className="w-full grid grid-cols-2 max-md:flex-wrap max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4">
+                          <TableChart
+                            data={useMemo(
+                              () =>
+                                !dashboard.isLoading.chart1069Data
+                                  ? transformTableChartData(
+                                      dashboard.chart1069Data?.data,
+                                      dashboard.chart1069Data?.colnames,
+                                      null,
+                                      [],
+                                      LABEL_VIETNAMTODAY,
+                                    )
+                                  : "isLoading",
+                              [dashboard.isLoading.chart1069Data],
+                            )}
+                            height={"350px"}
+                            fontSize={CUSTOM_CHART.tableChart.fontSize}
+                            fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                            fontWeight={CUSTOM_CHART.tableChart.fontWeight}
+                            nameChart={"VOD Performance by Duration"}
+                            description={false}
+                            fullScreen={true}
+                            showHeader={false}
+                            refetch={useCallback(
+                              () => dashboard.refetch("chart1069Data"),
+                              [dashboard.isLoading.chart1069Data],
+                            )}
+                          />
+                          <TableChart
+                            data={useMemo(
+                              () =>
+                                !dashboard.isLoading.chart1070Data
+                                  ? transformTableChartData(
+                                      dashboard.chart1070Data?.data,
+                                      dashboard.chart1070Data?.colnames,
+                                      null,
+                                      [],
+                                      LABEL_VIETNAMTODAY,
+                                    )
+                                  : "isLoading",
+                              [dashboard.isLoading.chart1070Data],
+                            )}
+                            height={"350px"}
+                            fontSize={CUSTOM_CHART.tableChart.fontSize}
+                            fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                            fontWeight={CUSTOM_CHART.tableChart.fontWeight}
+                            nameChart={"VOD Performance by Duration & Category"}
+                            description={false}
+                            fullScreen={true}
+                            showHeader={false}
+                            refetch={useCallback(
+                              () => dashboard.refetch("chart1070Data"),
+                              [dashboard.isLoading.chart1070Data],
+                            )}
+                          />
+                        </div>
+                        <div></div>
+                        <div className="w-full grid grid-cols-3 max-lg:grid-cols-2 max-md:flex-wrap max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4">
+                          <BarChart
+                            data={useMemo(
+                              () =>
+                                !dashboard.isLoading.chart1055Data
+                                  ? transformBarChartData(
+                                      dashboard.chart1055Data?.data,
+                                      dashboard.chart1055Data?.colnames,
+                                    )
+                                  : "isLoading",
+                              [dashboard.isLoading.chart1055Data],
+                            )}
+                            height={CUSTOM_CHART.barChart.height}
+                            fontSize={CUSTOM_CHART.barChart.fontSize}
+                            fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                            colors={
+                              CUSTOM_CHART.barChart.barChartArea.rating.color
+                            }
+                            fontWeight={CUSTOM_CHART.barChart.fontWeight}
+                            nameChart={"Category Breakdown by Views"}
+                            description={false}
+                            orientation={
+                              CUSTOM_CHART.barChart.barChartArea.orientation
+                            }
+                            colorZoom={
+                              CUSTOM_CHART.barChart.barChartArea.rating
+                                .colorZoom
+                            }
+                            refetch={useCallback(
+                              () => dashboard.refetch("chart1055Data"),
+                              [dashboard.isLoading.chart1055Data],
+                            )}
+                          />
+                          <BarChart
+                            data={useMemo(
+                              () =>
+                                !dashboard.isLoading.chart1056Data
+                                  ? transformBarChartData(
+                                      dashboard.chart1056Data?.data,
+                                      dashboard.chart1056Data?.colnames,
+                                    )
+                                  : "isLoading",
+                              [dashboard.isLoading.chart1056Data],
+                            )}
+                            height={CUSTOM_CHART.barChart.height}
+                            fontSize={CUSTOM_CHART.barChart.fontSize}
+                            fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                            colors={
+                              CUSTOM_CHART.barChart.barChartArea.aveReach.color
+                            }
+                            fontWeight={CUSTOM_CHART.barChart.fontWeight}
+                            nameChart={"Category Breakdown by Users"}
+                            description={false}
+                            orientation={
+                              CUSTOM_CHART.barChart.barChartArea.orientation
+                            }
+                            refetch={useCallback(
+                              () => dashboard.refetch("chart1056Data"),
+                              [dashboard.isLoading.chart1056Data],
+                            )}
+                          />
+                          <BarChart
+                            data={useMemo(
+                              () =>
+                                !dashboard.isLoading.chart1057Data
+                                  ? transformBarChartData(
+                                      dashboard.chart1057Data?.data,
+                                      dashboard.chart1057Data?.colnames,
+                                    )
+                                  : "isLoading",
+                              [dashboard.isLoading.chart1057Data],
+                            )}
+                            height={CUSTOM_CHART.barChart.height}
+                            fontSize={CUSTOM_CHART.barChart.fontSize}
+                            fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                            colors={
+                              CUSTOM_CHART.barChart.barChartArea.rating.color
+                            }
+                            fontWeight={CUSTOM_CHART.barChart.fontWeight}
+                            nameChart={"Category Breakdown by WatchTime"}
+                            description={false}
+                            orientation={
+                              CUSTOM_CHART.barChart.barChartArea.orientation
+                            }
+                            colorZoom={
+                              CUSTOM_CHART.barChart.barChartArea.rating
+                                .colorZoom
+                            }
+                            refetch={useCallback(
+                              () => dashboard.refetch("chart1057Data"),
+                              [dashboard.isLoading.chart1057Data],
+                            )}
+                          />
+                          <BarChart
+                            data={useMemo(
+                              () =>
+                                !dashboard.isLoading.chart1062Data
+                                  ? transformBarChartData(
+                                      dashboard.chart1062Data?.data,
+                                      dashboard.chart1062Data?.colnames,
+                                    )
+                                  : "isLoading",
+                              [dashboard.isLoading.chart1062Data],
+                            )}
+                            height={CUSTOM_CHART.barChart.height}
+                            fontSize={CUSTOM_CHART.barChart.fontSize}
+                            fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                            colors={
+                              CUSTOM_CHART.barChart.barChartArea.rating.color
+                            }
+                            fontWeight={CUSTOM_CHART.barChart.fontWeight}
+                            nameChart={"Geographic Distribution of Views"}
+                            description={false}
+                            orientation={
+                              CUSTOM_CHART.barChart.barChartArea.orientation
+                            }
+                            colorZoom={
+                              CUSTOM_CHART.barChart.barChartArea.rating
+                                .colorZoom
+                            }
+                            refetch={useCallback(
+                              () => dashboard.refetch("chart1062Data"),
+                              [dashboard.isLoading.chart1062Data],
+                            )}
+                          />
+                          <BarChart
+                            data={useMemo(
+                              () =>
+                                !dashboard.isLoading.chart1063Data
+                                  ? transformBarChartData(
+                                      dashboard.chart1063Data?.data,
+                                      dashboard.chart1063Data?.colnames,
+                                    )
+                                  : "isLoading",
+                              [dashboard.isLoading.chart1063Data],
+                            )}
+                            height={CUSTOM_CHART.barChart.height}
+                            fontSize={CUSTOM_CHART.barChart.fontSize}
+                            fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                            colors={
+                              CUSTOM_CHART.barChart.barChartArea.aveReach.color
+                            }
+                            fontWeight={CUSTOM_CHART.barChart.fontWeight}
+                            nameChart={"Geographic Distribution of Total Users"}
+                            description={false}
+                            orientation={
+                              CUSTOM_CHART.barChart.barChartArea.orientation
+                            }
+                            colorZoom={
+                              CUSTOM_CHART.barChart.barChartArea.aveReach
+                                .colorZoom
+                            }
+                            refetch={useCallback(
+                              () => dashboard.refetch("chart1063Data"),
+                              [dashboard.isLoading.chart1063Data],
+                            )}
+                          />
+                          <BarChart
+                            data={useMemo(
+                              () =>
+                                !dashboard.isLoading.chart1064Data
+                                  ? transformBarChartData(
+                                      dashboard.chart1064Data?.data,
+                                      dashboard.chart1064Data?.colnames,
+                                    )
+                                  : "isLoading",
+                              [dashboard.isLoading.chart1064Data],
+                            )}
+                            height={CUSTOM_CHART.barChart.height}
+                            fontSize={CUSTOM_CHART.barChart.fontSize}
+                            fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                            colors={
+                              CUSTOM_CHART.barChart.barChartArea.rating.color
+                            }
+                            fontWeight={CUSTOM_CHART.barChart.fontWeight}
+                            nameChart={"Geographic Distribution of WatchTime"}
+                            description={false}
+                            orientation={
+                              CUSTOM_CHART.barChart.barChartArea.orientation
+                            }
+                            colorZoom={
+                              CUSTOM_CHART.barChart.barChartArea.rating
+                                .colorZoom
+                            }
+                            refetch={useCallback(
+                              () => dashboard.refetch("chart1064Data"),
+                              [dashboard.isLoading.chart1064Data],
+                            )}
+                          />
+                        </div>
+                        <div className="w-full pb-6 max-lg:pb-5 max-md:pb-4">
+                          <div className="px-6 max-lg:px-5 max-md:px-0 pt-4 max-lg:pt-3 max-md:pt-0 bg-background-black-4 max-md:bg-background-dashboard dark:bg-background-dark max-md:dark:bg-background-dashboard-dark rounded-2xl">
+                            <ChildTabs
+                              tabs={[
+                                {
+                                  id: "views",
+                                  label: "Views",
+                                  content: (
+                                    <>
+                                      <div className="w-full pb-6 max-lg:pb-5 max-md:pb-4">
+                                        <PivotTableChart
+                                          data={useMemo(
+                                            () =>
+                                              !dashboard.isLoading.chart1059Data
+                                                ? dashboard.chart1059Data?.data
+                                                : "isLoading",
+                                            [dashboard.isLoading.chart1059Data],
+                                          )}
+                                          nameChart="View Distribution by Source & Category"
+                                          description={false}
+                                          rowField="Source_type"
+                                          columnField="category"
+                                          valueField={"Views"}
+                                          aggType="sum"
+                                          height={
+                                            CUSTOM_CHART.tableChart
+                                              .tableChartChannel.height
+                                          }
+                                          fontSize={
+                                            CUSTOM_CHART.tableChart.fontSize
+                                          }
+                                          fontFamily={
+                                            CUSTOM_CHART.allChart.fontFamily
+                                          }
+                                          fontWeight={
+                                            CUSTOM_CHART.tableChart.fontWeight
+                                          }
+                                          labelTables={LABEL_VIETNAMTODAY}
+                                          fullScreen={true}
+                                          refetch={useCallback(
+                                            () =>
+                                              dashboard.refetch(
+                                                "chart1059Data",
+                                              ),
+                                            [dashboard.isLoading.chart1059Data],
+                                          )}
+                                        />
+                                      </div>
+                                      <div className="w-full pb-6 max-lg:pb-5 max-md:pb-4">
+                                        <BarChart
+                                          data={useMemo(
+                                            () =>
+                                              !dashboard.isLoading.chart1213Data
+                                                ? transformBarChartData(
+                                                    dashboard.chart1213Data
+                                                      ?.data,
+                                                    dashboard.chart1213Data
+                                                      ?.colnames,
+                                                  )
+                                                : "isLoading",
+                                            [dashboard.isLoading.chart1213Data],
+                                          )}
+                                          height={CUSTOM_CHART.barChart.height}
+                                          fontSize={
+                                            CUSTOM_CHART.barChart.fontSize
+                                          }
+                                          fontFamily={
+                                            CUSTOM_CHART.allChart.fontFamily
+                                          }
+                                          colors={
+                                            CUSTOM_CHART.barChart.barChartArea
+                                              .rating.color
+                                          }
+                                          fontWeight={
+                                            CUSTOM_CHART.barChart.fontWeight
+                                          }
+                                          nameChart={
+                                            "Source Breakdown by Country (Views)"
+                                          }
+                                          description={false}
+                                          orientation={"horizontal"}
+                                          stack={true}
+                                          refetch={useCallback(
+                                            () =>
+                                              dashboard.refetch(
+                                                "chart1213Data",
+                                              ),
+                                            [dashboard.isLoading.chart1213Data],
+                                          )}
+                                        />
+                                      </div>
+                                    </>
+                                  ),
+                                },
+                                {
+                                  id: "users",
+                                  label: "Users",
+                                  content: (
+                                    <>
+                                      <div className="w-full pb-6 max-lg:pb-5 max-md:pb-4">
+                                        <PivotTableChart
+                                          data={useMemo(
+                                            () =>
+                                              !dashboard.isLoading.chart1060Data
+                                                ? dashboard.chart1060Data?.data
+                                                : "isLoading",
+                                            [dashboard.isLoading.chart1060Data],
+                                          )}
+                                          nameChart="User Distribution by Source & Category"
+                                          description={false}
+                                          rowField="Source_type"
+                                          columnField="category"
+                                          valueField={"Unique users"}
+                                          aggType="sum"
+                                          height={
+                                            CUSTOM_CHART.tableChart
+                                              .tableChartChannel.height
+                                          }
+                                          fontSize={
+                                            CUSTOM_CHART.tableChart.fontSize
+                                          }
+                                          fontFamily={
+                                            CUSTOM_CHART.allChart.fontFamily
+                                          }
+                                          fontWeight={
+                                            CUSTOM_CHART.tableChart.fontWeight
+                                          }
+                                          labelTables={LABEL_VIETNAMTODAY}
+                                          fullScreen={true}
+                                          refetch={useCallback(
+                                            () =>
+                                              dashboard.refetch(
+                                                "chart1060Data",
+                                              ),
+                                            [dashboard.isLoading.chart1060Data],
+                                          )}
+                                        />
+                                      </div>
+                                      <div className="w-full pb-6 max-lg:pb-5 max-md:pb-4">
+                                        <BarChart
+                                          data={useMemo(
+                                            () =>
+                                              !dashboard.isLoading.chart1214Data
+                                                ? transformBarChartData(
+                                                    dashboard.chart1214Data
+                                                      ?.data,
+                                                    dashboard.chart1214Data
+                                                      ?.colnames,
+                                                  )
+                                                : "isLoading",
+                                            [dashboard.isLoading.chart1214Data],
+                                          )}
+                                          height={CUSTOM_CHART.barChart.height}
+                                          fontSize={
+                                            CUSTOM_CHART.barChart.fontSize
+                                          }
+                                          fontFamily={
+                                            CUSTOM_CHART.allChart.fontFamily
+                                          }
+                                          colors={
+                                            CUSTOM_CHART.barChart.barChartArea
+                                              .rating.color
+                                          }
+                                          fontWeight={
+                                            CUSTOM_CHART.barChart.fontWeight
+                                          }
+                                          nameChart={
+                                            "Source Breakdown by Country (Users)"
+                                          }
+                                          description={false}
+                                          orientation={"horizontal"}
+                                          stack={true}
+                                          refetch={useCallback(
+                                            () =>
+                                              dashboard.refetch(
+                                                "chart1214Data",
+                                              ),
+                                            [dashboard.isLoading.chart1214Data],
+                                          )}
+                                        />
+                                      </div>
+                                    </>
+                                  ),
+                                },
+                                {
+                                  id: "watch_time",
+                                  label: "Watch Time",
+                                  content: (
+                                    <>
+                                      <div className="w-full pb-6 max-lg:pb-5 max-md:pb-4">
+                                        <PivotTableChart
+                                          data={useMemo(
+                                            () =>
+                                              !dashboard.isLoading.chart1061Data
+                                                ? dashboard.chart1061Data?.data
+                                                : "isLoading",
+                                            [dashboard.isLoading.chart1061Data],
+                                          )}
+                                          nameChart="Watch Time Distribution by Source & Category"
+                                          description={false}
+                                          rowField="Source_type"
+                                          columnField="category"
+                                          valueField={"Duration_View"}
+                                          aggType="sum"
+                                          height={
+                                            CUSTOM_CHART.tableChart
+                                              .tableChartChannel.height
+                                          }
+                                          fontSize={
+                                            CUSTOM_CHART.tableChart.fontSize
+                                          }
+                                          fontFamily={
+                                            CUSTOM_CHART.allChart.fontFamily
+                                          }
+                                          fontWeight={
+                                            CUSTOM_CHART.tableChart.fontWeight
+                                          }
+                                          labelTables={LABEL_VIETNAMTODAY}
+                                          fullScreen={true}
+                                          refetch={useCallback(
+                                            () =>
+                                              dashboard.refetch(
+                                                "chart1061Data",
+                                              ),
+                                            [dashboard.isLoading.chart1061Data],
+                                          )}
+                                        />
+                                      </div>
+                                      <div className="w-full pb-6 max-lg:pb-5 max-md:pb-4">
+                                        <BarChart
+                                          data={useMemo(
+                                            () =>
+                                              !dashboard.isLoading.chart1215Data
+                                                ? transformBarChartData(
+                                                    dashboard.chart1215Data
+                                                      ?.data,
+                                                    dashboard.chart1215Data
+                                                      ?.colnames,
+                                                  )
+                                                : "isLoading",
+                                            [dashboard.isLoading.chart1215Data],
+                                          )}
+                                          height={CUSTOM_CHART.barChart.height}
+                                          fontSize={
+                                            CUSTOM_CHART.barChart.fontSize
+                                          }
+                                          fontFamily={
+                                            CUSTOM_CHART.allChart.fontFamily
+                                          }
+                                          colors={
+                                            CUSTOM_CHART.barChart.barChartArea
+                                              .rating.color
+                                          }
+                                          fontWeight={
+                                            CUSTOM_CHART.barChart.fontWeight
+                                          }
+                                          nameChart={
+                                            "Source Breakdown by Country (Watch Time)"
+                                          }
+                                          description={false}
+                                          orientation={"horizontal"}
+                                          stack={true}
+                                          refetch={useCallback(
+                                            () =>
+                                              dashboard.refetch(
+                                                "chart1215Data",
+                                              ),
+                                            [dashboard.isLoading.chart1215Data],
+                                          )}
+                                        />
+                                      </div>
+                                    </>
+                                  ),
+                                },
+                              ]}
+                            />
+                          </div>
+                        </div>
+                        <div className="w-full pb-6 max-lg:pb-5 max-md:pb-4">
+                          <LineChart
+                            data={useMemo(
+                              () =>
+                                !dashboard.isLoading.chart1067Data
+                                  ? transformMixedChartData(
+                                      dashboard.chart1067Data?.data,
+                                      "time_band_local",
+                                      dashboard.chart1067Data?.colnames,
+                                    )
+                                  : "isLoading",
+                              [dashboard.isLoading.chart1067Data],
+                            )}
+                            height={CUSTOM_CHART.lineChart.height}
+                            fontSize={CUSTOM_CHART.lineChart.fontSize}
+                            fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                            fontWeight={CUSTOM_CHART.lineChart.fontWeight}
+                            nameChart={"Views by Time Slot"}
+                            description={
+                              CUSTOM_CHART.lineChart
+                                .lineChartPercentTimebandChannel.description
+                            }
+                            colors={CUSTOM_CHART.lineChart.colorChannel}
+                            smooth={CUSTOM_CHART.lineChart.smooth}
+                            symbolSize={CUSTOM_CHART.lineChart.symbolSize}
+                            lineWidth={CUSTOM_CHART.lineChart.lineWidth}
+                            areaStyle={true}
+                            stack={CUSTOM_CHART.lineChart.stack}
+                            showTopNSeries={
+                              CUSTOM_CHART.lineChart
+                                .lineChartPercentTimebandChannel.showTopNSeries
+                            }
+                            xAxisTitle={CUSTOM_CHART.lineChart.xAxisTitle}
+                            refetch={useCallback(
+                              () => dashboard.refetch("chart1067Data"),
+                              [dashboard.isLoading.chart1067Data],
+                            )}
+                          />
+                        </div>
                         <div className="w-full pb-6 max-lg:pb-5 max-md:pb-4">
                           <TableChart
                             data={useMemo(
                               () =>
-                                !dashboard.isLoading.chart645Data
+                                !dashboard.isLoading.chart1058Data
                                   ? transformTableChartData(
-                                      dashboard.chart645Data?.data,
-                                      dashboard.chart645Data?.colnames,
-                                      CUSTOM_CHART.tableChart
-                                        .tableProgramChannel.programEvent
-                                        .columnSort,
+                                      dashboard.chart1058Data?.data,
+                                      dashboard.chart1058Data?.colnames,
+                                      null,
+                                      [],
+                                      LABEL_VIETNAMTODAY,
                                     )
                                   : "isLoading",
-                              [dashboard.isLoading.chart645Data],
+                              [dashboard.isLoading.chart1058Data],
                             )}
-                            height={
-                              CUSTOM_CHART.tableChart.tableProgramChannel.height
-                            }
+                            height={"450px"}
                             fontSize={CUSTOM_CHART.tableChart.fontSize}
                             fontFamily={CUSTOM_CHART.allChart.fontFamily}
                             fontWeight={CUSTOM_CHART.tableChart.fontWeight}
-                            nameChart={
-                              CUSTOM_CHART.tableChart.tableProgramChannel
-                                .programEvent.name
-                            }
-                            description={
-                              CUSTOM_CHART.tableChart.tableProgramChannel
-                                .programEvent.description
-                            }
-                            showSTT={
-                              CUSTOM_CHART.tableChart.tableProgramChannel.STT
-                            }
-                            showPagination={
-                              CUSTOM_CHART.tableChart.tableProgramChannel
-                                .pagination
-                            }
+                            nameChart={"Content Performance"}
+                            description={false}
                             fullScreen={true}
-                            customCol={
-                              CUSTOM_CHART.tableChart.tableProgramChannel
-                                .customCol
-                            }
-                            crossFilter={true}
-                            keyChart={"chart645Data"}
                             refetch={useCallback(
-                              () => dashboard.refetch("chart645Data"),
-                              [dashboard.isLoading.chart645Data],
+                              () => dashboard.refetch("chart1058Data"),
+                              [dashboard.isLoading.chart1058Data],
                             )}
                           />
                         </div>
@@ -1580,7 +2437,7 @@ const DashboardContent = () => {
                   content: (
                     <section
                       className="bg-background-dashboard dark:bg-background-dashboard-dark transiton-all duration-300"
-                      id="target_capture_rating_by_minute"
+                      id="target_capture_social"
                     >
                       <InforTab
                         inforTab={"Social"}
@@ -1592,139 +2449,283 @@ const DashboardContent = () => {
                       />
                       <InforFilter filters={scopeFilterData} />
                       <div className="px-6 max-lg:px-5 max-md:px-4">
-                        <div className="w-full py-6 max-lg:py-5 max-md:pb-4">
-                          <LineChart
-                            data={
-                              !dashboard.isLoading.chart680Data
-                                ? transformMixedChartData(
-                                    dashboard.chart680Data?.data,
-                                    "event_hour_minute",
-                                    dashboard.chart680Data?.colnames,
-                                  )
-                                : "isLoading"
-                            }
-                            height={CUSTOM_CHART.lineChart.heightMinute}
-                            fontSize={CUSTOM_CHART.lineChart.fontSize}
-                            fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                            fontWeight={CUSTOM_CHART.lineChart.fontWeight}
-                            nameChart={
-                              CUSTOM_CHART.lineChart.lineChartMinuteChannel.name
-                            }
+                        <div className="w-full grid grid-cols-4 max-md:grid-cols-2 gap-6 max-lg:gap-5 max-md:gap-4 py-6 max-lg:py-5 max-md:py-4">
+                          <NumberCard
+                            title={"Total Posts"}
                             description={
-                              CUSTOM_CHART.lineChart.lineChartMinuteChannel
-                                .description
+                              "Tổng số lượng bài viết đã đăng trong khoảng thời gian được chọn."
                             }
-                            colors={CUSTOM_CHART.lineChart.colorChannel}
-                            smooth={CUSTOM_CHART.lineChart.smooth}
-                            symbolSize={CUSTOM_CHART.lineChart.symbolSize}
-                            lineWidth={CUSTOM_CHART.lineChart.lineWidth}
-                            areaStyle={CUSTOM_CHART.lineChart.areaStyle}
-                            stack={CUSTOM_CHART.lineChart.stack}
-                            showTopNSeries={0}
-                            legendTop={
-                              CUSTOM_CHART.lineChart.lineChartMinuteChannel
-                                .legendTop
+                            value={useMemo(
+                              () =>
+                                !dashboard.isLoading.chart1091Data
+                                  ? dashboard.chart1091Data?.data
+                                    ? formatNumber(
+                                        dashboard.chart1091Data?.data[0]?.[
+                                          "Total Post"
+                                        ],
+                                        { isPercent: false },
+                                      )
+                                    : "-"
+                                  : "isLoading",
+                              [dashboard.isLoading.chart1091Data],
+                            )}
+                            icon={METRIC_VIETNAMTODAYS.ave_reach.icon}
+                            background={
+                              METRIC_VIETNAMTODAYS.ave_reach.background
                             }
-                            xAxisTitle={CUSTOM_CHART.lineChart.xAxisTitleMinute}
-                            fullScreen={true}
-                            crossFilter={"channels"}
-                            keyChart={"chart680Data"}
-                            refetch={() => dashboard.refetch("chart680Data")}
+                            widthIcon={METRIC_VIETNAMTODAYS.ave_reach.widthIcon}
+                            refetch={useCallback(
+                              () => dashboard.refetch("chart1091Data"),
+                              [dashboard.isLoading.chart1091Data],
+                            )}
+                          />
+                          <NumberCard
+                            title={"Engagement"}
+                            description={
+                              "Tổng số lượt tương tác phát sinh trên các bài viết được đăng trong khoảng thời gian báo cáo."
+                            }
+                            value={useMemo(
+                              () =>
+                                !dashboard.isLoading.chart1092Data
+                                  ? dashboard.chart1092Data?.data
+                                    ? formatNumber(
+                                        dashboard.chart1092Data?.data[0]?.[
+                                          "Total Engagement"
+                                        ],
+                                        { isPercent: false },
+                                      )
+                                    : "-"
+                                  : "isLoading",
+                              [dashboard.isLoading.chart1092Data],
+                            )}
+                            icon={METRIC_VIETNAMTODAYS.rating.icon}
+                            background={METRIC_VIETNAMTODAYS.rating.background}
+                            widthIcon={METRIC_VIETNAMTODAYS.rating.widthIcon}
+                            refetch={useCallback(
+                              () => dashboard.refetch("chart1092Data"),
+                              [dashboard.isLoading.chart1092Data],
+                            )}
+                          />
+                          <NumberCard
+                            title={"Impressions"}
+                            description={
+                              "Tổng số lần nội dung hiển thị trên màn hình của người dùng (bao gồm cả lượt hiển thị lặp lại) trong khoảng thời gian được chọn."
+                            }
+                            value={useMemo(
+                              () =>
+                                !dashboard.isLoading.chart1093Data
+                                  ? dashboard.chart1093Data?.data
+                                    ? formatNumber(
+                                        dashboard.chart1093Data?.data[0]?.[
+                                          "Total Impression"
+                                        ],
+                                        { isPercent: false },
+                                      )
+                                    : "-"
+                                  : "isLoading",
+                              [dashboard.isLoading.chart1093Data],
+                            )}
+                            icon={METRIC_VIETNAMTODAYS.rating.icon}
+                            background={METRIC_VIETNAMTODAYS.rating.background}
+                            widthIcon={METRIC_VIETNAMTODAYS.rating.widthIcon}
+                            refetch={useCallback(
+                              () => dashboard.refetch("chart1093Data"),
+                              [dashboard.isLoading.chart1093Data],
+                            )}
+                          />
+                          <NumberCard
+                            title={"Total Shares"}
+                            description={
+                              "Tổng số lượt chia sẻ của các bài viết được đăng trong khoảng thời gian báo cáo."
+                            }
+                            value={useMemo(
+                              () =>
+                                !dashboard.isLoading.chart1097Data
+                                  ? dashboard.chart1097Data?.data
+                                    ? formatNumber(
+                                        dashboard.chart1097Data?.data[0]?.[
+                                          "SUM(Shares)"
+                                        ],
+                                        { isPercent: false },
+                                      )
+                                    : "-"
+                                  : "isLoading",
+                              [dashboard.isLoading.chart1097Data],
+                            )}
+                            icon={METRIC_VIETNAMTODAYS.rating.icon}
+                            background={METRIC_VIETNAMTODAYS.rating.background}
+                            widthIcon={METRIC_VIETNAMTODAYS.rating.widthIcon}
+                            refetch={useCallback(
+                              () => dashboard.refetch("chart1097Data"),
+                              [dashboard.isLoading.chart1097Data],
+                            )}
                           />
                         </div>
-                        <div className="w-full pb-6 max-lg:pb-5 max-md:pb-4">
-                          <LineChart
-                            data={
-                              !dashboard.isLoading.chart678Data
-                                ? transformMixedChartData(
-                                    dashboard.chart678Data?.data,
-                                    "event_hour_minute",
-                                    dashboard.chart678Data?.colnames,
-                                    "full_timeband_minute",
-                                  )
-                                : "isLoading"
-                            }
-                            height={CUSTOM_CHART.lineChart.heightMinute}
-                            fontSize={CUSTOM_CHART.lineChart.fontSize}
+                        <div className="w-full grid grid-cols-2 max-md:flex-wrap max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4">
+                          <PieChart
+                            data={useMemo(
+                              () =>
+                                !dashboard.isLoading.chart1102Data
+                                  ? transformPieChartData(
+                                      dashboard.chart1102Data?.data,
+                                      dashboard.chart1102Data?.colnames,
+                                    )
+                                  : "isLoading",
+                              [dashboard.isLoading.chart1102Data],
+                            )}
+                            height={CUSTOM_CHART.pieChart.height}
+                            fontSize={CUSTOM_CHART.pieChart.fontSize}
                             fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                            fontWeight={CUSTOM_CHART.lineChart.fontWeight}
-                            nameChart={
-                              CUSTOM_CHART.lineChart.lineChartMinuteDay.name +
-                              " (" +
-                              formatDate(
-                                appliedFilters?.endDate || getYesterday(),
-                              ) +
-                              (appliedFilters?.channels?.length > 0
-                                ? " - " + appliedFilters?.channels[0]
-                                : " - VTV1") +
-                              ")"
-                            }
-                            description={
-                              CUSTOM_CHART.lineChart.lineChartMinuteDay
-                                .description
-                            }
-                            colors={CUSTOM_CHART.lineChart.colorChannel}
-                            smooth={CUSTOM_CHART.lineChart.smooth}
-                            symbolSize={CUSTOM_CHART.lineChart.symbolSize}
-                            lineWidth={CUSTOM_CHART.lineChart.lineWidth}
-                            areaStyle={CUSTOM_CHART.lineChart.areaStyle}
-                            stack={CUSTOM_CHART.lineChart.stack}
-                            showTopNSeries={0}
-                            legendTop={
-                              CUSTOM_CHART.lineChart.lineChartMinuteChannel
-                                .legendTop
-                            }
-                            xAxisTitle={CUSTOM_CHART.lineChart.xAxisTitleMinute}
+                            fontWeight={CUSTOM_CHART.pieChart.fontWeight}
+                            nameChart={"Total Posts by Platform"}
+                            center={true}
+                            description={false}
+                            donut={CUSTOM_CHART.pieChart.donut}
+                            innerRadius={CUSTOM_CHART.pieChart.innerRadius}
+                            border={false}
+                            refetch={useCallback(
+                              () => dashboard.refetch("chart1102Data"),
+                              [dashboard.isLoading.chart1102Data],
+                            )}
+                          />
+                          <TableChart
+                            data={useMemo(
+                              () =>
+                                !dashboard.isLoading.chart1090Data
+                                  ? transformTableChartData(
+                                      dashboard.chart1090Data?.data,
+                                      dashboard.chart1090Data?.colnames,
+                                      null,
+                                      [],
+                                      LABEL_VIETNAMTODAY,
+                                    )
+                                  : "isLoading",
+                              [dashboard.isLoading.chart1090Data],
+                            )}
+                            height={"320px"}
+                            fontSize={CUSTOM_CHART.tableChart.fontSize}
+                            fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                            fontWeight={CUSTOM_CHART.tableChart.fontWeight}
+                            nameChart={"Performance Metrics by Platform"}
+                            description={false}
                             fullScreen={true}
-                            textOverflow={true}
-                            crossFilter={"programs"}
-                            keyChart={"chart678Data"}
-                            refetch={() => dashboard.refetch("chart678Data")}
+                            refetch={useCallback(
+                              () => dashboard.refetch("chart1090Data"),
+                              [dashboard.isLoading.chart1090Data],
+                            )}
                           />
                         </div>
-                        <div className="w-full pb-6 max-lg:pb-5 max-md:pb-4">
-                          <LineChart
-                            data={
-                              !dashboard.isLoading.chart681Data
-                                ? transformMixedChartData(
-                                    dashboard.chart681Data?.data,
-                                    "event_hour_minute",
-                                    dashboard.chart681Data?.colnames,
-                                  )
-                                : "isLoading"
-                            }
-                            height={CUSTOM_CHART.lineChart.heightMinute}
-                            fontSize={CUSTOM_CHART.lineChart.fontSize}
-                            fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                            fontWeight={CUSTOM_CHART.lineChart.fontWeight}
-                            nameChart={
-                              CUSTOM_CHART.lineChart.lineChartMinuteDays.name +
-                              " (" +
-                              "nhiều ngày " +
-                              (appliedFilters?.channels?.length > 0
-                                ? " - " + appliedFilters?.channels[0]
-                                : " - VTV1") +
-                              ")"
-                            }
-                            description={
-                              CUSTOM_CHART.lineChart.lineChartMinuteDays
-                                .description
-                            }
-                            colors={CUSTOM_CHART.lineChart.colorChannel}
-                            smooth={CUSTOM_CHART.lineChart.smooth}
-                            symbolSize={CUSTOM_CHART.lineChart.symbolSize}
-                            lineWidth={CUSTOM_CHART.lineChart.lineWidth}
-                            areaStyle={CUSTOM_CHART.lineChart.areaStyle}
-                            stack={CUSTOM_CHART.lineChart.stack}
-                            showTopNSeries={0}
-                            legendTop={
-                              CUSTOM_CHART.lineChart.lineChartMinuteChannel
-                                .legendTop
-                            }
-                            fullScreen={true}
-                            textOverflow={true}
-                            refetch={() => dashboard.refetch("chart681Data")}
-                          />
+                        <div className="px-6 max-lg:px-5 max-md:px-0 pt-4 max-lg:pt-3 max-md:pt-0 bg-background-black-4 max-md:bg-background-dashboard dark:bg-background-dark max-md:dark:bg-background-dashboard-dark rounded-2xl">
+                          <Title title={"Facebook"} />
+                          <div className="w-full pb-6 max-lg:pb-5 max-md:pb-4">
+                            <TableChart
+                              data={useMemo(
+                                () =>
+                                  !dashboard.isLoading.chart1103Data
+                                    ? transformTableChartData(
+                                        dashboard.chart1103Data?.data,
+                                        dashboard.chart1103Data?.colnames,
+                                        null,
+                                        [],
+                                        LABEL_VIETNAMTODAY,
+                                      )
+                                    : "isLoading",
+                                [dashboard.isLoading.chart1103Data],
+                              )}
+                              height={"100px"}
+                              showHeader={false}
+                              fontSize={CUSTOM_CHART.tableChart.fontSize}
+                              fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                              fontWeight={CUSTOM_CHART.tableChart.fontWeight}
+                              nameChart={"Facebook Insight"}
+                              description={false}
+                              fullScreen={true}
+                              refetch={useCallback(
+                                () => dashboard.refetch("chart1103Data"),
+                                [dashboard.isLoading.chart1103Data],
+                              )}
+                            />
+                          </div>
+                          <div className="w-full grid grid-cols-2 max-md:flex-wrap max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4">
+                            <LineChart
+                              data={useMemo(
+                                () =>
+                                  !dashboard.isLoading.chart1104Data
+                                    ? transformMixedChartData(
+                                        dashboard.chart1104Data?.data,
+                                        "day",
+                                        dashboard.chart1104Data?.colnames,
+                                      )
+                                    : "isLoading",
+                                [dashboard.isLoading.chart1104Data],
+                              )}
+                              height={"350px"}
+                              fontSize={CUSTOM_CHART.lineChart.fontSize}
+                              fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                              fontWeight={CUSTOM_CHART.lineChart.fontWeight}
+                              nameChart={"Followers Trend - Last 30 days"}
+                              description={
+                                CUSTOM_CHART.lineChart.lineChartTimebandRegional
+                                  .description
+                              }
+                              colors={CUSTOM_CHART.lineChart.colorChannel}
+                              smooth={CUSTOM_CHART.lineChart.smooth}
+                              symbolSize={CUSTOM_CHART.lineChart.symbolSize}
+                              lineWidth={CUSTOM_CHART.lineChart.lineWidth}
+                              areaStyle={CUSTOM_CHART.lineChart.areaStyle}
+                              stack={CUSTOM_CHART.lineChart.stack}
+                              legendTop={true}
+                              showLabel={false}
+                              showTopNSeries={
+                                CUSTOM_CHART.lineChart.lineChartTimebandRegional
+                                  .showTopNSeries
+                              }
+                              xAxisTitle={"Date"}
+                              refetch={useCallback(
+                                () => dashboard.refetch("chart1104Data"),
+                                [dashboard.isLoading.chart1104Data],
+                              )}
+                            />
+                            <LineChart
+                              data={useMemo(
+                                () =>
+                                  !dashboard.isLoading.chart1105Data
+                                    ? transformMixedChartData(
+                                        dashboard.chart1105Data?.data,
+                                        "day",
+                                        dashboard.chart1105Data?.colnames,
+                                      )
+                                    : "isLoading",
+                                [dashboard.isLoading.chart1105Data],
+                              )}
+                              height={"350px"}
+                              fontSize={CUSTOM_CHART.lineChart.fontSize}
+                              fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                              fontWeight={CUSTOM_CHART.lineChart.fontWeight}
+                              nameChart={"Engagements Trend - Last 30 Days"}
+                              description={
+                                CUSTOM_CHART.lineChart.lineChartTimebandRegional
+                                  .description
+                              }
+                              colors={CUSTOM_CHART.lineChart.colorChannel}
+                              smooth={CUSTOM_CHART.lineChart.smooth}
+                              symbolSize={CUSTOM_CHART.lineChart.symbolSize}
+                              lineWidth={CUSTOM_CHART.lineChart.lineWidth}
+                              legendTop={true}
+                              showLabel={false}
+                              areaStyle={CUSTOM_CHART.lineChart.areaStyle}
+                              stack={CUSTOM_CHART.lineChart.stack}
+                              showTopNSeries={
+                                CUSTOM_CHART.lineChart.lineChartTimebandRegional
+                                  .showTopNSeries
+                              }
+                              xAxisTitle={"Date"}
+                              refetch={useCallback(
+                                () => dashboard.refetch("chart1105Data"),
+                                [dashboard.isLoading.chart1105Data],
+                              )}
+                            />
+                          </div>
                         </div>
                       </div>
                       <div className="px-6 max-lg:px-5 max-md:px-4 pb-6 max-lg:pb-5 max-md:pb-19 bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300">

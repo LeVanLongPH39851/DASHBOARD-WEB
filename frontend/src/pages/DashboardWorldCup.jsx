@@ -488,14 +488,16 @@ const DashboardContent = () => {
                         </div>
                         <div className="w-full pb-6 max-lg:pb-5 max-md:pb-4">
                           <TableChart
-                            data={useMemo(() => {
-                              !dashboard.isLoading.allTableDetailData
-                                ? transformTableChartData(
-                                    dashboard.allTableDetailData?.data,
-                                    dashboard.allTableDetailData?.colnames,
-                                  )
-                                : "isLoading";
-                            }, [dashboard.isLoading.allTableDetailData])}
+                            data={useMemo(
+                              () =>
+                                !dashboard.isLoading.allTableDetailData
+                                  ? transformTableChartData(
+                                      dashboard.allTableDetailData?.data,
+                                      dashboard.allTableDetailData?.colnames,
+                                    )
+                                  : "isLoading",
+                              [dashboard.isLoading.allTableDetailData],
+                            )}
                             height={"425px"}
                             fontSize={CUSTOM_CHART.tableChart.fontSize}
                             fontFamily={CUSTOM_CHART.allChart.fontFamily}
@@ -528,14 +530,16 @@ const DashboardContent = () => {
                         </div>
                         <div className="w-full pb-6 max-lg:pb-5 max-md:pb-4">
                           <TableChart
-                            data={useMemo(() => {
-                              !dashboard.isLoading.allTableTeamData
-                                ? transformTableChartData(
-                                    dashboard.allTableTeamData?.data,
-                                    dashboard.allTableTeamData?.colnames,
-                                  )
-                                : "isLoading";
-                            }, [dashboard.isLoading.allTableTeamData])}
+                            data={useMemo(
+                              () =>
+                                !dashboard.isLoading.allTableTeamData
+                                  ? transformTableChartData(
+                                      dashboard.allTableTeamData?.data,
+                                      dashboard.allTableTeamData?.colnames,
+                                    )
+                                  : "isLoading",
+                              [dashboard.isLoading.allTableTeamData],
+                            )}
                             height={"425px"}
                             fontSize={CUSTOM_CHART.tableChart.fontSize}
                             fontFamily={CUSTOM_CHART.allChart.fontFamily}

@@ -1,5 +1,7 @@
-import logoVTVRatings from "../../../assets/logo_vtvratings.png";
-import logoVTVRatingsDark from "../../../assets/logo_vtvratings_dark.png";
+// import logoVTVRatings from "../../../assets/logo_vtvratings.png";
+// import logoVTVRatingsDark from "../../../assets/logo_vtvratings_dark.png";
+import logoVTVRatings from "../../../assets/logo_VTVRating_white.png";
+import logoVTVRatingsDark from "../../../assets/logo_VTVRating_dark.png";
 import iconLanguge from "../../../assets/icon_language.png";
 import iconArrowDown from "../../../assets/icon_arrow_down.png";
 import iconArrowDownDark from "../../../assets/icon_arrow_down_dark.png";

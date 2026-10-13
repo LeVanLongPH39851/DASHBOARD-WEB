@@ -6,13 +6,13 @@ export const getYesterday = () => {
   const today = new Date();
   const yesterday = new Date(today);
   yesterday.setDate(today.getDate() - 1);
-  return yesterday.toISOString().split('T')[0];
+  return yesterday.toISOString().split("T")[0];
 };
 
 export const formatDate = (dateStr) => {
   const date = new Date(dateStr);
-  const day = String(date.getDate()).padStart(2, '0');
-  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
   const year = String(date.getFullYear()); // 2 chữ số cuối
   return `${day}/${month}/${year}`;
 };
@@ -22,12 +22,12 @@ export const formatDateTime = (timestamp) => {
   timestamp = timestamp - 7 * 60 * 60 * 1000;
   const date = new Date(timestamp);
 
-  const day = String(date.getDate()).padStart(2, '0');
-  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
   const year = date.getFullYear();
 
-  const hours = String(date.getHours()).padStart(2, '0');
-  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
 
   return `${day}/${month}/${year} ${hours}:${minutes}`;
 };
@@ -36,12 +36,16 @@ export const getDayBeforeYesterday = () => {
   const today = new Date();
   const yesterday = new Date(today);
   yesterday.setDate(today.getDate() - 2);
-  return yesterday.toISOString().split('T')[0];
+  return yesterday.toISOString().split("T")[0];
 };
 
 export const generateRandomId = (length = 6) => {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  const randomPart = Array.from({ length }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+  const chars =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  const randomPart = Array.from(
+    { length },
+    () => chars[Math.floor(Math.random() * chars.length)],
+  ).join("");
   const timestamp = Date.now();
   return `${randomPart}_${timestamp}`;
 };
@@ -49,51 +53,50 @@ export const generateRandomId = (length = 6) => {
 export const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 export const prepareCaptureLayout = () => {
-    const inforTabSticky = document.getElementById("inforTabSticky");
-    const inforFilterSticky = document.getElementById("inforFilterSticky");
-    const divTables = document.querySelectorAll(".divTable");
-    const exportTime = document.getElementById("exportTime");
-    const clearAll = document?.getElementById("clearAll");
-    const inforFilterBtn = document.querySelector(
-      "#inforFilter div:first-child",
-    );
+  const inforTabSticky = document.getElementById("inforTabSticky");
+  const inforFilterSticky = document.getElementById("inforFilterSticky");
+  const divTables = document.querySelectorAll(".divTable");
+  const exportTime = document.getElementById("exportTime");
+  const clearAll = document?.getElementById("clearAll");
+  const inforFilterBtn = document.querySelector("#inforFilter div:first-child");
 
-    inforFilterBtn.classList.add("hidden");
-    sleep(300);
-    inforTabSticky?.classList.replace("transition-all", "transition-delete");
-    inforFilterSticky?.classList.replace("transition-all", "transition-delete");
-    inforTabSticky?.classList.replace("duration-300", "duration-delete");
-    inforFilterSticky?.classList.replace("duration-300", "duration-delete");
+  inforFilterBtn.classList.add("hidden");
+  sleep(300);
+  inforTabSticky?.classList.replace("transition-all", "transition-delete");
+  inforFilterSticky?.classList.replace("transition-all", "transition-delete");
+  inforTabSticky?.classList.replace("duration-300", "duration-delete");
+  inforFilterSticky?.classList.replace("duration-300", "duration-delete");
 
-    const originalInforTabTop = inforTabSticky?.style.top ?? "";
-    const originalInforFilterTop = inforFilterSticky?.style.top ?? "";
+  const originalInforTabTop = inforTabSticky?.style.top ?? "";
+  const originalInforFilterTop = inforFilterSticky?.style.top ?? "";
 
-    if (inforTabSticky) inforTabSticky.style.top = "0px";
-    if (inforFilterSticky) {
-      const inforTabHeight = inforTabSticky?.getBoundingClientRect()?.height.toFixed(2) ?? 0;
-      inforFilterSticky.style.top = `${inforTabHeight}px`;
-    }
+  if (inforTabSticky) inforTabSticky.style.top = "0px";
+  if (inforFilterSticky) {
+    const inforTabHeight =
+      inforTabSticky?.getBoundingClientRect()?.height.toFixed(2) ?? 0;
+    inforFilterSticky.style.top = `${inforTabHeight}px`;
+  }
 
-    if (clearAll) clearAll.classList.add("hidden");
-    divTables.forEach((table) =>
-      table?.classList.replace("overflow-auto", "overflow-hidden"),
-    );
+  if (clearAll) clearAll.classList.add("hidden");
+  divTables.forEach((table) =>
+    table?.classList.replace("overflow-auto", "overflow-hidden"),
+  );
 
-    const now = new Date();
-    const timeStr = `Thời gian export: ${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}:${String(now.getSeconds()).padStart(2, "0")} ${String(now.getDate()).padStart(2, "0")}/${String(now.getMonth() + 1).padStart(2, "0")}/${now.getFullYear()}`;
-    if (exportTime) exportTime.textContent = timeStr;
+  const now = new Date();
+  const timeStr = `Thời gian export: ${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}:${String(now.getSeconds()).padStart(2, "0")} ${String(now.getDate()).padStart(2, "0")}/${String(now.getMonth() + 1).padStart(2, "0")}/${now.getFullYear()}`;
+  if (exportTime) exportTime.textContent = timeStr;
 
-    return {
-      inforTabSticky,
-      inforFilterSticky,
-      originalInforTabTop,
-      originalInforFilterTop,
-      clearAll,
-      divTables,
-      exportTime,
-      inforFilterBtn,
-      now,
-    };
+  return {
+    inforTabSticky,
+    inforFilterSticky,
+    originalInforTabTop,
+    originalInforFilterTop,
+    clearAll,
+    divTables,
+    exportTime,
+    inforFilterBtn,
+    now,
+  };
 };
 
 export const restoreCaptureLayout = ({
@@ -123,7 +126,7 @@ export const restoreCaptureLayout = ({
 export const waitForNextPaint = () =>
   new Promise((resolve) =>
     requestAnimationFrame(() => requestAnimationFrame(resolve)),
-);
+  );
 
 export const handleCapture = async (currentTab) => {
   const target = document.getElementById(`target_capture_${currentTab}`);
@@ -134,9 +137,7 @@ export const handleCapture = async (currentTab) => {
   const divTables = document.querySelectorAll(".divTable");
   const exportTime = document?.getElementById("exportTime");
   const clearAll = document?.getElementById("clearAll");
-  const inforFilterBtn = document.querySelector(
-    "#inforFilter div:first-child",
-  );
+  const inforFilterBtn = document.querySelector("#inforFilter div:first-child");
 
   inforTabSticky.classList.replace("transition-all", "transition-delete");
   inforFilterSticky.classList.replace("transition-all", "transition-delete");
@@ -199,9 +200,7 @@ export const handlePDF = async (currentTab) => {
   const divTables = document.querySelectorAll(".divTable");
   const exportTime = document?.getElementById("exportTime");
   const clearAll = document?.getElementById("clearAll");
-  const inforFilterBtn = document.querySelector(
-    "#inforFilter div:first-child",
-  );
+  const inforFilterBtn = document.querySelector("#inforFilter div:first-child");
 
   inforFilterBtn.classList.add("hidden");
   await sleep(300);

@@ -262,7 +262,8 @@ const TableChart = ({
       );
 
       cols.push({
-        accessorKey: s.name,
+        id: s.name,
+        accessorFn: (row) => row[s.name],
         header: s.name,
         cell: (info) => {
           const value = info.getValue();

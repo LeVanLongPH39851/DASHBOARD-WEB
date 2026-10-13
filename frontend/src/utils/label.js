@@ -118,6 +118,38 @@ export const LABEL_SPOT = {
   reach: "Reach",
 };
 
+export const LABEL_VIETNAMTODAY = {
+  category_name: "Category",
+  country: "Country",
+  total_time_viewing: "Total Time Viewing",
+  province_name: "Province",
+  Total_Views: "Total Views",
+  ave_reach_1: "Avg.Reach",
+  ott: "OTT",
+  continent: "Continent",
+  rating_1: "Rating",
+  category: "Category",
+  program_name: "Program name",
+  total_view: "Total View",
+  "minute/user/program": "Minute/user/program",
+  date: "Date",
+  start_time: "Start time",
+  end_time: "End time",
+  "minute/user/program_1": "Minute/user/program",
+  "Unique users": "Users",
+  "Duration Bucket": "Duration\nBucket",
+  "Total VOD": "Total/\nVOD",
+  "Avg Views/VOD": "Views/\nVOD",
+  "Avg Watch Time / VOD": "Duration/\nVOD",
+  "Avg View Duration (%)": "Avg Per\nViewed",
+  Source_type: "Source Type",
+  vod_publish_date: "Published Date",
+  vod_title: "VOD Title",
+  "Avg Watch (Viewers)": "Min/View",
+  snapshot_date: "Snapshot Date",
+  day: "Day",
+};
+
 export const LABEL_METRIC = {
   rating: "Rating",
   ave_reach: "Ave.Reach",
@@ -130,6 +162,7 @@ export const LABEL_METRIC = {
   price: "Chi phí (Triệu VND)",
   price_usd: "Chi phí (USD)",
   count: "Số lượng",
+  Duration_View: "Duration view",
 };
 
 export const FILTER_LABEL = {

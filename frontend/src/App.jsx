@@ -4,6 +4,7 @@ import DashboardSpot from "./pages/DashboardSpot";
 import DashboardBrand from "./pages/DashboardBrand";
 import DashboardWorldCup from "./pages/DashboardWorldCup";
 import VietnamToday from "./pages/VietnamToday.jsx";
+import DashboardVietnamToday from "./pages/DashboardVietnamToday.jsx";
 import BaoTri from "./pages/BaoTri";
 import Login from "./pages/Login";
 import ChatBot from "./components/layouts/components/ChatBot";
@@ -28,6 +29,7 @@ function App() {
         <Route path="/brand" element={<DashboardBrand />} />
         <Route path="/world-cup-2026" element={<DashboardWorldCup />} />
         <Route path="/survey" element={<VietnamToday />} />
+        <Route path="/vietnam-today" element={<DashboardVietnamToday />} />
       </Routes>
     </BrowserRouter>
   );

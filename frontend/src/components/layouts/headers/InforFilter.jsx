@@ -207,10 +207,9 @@ const InforFilter = ({
                 valueFilters={[
                   formatDate(
                     appliedFilters?.startDate ||
-                      (nameFilter == "FilterRating" ||
-                      nameFilter == "FilterWorldCup"
-                        ? yesterday
-                        : beforeYesterday),
+                      (nameFilter == "FilterSpot"
+                        ? beforeYesterday
+                        : yesterday),
                   ),
                   formatDate(appliedFilters?.endDate || yesterday),
                 ]}

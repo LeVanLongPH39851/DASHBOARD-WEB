@@ -144,10 +144,21 @@ export const LABEL_VIETNAMTODAY = {
   "Avg View Duration (%)": "Avg Per\nViewed",
   Source_type: "Source Type",
   vod_publish_date: "Published Date",
+  published_date: "Published Date",
   vod_title: "VOD Title",
   "Avg Watch (Viewers)": "Min/View",
   snapshot_date: "Snapshot Date",
   day: "Day",
+  video_title: "Video Title",
+  Duration_video: "Video Duration",
+  title: "Title",
+  published_at: "Published Date",
+  "Total Impression": "Impression",
+  "Total Engagement": "Engagement",
+  "Total Like": "Like",
+  "Total Comment": "Comment",
+  "Total Share": "Share",
+  Views: "View",
 };
 
 export const LABEL_METRIC = {
@@ -163,6 +174,8 @@ export const LABEL_METRIC = {
   price_usd: "Chi phí (USD)",
   count: "Số lượng",
   Duration_View: "Duration view",
+  daily_active_user: "DAU",
+  time_user_per_day: "Time on site/user/day",
 };
 
 export const FILTER_LABEL = {

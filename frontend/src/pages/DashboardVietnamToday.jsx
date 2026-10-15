@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import NumberCard from "../components/charts/NumberCard";
-import Filter from "../components/layouts/filters/Filter";
+import FilterVietNamToDay from "../components/layouts/filters/FilterVietNamToDay";
 import { METRIC_VIETNAMTODAYS } from "../utils/metricInfor";
 import { CUSTOM_CHART } from "../utils/customChart";
 import { formatNumber } from "../utils/formatNumber";
@@ -119,7 +119,7 @@ const DashboardContent = () => {
     <main className="font-family-be-vietnam-pro w-full h-full tracking-[0.1px] overflow-x-clip">
       <Header username={user?.username} />
       <div className="flex w-full h-full bg-background-light dark:bg-background-dark transition-all duration-300">
-        <Filter filters={scopeFilterData} />
+        <FilterVietNamToDay filters={scopeFilterData} />
         <div
           className={`${isOpen && !horizontal ? "w-[84%] max-md:w-full" : "w-full"} transition-all duration-300 bg-background-dashboard dark:bg-background-dashboard-dark`}
         >
@@ -147,7 +147,11 @@ const DashboardContent = () => {
                           ]
                         }
                       />
-                      <InforFilter filters={scopeFilterData} />
+                      <InforFilter
+                        filters={scopeFilterData}
+                        FilterComponent={FilterVietNamToDay}
+                        nameFilter="FilterVietNamToDay"
+                      />
                       <div className="px-6 max-lg:px-5 max-md:px-4 pt-6 max-lg:pt-5 max-md:pt-4">
                         <div className="w-full grid grid-cols-5 max-lg:grid-cols-3 max-md:grid-cols-2 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4">
                           {Object.values(METRIC_VIETNAMTODAYS).map((card) => (
@@ -252,6 +256,57 @@ const DashboardContent = () => {
                             refetch={useCallback(
                               () => dashboard.refetch("chart1083Data"),
                               [dashboard.isLoading.chart1083Data],
+                            )}
+                          />
+                        </div>
+                        <div className="w-full pb-6 max-lg:pb-5 max-md:pb-4">
+                          <MixedChart
+                            data={useMemo(
+                              () =>
+                                !dashboard.isLoading.chart1124Data
+                                  ? transformMixedChartData(
+                                      dashboard.chart1124Data?.data,
+                                      "date",
+                                      dashboard.chart1124Data?.colnames,
+                                    )
+                                  : "isLoading",
+                              [dashboard.isLoading.chart1124Data],
+                            )}
+                            height={CUSTOM_CHART.mixedChart.height}
+                            fontSize={CUSTOM_CHART.mixedChart.fontSize}
+                            fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                            fontWeight={CUSTOM_CHART.mixedChart.fontWeight}
+                            nameChart={
+                              "Daily Active User vs. Daily Watch Time per User"
+                            }
+                            maxVisibleItems={
+                              CUSTOM_CHART.mixedChart.mixedChartDate
+                                .maxVisibleItems
+                            }
+                            description={false}
+                            barSeriesKeys={"daily_active_user"}
+                            lineSeriesKeys={"time_user_per_day"}
+                            colors={useMemo(() => {
+                              return {
+                                daily_active_user:
+                                  CUSTOM_CHART.mixedChart.mixedChartDate.colors
+                                    .ave_reach,
+                                time_user_per_day:
+                                  CUSTOM_CHART.mixedChart.mixedChartDate.colors
+                                    .rating,
+                              };
+                            }, [])}
+                            barMaxWidth={CUSTOM_CHART.mixedChart.barMaxWidth}
+                            barWidthPercent={
+                              CUSTOM_CHART.mixedChart.barWidthPercent
+                            }
+                            lastDataIndexActive={
+                              CUSTOM_CHART.mixedChart.mixedChartDate
+                                .lastDataIndexActive
+                            }
+                            refetch={useCallback(
+                              () => dashboard.refetch("chart1124Data"),
+                              [dashboard.isLoading.chart1124Data],
                             )}
                           />
                         </div>
@@ -1899,7 +1954,7 @@ const DashboardContent = () => {
                                   : "isLoading",
                               [dashboard.isLoading.chart1055Data],
                             )}
-                            height={CUSTOM_CHART.barChart.height}
+                            height={250}
                             fontSize={CUSTOM_CHART.barChart.fontSize}
                             fontFamily={CUSTOM_CHART.allChart.fontFamily}
                             colors={
@@ -1931,7 +1986,7 @@ const DashboardContent = () => {
                                   : "isLoading",
                               [dashboard.isLoading.chart1056Data],
                             )}
-                            height={CUSTOM_CHART.barChart.height}
+                            height={250}
                             fontSize={CUSTOM_CHART.barChart.fontSize}
                             fontFamily={CUSTOM_CHART.allChart.fontFamily}
                             colors={
@@ -1959,7 +2014,7 @@ const DashboardContent = () => {
                                   : "isLoading",
                               [dashboard.isLoading.chart1057Data],
                             )}
-                            height={CUSTOM_CHART.barChart.height}
+                            height={250}
                             fontSize={CUSTOM_CHART.barChart.fontSize}
                             fontFamily={CUSTOM_CHART.allChart.fontFamily}
                             colors={
@@ -1991,7 +2046,7 @@ const DashboardContent = () => {
                                   : "isLoading",
                               [dashboard.isLoading.chart1062Data],
                             )}
-                            height={CUSTOM_CHART.barChart.height}
+                            height={250}
                             fontSize={CUSTOM_CHART.barChart.fontSize}
                             fontFamily={CUSTOM_CHART.allChart.fontFamily}
                             colors={
@@ -2023,7 +2078,7 @@ const DashboardContent = () => {
                                   : "isLoading",
                               [dashboard.isLoading.chart1063Data],
                             )}
-                            height={CUSTOM_CHART.barChart.height}
+                            height={250}
                             fontSize={CUSTOM_CHART.barChart.fontSize}
                             fontFamily={CUSTOM_CHART.allChart.fontFamily}
                             colors={
@@ -2055,7 +2110,7 @@ const DashboardContent = () => {
                                   : "isLoading",
                               [dashboard.isLoading.chart1064Data],
                             )}
-                            height={CUSTOM_CHART.barChart.height}
+                            height={250}
                             fontSize={CUSTOM_CHART.barChart.fontSize}
                             fontFamily={CUSTOM_CHART.allChart.fontFamily}
                             colors={
@@ -2507,7 +2562,7 @@ const DashboardContent = () => {
                             )}
                           />
                           <NumberCard
-                            title={"Impressions"}
+                            title={"Views"}
                             description={
                               "Tổng số lần nội dung hiển thị trên màn hình của người dùng (bao gồm cả lượt hiển thị lặp lại) trong khoảng thời gian được chọn."
                             }
@@ -2517,7 +2572,7 @@ const DashboardContent = () => {
                                   ? dashboard.chart1093Data?.data
                                     ? formatNumber(
                                         dashboard.chart1093Data?.data[0]?.[
-                                          "Total Impression"
+                                          "Views"
                                         ],
                                         { isPercent: false },
                                       )
@@ -2615,7 +2670,7 @@ const DashboardContent = () => {
                             )}
                           />
                         </div>
-                        <div className="px-6 max-lg:px-5 max-md:px-0 pt-4 max-lg:pt-3 max-md:pt-0 bg-background-black-4 max-md:bg-background-dashboard dark:bg-background-dark max-md:dark:bg-background-dashboard-dark rounded-2xl">
+                        <div className="px-6 max-lg:px-5 max-md:px-0 pt-4 max-lg:pt-3 max-md:pt-0 bg-background-black-4 max-md:bg-background-dashboard dark:bg-background-dark max-md:dark:bg-background-dashboard-dark rounded-2xl mb-6 max-lg:mb-5 max-md:mb-4">
                           <Title title={"Facebook"} />
                           <div className="w-full pb-6 max-lg:pb-5 max-md:pb-4">
                             <TableChart
@@ -2723,6 +2778,409 @@ const DashboardContent = () => {
                               refetch={useCallback(
                                 () => dashboard.refetch("chart1105Data"),
                                 [dashboard.isLoading.chart1105Data],
+                              )}
+                            />
+                          </div>
+                        </div>
+                        <div className="px-6 max-lg:px-5 max-md:px-0 pt-4 max-lg:pt-3 max-md:pt-0 bg-background-black-4 max-md:bg-background-dashboard dark:bg-background-dark max-md:dark:bg-background-dashboard-dark rounded-2xl  mb-6 max-lg:mb-5 max-md:mb-4">
+                          <Title title={"Youtube"} />
+                          <div className="w-full pb-6 max-lg:pb-5 max-md:pb-4">
+                            <TableChart
+                              data={useMemo(
+                                () =>
+                                  !dashboard.isLoading.chart1107Data
+                                    ? transformTableChartData(
+                                        dashboard.chart1107Data?.data,
+                                        dashboard.chart1107Data?.colnames,
+                                        null,
+                                        [],
+                                        LABEL_VIETNAMTODAY,
+                                      )
+                                    : "isLoading",
+                                [dashboard.isLoading.chart1107Data],
+                              )}
+                              height={"100px"}
+                              showHeader={false}
+                              fontSize={CUSTOM_CHART.tableChart.fontSize}
+                              fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                              fontWeight={CUSTOM_CHART.tableChart.fontWeight}
+                              nameChart={"Youtube Insight"}
+                              description={false}
+                              fullScreen={true}
+                              refetch={useCallback(
+                                () => dashboard.refetch("chart1107Data"),
+                                [dashboard.isLoading.chart1107Data],
+                              )}
+                            />
+                          </div>
+                          <div className="w-full grid grid-cols-2 max-md:flex-wrap max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4">
+                            <BarChart
+                              data={useMemo(
+                                () =>
+                                  !dashboard.isLoading.chart1208Data
+                                    ? transformBarChartData(
+                                        dashboard.chart1208Data?.data,
+                                        dashboard.chart1208Data?.colnames,
+                                      )
+                                    : "isLoading",
+                                [dashboard.isLoading.chart1208Data],
+                              )}
+                              height={CUSTOM_CHART.barChart.height}
+                              fontSize={CUSTOM_CHART.barChart.fontSize}
+                              fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                              colors={
+                                CUSTOM_CHART.barChart.barChartArea.rating.color
+                              }
+                              fontWeight={CUSTOM_CHART.barChart.fontWeight}
+                              nameChart={
+                                "Audience by Age & Gender (%) - Top 10 Posts"
+                              }
+                              description={false}
+                              orientation={""}
+                              stack={true}
+                              refetch={useCallback(
+                                () => dashboard.refetch("chart1208Data"),
+                                [dashboard.isLoading.chart1208Data],
+                              )}
+                            />
+                            <TableChart
+                              data={useMemo(
+                                () =>
+                                  !dashboard.isLoading.chart1211Data
+                                    ? transformTableChartData(
+                                        dashboard.chart1211Data?.data,
+                                        dashboard.chart1211Data?.colnames,
+                                        null,
+                                        [],
+                                        LABEL_VIETNAMTODAY,
+                                      )
+                                    : "isLoading",
+                                [dashboard.isLoading.chart1211Data],
+                              )}
+                              height={"350px"}
+                              showHeader={false}
+                              fontSize={CUSTOM_CHART.tableChart.fontSize}
+                              fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                              fontWeight={CUSTOM_CHART.tableChart.fontWeight}
+                              nameChart={"Views by Country - Top 10 Posts"}
+                              description={false}
+                              fullScreen={true}
+                              refetch={useCallback(
+                                () => dashboard.refetch("chart1211Data"),
+                                [dashboard.isLoading.chart1211Data],
+                              )}
+                            />
+                          </div>
+                          <div className="w-full grid grid-cols-2 max-md:flex-wrap max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4">
+                            <LineChart
+                              data={useMemo(
+                                () =>
+                                  !dashboard.isLoading.chart1108Data
+                                    ? transformMixedChartData(
+                                        dashboard.chart1108Data?.data,
+                                        "day",
+                                        dashboard.chart1108Data?.colnames,
+                                      )
+                                    : "isLoading",
+                                [dashboard.isLoading.chart1108Data],
+                              )}
+                              height={"350px"}
+                              fontSize={CUSTOM_CHART.lineChart.fontSize}
+                              fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                              fontWeight={CUSTOM_CHART.lineChart.fontWeight}
+                              nameChart={
+                                "Subscribers Gained vs. Lost - Last 30 Days"
+                              }
+                              description={
+                                CUSTOM_CHART.lineChart.lineChartTimebandRegional
+                                  .description
+                              }
+                              colors={CUSTOM_CHART.lineChart.colorChannel}
+                              smooth={CUSTOM_CHART.lineChart.smooth}
+                              symbolSize={CUSTOM_CHART.lineChart.symbolSize}
+                              lineWidth={CUSTOM_CHART.lineChart.lineWidth}
+                              areaStyle={CUSTOM_CHART.lineChart.areaStyle}
+                              stack={CUSTOM_CHART.lineChart.stack}
+                              legendTop={true}
+                              showLabel={false}
+                              showTopNSeries={
+                                CUSTOM_CHART.lineChart.lineChartTimebandRegional
+                                  .showTopNSeries
+                              }
+                              xAxisTitle={"Date"}
+                              refetch={useCallback(
+                                () => dashboard.refetch("chart1108Data"),
+                                [dashboard.isLoading.chart1108Data],
+                              )}
+                            />
+                            <LineChart
+                              data={useMemo(
+                                () =>
+                                  !dashboard.isLoading.chart1109Data
+                                    ? transformMixedChartData(
+                                        dashboard.chart1109Data?.data,
+                                        "day",
+                                        dashboard.chart1109Data?.colnames,
+                                      )
+                                    : "isLoading",
+                                [dashboard.isLoading.chart1109Data],
+                              )}
+                              height={"350px"}
+                              fontSize={CUSTOM_CHART.lineChart.fontSize}
+                              fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                              fontWeight={CUSTOM_CHART.lineChart.fontWeight}
+                              nameChart={"Watch Time Trend - Last 30 Days"}
+                              description={
+                                CUSTOM_CHART.lineChart.lineChartTimebandRegional
+                                  .description
+                              }
+                              colors={CUSTOM_CHART.lineChart.colorChannel}
+                              smooth={CUSTOM_CHART.lineChart.smooth}
+                              symbolSize={CUSTOM_CHART.lineChart.symbolSize}
+                              lineWidth={CUSTOM_CHART.lineChart.lineWidth}
+                              legendTop={true}
+                              showLabel={false}
+                              areaStyle={CUSTOM_CHART.lineChart.areaStyle}
+                              stack={CUSTOM_CHART.lineChart.stack}
+                              showTopNSeries={
+                                CUSTOM_CHART.lineChart.lineChartTimebandRegional
+                                  .showTopNSeries
+                              }
+                              xAxisTitle={"Date"}
+                              refetch={useCallback(
+                                () => dashboard.refetch("chart1109Data"),
+                                [dashboard.isLoading.chart1109Data],
+                              )}
+                            />
+                          </div>
+                          <div className="w-full grid grid-cols-2 max-md:flex-wrap max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4">
+                            <TableChart
+                              data={useMemo(
+                                () =>
+                                  !dashboard.isLoading.chart1205Data
+                                    ? transformTableChartData(
+                                        dashboard.chart1205Data?.data,
+                                        dashboard.chart1205Data?.colnames,
+                                        null,
+                                        [],
+                                        LABEL_VIETNAMTODAY,
+                                      )
+                                    : "isLoading",
+                                [dashboard.isLoading.chart1205Data],
+                              )}
+                              height={"400px"}
+                              showHeader={false}
+                              fontSize={CUSTOM_CHART.tableChart.fontSize}
+                              fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                              fontWeight={CUSTOM_CHART.tableChart.fontWeight}
+                              nameChart={"Top 10 Performing Posts (Lifetime)"}
+                              description={false}
+                              fullScreen={true}
+                              customCol={useMemo(() => {
+                                return {
+                                  "Video Title": {
+                                    minSize: 200,
+                                    maxSize: 300,
+                                    overflow: true,
+                                  },
+                                  Category: {
+                                    minSize: 70,
+                                    maxSize: 100,
+                                    overflow: true,
+                                  },
+                                };
+                              }, [])}
+                              refetch={useCallback(
+                                () => dashboard.refetch("chart1205Data"),
+                                [dashboard.isLoading.chart1205Data],
+                              )}
+                            />
+                            <PieChart
+                              data={useMemo(
+                                () =>
+                                  !dashboard.isLoading.chart1212Data
+                                    ? transformPieChartData(
+                                        dashboard.chart1212Data?.data,
+                                        dashboard.chart1212Data?.colnames,
+                                      )
+                                    : "isLoading",
+                                [dashboard.isLoading.chart1212Data],
+                              )}
+                              height={CUSTOM_CHART.pieChart.height}
+                              fontSize={CUSTOM_CHART.pieChart.fontSize}
+                              fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                              fontWeight={CUSTOM_CHART.pieChart.fontWeight}
+                              nameChart={"Content Category - Top 10 Posts"}
+                              description={false}
+                              colors={useMemo(
+                                () => ({
+                                  "News & Current Affairs": "#6BD3B3",
+                                  "Life - Styles": "#EE5960",
+                                  Documentary: "#408184",
+                                  Entertainment: "#66CBE2",
+                                  "Educational & Training": "#5470C6",
+                                  Sports: "#FF874E",
+                                  "Events/Specials": "#03748E",
+                                }),
+                                [],
+                              )}
+                              donut={CUSTOM_CHART.pieChart.donut}
+                              innerRadius={CUSTOM_CHART.pieChart.innerRadius}
+                              border={false}
+                              refetch={useCallback(
+                                () => dashboard.refetch("chart1212Data"),
+                                [dashboard.isLoading.chart1212Data],
+                              )}
+                            />
+                          </div>
+                        </div>
+                        <div className="px-6 max-lg:px-5 max-md:px-0 pt-4 max-lg:pt-3 max-md:pt-0 bg-background-black-4 max-md:bg-background-dashboard dark:bg-background-dark max-md:dark:bg-background-dashboard-dark rounded-2xl mb-6 max-lg:mb-5 max-md:mb-4">
+                          <Title title={"Top Posts by Platform"} />
+                          <div className="w-full grid grid-cols-2 max-md:flex-wrap max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4">
+                            <TableChart
+                              data={useMemo(
+                                () =>
+                                  !dashboard.isLoading.chart1088Data
+                                    ? transformTableChartData(
+                                        dashboard.chart1088Data?.data,
+                                        dashboard.chart1088Data?.colnames,
+                                        null,
+                                        [],
+                                        LABEL_VIETNAMTODAY,
+                                      )
+                                    : "isLoading",
+                                [dashboard.isLoading.chart1088Data],
+                              )}
+                              height={"400px"}
+                              showHeader={false}
+                              fontSize={CUSTOM_CHART.tableChart.fontSize}
+                              fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                              fontWeight={CUSTOM_CHART.tableChart.fontWeight}
+                              nameChart={"Top Posts on YOUTUBE"}
+                              description={false}
+                              fullScreen={true}
+                              customCol={useMemo(() => {
+                                return {
+                                  Title: {
+                                    minSize: 200,
+                                    maxSize: 300,
+                                    overflow: true,
+                                  },
+                                };
+                              }, [])}
+                              refetch={useCallback(
+                                () => dashboard.refetch("chart1088Data"),
+                                [dashboard.isLoading.chart1088Data],
+                              )}
+                            />
+                            <TableChart
+                              data={useMemo(
+                                () =>
+                                  !dashboard.isLoading.chart1079Data
+                                    ? transformTableChartData(
+                                        dashboard.chart1079Data?.data,
+                                        dashboard.chart1079Data?.colnames,
+                                        null,
+                                        [],
+                                        LABEL_VIETNAMTODAY,
+                                      )
+                                    : "isLoading",
+                                [dashboard.isLoading.chart1079Data],
+                              )}
+                              height={"400px"}
+                              showHeader={false}
+                              fontSize={CUSTOM_CHART.tableChart.fontSize}
+                              fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                              fontWeight={CUSTOM_CHART.tableChart.fontWeight}
+                              nameChart={"Top Posts on FACEBOOK"}
+                              description={false}
+                              fullScreen={true}
+                              customCol={useMemo(() => {
+                                return {
+                                  Title: {
+                                    minSize: 200,
+                                    maxSize: 300,
+                                    overflow: true,
+                                  },
+                                };
+                              }, [])}
+                              refetch={useCallback(
+                                () => dashboard.refetch("chart1079Data"),
+                                [dashboard.isLoading.chart1079Data],
+                              )}
+                            />
+                          </div>
+                          <div className="w-full grid grid-cols-2 max-md:flex-wrap max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4">
+                            <TableChart
+                              data={useMemo(
+                                () =>
+                                  !dashboard.isLoading.chart1086Data
+                                    ? transformTableChartData(
+                                        dashboard.chart1086Data?.data,
+                                        dashboard.chart1086Data?.colnames,
+                                        null,
+                                        [],
+                                        LABEL_VIETNAMTODAY,
+                                      )
+                                    : "isLoading",
+                                [dashboard.isLoading.chart1086Data],
+                              )}
+                              height={"400px"}
+                              showHeader={false}
+                              fontSize={CUSTOM_CHART.tableChart.fontSize}
+                              fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                              fontWeight={CUSTOM_CHART.tableChart.fontWeight}
+                              nameChart={"Top Posts on TIKTOK"}
+                              description={false}
+                              fullScreen={true}
+                              customCol={useMemo(() => {
+                                return {
+                                  Title: {
+                                    minSize: 200,
+                                    maxSize: 300,
+                                    overflow: true,
+                                  },
+                                };
+                              }, [])}
+                              refetch={useCallback(
+                                () => dashboard.refetch("chart1086Data"),
+                                [dashboard.isLoading.chart1086Data],
+                              )}
+                            />
+                            <TableChart
+                              data={useMemo(
+                                () =>
+                                  !dashboard.isLoading.chart1087Data
+                                    ? transformTableChartData(
+                                        dashboard.chart1087Data?.data,
+                                        dashboard.chart1087Data?.colnames,
+                                        null,
+                                        [],
+                                        LABEL_VIETNAMTODAY,
+                                      )
+                                    : "isLoading",
+                                [dashboard.isLoading.chart1087Data],
+                              )}
+                              height={"400px"}
+                              showHeader={false}
+                              fontSize={CUSTOM_CHART.tableChart.fontSize}
+                              fontFamily={CUSTOM_CHART.allChart.fontFamily}
+                              fontWeight={CUSTOM_CHART.tableChart.fontWeight}
+                              nameChart={"Top Posts on INSTAGRAM"}
+                              description={false}
+                              fullScreen={true}
+                              customCol={useMemo(() => {
+                                return {
+                                  Title: {
+                                    minSize: 200,
+                                    maxSize: 300,
+                                    overflow: true,
+                                  },
+                                };
+                              }, [])}
+                              refetch={useCallback(
+                                () => dashboard.refetch("chart1087Data"),
+                                [dashboard.isLoading.chart1087Data],
                               )}
                             />
                           </div>

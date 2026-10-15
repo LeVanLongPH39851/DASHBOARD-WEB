@@ -326,6 +326,10 @@ const HOOKS = [
     hook: useCallApi.useChart1058,
     dataKey: "chart1058Data",
   },
+  {
+    hook: useCallApi.useChart1124,
+    dataKey: "chart1124Data",
+  },
   { hook: useCallApi.useMaxInsertReturnApi, dataKey: "maxInsertData" },
   {
     hook: useCallApi.useFilterProvinceReturnApi,

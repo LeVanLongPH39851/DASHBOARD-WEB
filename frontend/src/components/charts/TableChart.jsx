@@ -596,6 +596,7 @@ const TableChart = ({
                       return (
                         <th
                           key={header.id}
+                          title={customCol[header.id]?.title || false}
                           className={`px-2 ${customCol[header.id]?.sticky && screenMd ? "program-border-right" : ""} max-lg:px-1.5 max-md:px-1 py-3 max-lg:py-2.5 max-md:py-2 text-center relative text-color-neotam dark:text-background-primary bg-background-light dark:bg-background-chart-dark border-b border-border-black-10 dark:border-background-white-15 transition-all duration-300 ${customCol[header.id]?.sticky ? "max-md:sticky max-md:left-0 max-md:z-10" : ""}`}
                           style={{
                             minWidth: `${screenMd || customCol[header.id]?.overflow ? header.column.getSize() + (customCol[header.id]?.minSize - (customCol[header.id]?.overflow && screenMd ? customCol[header.id]?.minSize * 0.3 : 0) || 0) : header.column.getSize() - 40}px`,

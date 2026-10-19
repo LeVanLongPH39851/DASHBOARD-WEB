@@ -72,16 +72,12 @@ const appendAllFilters = (queries, filterState, disabledFilters) => {
         }),
     },
     {
-      key: "channels",
-      disabledKey: "channelFilters",
+      key: "otts",
+      disabledKey: "ottFilters",
       build: () =>
         buildQueriesFilters({
-          column: "channel_name_tvd",
-          values:
-            disabledFilters.includes("overwriteChannelFilters") &&
-            filterState?.channels?.length > 0
-              ? [filterState.channels[0]]
-              : filterState.channels,
+          column: "ott",
+          values: filterState.otts,
         }),
     },
     {
@@ -94,39 +90,48 @@ const appendAllFilters = (queries, filterState, disabledFilters) => {
         }),
     },
     {
-      key: "provinces",
-      disabledKey: "provinceFilters",
+      key: "countries",
+      disabledKey: "countryFilters",
       build: () =>
         buildQueriesFilters({
-          column: "province",
-          values: filterState.provinces,
+          column: "country",
+          values: filterState.countries,
         }),
     },
     {
-      key: "regionals",
-      disabledKey: "regionalFilters",
+      key: "countryTypes",
+      disabledKey: "countryTypeFilters",
       build: () =>
         buildQueriesFilters({
-          column: "regional_name",
-          values: filterState.regionals,
+          column: "country_type",
+          values: filterState.countryTypes,
         }),
     },
     {
-      key: "keyCities",
-      disabledKey: "keyCityFilters",
+      key: "keyCountries",
+      disabledKey: "keyCountryFilters",
       build: () =>
         buildQueriesFilters({
-          column: "key_city",
-          values: filterState.keyCities,
+          column: "key_country",
+          values: filterState.keyCountries,
         }),
     },
     {
-      key: "timebands",
-      disabledKey: "timebandFilters",
+      key: "continents",
+      disabledKey: "continentFilters",
       build: () =>
         buildQueriesFilters({
-          column: "time_band",
-          values: filterState.timebands,
+          column: "continent",
+          values: filterState.continents,
+        }),
+    },
+    {
+      key: "devices",
+      disabledKey: "deviceFilters",
+      build: () =>
+        buildQueriesFilters({
+          column: "platform",
+          values: filterState.devices,
         }),
     },
     {
@@ -134,27 +139,26 @@ const appendAllFilters = (queries, filterState, disabledFilters) => {
       disabledKey: "firstLevelFilters",
       build: () =>
         buildQueriesFilters({
-          column: "firstlevel_vn",
+          column: "category",
           values: filterState.firstLevels,
         }),
     },
     {
-      key: "programs",
-      disabledKey: "programFilters",
+      key: "sources",
+      disabledKey: "sourceFilters",
       build: () =>
         buildQueriesFilters({
-          column: "program_name",
-          values: filterState.programs,
+          column: "source",
+          values: filterState.sources,
         }),
     },
     {
-      key: "startTime",
-      disabledKey: "startTimeFilters",
+      key: "platforms",
+      disabledKey: "platformFilters",
       build: () =>
-        buildQueriesRangeFilters({
-          column1: "start_time",
-          column2: "end_time",
-          startHours: filterState.startHours,
+        buildQueriesFilters({
+          column: "Social Platform",
+          values: filterState.platforms,
         }),
     },
   ];

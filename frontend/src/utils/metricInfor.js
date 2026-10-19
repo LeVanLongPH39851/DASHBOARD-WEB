@@ -80,7 +80,7 @@ export const METRIC_VIETNAMTODAYS = {
     metric: "Total_Views",
     title: "Total Views",
     description:
-      "Tổng số lượt xem hợp lệ trong kỳ (Lượt xem hợp lệ tính khi: Live TV xem tối thiểu từ 30 giây, VOD xem tối thiểu từ 15 giây).",
+      "Tổng số lượt xem hợp lệ trong kỳ.\nĐiều kiện:\n- Live TV >= 30 giây\n- VOD >=15 giây",
     isPercent: false,
     icon: iconEye,
     widthIcon: "w-5.5 max-lg:w-5 max-md:w-4.5",

@@ -4,16 +4,35 @@ import { buildPayloadWithFilters } from "./payload_vietnamtodays/buildPayloadWit
 
 const apiRoute = import.meta.env.VITE_API_ROUTE;
 
-const copiedChartsDisabledFilters = [
-  "timebandFilters",
-  "firstLevelFilters",
-  "programFilters",
-  "startTimeFilters",
+const tabVodDisabledFilters = [
+  "dayFilters",
+  "eventFilters",
+  "ottFilters",
+  "deviceFilters",
+  "platformFilters",
 ];
-
-const tabVodDisabledFilters = ["dayFilters", "eventFilters"];
-const tabSocialDisabledFilters = ["dayFilters", "eventFilters"];
-const tabLiveDisabledFilters = ["eventFilters"];
+const tabSocialDisabledFilters = [
+  "dayFilters",
+  "eventFilters",
+  "ottFilters",
+  "countryTypeFilters",
+  "keyCountryFilters",
+  "countryFilters",
+  "continentFilters",
+  "deviceFilters",
+  "firstLevelFilters",
+  "sourceFilters",
+];
+const tabLiveDisabledFilters = [
+  "eventFilters",
+  "sourceFilters",
+  "platformFilters",
+];
+const tabOverviewDisabledFilters = [
+  "firstLevelFilters",
+  "sourceFilters",
+  "platformFilters",
+];
 
 const postChart = async (
   basePayload,
@@ -51,12 +70,7 @@ export const chart1075 = (appliedFilters, force = false) =>
   postChart(
     payloads.chart1075,
     appliedFilters,
-    [
-      "timebandFilters",
-      "firstLevelFilters",
-      "programFilters",
-      "startTimeFilters",
-    ],
+    tabOverviewDisabledFilters,
     force,
   );
 
@@ -64,12 +78,7 @@ export const chart1085 = (appliedFilters, force = false) =>
   postChart(
     payloads.chart1085,
     appliedFilters,
-    [
-      "timebandFilters",
-      "firstLevelFilters",
-      "programFilters",
-      "startTimeFilters",
-    ],
+    tabOverviewDisabledFilters,
     force,
   );
 
@@ -77,12 +86,7 @@ export const chart1076 = (appliedFilters, force = false) =>
   postChart(
     payloads.chart1076,
     appliedFilters,
-    [
-      "timebandFilters",
-      "firstLevelFilters",
-      "programFilters",
-      "startTimeFilters",
-    ],
+    tabOverviewDisabledFilters,
     force,
   );
 
@@ -90,12 +94,7 @@ export const chart1074 = (appliedFilters, force = false) =>
   postChart(
     payloads.chart1074,
     appliedFilters,
-    [
-      "timebandFilters",
-      "firstLevelFilters",
-      "programFilters",
-      "startTimeFilters",
-    ],
+    tabOverviewDisabledFilters,
     force,
   );
 
@@ -103,12 +102,7 @@ export const chart1073 = (appliedFilters, force = false) =>
   postChart(
     payloads.chart1073,
     appliedFilters,
-    [
-      "timebandFilters",
-      "firstLevelFilters",
-      "programFilters",
-      "startTimeFilters",
-    ],
+    tabOverviewDisabledFilters,
     force,
   );
 
@@ -138,7 +132,7 @@ export const chart1107 = (appliedFilters, force = false) =>
   postChart(
     payloads.chart1107,
     appliedFilters,
-    tabSocialDisabledFilters,
+    [...tabSocialDisabledFilters, "dateFilters"],
     force,
   );
 
@@ -146,7 +140,7 @@ export const chart1105 = (appliedFilters, force = false) =>
   postChart(
     payloads.chart1105,
     appliedFilters,
-    tabSocialDisabledFilters,
+    [...tabSocialDisabledFilters, "dateFilters"],
     force,
   );
 
@@ -154,7 +148,7 @@ export const chart1104 = (appliedFilters, force = false) =>
   postChart(
     payloads.chart1104,
     appliedFilters,
-    tabSocialDisabledFilters,
+    [...tabSocialDisabledFilters, "dateFilters"],
     force,
   );
 
@@ -162,7 +156,7 @@ export const chart1103 = (appliedFilters, force = false) =>
   postChart(
     payloads.chart1103,
     appliedFilters,
-    tabSocialDisabledFilters,
+    [...tabSocialDisabledFilters, "dateFilters"],
     force,
   );
 
@@ -300,12 +294,7 @@ export const chart1084 = (appliedFilters, force = false) =>
   postChart(
     payloads.chart1084,
     appliedFilters,
-    [
-      "timebandFilters",
-      "firstLevelFilters",
-      "programFilters",
-      "startTimeFilters",
-    ],
+    tabOverviewDisabledFilters,
     force,
   );
 
@@ -322,12 +311,7 @@ export const chart1072 = (appliedFilters, force = false) =>
   postChart(
     payloads.chart1072,
     appliedFilters,
-    [
-      "timebandFilters",
-      "firstLevelFilters",
-      "programFilters",
-      "startTimeFilters",
-    ],
+    tabOverviewDisabledFilters,
     force,
   );
 
@@ -349,7 +333,7 @@ export const chart1081 = (appliedFilters, force = false) =>
   postChart(
     payloads.chart1081,
     appliedFilters,
-    ["firstLevelFilters", "programFilters", "startTimeFilters"],
+    tabOverviewDisabledFilters,
     force,
   );
 
@@ -357,7 +341,7 @@ export const chart1077 = (appliedFilters, force = false) =>
   postChart(
     payloads.chart1077,
     appliedFilters,
-    ["firstLevelFilters", "programFilters", "startTimeFilters"],
+    tabOverviewDisabledFilters,
     force,
   );
 
@@ -374,7 +358,7 @@ export const chart1080 = (appliedFilters, force = false) =>
   postChart(
     payloads.chart1080,
     appliedFilters,
-    ["firstLevelFilters", "programFilters", "startTimeFilters"],
+    tabOverviewDisabledFilters,
     force,
   );
 
@@ -385,7 +369,7 @@ export const chart1083 = (appliedFilters, force = false) =>
   postChart(
     payloads.chart1083,
     appliedFilters,
-    ["firstLevelFilters", "programFilters", "startTimeFilters"],
+    tabOverviewDisabledFilters,
     force,
   );
 
@@ -405,7 +389,7 @@ export const chart1089 = (appliedFilters, force = false) =>
   postChart(
     payloads.chart1089,
     appliedFilters,
-    ["firstLevelFilters", "programFilters", "startTimeFilters"],
+    tabOverviewDisabledFilters,
     force,
   );
 
@@ -415,10 +399,20 @@ export const chart1094 = (appliedFilters, force = false) =>
 // Tab Program
 
 export const chart1082 = (appliedFilters, force = false) =>
-  postChart(payloads.chart1082, appliedFilters, ["timebandFilters"], force);
+  postChart(
+    payloads.chart1082,
+    appliedFilters,
+    tabOverviewDisabledFilters,
+    force,
+  );
 
 export const chart1078 = (appliedFilters, force = false) =>
-  postChart(payloads.chart1078, appliedFilters, ["timebandFilters"], force);
+  postChart(
+    payloads.chart1078,
+    appliedFilters,
+    tabOverviewDisabledFilters,
+    force,
+  );
 
 export const chart1052 = (appliedFilters, force = false) =>
   postChart(payloads.chart1052, appliedFilters, tabVodDisabledFilters, force);
@@ -433,16 +427,31 @@ export const chart1053 = (appliedFilters, force = false) =>
   postChart(payloads.chart1053, appliedFilters, tabVodDisabledFilters, force);
 
 export const chart1210 = (appliedFilters, force = false) =>
-  postChart(payloads.chart1210, appliedFilters, ["timebandFilters"], force);
+  postChart(
+    payloads.chart1210,
+    appliedFilters,
+    tabOverviewDisabledFilters,
+    force,
+  );
 
 export const chart1209 = (appliedFilters, force = false) =>
-  postChart(payloads.chart1209, appliedFilters, ["timebandFilters"], force);
+  postChart(
+    payloads.chart1209,
+    appliedFilters,
+    tabOverviewDisabledFilters,
+    force,
+  );
 
 export const chart1095 = (appliedFilters, force = false) =>
   postChart(payloads.chart1095, appliedFilters, tabLiveDisabledFilters, force);
 
 export const chart1124 = (appliedFilters, force = false) =>
-  postChart(payloads.chart1124, appliedFilters, ["timebandFilters"], force);
+  postChart(
+    payloads.chart1124,
+    appliedFilters,
+    tabOverviewDisabledFilters,
+    force,
+  );
 
 // Tab Rating By Minute
 
@@ -486,10 +495,10 @@ export const chart1067 = (appliedFilters, force = false) =>
   postChart(payloads.chart1067, appliedFilters, tabVodDisabledFilters, force);
 
 export const chart1213 = (appliedFilters, force = false) =>
-  postChart(payloads.chart1213, appliedFilters, ["timebandFilters"], force);
+  postChart(payloads.chart1213, appliedFilters, tabVodDisabledFilters, force);
 
 export const chart1214 = (appliedFilters, force = false) =>
-  postChart(payloads.chart1214, appliedFilters, ["timebandFilters"], force);
+  postChart(payloads.chart1214, appliedFilters, tabVodDisabledFilters, force);
 
 export const chart1215 = (appliedFilters, force = false) =>
   postChart(payloads.chart1215, appliedFilters, tabVodDisabledFilters, force);
@@ -502,18 +511,18 @@ export const getMaxInsert = () => {
   });
 };
 
-export const getFilterProvince = () => {
+export const getFilterCountry = () => {
   const userId = sessionStorage.getItem("user_id");
   return axiosClient.post(apiRoute, {
-    ...payloads.filterProvincePayload,
+    ...payloads.filterCountryPayload,
     user_id: userId,
   });
 };
 
-export const getFilterProgram = () => {
+export const getFilterSource = () => {
   const userId = sessionStorage.getItem("user_id");
   return axiosClient.post(apiRoute, {
-    ...payloads.filterProgramPayload,
+    ...payloads.filterSourcePayload,
     user_id: userId,
   });
 };

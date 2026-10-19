@@ -135,7 +135,7 @@ export const LABEL_VIETNAMTODAY = {
   date: "Date",
   start_time: "Start time",
   end_time: "End time",
-  "minute/user/program_1": "Minute/User/program",
+  "minute/user/program_1": "Minute/User/Program",
   "Unique users": "Users",
   "Duration Bucket": "Duration\nBucket",
   "Total VOD": "Total/\nVOD",

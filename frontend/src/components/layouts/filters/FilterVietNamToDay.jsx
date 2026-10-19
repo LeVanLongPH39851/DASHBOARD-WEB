@@ -36,20 +36,10 @@ const DISABLE_TABS = {
 const FilterVietNamToDay = ({ filters, horizontalFixed = false }) => {
   // console.log("Filter");
 
-  const ALL_CHANNELS = useMemo(
+  const ALL_OTTS = useMemo(
     () => [
-      { value: "VTV1", label: "VTV1" },
-      { value: "VTV2", label: "VTV2" },
-      { value: "VTV3", label: "VTV3" },
-      { value: "VTV4", label: "VTV4" },
-      { value: "VTV5", label: "VTV5" },
-      { value: "VTV6", label: "VTV6" },
-      { value: "VTV5 Tây Nam Bộ", label: "VTV5 Tây Nam Bộ" },
-      { value: "VTV5 Tây Nguyên", label: "VTV5 Tây Nguyên" },
-      { value: "VTV7", label: "VTV7" },
-      { value: "VTV8", label: "VTV8" },
-      { value: "VTV9", label: "VTV9" },
-      { value: "VTV10", label: "VTV10" },
+      { value: "VTVGo", label: "VTVGo" },
+      { value: "Vietnam Today", label: "Vietnam Today" },
     ],
     [],
   );
@@ -77,26 +67,28 @@ const FilterVietNamToDay = ({ filters, horizontalFixed = false }) => {
     [],
   );
 
-  const ALL_REGIONALS = useMemo(
+  const ALL_CONTINENTS = useMemo(
     () => [
-      { value: "Bắc Trung Bộ", label: "Bắc Trung Bộ" },
-      { value: "Đồng bằng sông Cửu Long", label: "Đồng bằng sông Cửu Long" },
-      { value: "Đồng bằng sông Hồng", label: "Đồng bằng sông Hồng" },
-      { value: "Đông Nam Bộ", label: "Đông Nam Bộ" },
-      {
-        value: "Nam Trung Bộ và Tây Nguyên",
-        label: "Nam Trung Bộ và Tây Nguyên",
-      },
-      {
-        value: "Trung du và miền núi phía Bắc",
-        label: "Trung du và miền núi phía Bắc",
-      },
+      { value: "Africa", label: "Africa" },
+      { value: "America", label: "America" },
+      { value: "Asia", label: "Asia" },
+      { value: "Europe", label: "Europe" },
+      { value: "Oceania", label: "Oceania" },
+      { value: "Unknown", label: "Unknown" },
     ],
     [],
   );
 
-  const ALL_KEY_CITIES = useMemo(
-    () => [{ value: "4 TP lớn", label: "4 TP lớn" }],
+  const ALL_COUNTRY_TYPES = useMemo(
+    () => [
+      { value: "International", label: "International" },
+      { value: "Vietnam", label: "Vietnam" },
+    ],
+    [],
+  );
+
+  const ALL_KEY_COUNTRIES = useMemo(
+    () => [{ value: "9_key_markets", label: "9 Key Martkets" }],
     [],
   );
 
@@ -132,22 +124,40 @@ const FilterVietNamToDay = ({ filters, horizontalFixed = false }) => {
 
   const ALL_FIRST_LEVELS = useMemo(
     () => [
-      { value: "Dành cho trẻ em", label: "Dành cho trẻ em" },
-      { value: "Giáo dục - Đào tạo", label: "Giáo dục - Đào tạo" },
-      { value: "Giải trí", label: "Giải trí" },
-      { value: "Phim dài tập", label: "Phim dài tập" },
-      { value: "Sự kiện - Đặc biệt", label: "Sự kiện - Đặc biệt" },
-      { value: "Thể thao", label: "Thể thao" },
-      { value: "Thời sự - Chính luận", label: "Thời sự - Chính luận" },
-      { value: "Tài liệu - Phóng sự", label: "Tài liệu - Phóng sự" },
-      { value: "Đời sống", label: "Đời sống" },
+      { value: "Documentary", label: "Documentary" },
+      { value: "Educational & Training", label: "Educational & Training" },
+      { value: "Entertainment", label: "Entertainment" },
+      { value: "Events/Specials", label: "Events/Specials" },
+      { value: "Kid Programs", label: "Kid Programs" },
+      { value: "Life - Styles", label: "Life - Styles" },
+      { value: "Movies", label: "Movies" },
+      { value: "News & Current Affairs", label: "News & Current Affairs" },
+      { value: "Sports", label: "Sports" },
+    ],
+    [],
+  );
+
+  const ALL_DEVICES = useMemo(
+    () => [
+      { value: "SMART_TV", label: "SMART_TV" },
+      { value: "PC/LAP", label: "PC/LAP" },
+      { value: "MOBILE", label: "MOBILE" },
+      { value: "TABLET", label: "TABLET" },
+    ],
+    [],
+  );
+
+  const ALL_PLATFORMS = useMemo(
+    () => [
+      { value: "Facebook", label: "Facebook" },
+      { value: "Instagram", label: "Instagram" },
+      { value: "Tiktok", label: "Tiktok" },
+      { value: "Youtube", label: "Youtube" },
     ],
     [],
   );
 
   const VALUE_DEFAULT = useMemo(() => [], []);
-
-  const DEFAULT_RANGE_HOUR = useMemo(() => ({ min: 0, max: 1439 }), []);
 
   const toOptions = (items = [], field) =>
     items.map((item) => ({
@@ -155,20 +165,20 @@ const FilterVietNamToDay = ({ filters, horizontalFixed = false }) => {
       label: item[field],
     }));
 
-  const FILTER_SESSION_KEY = "dashboard_filters_ratings";
-  const FILTERS = "filter_sessions_ratings";
+  const FILTER_SESSION_KEY = "dashboard_filters_vietnamtodays";
+  const FILTERS = "filter_sessions_vietnamtodays";
 
   var filterSessions = JSON.parse(sessionStorage.getItem(FILTERS)) || {};
-  const ALL_PROVINCES = useMemo(
-    () => toOptions(filters?.filterProvince, "province"),
-    [filters?.filterProvince],
+  const ALL_COUNTRIES = useMemo(
+    () => toOptions(filters?.filterCountry, "country"),
+    [filters?.filterCountry],
   );
-  if (ALL_PROVINCES[0]?.value) filterSessions.provinces = ALL_PROVINCES;
-  const ALL_PROGRAMS = useMemo(
-    () => toOptions(filters?.filterProgram, "program_name"),
-    [filters?.filterProgram],
+  if (ALL_COUNTRIES[0]?.value) filterSessions.countries = ALL_COUNTRIES;
+  const ALL_SOURCES = useMemo(
+    () => toOptions(filters?.filterSource, "source"),
+    [filters?.filterSource],
   );
-  if (ALL_PROGRAMS[0]?.value) filterSessions.programs = ALL_PROGRAMS;
+  if (ALL_SOURCES[0]?.value) filterSessions.sources = ALL_SOURCES;
 
   sessionStorage.setItem(FILTERS, JSON.stringify(filterSessions));
 
@@ -263,22 +273,24 @@ const FilterVietNamToDay = ({ filters, horizontalFixed = false }) => {
     // ✅ Lookup tables: field → options array
     const lookups = {
       days: ALL_DAYS,
-      channels: ALL_CHANNELS,
+      otts: ALL_OTTS,
       events: ALL_EVENTS,
-      provinces: ALL_PROVINCES[0].value
-        ? ALL_PROVINCES
+      countries: ALL_COUNTRIES[0].value
+        ? ALL_COUNTRIES
         : sessionStorage.getItem(FILTERS) !== "{}"
-          ? JSON.parse(sessionStorage.getItem(FILTERS)).provinces
-          : ALL_PROVINCES,
-      regionals: ALL_REGIONALS,
-      keyCities: ALL_KEY_CITIES,
-      timebands: ALL_TIMEBANDS,
+          ? JSON.parse(sessionStorage.getItem(FILTERS)).countries
+          : ALL_COUNTRIES,
+      countryTypes: ALL_COUNTRY_TYPES,
+      keyCountries: ALL_KEY_COUNTRIES,
+      continents: ALL_CONTINENTS,
+      devices: ALL_DEVICES,
       firstLevels: ALL_FIRST_LEVELS,
-      programs: ALL_PROGRAMS[0].value
-        ? ALL_PROGRAMS
+      platforms: ALL_PLATFORMS,
+      sources: ALL_SOURCES[0].value
+        ? ALL_SOURCES
         : sessionStorage.getItem(FILTERS) !== "{}"
-          ? JSON.parse(sessionStorage.getItem(FILTERS)).programs
-          : ALL_PROGRAMS,
+          ? JSON.parse(sessionStorage.getItem(FILTERS)).sources
+          : ALL_SOURCES,
     };
 
     sessionStorage.setItem(FILTER_SESSION_KEY, JSON.stringify(appliedFilters));
@@ -296,7 +308,6 @@ const FilterVietNamToDay = ({ filters, horizontalFixed = false }) => {
             .filter(Boolean),
         ]),
       ),
-      startHours: appliedFilters.startHours || { min: 0, max: 1439 },
     };
     setFilterValues(transformed);
   }, [appliedFilters]);
@@ -434,37 +445,46 @@ const FilterVietNamToDay = ({ filters, horizontalFixed = false }) => {
   const COMPONENTS = useMemo(
     () => [
       <CheckboxMultiFilter
-        label="Vùng"
-        placeholder="Chọn vùng"
-        options={ALL_REGIONALS}
-        value={filterValues?.regionals || VALUE_DEFAULT}
-        onChange={createFilterChangeHandler("regionals")}
+        label="Country type"
+        placeholder="Chọn country type"
+        options={ALL_COUNTRY_TYPES}
+        value={filterValues?.countryTypes || VALUE_DEFAULT}
+        onChange={createFilterChangeHandler("countryTypes")}
         marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
       />,
       <CheckboxMultiFilter
-        label="Thành phố lớn"
-        placeholder="Chọn TP lớn"
-        options={ALL_KEY_CITIES}
-        value={filterValues?.keyCities || VALUE_DEFAULT}
-        onChange={createFilterChangeHandler("keyCities")}
+        label="Key country"
+        placeholder="Chọn key country"
+        options={ALL_KEY_COUNTRIES}
+        value={filterValues?.keyCountries || VALUE_DEFAULT}
+        onChange={createFilterChangeHandler("keyCountries")}
         marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
         isSearch={false}
       />,
       <SelectMultiFilter
-        label="Tỉnh/TP"
-        placeholder="Chọn Tỉnh/TP"
-        options={ALL_PROVINCES}
-        value={filterValues?.provinces || VALUE_DEFAULT}
-        onChange={createFilterChangeHandler("provinces")}
+        label="Country"
+        placeholder="Chọn country"
+        options={ALL_COUNTRIES}
+        value={filterValues?.countries || VALUE_DEFAULT}
+        onChange={createFilterChangeHandler("countries")}
         marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
         horizontalFixed={horizontalFixed}
       />,
+      <CheckboxMultiFilter
+        label="Continent"
+        placeholder="Chọn Continent"
+        options={ALL_CONTINENTS}
+        value={filterValues?.continents || VALUE_DEFAULT}
+        onChange={createFilterChangeHandler("continents")}
+        marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
+      />,
     ],
     [
-      filterValues?.provinces?.length,
-      filterValues?.regionals?.length,
-      filterValues?.keyCities?.length,
-      ALL_PROVINCES,
+      filterValues?.countries?.length,
+      filterValues?.countryTypes?.length,
+      filterValues?.keyCountries?.length,
+      filterValues?.continents?.length,
+      ALL_COUNTRIES,
     ],
   );
 
@@ -507,6 +527,40 @@ const FilterVietNamToDay = ({ filters, horizontalFixed = false }) => {
                 horizontalFixed={horizontalFixed}
               />
             </div>
+
+            {[DISABLE_TABS.live, DISABLE_TABS.vod].includes(currentTab) &&
+              (!horizontal ? (
+                <CheckboxMultiFilter
+                  label="Category"
+                  placeholder="Chọn category"
+                  options={ALL_FIRST_LEVELS}
+                  value={filterValues?.firstLevels || VALUE_DEFAULT}
+                  onChange={createFilterChangeHandler("firstLevels")}
+                  marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
+                />
+              ) : (
+                <SelectMultiFilter
+                  label="Category"
+                  placeholder="Chọn category"
+                  options={ALL_FIRST_LEVELS}
+                  value={filterValues?.firstLevels || VALUE_DEFAULT}
+                  onChange={createFilterChangeHandler("firstLevels")}
+                  marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
+                  horizontalFixed={horizontalFixed}
+                />
+              ))}
+
+            {[DISABLE_TABS.vod].includes(currentTab) && (
+              <SelectMultiFilter
+                label="Source"
+                placeholder="Chọn source"
+                options={ALL_SOURCES}
+                value={filterValues?.sources || VALUE_DEFAULT}
+                onChange={createFilterChangeHandler("sources")}
+                marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
+                horizontalFixed={horizontalFixed}
+              />
+            )}
 
             {[DISABLE_TABS.overview, DISABLE_TABS.live].includes(currentTab) &&
               (!horizontal ? (
@@ -552,123 +606,116 @@ const FilterVietNamToDay = ({ filters, horizontalFixed = false }) => {
                 />
               ))}
 
-            {!horizontal ? (
-              <CheckboxMultiFilter
-                label="Kênh"
-                placeholder="Chọn kênh..."
-                options={ALL_CHANNELS}
-                value={filterValues?.channels || VALUE_DEFAULT}
-                onChange={createFilterChangeHandler("channels")}
-                marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
-              />
-            ) : (
-              <SelectMultiFilter
-                label="Kênh"
-                placeholder="Chọn kênh..."
-                options={ALL_CHANNELS}
-                value={filterValues?.channels || VALUE_DEFAULT}
-                onChange={createFilterChangeHandler("channels")}
-                marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
-                horizontalFixed={horizontalFixed}
-              />
+            {[DISABLE_TABS.overview, DISABLE_TABS.live].includes(currentTab) &&
+              (!horizontal ? (
+                <CheckboxMultiFilter
+                  label="OTT"
+                  placeholder="Chọn nền tảng"
+                  options={ALL_OTTS}
+                  value={filterValues?.otts || VALUE_DEFAULT}
+                  onChange={createFilterChangeHandler("otts")}
+                  marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
+                />
+              ) : (
+                <SelectMultiFilter
+                  label="OTT"
+                  placeholder="Chọn nền tảng"
+                  options={ALL_OTTS}
+                  value={filterValues?.otts || VALUE_DEFAULT}
+                  onChange={createFilterChangeHandler("otts")}
+                  marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
+                  horizontalFixed={horizontalFixed}
+                />
+              ))}
+
+            {![DISABLE_TABS.social].includes(currentTab) && !horizontal && (
+              <GroupFilter title={"GEO"} components={COMPONENTS} />
             )}
 
-            {currentTab == DISABLE_TABS.channel && (
-              <SelectMultiFilter
-                label="Khung giờ"
-                placeholder="Chọn khung giờ..."
-                options={ALL_TIMEBANDS}
-                value={filterValues?.timebands || VALUE_DEFAULT}
-                onChange={createFilterChangeHandler("timebands")}
-                marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
-                horizontalFixed={horizontalFixed}
-              />
-            )}
-
-            {!horizontal && (
-              <GroupFilter title={"Khu vực"} components={COMPONENTS} />
-            )}
-
-            {horizontal && (
+            {![DISABLE_TABS.social].includes(currentTab) && horizontal && (
               <>
                 <SelectMultiFilter
-                  label="Vùng"
-                  placeholder="Chọn vùng"
-                  options={ALL_REGIONALS}
-                  value={filterValues?.regionals || VALUE_DEFAULT}
-                  onChange={createFilterChangeHandler("regionals")}
+                  label="Country type"
+                  placeholder="Chọn country type"
+                  options={ALL_COUNTRY_TYPES}
+                  value={filterValues?.countryTypes || VALUE_DEFAULT}
+                  onChange={createFilterChangeHandler("countryTypes")}
                   marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
                   horizontalFixed={horizontalFixed}
                 />
                 <SelectMultiFilter
-                  label="Thành phố lớn"
-                  placeholder="Chọn TP lớn"
-                  options={ALL_KEY_CITIES}
-                  value={filterValues?.keyCities || VALUE_DEFAULT}
-                  onChange={createFilterChangeHandler("keyCities")}
+                  label="Key country"
+                  placeholder="Chọn key country"
+                  options={ALL_KEY_COUNTRIES}
+                  value={filterValues?.keyCountries || VALUE_DEFAULT}
+                  onChange={createFilterChangeHandler("keyCountries")}
                   marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
                   horizontalFixed={horizontalFixed}
                 />
                 <SelectMultiFilter
-                  label="Tỉnh/TP"
-                  placeholder="Chọn Tỉnh/TP"
-                  options={ALL_PROVINCES}
-                  value={filterValues?.provinces || VALUE_DEFAULT}
-                  onChange={createFilterChangeHandler("provinces")}
+                  label="Country"
+                  placeholder="Chọn country"
+                  options={ALL_COUNTRIES}
+                  value={filterValues?.countries || VALUE_DEFAULT}
+                  onChange={createFilterChangeHandler("countries")}
+                  marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
+                  horizontalFixed={horizontalFixed}
+                />
+                <SelectMultiFilter
+                  label="Continent"
+                  placeholder="Chọn continent"
+                  options={ALL_CONTINENTS}
+                  value={filterValues?.continents || VALUE_DEFAULT}
+                  onChange={createFilterChangeHandler("continents")}
                   marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
                   horizontalFixed={horizontalFixed}
                 />
               </>
             )}
 
-            {currentTab == DISABLE_TABS.program && (
-              <RangeFilter
-                label="Giờ phát sóng"
-                min={0}
-                max={1439}
-                step={1}
-                value={filterValues?.startHours || DEFAULT_RANGE_HOUR}
-                onChange={createFilterChangeHandler("startHours")}
-                marginBottom={"mb-4 max-lg:mb-3 max-md:mb-2"}
-                horizontalFixed={horizontalFixed}
-              />
-            )}
-
-            {currentTab == DISABLE_TABS.program &&
+            {[DISABLE_TABS.overview, DISABLE_TABS.live].includes(currentTab) &&
               (!horizontal ? (
                 <CheckboxMultiFilter
-                  label="Thể loại"
-                  placeholder="Chọn thể loại"
-                  options={ALL_FIRST_LEVELS}
-                  value={filterValues?.firstLevels || VALUE_DEFAULT}
-                  onChange={createFilterChangeHandler("firstLevels")}
+                  label="Device"
+                  placeholder="Chọn thiết bị"
+                  options={ALL_DEVICES}
+                  value={filterValues?.devices || VALUE_DEFAULT}
+                  onChange={createFilterChangeHandler("devices")}
                   marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
                 />
               ) : (
                 <SelectMultiFilter
-                  label="Thể loại"
-                  placeholder="Chọn thể loại"
-                  options={ALL_FIRST_LEVELS}
-                  value={filterValues?.firstLevels || VALUE_DEFAULT}
-                  onChange={createFilterChangeHandler("firstLevels")}
+                  label="Device"
+                  placeholder="Chọn thiết bị"
+                  options={ALL_DEVICES}
+                  value={filterValues?.devices || VALUE_DEFAULT}
+                  onChange={createFilterChangeHandler("devices")}
                   marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
                   horizontalFixed={horizontalFixed}
                 />
               ))}
 
-            {[DISABLE_TABS.program, DISABLE_TABS.rating_by_minute].includes(
-              currentTab,
-            ) && (
-              <SelectMultiFilter
-                label="Chương trình"
-                placeholder="Chọn chương trình"
-                options={ALL_PROGRAMS}
-                value={filterValues?.programs || VALUE_DEFAULT}
-                onChange={createFilterChangeHandler("programs")}
-                marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
-                horizontalFixed={horizontalFixed}
-              />
-            )}
+            {[DISABLE_TABS.social].includes(currentTab) &&
+              (!horizontal ? (
+                <CheckboxMultiFilter
+                  label="Platform"
+                  placeholder="Chọn platform"
+                  options={ALL_PLATFORMS}
+                  value={filterValues?.platforms || VALUE_DEFAULT}
+                  onChange={createFilterChangeHandler("platforms")}
+                  marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
+                />
+              ) : (
+                <SelectMultiFilter
+                  label="Platform"
+                  placeholder="Chọn platform"
+                  options={ALL_PLATFORMS}
+                  value={filterValues?.platforms || VALUE_DEFAULT}
+                  onChange={createFilterChangeHandler("platforms")}
+                  marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
+                  horizontalFixed={horizontalFixed}
+                />
+              ))}
 
             <div
               className={`flex justify-center items-center transition-all duration-700 bg-background-light ${!horizontalFixed ? `dark:bg-background-dark fixed bottom-0 left-0 w-[16%] max-md:w-[65%] border-r border-background-line-gray dark:border-background-white-15 ${!isOpen || horizontal ? "-translate-x-full" : ""} shadow-2xl shadow-color-black-50 dark:shadow-color-white-90 py-3 max-lg:py-2.5 max-lg:gap-2 gap-4` : "gap-1 dark:bg-background-chart-dark max-md:justify-start max-md:col-span-2"}`}

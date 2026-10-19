@@ -43,7 +43,11 @@ const MixedChart = ({
   if (data === "isLoading") {
     return (
       <div className="p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component">
-        <NameChart nameChart={nameChart} description={description} refetch={refetch} />
+        <NameChart
+          nameChart={nameChart}
+          description={description}
+          refetch={refetch}
+        />
         {window.location.pathname.includes("/world-cup-2026") ? (
           <LoadingWorldCup
             height={!screenMd ? (!screenLg ? height : 350) : 230}
@@ -56,7 +60,11 @@ const MixedChart = ({
   } else if (!data || !data?.labels?.length) {
     return (
       <div className="p-6 max-lg:p-5 max-md:p-4 bg-background-light dark:bg-background-chart-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-2xl shadow-component">
-        <NameChart nameChart={nameChart} description={description} refetch={refetch} />
+        <NameChart
+          nameChart={nameChart}
+          description={description}
+          refetch={refetch}
+        />
         <NoData height={!screenMd ? (!screenLg ? height : 350) : 230} />
       </div>
     );

@@ -29,6 +29,7 @@ import InforTab from "../components/layouts/headers/InforTab";
 import InforFilter from "../components/layouts/headers/InforFilter";
 import { LABEL_VIETNAMTODAY } from "../utils/label";
 import Title from "../components/layouts/components/Title";
+import logoVietnamToday from "../assets/logo_vietnamtoday.png";
 import {
   useDarkMode,
   useIsOpen,
@@ -102,16 +103,16 @@ const DashboardContent = () => {
 
   const scopeFilterData = useMemo(
     () => ({
-      filterProvince: dashboard.isLoading.filterProvinceData
+      filterCountry: dashboard.isLoading.filterCountryData
         ? [{ Loading: "Loading" }]
-        : dashboard.filterProvinceData?.data,
-      filterProgram: dashboard.isLoading.filterProgramData
+        : dashboard.filterCountryData?.data,
+      filterSource: dashboard.isLoading.filterSourceData
         ? [{ Loading: "Loading" }]
-        : dashboard.filterProgramData?.data,
+        : dashboard.filterSourceData?.data,
     }),
     [
-      dashboard.isLoading.filterProvinceData,
-      dashboard.isLoading.filterProgramData,
+      dashboard.isLoading.filterCountryData,
+      dashboard.isLoading.filterSourceData,
     ],
   );
 
@@ -123,7 +124,11 @@ const DashboardContent = () => {
         <div
           className={`${isOpen && !horizontal ? "w-[84%] max-md:w-full" : "w-full"} transition-all duration-300 bg-background-dashboard dark:bg-background-dashboard-dark`}
         >
-          <BreadCrumb dashboardName="VIETNAM TODAY" />
+          <BreadCrumb
+            dashboardName="VIETNAM TODAY"
+            icon={logoVietnamToday}
+            widthIcon="w-12 max-lg:w-8 max-md:w-7.25"
+          />
           <div className="bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300">
             <ParentTabs
               uniqueId="dashboard"
@@ -384,6 +389,7 @@ const DashboardContent = () => {
                             fontWeight={CUSTOM_CHART.pieChart.fontWeight}
                             nameChart={"Watch Time by Content Category"}
                             description={false}
+                            border={false}
                             colors={useMemo(
                               () => ({
                                 "News & Current Affairs": "#6BD3B3",
@@ -547,9 +553,13 @@ const DashboardContent = () => {
                                           .description
                                       }
                                       displayName={false}
-                                      colors={
-                                        CUSTOM_CHART.lineChart.colorChannel
-                                      }
+                                      colors={useMemo(
+                                        () => ({
+                                          "Live TV": "#ef4444",
+                                          VOD: "#3b82f6",
+                                        }),
+                                        [],
+                                      )}
                                       smooth={CUSTOM_CHART.lineChart.smooth}
                                       symbolSize={
                                         CUSTOM_CHART.lineChart.symbolSize
@@ -607,9 +617,13 @@ const DashboardContent = () => {
                                           .description
                                       }
                                       displayName={false}
-                                      colors={
-                                        CUSTOM_CHART.lineChart.colorChannel
-                                      }
+                                      colors={useMemo(
+                                        () => ({
+                                          "Live TV": "#ef4444",
+                                          VOD: "#3b82f6",
+                                        }),
+                                        [],
+                                      )}
                                       smooth={CUSTOM_CHART.lineChart.smooth}
                                       symbolSize={
                                         CUSTOM_CHART.lineChart.symbolSize
@@ -667,9 +681,13 @@ const DashboardContent = () => {
                                           .description
                                       }
                                       displayName={false}
-                                      colors={
-                                        CUSTOM_CHART.lineChart.colorChannel
-                                      }
+                                      colors={useMemo(
+                                        () => ({
+                                          "Live TV": "#ef4444",
+                                          VOD: "#3b82f6",
+                                        }),
+                                        [],
+                                      )}
                                       smooth={CUSTOM_CHART.lineChart.smooth}
                                       symbolSize={
                                         CUSTOM_CHART.lineChart.symbolSize
@@ -724,7 +742,11 @@ const DashboardContent = () => {
                           ]
                         }
                       />
-                      <InforFilter filters={scopeFilterData} />
+                      <InforFilter
+                        filters={scopeFilterData}
+                        FilterComponent={FilterVietNamToDay}
+                        nameFilter="FilterVietNamToDay"
+                      />
                       <div className="px-6 max-lg:px-5 max-md:px-4 py-6 max-lg:py-5 max-md:py-4">
                         <div className="w-full grid grid-cols-4 max-lg:grid-cols-4 max-md:grid-cols-2 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4">
                           <NumberCard
@@ -758,7 +780,7 @@ const DashboardContent = () => {
                           <NumberCard
                             title={"Total Views"}
                             description={
-                              "Tổng số lượt xem hợp lệ phát sinh trong kỳ (Chỉ áp dụng Live TV). (Quy định lượt xem hợp lệ: Live TV >= 30 giây)"
+                              "Tổng số lượt xem hợp lệ trong kỳ (chỉ áp dụng Live TV)\nĐiều kiện:\n- Live TV >= 30 giây\n- VOD >=15 giây"
                             }
                             value={useMemo(
                               () =>
@@ -1005,6 +1027,7 @@ const DashboardContent = () => {
                                           }
                                           nameChart={"Avg.Reach by Device"}
                                           center={true}
+                                          border={false}
                                           description={false}
                                           donut={CUSTOM_CHART.pieChart.donut}
                                           innerRadius={
@@ -1226,6 +1249,7 @@ const DashboardContent = () => {
                                           }
                                           nameChart={"Rating by Device"}
                                           center={true}
+                                          border={false}
                                           description={false}
                                           donut={CUSTOM_CHART.pieChart.donut}
                                           innerRadius={
@@ -1449,6 +1473,7 @@ const DashboardContent = () => {
                                             "Total Minutes Watched by Device"
                                           }
                                           center={true}
+                                          border={false}
                                           description={false}
                                           donut={CUSTOM_CHART.pieChart.donut}
                                           innerRadius={
@@ -1540,6 +1565,7 @@ const DashboardContent = () => {
                               }),
                               [],
                             )}
+                            border={false}
                             description={false}
                             donut={CUSTOM_CHART.pieChart.donut}
                             innerRadius={CUSTOM_CHART.pieChart.innerRadius}
@@ -1576,6 +1602,7 @@ const DashboardContent = () => {
                               }),
                               [],
                             )}
+                            border={false}
                             description={false}
                             donut={CUSTOM_CHART.pieChart.donut}
                             innerRadius={CUSTOM_CHART.pieChart.innerRadius}
@@ -1707,7 +1734,11 @@ const DashboardContent = () => {
                           ]
                         }
                       />
-                      <InforFilter filters={scopeFilterData} />
+                      <InforFilter
+                        filters={scopeFilterData}
+                        FilterComponent={FilterVietNamToDay}
+                        nameFilter="FilterVietNamToDay"
+                      />
                       <div className="px-6 max-lg:px-5 max-md:px-4">
                         <div className="w-full grid grid-cols-5 max-lg:grid-cols-4 max-md:grid-cols-2 gap-6 max-lg:gap-5 max-md:gap-4 py-6 max-lg:py-5 max-md:py-4">
                           <NumberCard
@@ -1742,7 +1773,7 @@ const DashboardContent = () => {
                           <NumberCard
                             title={"Total Views"}
                             description={
-                              "Tổng số lượt xem VOD hợp lệ trong kỳ (Lượt xem hợp lệ khi xem tối thiểu từ 15 giây)."
+                              "Tổng số lượt xem VOD hợp lệ trong kỳ (Chỉ áp dụng VOD).\n(Quy định lượt xem hợp lệ: VOD >= 15 giây)"
                             }
                             value={useMemo(
                               () =>
@@ -1966,10 +1997,6 @@ const DashboardContent = () => {
                             orientation={
                               CUSTOM_CHART.barChart.barChartArea.orientation
                             }
-                            colorZoom={
-                              CUSTOM_CHART.barChart.barChartArea.rating
-                                .colorZoom
-                            }
                             refetch={useCallback(
                               () => dashboard.refetch("chart1055Data"),
                               [dashboard.isLoading.chart1055Data],
@@ -1989,9 +2016,7 @@ const DashboardContent = () => {
                             height={250}
                             fontSize={CUSTOM_CHART.barChart.fontSize}
                             fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                            colors={
-                              CUSTOM_CHART.barChart.barChartArea.aveReach.color
-                            }
+                            colors={["#3b82f6"]}
                             fontWeight={CUSTOM_CHART.barChart.fontWeight}
                             nameChart={"Category Breakdown by Users"}
                             description={false}
@@ -2018,17 +2043,13 @@ const DashboardContent = () => {
                             fontSize={CUSTOM_CHART.barChart.fontSize}
                             fontFamily={CUSTOM_CHART.allChart.fontFamily}
                             colors={
-                              CUSTOM_CHART.barChart.barChartArea.rating.color
+                              CUSTOM_CHART.barChart.barChartArea.aveReach.color
                             }
                             fontWeight={CUSTOM_CHART.barChart.fontWeight}
                             nameChart={"Category Breakdown by WatchTime"}
                             description={false}
                             orientation={
                               CUSTOM_CHART.barChart.barChartArea.orientation
-                            }
-                            colorZoom={
-                              CUSTOM_CHART.barChart.barChartArea.rating
-                                .colorZoom
                             }
                             refetch={useCallback(
                               () => dashboard.refetch("chart1057Data"),
@@ -2058,10 +2079,6 @@ const DashboardContent = () => {
                             orientation={
                               CUSTOM_CHART.barChart.barChartArea.orientation
                             }
-                            colorZoom={
-                              CUSTOM_CHART.barChart.barChartArea.rating
-                                .colorZoom
-                            }
                             refetch={useCallback(
                               () => dashboard.refetch("chart1062Data"),
                               [dashboard.isLoading.chart1062Data],
@@ -2081,18 +2098,12 @@ const DashboardContent = () => {
                             height={250}
                             fontSize={CUSTOM_CHART.barChart.fontSize}
                             fontFamily={CUSTOM_CHART.allChart.fontFamily}
-                            colors={
-                              CUSTOM_CHART.barChart.barChartArea.aveReach.color
-                            }
+                            colors={["#3b82f6"]}
                             fontWeight={CUSTOM_CHART.barChart.fontWeight}
                             nameChart={"Geographic Distribution of Total Users"}
                             description={false}
                             orientation={
                               CUSTOM_CHART.barChart.barChartArea.orientation
-                            }
-                            colorZoom={
-                              CUSTOM_CHART.barChart.barChartArea.aveReach
-                                .colorZoom
                             }
                             refetch={useCallback(
                               () => dashboard.refetch("chart1063Data"),
@@ -2114,17 +2125,13 @@ const DashboardContent = () => {
                             fontSize={CUSTOM_CHART.barChart.fontSize}
                             fontFamily={CUSTOM_CHART.allChart.fontFamily}
                             colors={
-                              CUSTOM_CHART.barChart.barChartArea.rating.color
+                              CUSTOM_CHART.barChart.barChartArea.aveReach.color
                             }
                             fontWeight={CUSTOM_CHART.barChart.fontWeight}
                             nameChart={"Geographic Distribution of WatchTime"}
                             description={false}
                             orientation={
                               CUSTOM_CHART.barChart.barChartArea.orientation
-                            }
-                            colorZoom={
-                              CUSTOM_CHART.barChart.barChartArea.rating
-                                .colorZoom
                             }
                             refetch={useCallback(
                               () => dashboard.refetch("chart1064Data"),
@@ -2502,7 +2509,11 @@ const DashboardContent = () => {
                           ]
                         }
                       />
-                      <InforFilter filters={scopeFilterData} />
+                      <InforFilter
+                        filters={scopeFilterData}
+                        FilterComponent={FilterVietNamToDay}
+                        nameFilter="FilterVietNamToDay"
+                      />
                       <div className="px-6 max-lg:px-5 max-md:px-4">
                         <div className="w-full grid grid-cols-4 max-md:grid-cols-2 gap-6 max-lg:gap-5 max-md:gap-4 py-6 max-lg:py-5 max-md:py-4">
                           <NumberCard
@@ -2564,7 +2575,7 @@ const DashboardContent = () => {
                           <NumberCard
                             title={"Views"}
                             description={
-                              "Tổng số lần nội dung hiển thị trên màn hình của người dùng (bao gồm cả lượt hiển thị lặp lại) trong khoảng thời gian được chọn."
+                              "Tổng lượt xem nội dung. Các tỉnh khác nhau tùy nền tảng:\n- FB >=3s (chỉ video)\n- YT >=30s\n- TT >=autoplay\n- IG >=3s (Reels>=1s)"
                             }
                             value={useMemo(
                               () =>
@@ -2695,6 +2706,38 @@ const DashboardContent = () => {
                               nameChart={"Facebook Insight"}
                               description={false}
                               fullScreen={true}
+                              customCol={useMemo(
+                                () => ({
+                                  "Snapshot Date": {
+                                    title:
+                                      "Ngày hệ thống trích xuất dữ liệu từ Facebook API.",
+                                  },
+                                  Day: {
+                                    title: "Ngày ghi nhận các chỉ số đo lường.",
+                                  },
+                                  Followers: {
+                                    title:
+                                      "Tổng số lượng người theo dõi Fanpage tính đến hết ngày Day.",
+                                  },
+                                  "Net Followers": {
+                                    title:
+                                      "Net Followers = Followers(Day) - Follower(Day-1)",
+                                  },
+                                  Engagements: {
+                                    title:
+                                      "Tổng tất cả các lượt tương tác phát sinh trong ngày Day trên toàn bộ các bài viết thuộc Fanpage.",
+                                  },
+                                  "Page View": {
+                                    title:
+                                      "Tổng lượt truy cập trực tiếp vào Fanpage trong ngày.",
+                                  },
+                                  "Media View": {
+                                    title:
+                                      "Tổng lượt xem/phát các nội dung media (Video, Reels, Stories...) trong ngày.",
+                                  },
+                                }),
+                                [],
+                              )}
                               refetch={useCallback(
                                 () => dashboard.refetch("chart1103Data"),
                                 [dashboard.isLoading.chart1103Data],
@@ -2805,6 +2848,35 @@ const DashboardContent = () => {
                               fontFamily={CUSTOM_CHART.allChart.fontFamily}
                               fontWeight={CUSTOM_CHART.tableChart.fontWeight}
                               nameChart={"Youtube Insight"}
+                              customCol={useMemo(
+                                () => ({
+                                  "Snapshot Date": {
+                                    title:
+                                      "Ngày hệ thống trích xuất dữ liệu từ Youtube API.",
+                                  },
+                                  Day: {
+                                    title:
+                                      "Ngày phát sinh các chỉ số xem và tương tác trên kênh.",
+                                  },
+                                  "Subscribers Gained": {
+                                    title:
+                                      "Số người đăng ký kênh mới trong ngày Day.",
+                                  },
+                                  "Subscribers Lost": {
+                                    title:
+                                      "Số người hủy đăng ký kênh trong ngày Day.",
+                                  },
+                                  Views: {
+                                    title:
+                                      "Tổng số lượt xem tất cả video trên kênh trong ngày.",
+                                  },
+                                  "Watch Time (min)": {
+                                    title:
+                                      "Tổng thời gian xem kênh tính bằng phút trong ngày.",
+                                  },
+                                }),
+                                [],
+                              )}
                               description={false}
                               fullScreen={true}
                               refetch={useCallback(
@@ -2813,7 +2885,7 @@ const DashboardContent = () => {
                               )}
                             />
                           </div>
-                          <div className="w-full grid grid-cols-2 max-md:flex-wrap max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4">
+                          {/* <div className="w-full grid grid-cols-2 max-md:flex-wrap max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4">
                             <BarChart
                               data={useMemo(
                                 () =>
@@ -2870,7 +2942,7 @@ const DashboardContent = () => {
                                 [dashboard.isLoading.chart1211Data],
                               )}
                             />
-                          </div>
+                          </div> */}
                           <div className="w-full grid grid-cols-2 max-md:flex-wrap max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4">
                             <LineChart
                               data={useMemo(
@@ -2953,7 +3025,7 @@ const DashboardContent = () => {
                               )}
                             />
                           </div>
-                          <div className="w-full grid grid-cols-2 max-md:flex-wrap max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4">
+                          {/* <div className="w-full grid grid-cols-2 max-md:flex-wrap max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4">
                             <TableChart
                               data={useMemo(
                                 () =>
@@ -3032,7 +3104,7 @@ const DashboardContent = () => {
                                 [dashboard.isLoading.chart1212Data],
                               )}
                             />
-                          </div>
+                          </div> */}
                         </div>
                         <div className="px-6 max-lg:px-5 max-md:px-0 pt-4 max-lg:pt-3 max-md:pt-0 bg-background-black-4 max-md:bg-background-dashboard dark:bg-background-dark max-md:dark:bg-background-dashboard-dark rounded-2xl mb-6 max-lg:mb-5 max-md:mb-4">
                           <Title title={"Top Posts by Platform"} />

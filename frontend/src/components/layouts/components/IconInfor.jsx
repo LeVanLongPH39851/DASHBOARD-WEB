@@ -19,7 +19,7 @@ const IconInfor = ({ description }) => {
                         before:h-3 before:bg-color-black-100 dark:before:bg-background-dark before:bottom-0 before:left-1/2 before:-translate-x-1/2 before:translate-y-1/2
                         before:rotate-45 group-hover:bottom-[115%] max-lg:group-hover:bottom-[125%] max-md:group-hover:bottom-[135%] transition-all duration-300 z-9999"
         >
-          <p className="text-color-white-90 w-full text-wrap text-xs max-lg:text-[10.5px] max-md:text-[10px]">
+          <p className="text-color-white-90 w-full text-wrap text-xs max-lg:text-[10.5px] max-md:text-[10px] whitespace-pre-line">
             {description}
           </p>
         </div>

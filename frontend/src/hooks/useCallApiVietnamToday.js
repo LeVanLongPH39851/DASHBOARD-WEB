@@ -256,10 +256,10 @@ export const useMaxInsertReturnApi = () => {
   return useApi(getChart.getMaxInsert);
 };
 
-export const useFilterProvinceReturnApi = () => {
-  return useApi(getChart.getFilterProvince);
+export const useFilterCountryReturnApi = () => {
+  return useApi(getChart.getFilterCountry);
 };
 
-export const useFilterProgramReturnApi = () => {
-  return useApi(getChart.getFilterProgram);
+export const useFilterSourceReturnApi = () => {
+  return useApi(getChart.getFilterSource);
 };

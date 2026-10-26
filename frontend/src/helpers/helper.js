@@ -2,6 +2,8 @@ import { toPng } from "html-to-image";
 import html2canvas from "html2canvas-pro";
 import { LABEL_TABS } from "../utils/label";
 
+const isFirefox = /firefox/i.test(navigator.userAgent);
+
 export const getYesterday = () => {
   const today = new Date();
   const yesterday = new Date(today);

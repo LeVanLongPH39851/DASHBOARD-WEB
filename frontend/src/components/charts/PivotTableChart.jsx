@@ -93,7 +93,13 @@ const buildPivotData = ({
   sortColTimeband,
 }) => {
   const rowKeys = [...new Set(data.map((d) => String(d[rowField] ?? "")))];
-  let colKeys = [...new Set(data.map((d) => String(d[columnField] ?? "")))];
+  let colKeys = [
+    ...new Set(
+      data
+        .map((d) => String(d[columnField] ?? "").trim())
+        .filter((key) => key !== ""),
+    ),
+  ];
   colKeys = sortColKeysHelper(colKeys, sortColTimeband);
 
   const grouped = {};
@@ -127,7 +133,13 @@ const buildMultiValuePivotData = ({
   sortColTimeband,
 }) => {
   const rowKeys = [...new Set(data.map((d) => String(d[rowField] ?? "")))];
-  let colKeys = [...new Set(data.map((d) => String(d[columnField] ?? "")))];
+  let colKeys = [
+    ...new Set(
+      data
+        .map((d) => String(d[columnField] ?? "").trim())
+        .filter((key) => key !== ""),
+    ),
+  ];
   colKeys = sortColKeysHelper(colKeys, sortColTimeband);
 
   const grouped = {};

@@ -1,6 +1,9 @@
-python-dotenv
-pydantic
-mysql-connector-python
-PyYAML
-fastapi
-uvicorn
+# Direct production dependencies; exact transitive versions are in requirements.lock.
+fastapi==0.162.0
+pydantic==2.13.5
+uvicorn==0.54.0
+mysql-connector-python==26.10.0
+python-dotenv==1.2.4
+PyYAML==6.0.3
+redis==8.1.0
+simplejson==4.2.0

@@ -46,6 +46,11 @@ class SemanticIntentRuleLayer:
         "theo ngay": "date",
         "theo tuan": "date",
         "theo thang": "date",
+        "theo the loai": "category_level1",
+        "theo tinh": "province",
+        "theo vung": "region",
+        "theo nen tang": "platform",
+        "theo kenh": "channel",
     }
 
     def __init__(self, catalog: RatingCatalog):

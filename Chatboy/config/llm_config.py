@@ -8,9 +8,8 @@ import threading
 from typing import Any
 from urllib import error, request
 
-from dotenv import load_dotenv
-
-load_dotenv()
+from src.core.text_to_sql.runtime.context import CURRENT_CONTEXT, RequestContext, stage
+from src.core.text_to_sql.runtime.errors import WorkflowError
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +28,8 @@ class LLMClient:
         api_key: str | None = None,
         model: str = "",
         base_url: str = "https://api.openai.com/v1",
-        timeout_seconds: int = 60,
+        timeout_seconds: int = 8,
+        transport=None,
         api_keys: list[str] | str | None = None,
     ) -> None:
         raw_keys = api_keys if api_keys is not None else api_key
@@ -45,7 +45,8 @@ class LLMClient:
 
         self.model = model
         self.base_url = base_url.rstrip("/")
-        self.timeout_seconds = timeout_seconds
+        self.timeout_seconds = min(timeout_seconds, 8)
+        self.transport = transport or request.urlopen
         self.current_key_index = 0
         self._lock = threading.Lock()
 
@@ -100,7 +101,7 @@ class LLMClient:
             api_keys=api_keys,
             model=model,
             base_url=os.getenv("LLM_BASE_URL", "https://api.openai.com/v1").rstrip("/"),
-            timeout_seconds=int(os.getenv("LLM_TIMEOUT_SECONDS", "60")),
+            timeout_seconds=int(os.getenv("LLM_TIMEOUT_SECONDS", "8")),
         )
 
     # ____________________________ OPEN AI / GEMINI API ____________________________ #
@@ -123,66 +124,28 @@ class LLMClient:
 
         endpoint = f"{self.base_url}/chat/completions"
         body = json.dumps(payload).encode("utf-8")
-        total_keys = len(self.api_keys)
-        last_error = None
-
-        # Thử lần lượt từng key nếu gặp lỗi rate limit / quota
-        for attempt in range(total_keys):
+        ctx = CURRENT_CONTEXT.get() or RequestContext()
+        while True:
+            timeout = min(self.timeout_seconds, ctx.llm_attempt())
             current_key = self.api_key
-            headers = {
-                "Authorization": f"Bearer {current_key}",
-                "Content-Type": "application/json",
-            }
-            http_request = request.Request(
-                endpoint,
-                data=body,
-                headers=headers,
-                method="POST",
-            )
-
+            http_request = request.Request(endpoint, data=body, headers={
+                "Authorization": f"Bearer {current_key}", "Content-Type": "application/json",
+            }, method="POST")
             try:
-                with request.urlopen(http_request, timeout=self.timeout_seconds) as response:
-                    response_body = response.read().decode("utf-8")
-                return json.loads(response_body)
-            except error.HTTPError as exc:
-                error_body = exc.read().decode("utf-8", errors="replace")
-                last_error = f"Status {exc.code}: {error_body}"
-
-                # Kiểm tra lỗi rate limit, hết quota hoặc token không hợp lệ
-                is_rate_limit = (
-                    exc.code in (429, 401, 403)
-                    or "resource_exhausted" in error_body.lower()
-                    or "quota" in error_body.lower()
-                    or "rate limit" in error_body.lower()
-                )
-
-                if is_rate_limit and total_keys > 1 and attempt < total_keys - 1:
-                    masked = self._mask_key(current_key)
-                    logger.warning(
-                        f"[LLM Connector] API key {masked} (Key {attempt + 1}/{total_keys}) "
-                        f"chạm rate limit hoặc lỗi quota ({exc.code}). Tự động chuyển sang key tiếp theo..."
-                    )
-                    self._rotate_key(failed_key=current_key)
+                with ctx.stage("llm", model_id=self.model):
+                    with self.transport(http_request, timeout=timeout) as response:
+                        payload = json.loads(response.read().decode("utf-8"))
+                    ctx.emit("llm_usage", outcome="ok", model_id=self.model,
+                             token_usage=payload.get("usage"))
+                    return payload
+            except (error.URLError, TimeoutError, OSError) as exc:
+                retryable = not isinstance(exc, error.HTTPError) or exc.code == 429 or exc.code >= 500
+                if retryable and ctx.retry():
+                    self._rotate_key(current_key)
                     continue
-
-                raise RuntimeError(
-                    f" --- [LLM Connector] - LLM request failed with status {exc.code}: {error_body}"
-                ) from exc
-            except error.URLError as exc:
-                last_error = f"URLError: {exc.reason}"
-                if total_keys > 1 and attempt < total_keys - 1:
-                    logger.warning(
-                        f"[LLM Connector] Lỗi kết nối ({exc.reason}), thử lại với API key tiếp theo..."
-                    )
-                    self._rotate_key(failed_key=current_key)
-                    continue
-                raise RuntimeError(
-                    f" --- [LLM Connector] - LLM request could not reach endpoint: {exc.reason}"
-                ) from exc
-
-        raise RuntimeError(
-            f" --- [LLM Connector] - Toàn bộ {total_keys} API keys đều thất bại hoặc chạm rate limit: {last_error}"
-        )
+                raise WorkflowError("dependency_unavailable", "Dịch vụ mô hình đang không khả dụng.", retryable=retryable) from exc
+            except (ValueError, KeyError, TypeError) as exc:
+                raise WorkflowError("invalid_result", "Dịch vụ mô hình trả sai cấu trúc kết quả.") from exc
 
     def complete_text(
         self,
@@ -207,7 +170,7 @@ class LLMClient:
         try:
             content = response["choices"][0]["message"]["content"]
         except (KeyError, IndexError, TypeError) as exc:
-            raise RuntimeError(f" --- [LLM Connector] - Unexpected LLM response format: {response}") from exc
+            raise WorkflowError("invalid_result", "Dịch vụ mô hình thiếu nội dung trả lời.") from exc
 
         if isinstance(content, str):
             return content
@@ -220,4 +183,4 @@ class LLMClient:
             ]
             return "".join(text_parts).strip()
 
-        raise RuntimeError(f" --- [LLM Connector] - Unsupported content format returned by LLM: {content}")
+        raise WorkflowError("invalid_result", "Dịch vụ mô hình trả kiểu nội dung không hợp lệ.")

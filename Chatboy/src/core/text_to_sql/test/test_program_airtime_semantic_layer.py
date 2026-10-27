@@ -178,29 +178,15 @@ class TestProgramAirtimeSemanticLayer(unittest.TestCase):
         self.assertIn("program.airtime_share_all_categories_percent", extraction_call.kwargs["system_prompt"])
         self.assertNotIn("TẾT VỚI ĐỒNG BÀO", extraction_call.kwargs["system_prompt"])
 
-    def test_invalid_llm_metric_id_falls_back_to_catalog_rules(self):
+    def test_invalid_metric_is_not_replaced_by_rules(self):
+        from src.core.text_to_sql.runtime.errors import WorkflowError
         llm = MagicMock()
-        llm.complete_text.return_value = json.dumps(
-            {
-                "metric_id": "program.unknown",
-                "dimensions": [],
-            }
-        )
-        pipeline = RatingQueryPipeline(
-            today_provider=lambda: date(2026, 8, 12),
-            llm_client=llm,
-        )
-
-        result = pipeline.generate(
-            "Thời lượng phát của Phim truyện hôm qua chiếm bao nhiêu %"
-        )
-
-        self.assertIsNone(result.error)
-        self.assertEqual(result.semantic_extraction.source, "rules")
-        self.assertEqual(
-            result.query_plan.primary_metric.id,
-            "program.airtime_share_all_categories_percent",
-        )
+        llm.complete_text.return_value = json.dumps({"metric_id":"program.unknown","dimensions":[]})
+        pipeline = RatingQueryPipeline(llm_client=llm)
+        with self.assertRaises(WorkflowError) as error:
+            pipeline.generate("Thời lượng phát của Phim truyện hôm qua chiếm bao nhiêu %")
+        self.assertEqual(error.exception.code,"invalid_semantics")
+        self.assertEqual(llm.complete_text.call_count,2)
 
     def test_program_metric_alignment_uses_semantic_key(self):
         result = self.pipeline.generate("rating theo thể loại hôm qua")

@@ -1,0 +1,16 @@
+version: 1
+# Preserve the existing channel default for shared, unqualified KPI aliases.
+default_fact_family: channel
+category_shares:
+  - source_metrics: [program.airtime_duration, program.airtime_share_all_categories_percent, program.airtime_share_selected_categories_percent]
+    all: program.airtime_share_all_categories_percent
+    selected: program.airtime_share_selected_categories_percent
+  - source_metrics: [program.view_duration, program.weighted_view_duration, program.viewing_time_share_percent, program.view_duration_share_all_categories_percent, program.view_duration_share_selected_categories_percent]
+    all: program.view_duration_share_all_categories_percent
+    selected: program.view_duration_share_selected_categories_percent
+unsupported_filter_cues:
+  - ngoại trừ
+  - loại trừ
+  - không gồm
+  - không bao gồm
+  - trừ kênh

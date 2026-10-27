@@ -3,11 +3,13 @@
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import Any
 
 from src.core.text_to_sql.catalog import RatingCatalog
 from src.core.text_to_sql.query_plan import Filter, RatingQueryPlan
+from src.core.text_to_sql.result_contracts import ResultColumn, ResultSchema
+from src.core.text_to_sql.presentation import PresentationCatalog
 
 
 @dataclass(frozen=True)
@@ -17,8 +19,10 @@ class GeneratedSQL:
     parameters: dict[str, Any]
     selected_columns: tuple[str, ...]
     # SQL after renderer-owned named-parameter substitution. ``sql`` remains
-    # parameterized for diagnostics; ``bound_sql`` is sent to Doris by the CLI.
+    # parameterized for execution; ``bound_sql`` is a diagnostic preview only.
     bound_sql: str = ""
+    period_id: str | None = None
+    schema: ResultSchema | None = None
 
     @property
     def executable_sql(self) -> str:
@@ -41,8 +45,38 @@ class RatingSQLRenderer:
         project_root=None,
     ):
         self.catalog = catalog or RatingCatalog.load(project_root=project_root)
+        self.presentation = PresentationCatalog(self.catalog)
 
     def render(self, plan: RatingQueryPlan) -> GeneratedSQLBatch:
+        if plan.comparison_spec:
+            queries = []
+            dimensions = tuple(d for d in plan.dimensions if self.catalog.get_dimension(d).semantic_type != "time")
+            for period in plan.comparison_spec.periods:
+                subplan = replace(plan, time_range=period.time_range, dimensions=dimensions,
+                    order_by=tuple(o for o in plan.order_by if o.field in dimensions),
+                    pattern_name="metric_lookup", query_shape="aggregate", comparison_spec=None, limit=None)
+                for query in self._render_one(subplan).queries:
+                    queries.append(replace(query, query_id=f"period_{period.id}", period_id=period.id,
+                        schema=self._schema(subplan, query.selected_columns)))
+            return GeneratedSQLBatch(tuple(queries))
+        batch = self._render_one(plan)
+        return GeneratedSQLBatch(tuple(replace(q, schema=self._schema(plan, q.selected_columns)) for q in batch.queries))
+
+    def _schema(self, plan: RatingQueryPlan, aliases: tuple[str, ...]) -> ResultSchema:
+        columns = []
+        for ref in plan.metrics:
+            metric = self.catalog.require_metric(ref.id)
+            columns.append(ResultColumn(ref.id, ref.alias or metric.output_alias, "number", self.presentation.metrics[ref.id].unit))
+        for dimension_id in plan.dimensions:
+            dim = self.catalog.get_dimension(dimension_id)
+            candidates = (dimension_id.rsplit(".", 1)[-1], dim.column)
+            alias = next((c for c in candidates if c in aliases), None)
+            if alias is None:
+                raise ValueError(f"missing_dimension_output:{dimension_id}")
+            columns.append(ResultColumn(dimension_id, alias, "date" if dim.semantic_type == "time" else "string"))
+        return ResultSchema(tuple(columns))
+
+    def _render_one(self, plan: RatingQueryPlan) -> GeneratedSQLBatch:
         requested = [*plan.dimensions, *(item.field for item in plan.filters)]
         if not plan.metrics:
             return self._render_dimension_listing(plan, requested)
@@ -91,9 +125,10 @@ class RatingSQLRenderer:
         parameters: dict[str, Any] = {}
 
         if table.id == "agg_info_program":
-            where_parts.append(f"{self._identifier(date_dimension.column)} BETWEEN :time_start AND :time_end")
+            where_parts.append(f"{self._identifier(date_dimension.column)} >= :time_start")
+            where_parts.append(f"{self._identifier(date_dimension.column)} < :time_end")
             parameters["time_start"] = f"{plan.time_range.start}T00:00:00"
-            parameters["time_end"] = f"{plan.time_range.end}T23:59:59"
+            parameters["time_end"] = f"{plan.time_range.end}T00:00:00"
             where_parts.append("firstlevel_vn NOT IN (:program_excluded_category_0, :program_excluded_category_1)")
             parameters["program_excluded_category_0"] = "Quảng cáo"
             parameters["program_excluded_category_1"] = "Quảng bá"

@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from src.core.text_to_sql.planning_contracts import UnsupportedRequest
+
 from dataclasses import replace
 
 from src.core.text_to_sql.resolved_entities import ResolvedSQLComponents
@@ -15,15 +17,15 @@ class DimensionBundlePolicy:
         dimension_ids = context.requested_dimensions(components)
         metric_ids = context.catalog.metric_bundle_for(dimension_ids)
         if not metric_ids:
-            raise ValueError("missing_metric_bundle")
+            raise UnsupportedRequest("missing_metric_bundle")
         recipes = {context.catalog.require_metric(metric_id).recipe for metric_id in metric_ids}
         if len(recipes) != 1:
-            raise ValueError("metric_bundle_recipe_mismatch")
+            raise UnsupportedRequest("metric_bundle_recipe_mismatch")
         for metric_id in metric_ids:
             metric = context.catalog.require_metric(metric_id)
             unsupported = set(dimension_ids) - set(metric.supported_dimensions)
             if unsupported:
-                raise ValueError(
+                raise UnsupportedRequest(
                     f"metric_bundle_unsupported_dimensions:{metric_id}:{','.join(sorted(unsupported))}"
                 )
         return replace(

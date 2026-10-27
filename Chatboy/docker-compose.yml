@@ -1,23 +1,27 @@
 services:
   chatbot-dashboard-rating:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: chatbot_dashboard_rating
+    build: .
     restart: unless-stopped
     ports:
       - "8010:8010"
-    volumes:
-      - ./data/dashboard/rating/values:/app/data/dashboard/rating/values
-      - ./logs:/app/logs
     env_file:
       - .env
     environment:
-      - PORT=8010
-      - PYTHONUNBUFFERED=1
+      REDIS_URL: redis://redis:6379/0
+      PYTHONUNBUFFERED: "1"
+    depends_on:
+      redis:
+        condition: service_healthy
+  redis:
+    image: redis:7.4-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes", "--maxmemory", "256mb", "--maxmemory-policy", "noeviction"]
+    volumes:
+      - clarification-state:/data
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8010/health"]
-      interval: 30s
-      timeout: 5s
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 2s
       retries: 3
-      start_period: 10s
+volumes:
+  clarification-state:

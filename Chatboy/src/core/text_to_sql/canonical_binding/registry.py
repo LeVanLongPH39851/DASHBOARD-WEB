@@ -19,7 +19,7 @@ class CanonicalMatcherRegistry:
         memory: CanonicalMemory,
         doris_matcher: CanonicalMatcher | None = None,
     ):
-        doris_ngram = doris_matcher or DorisNgramCanonicalMatcher()
+        doris_ngram = doris_matcher or DorisNgramCanonicalMatcher(memory=memory)
         self._matchers: Mapping[str, CanonicalMatcher] = MappingProxyType(
             {
                 "exact": ExactCanonicalMatcher(memory),

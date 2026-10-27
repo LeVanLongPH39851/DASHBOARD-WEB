@@ -9,6 +9,9 @@ from typing import Literal
 
 class QueryPlanError(ValueError):
     """A plan cannot be represented safely."""
+    def __init__(self, code: str):
+        self.code = code.partition(':')[0]
+        super().__init__(code)
 
 
 @dataclass(frozen=True)
@@ -68,6 +71,28 @@ class TimeRange:
 
 
 @dataclass(frozen=True)
+class ComparisonPeriod:
+    id: Literal["a", "b"]
+    time_range: TimeRange
+
+
+@dataclass(frozen=True)
+class ComparisonSpec:
+    baseline: ComparisonPeriod
+    target: ComparisonPeriod
+
+    def __post_init__(self) -> None:
+        if self.baseline.id != "a" or self.target.id != "b":
+            raise QueryPlanError("invalid_comparison_period_ids")
+        if self.baseline.time_range == self.target.time_range:
+            raise QueryPlanError("comparison_requires_distinct_periods")
+
+    @property
+    def periods(self) -> tuple[ComparisonPeriod, ComparisonPeriod]:
+        return self.baseline, self.target
+
+
+@dataclass(frozen=True)
 class RatingQueryPlan:
     """The complete, semantic-only input for the Rating SQL renderer."""
 
@@ -84,6 +109,7 @@ class RatingQueryPlan:
     pattern_name: str | None = None
     channel_weight_scope: Literal["total", "active_channels"] = "total"
     denominator_scope: Literal["none", "all_categories", "selected_categories"] = "none"
+    comparison_spec: ComparisonSpec | None = None
 
     def __post_init__(self) -> None:
         if not self.metrics and not self.dimensions:

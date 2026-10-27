@@ -3,6 +3,9 @@
 from __future__ import annotations
 
 from typing import Any
+from decimal import Decimal, InvalidOperation
+from datetime import date, timedelta
+from .planning_contracts import InvalidResultError
 
 
 def _metric_column(plan: Any) -> str:
@@ -10,26 +13,25 @@ def _metric_column(plan: Any) -> str:
     return metric.alias or metric.id.rsplit(".", 1)[-1]
 
 
-def _number(value: Any) -> float:
-    if value is None:
-        return 0.0
-    try:
-        return float(value)
-    except (TypeError, ValueError):
-        return 0.0
+def _number(value: Any) -> Decimal:
+    number = _optional_number(value)
+    if number is None:
+        raise InvalidResultError("numeric_value_unavailable")
+    return number
 
 
-def _optional_number(value: Any) -> float | None:
+def _optional_number(value: Any) -> Decimal | None:
     if value is None or isinstance(value, bool):
         return None
     try:
-        return float(value)
-    except (TypeError, ValueError):
+        number = Decimal(str(value))
+        return number if number.is_finite() else None
+    except (InvalidOperation, ValueError, TypeError):
         return None
 
 
-def _restore_number(value: float, original: Any) -> Any:
-    return int(value) if isinstance(original, int) and not isinstance(original, bool) else value
+def _restore_number(value: Decimal, original: Any) -> Any:
+    return int(value) if isinstance(original, int) and not isinstance(original, bool) and value == value.to_integral_value() else value
 
 
 def _metric_comparison(metric: Any, raw_first: Any, raw_second: Any) -> dict[str, Any]:
@@ -53,7 +55,7 @@ def _metric_comparison(metric: Any, raw_first: Any, raw_second: Any) -> dict[str
         "value_a": raw_first,
         "value_b": raw_second,
         "delta": _restore_number(delta, raw_first),
-        "delta_pct": None if first_value == 0 else round(delta / first_value * 100, 2),
+        "delta_pct": None if first_value == 0 else delta / first_value * 100,
         "status": "available",
     }
 
@@ -66,91 +68,94 @@ def _order_direction(plan: Any, field: str, default: str) -> str:
 
 
 def compute_period_comparison(rows: list[dict[str, Any]], plan: Any) -> dict[str, Any]:
-    if len(rows) < 2:
-        return {"rows": rows, "error": "insufficient_data"}
-    first, second = dict(rows[0]), dict(rows[1])
-    comparisons: list[dict[str, Any]] = []
-    for metric in plan.metrics:
-        metric_alias = metric.alias or metric.id.rsplit(".", 1)[-1]
-        comparisons.append(_metric_comparison(metric, first.get(metric_alias), second.get(metric_alias)))
-
-    result = {
-        "period_a": first,
-        "period_b": second,
+    spec = getattr(plan, "comparison_spec", None)
+    if spec is None:
+        return {"rows": rows, "error": "missing_comparison_spec"}
+    group_dimensions = tuple(d for d in plan.dimensions if d.rsplit(".", 1)[-1] not in {"date", "date_ott"})
+    groups = {}
+    for row in rows:
+        period_id = row.get("__period_id")
+        if period_id is None:
+            # Compatibility with already aggregated fixture rows; match exact keys.
+            period_id = next((p.id for p in spec.periods if str(row.get("date", ""))[:10] == p.time_range.start), None)
+        if period_id not in {"a", "b"}:
+            continue
+        key = tuple(row.get(_dimension_column(d, rows)) for d in group_dimensions)
+        periods = groups.setdefault(key, {})
+        if period_id in periods:
+            return {"rows": rows, "error": "duplicate_comparison_group"}
+        periods[period_id] = dict(row)
+    comparisons = []
+    for key, periods in groups.items():
+        first, second = periods.get("a", {}), periods.get("b", {})
+        for metric in plan.metrics:
+            alias = metric.alias or metric.id.rsplit(".", 1)[-1]
+            item = _metric_comparison(metric, first.get(alias), second.get(alias))
+            item["group"] = dict(zip(group_dimensions, key))
+            comparisons.append(item)
+    return {
+        "period_a": {"date": spec.baseline.time_range.start, "end": spec.baseline.time_range.end},
+        "period_b": {"date": spec.target.time_range.start, "end": spec.target.time_range.end},
         "comparisons": comparisons,
+        **({"error": "insufficient_data"} if not comparisons or all(c["status"] != "available" for c in comparisons) else {}),
     }
-    return result
 
 
 def compute_dimension_comparison(rows: list[dict[str, Any]], plan: Any) -> dict[str, Any]:
-    """Compare each selected metric across values of one grouped dimension."""
-    if not plan.dimensions or len(rows) < 2:
-        return {"rows": rows, "error": "insufficient_data"}
-    dimension_id = plan.dimensions[0]
-    metric_aliases = {
-        metric.alias or metric.id.rsplit(".", 1)[-1]
-        for metric in plan.metrics
-    }
-    preferred_alias = dimension_id.rsplit(".", 1)[-1]
-    dimension_alias = preferred_alias if preferred_alias in rows[0] else None
-    if dimension_alias is None:
-        candidates = [
-            key
-            for key in rows[0]
-            if key not in metric_aliases and key != "date"
-        ]
-        dimension_alias = candidates[0] if len(candidates) == 1 else None
-    if dimension_alias is None:
+    """Keep the requested baseline even when it is absent; compare within each group."""
+    if not plan.dimensions:
         return {"rows": rows, "error": "missing_comparison_dimension"}
-
-    requested_values: tuple[Any, ...] = ()
-    for predicate in plan.filters:
-        if predicate.field == dimension_id and isinstance(predicate.value, tuple):
-            requested_values = predicate.value
-            break
-    rows_by_value = {str(row.get(dimension_alias)): dict(row) for row in rows}
-    ordered_rows = [rows_by_value[str(value)] for value in requested_values if str(value) in rows_by_value]
-    if not ordered_rows:
-        ordered_rows = [dict(row) for row in rows]
-    if len(ordered_rows) < 2:
-        return {"rows": rows, "error": "insufficient_data"}
-
-    baseline = ordered_rows[0]
-    comparisons: list[dict[str, Any]] = []
-    for target in ordered_rows[1:]:
-        for metric in plan.metrics:
-            metric_alias = metric.alias or metric.id.rsplit(".", 1)[-1]
-            comparison = _metric_comparison(
-                metric,
-                baseline.get(metric_alias),
-                target.get(metric_alias),
-            )
-            comparison.update(
-                group_a=baseline.get(dimension_alias),
-                group_b=target.get(dimension_alias),
-            )
-            comparisons.append(comparison)
-    return {
-        "dimension_id": dimension_id,
-        "dimension_alias": dimension_alias,
-        "baseline": baseline,
-        "targets": ordered_rows[1:],
-        "comparisons": comparisons,
-    }
+    predicate = next((f for f in plan.filters if f.field in plan.dimensions and isinstance(f.value, tuple) and len(f.value) >= 2), None)
+    dimension_id = predicate.field if predicate else plan.dimensions[0]
+    dimension_alias = _dimension_column(dimension_id, rows)
+    if any(dimension_alias not in row for row in rows):
+        return {"rows": rows, "error": "missing_comparison_dimension"}
+    other_dimensions = tuple(d for d in plan.dimensions if d != dimension_id)
+    grouped = {}
+    for row in rows:
+        key = tuple(row.get(_dimension_column(d, rows)) for d in other_dimensions)
+        group = grouped.setdefault(key, {})
+        name = str(row[dimension_alias])
+        if name in group:
+            return {"rows": rows, "error": "duplicate_comparison_group"}
+        group[name] = row
+    comparisons, baselines, targets = [], [], []
+    for key, values in grouped.items():
+        requested = tuple(str(v) for v in predicate.value) if predicate else tuple(sorted(values))
+        if len(requested) < 2:
+            continue
+        baseline_name = requested[0]
+        baseline = values.get(baseline_name, {dimension_alias: baseline_name})
+        baselines.append(baseline)
+        for target_name in requested[1:]:
+            target = values.get(target_name, {dimension_alias: target_name})
+            targets.append(target)
+            for metric in plan.metrics:
+                alias = metric.alias or metric.id.rsplit(".", 1)[-1]
+                item = _metric_comparison(metric, baseline.get(alias), target.get(alias))
+                item.update(group_a=baseline_name, group_b=target_name, group=dict(zip(other_dimensions,key)))
+                comparisons.append(item)
+    return {"dimension_id": dimension_id, "dimension_alias": dimension_alias,
+            "baseline": baselines[0] if baselines else None, "targets": targets, "comparisons": comparisons,
+            **({"error": "insufficient_data"} if not comparisons else {})}
 
 
 def compute_rank_comparison(rows: list[dict[str, Any]], plan: Any) -> list[dict[str, Any]]:
     metric_col = _metric_column(plan)
     result = [dict(row) for row in rows]
     direction = _order_direction(plan, plan.primary_metric.id, "desc")
-    result.sort(key=lambda row: _number(row.get(metric_col)), reverse=direction == "desc")
-    total = sum(_number(row.get(metric_col)) for row in result)
-    leader = _number(result[0].get(metric_col)) if result else 0.0
+    available = [row for row in result if row.get(metric_col) is not None]
+    missing = [row for row in result if row.get(metric_col) is None]
+    available.sort(key=lambda row: _number(row[metric_col]), reverse=direction == "desc")
+    result = available + missing
+    total = sum(_number(row[metric_col]) for row in available) if not missing else None
+    leader = _optional_number(result[0].get(metric_col)) if result else None
     for index, row in enumerate(result, start=1):
-        value = _number(row.get(metric_col))
-        row["rank"] = index
-        row["pct_of_total"] = round(value / total * 100, 1) if total else 0
-        row["gap_vs_leader_pct"] = round(abs(leader - value) / abs(leader) * 100, 1) if leader else 0
+        value = _optional_number(row.get(metric_col))
+        row["rank"] = index if value is not None else None
+        row["pct_of_total"] = value / total * 100 if total and value is not None else None
+        row["gap_vs_leader_pct"] = abs(leader - value) / abs(leader) * 100 if leader and value is not None else None
+        row["share_scope"] = "top_n"
     return result
 
 
@@ -182,19 +187,34 @@ def compute_trend(rows: list[dict[str, Any]], plan: Any) -> list[dict[str, Any]]
         direction = _order_direction(plan, time_dimension or "date", "asc")
         grouped_rows.sort(
             key=lambda row: str(row.get(time_column, "")),
-            reverse=direction == "desc",
+            reverse=False,
         )
-        previous: float | None = None
+        previous: Decimal | None = None
+        previous_day = None
         for row in grouped_rows:
-            current = _number(row.get(metric_col))
+            current = _optional_number(row.get(metric_col))
+            current_day = date.fromisoformat(str(row[time_column])[:10])
+            consecutive = False
+            if previous_day is not None:
+                grain = plan.time_range.grain
+                if grain == "month":
+                    month_index = previous_day.year * 12 + previous_day.month
+                    expected_day = date(month_index // 12, month_index % 12 + 1, 1)
+                else:
+                    expected_day = previous_day + timedelta(days=7 if grain == "week" else 1)
+                consecutive = current_day == expected_day
             row["mom_change_pct"] = (
                 None
-                if previous is None or previous == 0
-                else round((current - previous) / previous * 100, 2)
+                if current is None or previous is None or previous == 0 or not consecutive
+                else (current - previous) / previous * 100
             )
             previous = current
+            previous_day = current_day
     if not group_dimensions:
-        return next(iter(groups.values()), result)
+        ordered = next(iter(groups.values()), result)
+        if _order_direction(plan, time_dimension or "date", "asc") == "desc":
+            ordered.reverse()
+        return ordered
     return result
 
 
@@ -207,6 +227,9 @@ def _dimension_column(dimension_id: str | None, rows: list[dict[str, Any]]) -> s
         "date": ("date",),
         "date_ott": ("date_ott", "date"),
         "region": ("regional_name", "region"),
+        "category_level1": ("category_level1", "firstlevel_vn"),
+        "category_name": ("category_name", "name_vn"),
+        "province": ("province", "province_name"),
         "time_band": ("time_band", "timeband"),
         "event_category": ("event_category_name", "event_category"),
     }.get(suffix, (suffix,))
@@ -219,8 +242,8 @@ def _dimension_column(dimension_id: str | None, rows: list[dict[str, Any]]) -> s
 def compute_share(rows: list[dict[str, Any]], plan: Any) -> list[dict[str, Any]]:
     metric_col = _metric_column(plan)
     result = [dict(row) for row in rows]
-    total = sum(_number(row.get(metric_col)) for row in result)
-    for row in result:
-        value = _number(row.get(metric_col))
-        row["pct_of_total"] = round(value / total * 100, 1) if total else 0
+    values = [_optional_number(row.get(metric_col)) for row in result]
+    total = sum(values) if all(v is not None for v in values) else None
+    for row, value in zip(result, values):
+        row["pct_of_total"] = value / total * 100 if total and value is not None else None
     return result

@@ -52,17 +52,20 @@ class TestIntentRouterLLM(unittest.TestCase):
             IntentRouter(llm_client=None)
         self.assertIn("IntentRouter yêu cầu LLM client", str(ctx.exception))
 
-    def test_invalid_intent_falls_back_to_data_query(self):
+    def test_invalid_intent_rejected_after_one_repair(self):
+        from src.core.text_to_sql.runtime.errors import WorkflowError
         router = self._make_router("unsupported_intent")
-        res = router.route("Test question")
-        self.assertEqual(res.intent, "data_query")
+        with self.assertRaises(WorkflowError) as caught:
+            router.route("Test question")
+        self.assertEqual(caught.exception.code, "invalid_semantics")
 
-    def test_malformed_json_falls_back_to_data_query(self):
+    def test_malformed_json_has_bounded_repair(self):
+        from src.core.text_to_sql.runtime.errors import WorkflowError
         llm = MagicMock()
-        llm.complete_text.return_value = "Xin chào tôi là bot không có json"
-        router = IntentRouter(llm_client=llm)
-        res = router.route("Test")
-        self.assertEqual(res.intent, "data_query")
+        llm.complete_text.return_value = "not json"
+        with self.assertRaises(WorkflowError):
+            IntentRouter(llm_client=llm).route("Test")
+        self.assertEqual(llm.complete_text.call_count, 2)
 
 
 class TestSemanticDefinitionAgent(unittest.TestCase):
@@ -109,19 +112,16 @@ class TestSemanticDefinitionAgent(unittest.TestCase):
     def test_unknown_term_returns_guidance(self):
         res = self.agent.answer("Chỉ số xyz123 là gì?")
         self.assertEqual(res.intent, "definition")
-        self.assertTrue(res.success)
+        self.assertFalse(res.success)
         self.assertIn("Rating", res.reply)
 
-    def test_llm_answer_preferred_when_available(self):
+    def test_definition_uses_catalog_without_generation(self):
         mock_llm = MagicMock()
-        mock_llm.complete_text.return_value = (
-            "Reach% là tỉ lệ phần trăm số khán giả duy nhất đã xem kênh trên tổng số dân số mục tiêu."
-        )
-        agent = SemanticDefinitionAgent(llm_client=mock_llm)
-        res = agent.answer("Reach% là gì?")
-        self.assertEqual(res.intent, "definition")
-        self.assertEqual(res.source, "llm")
-        self.assertIn("khán giả duy nhất", res.reply)
+        mock_llm.complete_text.return_value = "fabricated definition"
+        response = SemanticDefinitionAgent(llm_client=mock_llm).answer("Reach% là gì?")
+        self.assertEqual(response.source, "deterministic")
+        self.assertIn("reach_percent", " ".join(response.data["catalog_refs"]))
+        mock_llm.complete_text.assert_not_called()
 
 
 class TestNoScopeResponse(unittest.TestCase):
@@ -140,7 +140,7 @@ class TestNoScopeResponse(unittest.TestCase):
         self.assertIsInstance(res, AgentResponse)
         self.assertEqual(res.intent, "no_scope")
         self.assertTrue(res.success)
-        self.assertEqual(res.source, "llm")
+        self.assertEqual(res.source, "deterministic")
         self.assertIn("Dashboard Rating", res.reply)
 
 
@@ -183,7 +183,7 @@ class TestPipelineRoute(unittest.TestCase):
         self.assertIsInstance(res, AgentResponse)
         self.assertEqual(res.intent, "definition")
         self.assertTrue(res.success)
-        self.assertIn("Rating%", res.reply)
+        self.assertIn("Rating", res.reply)
 
     def test_route_with_llm_no_scope(self):
         mock_llm = MagicMock()
@@ -197,16 +197,18 @@ class TestPipelineRoute(unittest.TestCase):
         self.assertTrue(res.success)
 
     def test_route_with_llm_data_query(self):
+        import json
         mock_llm = MagicMock()
-        # 1st call: intent router -> data_query
-        # Subsequent calls: LLM extraction or pattern router
-        mock_llm.complete_text.return_value = (
-            '{"intent": "data_query", "confidence": 0.95}'
-        )
+        mock_llm.complete_text.side_effect = [
+            '{"intent":"data_query","confidence":0.95}',
+            json.dumps({"metric_id":"rating.rating_absolute","dimensions":[{"dimension_id":"agg_info_channel.channel","raw_values":["VTV1"],"roles":["filter"]}]}),
+            "metric_lookup",
+        ]
         pipeline = RatingQueryPipeline(llm_client=mock_llm)
         res = pipeline.route("Rating VTV1 ngày 2026-08-01")
-        self.assertIsInstance(res, AgentResponse)
-        self.assertEqual(res.intent, "data_query")
+        self.assertEqual(res.intent,"data_query")
+        self.assertTrue(res.success)
+        self.assertEqual(mock_llm.complete_text.call_count,3)
 
 
 if __name__ == "__main__":

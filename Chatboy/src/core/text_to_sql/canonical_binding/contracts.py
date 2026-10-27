@@ -8,7 +8,7 @@ from typing import Literal
 from src.core.text_to_sql.semantic_extraction.contracts import ExtractionRole, SemanticExtractionResult
 
 
-CanonicalMatchStatus = Literal["matched", "not_found", "ambiguous"]
+CanonicalMatchStatus = Literal["matched", "not_found", "ambiguous", "unavailable"]
 
 
 @dataclass(frozen=True)

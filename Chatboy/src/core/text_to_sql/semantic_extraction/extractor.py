@@ -1,4 +1,4 @@
-"""Orchestrate LLM-first extraction with an observable deterministic fallback."""
+"""Orchestrate Explicit LLM or offline rule extraction; failures never change provider."""
 
 from __future__ import annotations
 
@@ -32,17 +32,7 @@ class SemanticExtractor:
     def extract(self, question: str) -> SemanticExtractionResult:
         cleaned = self._ANSI_ESCAPE.sub("", question).strip()
         if self._primary is not None:
-            try:
-                result = self._primary.extract(cleaned, self._context)
-                logger.info(
-                    "[E] source=llm metric=%s dimensions=%d status=%s",
-                    result.metric_id,
-                    len(result.dimensions),
-                    "resolved" if result.is_valid else "failed",
-                )
-                return result
-            except Exception as exc:
-                logger.warning("[E] source=llm status=fallback error=%s", exc)
+            return self._primary.extract(cleaned, self._context)
         result = self._fallback.extract(cleaned, self._context)
         logger.info(
             "[E] source=rules metric=%s dimensions=%d status=%s",

@@ -1,0 +1,117 @@
+version: 1
+metrics:
+  program.airtime_duration:
+    kind: duration
+    unit: giây
+    decimals: 0
+    scale: absolute
+  program.airtime_share_all_categories_percent:
+    kind: percent
+    unit: '%'
+    decimals: 2
+    scale: percentage_points
+  program.airtime_share_selected_categories_percent:
+    kind: percent
+    unit: '%'
+    decimals: 2
+    scale: percentage_points
+  program.view_duration:
+    kind: duration
+    unit: giây
+    decimals: 0
+    scale: absolute
+  program.view_duration_share_all_categories_percent:
+    kind: percent
+    unit: '%'
+    decimals: 2
+    scale: percentage_points
+  program.view_duration_share_selected_categories_percent:
+    kind: percent
+    unit: '%'
+    decimals: 2
+    scale: percentage_points
+  program.weighted_view_duration:
+    kind: hour
+    unit: giờ
+    decimals: 2
+    scale: absolute
+  program.viewing_time_share_percent:
+    kind: percent
+    unit: '%'
+    decimals: 2
+    scale: percentage_points
+  program.rating_absolute:
+    kind: decimal
+    unit: người/phút
+    decimals: 2
+    scale: absolute
+  program.rating_percent:
+    kind: percent
+    unit: '%'
+    decimals: 2
+    scale: percentage_points
+  program.average_reach:
+    kind: decimal
+    unit: người
+    decimals: 2
+    scale: absolute
+  program.reach_percent:
+    kind: percent
+    unit: '%'
+    decimals: 2
+    scale: percentage_points
+  program.program_count:
+    kind: count
+    unit: chương trình
+    decimals: 0
+    scale: absolute
+  program.category_count:
+    kind: count
+    unit: thể loại
+    decimals: 0
+    scale: absolute
+  program.channel_count:
+    kind: count
+    unit: kênh
+    decimals: 0
+    scale: absolute
+  rating.total_channel_views:
+    kind: count
+    unit: lượt
+    decimals: 0
+    scale: absolute
+  rating.total_view_duration:
+    kind: duration
+    unit: giây
+    decimals: 0
+    scale: absolute
+  rating.rating_percent:
+    kind: percent
+    unit: '%'
+    decimals: 2
+    scale: percentage_points
+  rating.reach_percent:
+    kind: percent
+    unit: '%'
+    decimals: 2
+    scale: percentage_points
+  rating.rating_absolute:
+    kind: decimal
+    unit: điểm rating
+    decimals: 2
+    scale: absolute
+  rating.average_reach:
+    kind: decimal
+    unit: người
+    decimals: 2
+    scale: absolute
+  rating.minute_per_user_day:
+    kind: decimal
+    unit: phút/người/ngày
+    decimals: 2
+    scale: absolute
+  rating.channel_count:
+    kind: count
+    unit: kênh
+    decimals: 0
+    scale: absolute

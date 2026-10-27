@@ -6,7 +6,7 @@ import re
 from typing import Any
 
 
-_PLACEHOLDER = re.compile(r":(\w+)")
+_PLACEHOLDER = re.compile(r"('(?:''|\\.|[^'\\])*'|\"(?:\"\"|\\.|[^\"\\])*\"|`(?:``|[^`])*`|--[^\n]*|/\*[\s\S]*?\*/)|:(\w+)")
 
 
 def translate_named_to_positional(
@@ -17,7 +17,9 @@ def translate_named_to_positional(
     ordered_values: list[Any] = []
 
     def replace(match: re.Match[str]) -> str:
-        name = match.group(1)
+        if match.group(1) is not None:
+            return match.group(0)
+        name = match.group(2)
         if name not in params:
             raise KeyError(f"Missing bind value for placeholder :{name}")
         value = params[name]

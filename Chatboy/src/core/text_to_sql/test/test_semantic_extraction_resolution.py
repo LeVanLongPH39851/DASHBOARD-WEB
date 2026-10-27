@@ -6,7 +6,7 @@ import json
 import unittest
 
 from src.core.text_to_sql.catalog import RatingCatalog
-from src.core.text_to_sql.d_015_rating_query_pipeline import RatingQueryPipeline
+from src.core.text_to_sql.test.offline_fixtures import OfflinePipeline as RatingQueryPipeline
 from src.core.text_to_sql.semantic_extraction.catalog_context import CatalogContextBuilder
 from src.core.text_to_sql.semantic_memory import CanonicalMemory
 
@@ -217,7 +217,7 @@ class TestSemanticExtractionResolution(unittest.TestCase):
         )
         self.assertEqual(
             result.rendered_sql.parameters["time_end"],
-            "2026-08-02T23:59:59",
+            "2026-08-03T00:00:00",
         )
 
     def test_rule_fallback_does_not_group_a_single_date_filter(self):
@@ -234,7 +234,8 @@ class TestSemanticExtractionResolution(unittest.TestCase):
         self.assertEqual(result.query_plan.pattern_name, "metric_lookup")
         self.assertEqual(result.query_plan.time_range.start, "2026-08-02")
         self.assertEqual(result.query_plan.time_range.end, "2026-08-03")
-        self.assertNotIn("GROUP BY", result.rendered_sql.sql.split("FROM rating_ott")[1])
+        self.assertEqual(result.query_plan.primary_metric.id, "rating.total_view_duration")
+        self.assertNotIn("GROUP BY", result.rendered_sql.sql)
 
     def test_time_grouping_is_retained_without_a_canonical_value(self):
         llm = _SemanticLLM(
@@ -396,7 +397,8 @@ class TestSemanticExtractionResolution(unittest.TestCase):
 
         result = pipeline.generate("hello")
 
-        self.assertEqual(result.error, "Không có giá trị nào phục vụ dashboard")
+        self.assertEqual(result.outcome.kind, "unsupported")
+        self.assertEqual(result.error, "no_semantic_evidence")
         self.assertIsNone(result.canonical_binding)
         self.assertIsNone(result.query_plan)
 

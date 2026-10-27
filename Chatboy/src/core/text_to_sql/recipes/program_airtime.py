@@ -112,7 +112,7 @@ class ProgramAirtimeRecipe:
             event_select.append("SUM(duration_view) AS duration_view")
         else:
             event_select.append("MAX(event_duration) AS event_duration")
-        fact_where = ["date BETWEEN :time_start AND :time_end"]
+        fact_where = ["date >= :time_start", "date < :time_end"]
         parameters["program_excluded_category_0"] = "Quảng cáo"
         parameters["program_excluded_category_1"] = "Quảng bá"
         fact_where.append(
@@ -266,10 +266,8 @@ class ProgramAirtimeRecipe:
                     raise ValueError(f"order_field_not_selected:{item.field}")
                 clauses.append(f"{alias} {item.direction.upper()}")
             sql.append("ORDER BY " + ", ".join(clauses))
-        limit = plan.limit if plan.limit is not None else 50000
-        if limit <= 0:
-            raise ValueError("invalid_program_airtime_limit")
-        sql.append(f"LIMIT {limit}")
+        if plan.limit is not None:
+            sql.append(f"LIMIT {plan.limit}")
         return helpers._generated_batch(
             "primary",
             "\n".join(sql),
@@ -311,8 +309,7 @@ class ProgramAirtimeRecipe:
     def _time_parameters(plan: RatingQueryPlan) -> dict[str, str]:
         start = date.fromisoformat(plan.time_range.start)
         exclusive_end = date.fromisoformat(plan.time_range.end)
-        end = exclusive_end - timedelta(days=1)
         return {
             "time_start": f"{start.isoformat()}T00:00:00",
-            "time_end": f"{end.isoformat()}T23:59:59",
+            "time_end": f"{exclusive_end.isoformat()}T00:00:00",
         }

@@ -8,6 +8,12 @@ from pathlib import Path
 from typing import Any, Callable
 
 from src.core.text_to_sql.catalog import RatingCatalog
+from src.core.text_to_sql.facts import FactSet
+from src.core.text_to_sql.planning_contracts import (PlanningOutcome, SemanticCoverage, TimeResolution, ResultCoverage, UnsupportedRequest, InvalidResultError)
+from src.core.text_to_sql.semantic_coverage import SemanticCoverageChecker
+from src.core.text_to_sql.query_plan import QueryPlanError
+from src.core.text_to_sql.runtime.context import stage
+from src.core.text_to_sql.runtime.errors import WorkflowError
 from src.core.text_to_sql.d_001_semantic_extraction import (
     CatalogContextBuilder,
     LLMSemanticExtractionProvider,
@@ -46,6 +52,11 @@ from src.core.text_to_sql.intent_routing import AgentResponse, IntentRouter
 from src.core.text_to_sql.definition_agent import SemanticDefinitionAgent, no_scope_response
 
 
+def _in_stage(name, callback, *args, **kwargs):
+    with stage(name):
+        return callback(*args, **kwargs)
+
+
 @dataclass(frozen=True)
 class RatingQueryPipelineResult:
     extracted_input: ExtractedInput
@@ -59,6 +70,9 @@ class RatingQueryPipelineResult:
     semantic_extraction: SemanticExtractionResult | None = None
     canonical_binding: CanonicalBindingResult | None = None
     resolution_policy: str | None = None
+    outcome: PlanningOutcome = PlanningOutcome("unsupported", "unclassified_plan")
+    semantic_coverage: SemanticCoverage | None = None
+    time_resolution: TimeResolution | None = None
 
     @property
     def rendered_sql(self):
@@ -72,6 +86,8 @@ class RatingPostExecutionResult:
     validation: RatingDataValidation
     analysis: dict[str, Any] | None = None
     output: RatingAnalysisOutput | None = None
+    facts: FactSet | None = None
+    coverage: ResultCoverage | None = None
 
     @property
     def is_available(self) -> bool:
@@ -86,11 +102,16 @@ class RatingQueryPipeline:
         project_root: str | Path | None = None,
         today_provider: Callable[[], date] | None = None,
         llm_client=None,
+        catalog=None,
+        canonical_matcher=None,
+        skill_registry=None,
     ):
         self.project_root = Path(project_root or Path(__file__).resolve().parents[3])
-        self.catalog = RatingCatalog.load(project_root=self.project_root)
+        self.catalog = catalog or RatingCatalog.load(project_root=self.project_root)
+        self.skill_registry = skill_registry
         self.pattern_catalog = self.catalog.patterns
         self.canonical_memory = CanonicalMemory(self.catalog)
+        self.coverage_checker = SemanticCoverageChecker(self.catalog, self.canonical_memory)
         extraction_context = CatalogContextBuilder(
             self.catalog,
             self.canonical_memory,
@@ -100,7 +121,7 @@ class RatingQueryPipeline:
             self.canonical_memory,
         )
         primary_extractor = (
-            LLMSemanticExtractionProvider(llm_client)
+            LLMSemanticExtractionProvider(llm_client, self.coverage_checker)
             if llm_client is not None
             else None
         )
@@ -114,7 +135,7 @@ class RatingQueryPipeline:
         self.extract_input = self.context_extractor
         self.canonical_binder = CanonicalBinder(
             self.catalog,
-            CanonicalMatcherRegistry(self.canonical_memory),
+            CanonicalMatcherRegistry(self.canonical_memory, doris_matcher=canonical_matcher),
         )
         self.resolve_entities = RatingResolveEntities(project_root=self.project_root, catalog=self.catalog)
         self.semantic_resolver = SemanticResolver(self.catalog, self.resolve_entities)
@@ -137,7 +158,7 @@ class RatingQueryPipeline:
             catalog=self.catalog,
         )
         self.renderer = RatingSQLRenderer(catalog=self.catalog)
-        self.result_validator = RatingResultValidator()
+        self.result_validator = RatingResultValidator(self.catalog)
         self.pattern_compute = PatternCompute(catalog=self.catalog)
         self.analysis_narrator = RatingAnalysisNarrator(
             llm_client=llm_client,
@@ -151,165 +172,98 @@ class RatingQueryPipeline:
             catalog=self.catalog,
         )
 
-    def generate(self, question: str) -> RatingQueryPipelineResult:
-        semantic_extraction = self.semantic_intent_rules.apply(
-            self.semantic_extractor.extract(question)
-        ).extraction
-        context_input = self.context_extractor.extract(semantic_extraction.question)
-        if not semantic_extraction.is_valid:
-            extracted = replace(
-                context_input,
-                error=semantic_extraction.error,
-                notes=(semantic_extraction.output_text or semantic_extraction.error or "",),
-            )
-            return RatingQueryPipelineResult(
-                extracted_input=extracted,
-                resolved_components=None,
-                query_plan=None,
-                validation=ValidationResult((semantic_extraction.error or "semantic_extraction_failed",)),
-                generated_sql=None,
-                error=semantic_extraction.error,
-                output=RatingAnalysisOutput(
-                    text=semantic_extraction.output_text or semantic_extraction.error or "Không thể trích xuất semantic input.",
-                    source="deterministic",
-                ),
-                semantic_extraction=semantic_extraction,
-            )
+    def generate(self, question: str, *, extraction_override=None, context_override=None,
+                 selection_override=None, confirmed=None, name_spans_override=None) -> RatingQueryPipelineResult:
+        with stage("extract"):
+            extraction = extraction_override or self.semantic_intent_rules.apply(
+                self.semantic_extractor.extract(question)).extraction
+        context_input = context_override or self.context_extractor.extract(self.coverage_checker.context_question(extraction))
+        components = binding = plan = context_validation = time_resolution = None
+        coverage = self.coverage_checker.check(extraction, confirmed=confirmed, name_spans=name_spans_override)
+        policy = None
 
-        canonical_binding = self.canonical_binder.bind(semantic_extraction)
-        if not canonical_binding.is_valid:
-            error = canonical_binding.error or "canonical_binding_failed"
-            return RatingQueryPipelineResult(
-                extracted_input=context_input,
-                resolved_components=None,
-                query_plan=None,
-                validation=ValidationResult((error,)),
-                generated_sql=None,
-                error=error,
-                output=RatingAnalysisOutput(
-                    text=canonical_binding.output_text or error,
-                    source="deterministic",
-                ),
-                semantic_extraction=semantic_extraction,
-                canonical_binding=canonical_binding,
-            )
+        def stopped(kind, reason, reply, fields=()):
+            return RatingQueryPipelineResult(extracted_input=context_input, resolved_components=components,
+                query_plan=plan, validation=ValidationResult((reason,)), generated_sql=None,
+                error=reason, output=RatingAnalysisOutput(text=reply, source="deterministic"),
+                pattern_context=context_validation, semantic_extraction=extraction,
+                canonical_binding=binding, resolution_policy=policy,
+                outcome=PlanningOutcome(kind, reason, tuple(fields)),
+                semantic_coverage=coverage, time_resolution=time_resolution)
 
-        components: ResolvedSQLComponents | None = None
-        resolution_policy: str | None = None
+        if not extraction.is_valid:
+            return stopped('unsupported', 'no_semantic_evidence', extraction.output_text or 'Không xác định được yêu cầu Rating.')
+        if coverage.status == 'unsupported':
+            return stopped('unsupported', coverage.reason_code, 'Yêu cầu có điều kiện hoặc kiểu phân tích chưa được hỗ trợ.')
+        if coverage.status == 'mismatch':
+            raise WorkflowError('invalid_semantics', 'Ngữ nghĩa chưa khớp đầy đủ với câu hỏi; hãy diễn đạt lại yêu cầu.')
+        if coverage.status == 'ambiguous':
+            mapping = {m: m for m in coverage.candidates}
+            return stopped('needs_clarification', 'ambiguous_metric', 'Bạn muốn phân tích chỉ số nào?', [{
+                'id': 'metric', 'label': 'Chỉ số', 'kind': 'metric', 'input': 'choice', 'mapping': mapping,
+                'options': [{'id': m, 'label': self.catalog.require_metric(m).label} for m in mapping]}])
+        if self.skill_registry:
+            comparison = 'comparison' if any(c in context_input.normalized_question for c in ('so sanh', 'so voi', 'chenh lech', 'top ')) else None
+            self.skill_registry.activate('data_query', extraction.metric_id, comparison)
+        with stage('bind'):
+            binding = self.canonical_binder.bind(extraction)
+        if any(b.status == 'unavailable' for b in binding.value_bindings):
+            raise WorkflowError('dependency_unavailable', 'Không thể xác minh đối tượng trong danh mục.', retryable=True)
+        if not binding.is_valid:
+            return stopped('needs_clarification', binding.error or 'canonical_binding_failed', binding.output_text or 'Hãy xác nhận đối tượng cần phân tích.')
         try:
-            resolution = self.semantic_resolver.resolve(context_input, canonical_binding)
-            validated_input = resolution.extracted_input
-            components = resolution.components
-            resolution_policy = resolution.policy_name
-            selection = self.semantic_selector.select(validated_input, components)
-            if selection.pattern_name == "dimension_listing":
-                components = replace(
-                    components,
-                    metric_id=None,
-                    metric_ids=(),
-                )
+            resolution = _in_stage('resolve', self.semantic_resolver.resolve, context_input, binding)
+            context_input, components, policy = resolution.extracted_input, resolution.components, resolution.policy_name
+            selection = selection_override or _in_stage('select', self.semantic_selector.select, context_input, components)
+            if selection.pattern_name == 'dimension_listing':
+                components = replace(components, metric_id=None, metric_ids=())
             elif selection.metric_ids:
-                components = replace(
-                    components,
-                    metric_id=selection.primary_metric_id,
-                    metric_ids=selection.metric_ids,
-                )
-            pattern_name = selection.pattern_name
-            context_validation = self.pattern_context_validator.validate(
-                validated_input,
-                components,
-                pattern_name,
-            )
+                components = replace(components, metric_id=selection.primary_metric_id, metric_ids=selection.metric_ids)
+            comparison = selection.pattern_name == 'period_comparison'
+            with stage('resolve_time'):
+                time_resolution = self.compiler.time_resolver.inspect(context_input, comparison=comparison)
+            if time_resolution.status == 'invalid':
+                raise WorkflowError('invalid_input', 'Ngày hoặc khoảng thời gian không hợp lệ.', field_errors=[{
+                    'field': 'comparison_periods' if comparison else 'time_range',
+                    'code': time_resolution.reason_code, 'message': 'Hãy nhập ngày và khoảng thời gian hợp lệ.'}])
+            if time_resolution.status in {'ambiguous', 'unsupported'}:
+                key = 'comparison_periods' if comparison else 'time_range'
+                context_validation = PatternContextValidation(selection.pattern_name, False, (key,),
+                    'Hãy bổ sung khoảng thời gian hợp lệ.', error=MISSING_PATTERN_CONTEXT_ERROR)
+                return stopped('needs_clarification', time_resolution.reason_code,
+                    'Hãy nhập rõ hai kỳ so sánh.' if comparison else 'Hãy nhập ngày bắt đầu và ngày kết thúc.', [{
+                        'id': key, 'label': 'Hai kỳ so sánh' if comparison else 'Khoảng thời gian',
+                        'kind': 'comparison' if comparison else 'time', 'input': 'text', 'options': []}])
+            context_validation = _in_stage('validate_context', self.pattern_context_validator.validate,
+                context_input, components, selection.pattern_name)
             if not context_validation.is_valid:
-                return RatingQueryPipelineResult(
-                    extracted_input=validated_input,
-                    resolved_components=components,
-                    query_plan=None,
-                    validation=ValidationResult((MISSING_PATTERN_CONTEXT_ERROR,)),
-                    generated_sql=None,
-                    error=MISSING_PATTERN_CONTEXT_ERROR,
-                    output=RatingAnalysisOutput(
-                        text=context_validation.output_text,
-                        source="deterministic",
-                    ),
-                    pattern_context=context_validation,
-                    semantic_extraction=semantic_extraction,
-                    canonical_binding=canonical_binding,
-                    resolution_policy=resolution_policy,
-                )
-            plan = self.compiler.compile(
-                validated_input,
-                components,
-                pattern_name=pattern_name,
-                denominator_scope=selection.denominator_scope,
-            )
-        except (ValueError, RuntimeError) as exc:
-            error = str(exc)
-            friendly_text = self._user_friendly_error(error)
-            return RatingQueryPipelineResult(
-                extracted_input=context_input,
-                resolved_components=components,
-                query_plan=None,
-                validation=ValidationResult((error,)),
-                generated_sql=None,
-                error=error,
-                output=RatingAnalysisOutput(
-                    text=friendly_text,
-                    source="fallback",
-                ),
-                semantic_extraction=semantic_extraction,
-                canonical_binding=canonical_binding,
-                resolution_policy=resolution_policy,
-            )
-
-        validation = self.validator.validate(plan)
+                return stopped('needs_clarification', MISSING_PATTERN_CONTEXT_ERROR, context_validation.output_text)
+            plan = _in_stage('compile', self.compiler.compile, context_input, components,
+                pattern_name=selection.pattern_name, denominator_scope=selection.denominator_scope)
+        except UnsupportedRequest as exc:
+            return stopped('unsupported', exc.reason_code, exc.message)
+        except QueryPlanError as exc:
+            if exc.code in {'limit_out_of_range', 'invalid_limit', 'ambiguous_limit'}:
+                raise WorkflowError('resource_exceeded', 'Giới hạn kết quả không hợp lệ; hãy thu hẹp yêu cầu.') from exc
+            if exc.code in {'unresolved_entities', 'unresolved_order_by', 'missing_metric_bundle',
+                            'metric_not_active', 'metric_bundle_recipe_mismatch', 'metric_bundle_table_mismatch',
+                            'order_field_not_selected', 'ambiguous_order_by', 'missing_compatible_table'}:
+                return stopped('unsupported', exc.code, 'Yêu cầu chưa nằm trong khả năng phân tích hiện tại.')
+            raise
+        plan = replace(plan, raw_question=question)
+        with stage('validate_plan'):
+            validation = self.validator.validate(plan)
         if not validation.is_valid:
-            error = "query_plan_validation_failed"
-            error_details = ", ".join(validation.errors) if validation.errors else error
-            return RatingQueryPipelineResult(
-                extracted_input=validated_input,
-                resolved_components=components,
-                query_plan=plan,
-                validation=validation,
-                generated_sql=None,
-                error=error,
-                output=RatingAnalysisOutput(
-                    text=f"Kế hoạch truy vấn chưa hợp lệ: {error_details}.",
-                    source="fallback",
-                ),
-                semantic_extraction=semantic_extraction,
-                canonical_binding=canonical_binding,
-                resolution_policy=resolution_policy,
-            )
-        try:
-            sql = self.renderer.render(plan)
-        except ValueError as exc:
-            error = str(exc)
-            return RatingQueryPipelineResult(
-                extracted_input=validated_input,
-                resolved_components=components,
-                query_plan=plan,
-                validation=ValidationResult((f"renderer_error:{exc}",)),
-                generated_sql=None,
-                error=error,
-                output=RatingAnalysisOutput(
-                    text=f"Không thể tạo câu truy vấn SQL: {error}.",
-                    source="fallback",
-                ),
-                semantic_extraction=semantic_extraction,
-                canonical_binding=canonical_binding,
-                resolution_policy=resolution_policy,
-            )
-        return RatingQueryPipelineResult(
-            extracted_input=validated_input,
-            resolved_components=components,
-            query_plan=plan,
-            validation=validation,
-            generated_sql=sql,
-            semantic_extraction=semantic_extraction,
-            canonical_binding=canonical_binding,
-            resolution_policy=resolution_policy,
-        )
+            raise WorkflowError('invalid_semantics', 'Kế hoạch truy vấn không đáp ứng contract phân tích.')
+        with stage('validate_semantic_coverage'):
+            coverage = self.coverage_checker.validate_plan(extraction, binding, context_input, plan, coverage, time_resolution)
+            if coverage.status != 'complete':
+                raise WorkflowError('internal_error', 'Kế hoạch truy vấn không giữ đầy đủ yêu cầu đã xác nhận.')
+        sql = _in_stage('render_sql', self.renderer.render, plan)
+        return RatingQueryPipelineResult(extracted_input=context_input, resolved_components=components,
+            query_plan=plan, validation=validation, generated_sql=sql, semantic_extraction=extraction,
+            canonical_binding=binding, resolution_policy=policy, outcome=PlanningOutcome('ready'),
+            semantic_coverage=coverage, time_resolution=time_resolution)
 
     def route(self, question: str) -> AgentResponse:
         """Entry point mới phân loại ý định trước khi xử lý.
@@ -359,7 +313,12 @@ class RatingQueryPipeline:
         rows: list[dict[str, Any]],
     ) -> RatingPostExecutionResult:
         """Validate Doris rows, then apply the catalog-selected pattern compute."""
-        validation = self.result_validator.validate(plan, rows)
+        with stage("validate_rows"):
+            validation = self.result_validator.validate(plan, rows)
+        from .result_coverage import assess_coverage
+        with stage('validate_result_coverage'):
+            coverage = assess_coverage(plan, rows, validation, self.catalog)
+        validation = replace(validation, status=coverage.status)
         if not validation.is_available:
             return RatingPostExecutionResult(
                 validation=validation,
@@ -367,13 +326,25 @@ class RatingQueryPipeline:
                     text=validation.message or "Chưa có dữ liệu.",
                     source="deterministic",
                 ),
+                coverage=coverage,
             )
-        analysis = self.pattern_compute.process(plan, rows)
-        return RatingPostExecutionResult(
-            validation=validation,
-            analysis=analysis,
-            output=self.analysis_narrator.narrate(plan, analysis),
-        )
+        with stage("compute"):
+            try:
+                analysis = self.pattern_compute.process(plan, rows)
+            except InvalidResultError as exc:
+                raise WorkflowError('invalid_result', 'Kết quả không đáp ứng điều kiện tính toán.') from exc
+            data = analysis.get("data")
+            error = data.get("error") if isinstance(data, dict) else None
+            if analysis.get("compute_error") or (error and error != "insufficient_data"):
+                raise WorkflowError("invalid_result", "Kết quả không đáp ứng điều kiện tính toán.")
+        with stage("build_facts"):
+            fact_rows = data if isinstance(data, list) else rows
+            facts = FactSet.build(plan, fact_rows, analysis, self.catalog)
+        with stage("render_template"):
+            output = self.analysis_narrator.narrate(facts)
+            if coverage.status == 'partial':
+                output = replace(output, text='Dữ liệu chưa đầy đủ cho một số kỳ, nhóm hoặc chỉ số được yêu cầu.\n' + output.text)
+        return RatingPostExecutionResult(validation=validation, analysis=analysis, output=output, facts=facts, coverage=coverage)
 
     _FRIENDLY_ERRORS = {
         "no_dashboard_value_in_question": (

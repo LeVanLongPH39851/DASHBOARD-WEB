@@ -152,7 +152,8 @@ class TestMainCLI(unittest.TestCase):
             return "metric_lookup"
 
         llm.complete_text.side_effect = validate_candidate
-        pipeline = main.RatingQueryPipeline(
+        from src.core.text_to_sql.test.offline_fixtures import OfflinePipeline
+        pipeline = OfflinePipeline(
             today_provider=lambda: date(2026, 8, 10),
             llm_client=llm,
         )
@@ -164,6 +165,7 @@ class TestMainCLI(unittest.TestCase):
                 "Thời lượng phát của chương trình Không Có Thật XYZ12345 là bao nhiêu",
                 json_output=False,
                 execute_doris=False,
+                use_router=False,
             )
 
         self.assertFalse(success)
@@ -175,55 +177,26 @@ class TestMainCLI(unittest.TestCase):
         self.assertNotIn("[Bước 3]", rendered)
 
     def test_execute_converts_all_null_metric_to_no_data_message(self):
-        database = MagicMock()
-        database.execute.return_value = (["rating"], [{"rating": None}])
-        database_factory = MagicMock()
-        database_factory.from_env.return_value = database
-        pipeline = main.RatingQueryPipeline(today_provider=lambda: date(2026, 8, 10))
+        from src.core.text_to_sql.runtime.contracts import ChatResult
+        service = MagicMock()
+        service.handle.return_value = ChatResult(request_id="fixture",status="no_data",intent="data_query",reply="Chưa có dữ liệu của ngày 2026-08-10")
         output = StringIO()
-
-        with patch.object(main, "DorisDatabase", database_factory), redirect_stdout(output):
-            success = main._process_question(
-                pipeline,
-                "rating hôm nay là bao nhiêu",
-                json_output=False,
-                execute_doris=True,
-            )
-
+        with patch("src.core.text_to_sql.runtime.bootstrap.build_service",return_value=service), redirect_stdout(output):
+            success = main._process_question(main.RatingQueryPipeline(),"rating hôm nay",json_output=True,execute_doris=True)
         self.assertTrue(success)
-        self.assertIn('"status": "no_data"', output.getvalue())
-        self.assertIn("Chưa có dữ liệu của ngày 2026-08-10", output.getvalue())
-        self.assertIn('"rows": []', output.getvalue())
-        self.assertIn('"analysis": null', output.getvalue())
-        self.assertNotIn('"rating": null', output.getvalue())
+        self.assertEqual(json.loads(output.getvalue())["status"],"no_data")
+        service.handle.assert_called_once_with({"type":"question","question":"rating hôm nay"})
 
     def test_execute_outputs_pattern_analysis_for_available_rows(self):
-        database = MagicMock()
-        database.execute.return_value = (
-            ["channel", "total_channel_views"],
-            [
-                {"channel": "VTV1", "total_channel_views": 120},
-                {"channel": "VTV3", "total_channel_views": 80},
-            ],
-        )
-        database_factory = MagicMock()
-        database_factory.from_env.return_value = database
-        pipeline = main.RatingQueryPipeline(today_provider=lambda: date(2026, 8, 10))
+        from src.core.text_to_sql.runtime.contracts import ChatResult
+        service = MagicMock()
+        service.handle.return_value = ChatResult(request_id="fixture",status="answered",intent="data_query",reply="Hạng 1: VTV1 — 120 lượt; trong Top-N.")
         output = StringIO()
-
-        with patch.object(main, "DorisDatabase", database_factory), redirect_stdout(output):
-            success = main._process_question(
-                pipeline,
-                "So sánh top 2 kênh có lượt xem cao nhất hôm qua",
-                json_output=False,
-                execute_doris=True,
-            )
-
+        with patch("src.core.text_to_sql.runtime.bootstrap.build_service",return_value=service), redirect_stdout(output):
+            success = main._process_question(main.RatingQueryPipeline(),"Top 2 kênh theo lượt xem",False,True)
         self.assertTrue(success)
-        self.assertIn('"status": "available"', output.getvalue())
-        self.assertIn('"analysis": {', output.getvalue())
-        self.assertIn('"pattern": "rank_comparison"', output.getvalue())
-        self.assertIn('"rank": 1', output.getvalue())
+        self.assertIn("trong Top-N",output.getvalue())
+        service.handle.assert_called_once()
 
     def test_cli_definition_intent_prints_answer(self):
         llm = MagicMock()
@@ -245,7 +218,7 @@ class TestMainCLI(unittest.TestCase):
         self.assertTrue(success)
         rendered = output.getvalue()
         self.assertIn("[Intent] definition", rendered)
-        self.assertIn("Reach%", rendered)
+        self.assertIn("Reach (%)", rendered)
 
     def test_cli_definition_intent_json_output(self):
         llm = MagicMock()
@@ -268,7 +241,7 @@ class TestMainCLI(unittest.TestCase):
         data = json.loads(output.getvalue())
         self.assertEqual(data["intent"], "definition")
         self.assertEqual(data["success"], True)
-        self.assertIn("Reach%", data["reply"])
+        self.assertIn("Reach (%)", data["reply"])
 
     def test_cli_no_scope_intent_prints_guidance(self):
         llm = MagicMock()

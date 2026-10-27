@@ -54,8 +54,18 @@ class PatternContextValidator:
     ) -> PatternContextValidation:
         pattern = self._catalog.require_pattern(pattern_name)
         missing = self._missing_required_fields(extracted, components, pattern)
+        if pattern_name == "period_comparison":
+            try:
+                self._time_resolver.comparison(extracted)
+            except ValueError:
+                return PatternContextValidation(pattern_name, False, ("comparison_periods",),
+                    "Bạn muốn so sánh hai kỳ thời gian nào?", (), MISSING_PATTERN_CONTEXT_ERROR)
+            # ComparisonSpec is authoritative, including overlapping rolling windows.
+            return PatternContextValidation(pattern_name, not missing, tuple(missing),
+                "Hãy bổ sung: " + ", ".join(missing) if missing else "",
+                error=MISSING_PATTERN_CONTEXT_ERROR if missing else None)
         time_range = self._time_resolver.resolve(extracted)
-        has_explicit_time = any(
+        has_explicit_time = bool(extracted.time_range_override) or any(
             entity.kind == "time_expression"
             for entity in extracted.entities
         )

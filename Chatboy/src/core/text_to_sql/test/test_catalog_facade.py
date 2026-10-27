@@ -98,6 +98,9 @@ class TestRatingCatalogFacade(unittest.TestCase):
             }
             self._write(rating_dir / "narration_prompts.yaml", narration)
 
+            presentation = self._read(rating_dir / "presentation.yaml")
+            presentation["metrics"]["rating.clone_views"] = {"kind":"count", "unit":"lượt", "decimals":0}
+            self._write(rating_dir / "presentation.yaml", presentation)
             pipeline = RatingQueryPipeline(
                 project_root=project_root,
                 today_provider=lambda: date(2026, 8, 11),

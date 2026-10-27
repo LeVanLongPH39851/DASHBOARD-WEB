@@ -92,17 +92,15 @@ class TestPatternRouter(unittest.TestCase):
         components.metric_id = "rating.rating_percent"
         self.assertEqual(router.classify(extracted, components), "dimension_breakdown")
 
-    def test_llm_failure_falls_back_to_rules(self):
+    def test_dependency_failure_does_not_change_pattern(self):
+        from src.core.text_to_sql.runtime.errors import WorkflowError
         llm = MagicMock()
-        llm.complete_text.side_effect = RuntimeError("unavailable")
+        llm.complete_text.side_effect = WorkflowError("dependency_unavailable")
         router = PatternRouter(llm_client=llm)
         extracted, components = self._inputs("Tổng lượt xem hôm qua", "tong luot xem hom qua")
-        with self.assertLogs("src.core.text_to_sql.d_004_pattern_router", level="WARNING") as captured:
-            self.assertEqual(router.classify(extracted, components), "metric_lookup")
-        self.assertIn(
-            "source=rules pattern=metric_lookup reason=llm_failed error=unavailable",
-            captured.output[0],
-        )
+        with self.assertRaises(WorkflowError):
+            router.classify(extracted,components)
+        self.assertEqual(llm.complete_text.call_count,1)
 
     def test_successful_llm_decision_is_logged(self):
         llm = MagicMock()
@@ -199,32 +197,23 @@ class TestPatternRouter(unittest.TestCase):
 
         self.assertEqual(router.classify(extracted, components), "trend_analysis")
 
-    def test_incompatible_llm_breakdown_falls_back_to_dimension_comparison(self):
+    def test_incompatible_pattern_is_repaired_then_rejected(self):
+        from src.core.text_to_sql.runtime.errors import WorkflowError
         llm = MagicMock()
         llm.complete_text.return_value = "dimension_breakdown"
         router = PatternRouter(llm_client=llm)
-        extracted, components = self._inputs(
-            "rating VTV1 so với VTV2",
-            "rating vtv1 so voi vtv2",
-        )
-        components.filters = (
-            MagicMock(
-                dimension_id="agg_info_channel.channel",
-                values=("VTV1", "VTV2"),
-            ),
-        )
+        extracted, components = self._inputs("rating VTV1 so với VTV2", "rating vtv1 so voi vtv2")
+        components.filters = (MagicMock(dimension_id="agg_info_channel.channel",values=("VTV1","VTV2")),)
+        with self.assertRaises(WorkflowError):
+            router.classify(extracted,components)
+        self.assertEqual(llm.complete_text.call_count,2)
 
-        with self.assertLogs("src.core.text_to_sql.d_004_pattern_router", level="INFO") as captured:
-            selected = router.classify(extracted, components)
-
-        self.assertEqual(selected, "dimension_comparison")
-        self.assertTrue(any("reason=llm_incompatible" in item for item in captured.output))
-
-    def test_llm_pattern_response_can_be_truncated_or_wrapped(self):
+    def test_pattern_parser_requires_exact_registered_id(self):
         router = PatternRouter()
-        self.assertEqual(router._parse_pattern_name("metric_"), "metric_lookup")
-        self.assertEqual(router._parse_pattern_name("```rank_lookup```"), "rank_lookup")
-        self.assertEqual(router._parse_pattern_name('{"pattern": "trend_analysis"}'), "trend_analysis")
+        self.assertEqual(router._parse_pattern_name("```rank_lookup```"),"rank_lookup")
+        for value in ("metric_", '{"pattern":"trend_analysis"}', 'I choose trend_analysis'):
+            with self.assertRaises(ValueError):
+                router._parse_pattern_name(value)
 
 
 if __name__ == "__main__":

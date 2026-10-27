@@ -1,0 +1,36 @@
+# Isolated project; no production env files, ports, credentials, or volumes.
+services:
+  redis:
+    image: redis:7.4-alpine
+    command: [redis-server, --save, "", --appendonly, "no", --maxmemory, 64mb, --maxmemory-policy, noeviction]
+    healthcheck:
+      test: [CMD, redis-cli, ping]
+      interval: 1s
+      timeout: 1s
+      retries: 20
+  replica-a: &api
+    build:
+      context: ..
+    image: chatboy-accuracy-v22-smoke:local
+    command: [python, -m, src.evaluation.smoke, serve]
+    environment:
+      CHATBOY_ENV: smoke
+      REDIS_URL: redis://redis:6379/0
+    depends_on:
+      redis:
+        condition: service_healthy
+  replica-b:
+    <<: *api
+  runner:
+    image: chatboy-accuracy-v22-smoke:local
+    command: [python, -m, src.evaluation.smoke, verify, --urls, "http://replica-a:8010", "http://replica-b:8010"]
+    environment:
+      CHATBOY_ENV: smoke
+      REDIS_URL: redis://redis:6379/0
+    volumes:
+      - ../artifacts/v22-smoke:/artifacts
+    depends_on:
+      replica-a:
+        condition: service_healthy
+      replica-b:
+        condition: service_healthy

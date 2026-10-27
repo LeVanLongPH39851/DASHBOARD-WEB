@@ -76,6 +76,8 @@ class QuestionContextExtractor:
             "thang truoc",
             "quy nay",
             "nam nay",
+            "nam truoc",
+            "quy truoc",
             "cuoi tuan",
         ):
             if self._contains(normalized, matched):
@@ -86,6 +88,8 @@ class QuestionContextExtractor:
             normalized,
         ):
             entities.append(self._entity("time_expression", matched, matched, "*.date", 0.9))
+        for matched in re.findall(r'\b(?:quy\s+(?:\d+|iv|iii|ii|i)|q\s*\d+)(?:\s+nam\s+\d{4})?\b|\bnam\s+\d{4}\b', normalized):
+            entities.append(self._entity('time_expression', matched, matched, '*.date', 0.9))
         for matched in re.findall(
             r"(?<!\w)(?:ngay\s+)?\d{1,2}\s+thang\s+\d{1,2}(?!\s*(?:[,và&/-]|den|toi|\s)\s*\d{1,2})(?:\s+nam\s+\d{4})?(?!\w)",
             normalized,

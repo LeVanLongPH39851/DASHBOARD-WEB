@@ -41,7 +41,8 @@ class TestSortIntent(unittest.TestCase):
     def test_direction_without_target_remains_unresolved(self):
         result = self.pipeline.generate("Sắp xếp giảm dần")
 
-        self.assertEqual(result.error, "Không có giá trị nào phục vụ dashboard")
+        self.assertEqual(result.outcome.kind, "unsupported")
+        self.assertEqual(result.error, "no_semantic_evidence")
         self.assertIsNone(result.resolved_components)
 
     def test_sort_does_not_borrow_target_across_clause_boundary(self):

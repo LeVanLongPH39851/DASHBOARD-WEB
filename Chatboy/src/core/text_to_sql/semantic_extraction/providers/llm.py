@@ -25,19 +25,27 @@ _ALLOWED_ROLES = frozenset(("filter", "group_by", "sort"))
 class LLMSemanticExtractionProvider:
     """Ask an LLM for one flat metric/dimension result and validate its IDs."""
 
-    def __init__(self, llm_client: Any):
+    def __init__(self, llm_client: Any, coverage_validator=None):
         self._llm = llm_client
+        self.coverage_validator = coverage_validator
         self._system_prompt_cache: dict[int, str] = {}
 
     def extract(self, question: str, context: CatalogContext) -> SemanticExtractionResult:
-        response = self._llm.complete_text(
-            prompt=self._user_prompt(question),
-            system_prompt=self._system_prompt(context),
-            temperature=0.0,
-            max_tokens=1200,
-        )
-        payload = self._parse_json(response)
-        return self._validate_payload(question, payload, context)
+        from src.core.text_to_sql.runtime.semantic_loop import validated_call
+        def call(feedback):
+            return self._llm.complete_text(
+                prompt=self._user_prompt(question) + (f"\nSửa lỗi contract sau, giữ nguyên câu hỏi: {feedback}" if feedback else ""),
+                system_prompt=self._system_prompt(context), temperature=0.0, max_tokens=1200)
+        def validate(response):
+            result = self._validate_payload(question, self._parse_json(response), context)
+            if self.coverage_validator:
+                from ..intent_rules import SemanticIntentRuleLayer
+                result = SemanticIntentRuleLayer(self.coverage_validator.catalog).apply(result).extraction
+                coverage = self.coverage_validator.check(result)
+                if coverage.status == 'mismatch':
+                    raise ValueError('semantic_coverage_mismatch:' + ','.join((*coverage.missing, *coverage.conflicts)))
+            return result
+        return validated_call(call, validate, stage_name="extract")
 
     def _system_prompt(self, context: CatalogContext) -> str:
         cache_key = id(context)
@@ -129,13 +137,26 @@ class LLMSemanticExtractionProvider:
                 raw_values = []
             if not isinstance(raw_values, list):
                 raise ValueError("semantic_extraction_response_invalid:raw_values")
+            if any(not isinstance(value, str) for value in raw_values):
+                raise ValueError("semantic_extraction_response_invalid:raw_value_type")
             values = [str(value).strip() for value in raw_values if str(value).strip()]
             dimension = dimensions_by_id.get(dimension_id)
-            canonical_set = set(dimension.canonical_values) if dimension else set()
+            expanded_time = False
+            if dimension_id.endswith(".time_band") and dimension:
+                # A written 18h-20h range grounds its complete set of hourly catalog bands.
+                # Requiring set equality prevents the model from narrowing or widening it.
+                span = re.search(r"\b(\d{1,2})h\s*[-–]\s*(\d{1,2})h\b", question, re.I)
+                if span:
+                    start, end = map(int, span.groups())
+                    expected = set()
+                    for canonical in dimension.canonical_values:
+                        band = re.fullmatch(r"(\d{1,2})h\s*-\s*(\d{1,2})h", canonical, re.I)
+                        if band and 0 <= start <= int(band[1]) < int(band[2]) <= end <= 24:
+                            expected.add(normalize_lookup_value(canonical))
+                    expanded_time = bool(expected) and expected == {normalize_lookup_value(v) for v in values}
             for value in values:
                 if (
-                    value not in canonical_set
-                    and not contains_lookup_phrase(
+                    not expanded_time and not contains_lookup_phrase(
                         normalized_question,
                         normalize_lookup_value(value),
                     )

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from typing import Any
+from decimal import localcontext
 
 from src.core.text_to_sql.catalog import RatingCatalog
 from src.core.text_to_sql.catalog_models import PatternSpec
@@ -40,9 +41,8 @@ class PatternCompute:
         if pattern is None or pattern.compute_fn is None or not rows:
             result["data"] = rows
             return result
-        try:
+        with localcontext() as decimal_context:
+            # Unexpected compute bugs propagate to the application error boundary.
+            decimal_context.prec = 100
             result["data"] = pattern.compute_fn(rows, plan)
-        except Exception as exc:  # post-processing must not hide raw SQL results
-            result["data"] = rows
-            result["compute_error"] = str(exc)
         return result

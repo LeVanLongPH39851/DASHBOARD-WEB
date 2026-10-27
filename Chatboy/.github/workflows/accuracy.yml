@@ -1,0 +1,38 @@
+name: Accuracy regression
+on: [push, pull_request]
+jobs:
+  offline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: |
+            requirements.lock
+            requirements-dev.txt
+      - run: python -m pip install -r requirements-dev.txt
+      - run: python -m pytest -q --junitxml=artifacts/regression.xml
+      - run: python -m src.evaluation validate
+      - run: python -m src.evaluation replay --output artifacts/evaluation
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: accuracy-results
+          path: artifacts/
+  http-redis-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker compose -p chatboy-v22-smoke -f evaluation/docker-compose.smoke.yml up -d --build --wait replica-a replica-b
+      - run: docker compose -p chatboy-v22-smoke -f evaluation/docker-compose.smoke.yml run --rm runner python -m src.evaluation.smoke verify --urls http://replica-a:8010 http://replica-b:8010 --requests 5
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: http-redis-smoke
+          path: artifacts/v22-smoke/
+      - if: always()
+        run: docker compose -p chatboy-v22-smoke -f evaluation/docker-compose.smoke.yml down

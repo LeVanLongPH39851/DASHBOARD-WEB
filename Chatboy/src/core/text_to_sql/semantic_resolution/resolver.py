@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from src.core.text_to_sql.planning_contracts import UnsupportedRequest
+
 import logging
 from dataclasses import dataclass, replace
 
@@ -50,7 +52,7 @@ class SemanticResolver:
         binding: CanonicalBindingResult,
     ) -> SemanticResolverResult:
         if not binding.is_valid:
-            raise ValueError(binding.error or "canonical_binding_failed")
+            raise UnsupportedRequest(binding.error or "canonical_binding_failed")
         self._validate_binding_metric_contract(binding)
         extracted = self._to_extracted_input(context_input, binding)
         components = self._component_builder.resolve(extracted)
@@ -93,13 +95,13 @@ class SemanticResolver:
             if not has_supported_equivalent:
                 remaining.add(dimension_id)
         if remaining:
-            raise ValueError(
+            raise UnsupportedRequest(
                 f"metric_unsupported_dimensions:{metric.id}:{','.join(sorted(remaining))}"
             )
         effective_requested = requested_ids - unsupported
         missing = set(metric.required_dimensions) - effective_requested
         if missing:
-            raise ValueError(
+            raise UnsupportedRequest(
                 f"metric_required_dimensions_missing:{metric.id}:{','.join(sorted(missing))}"
             )
 

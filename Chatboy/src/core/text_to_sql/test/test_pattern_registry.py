@@ -57,7 +57,7 @@ class TestPatternRegistry(unittest.TestCase):
         self.assertNotIn("narrate_template", result)
         self.assertEqual(result["data"][0]["rank"], 1)
         self.assertEqual(result["data"][0]["pct_of_total"], 75.0)
-        self.assertEqual(result["data"][1]["gap_vs_leader_pct"], 66.7)
+        self.assertAlmostEqual(float(result["data"][1]["gap_vs_leader_pct"]), 66.66666667)
 
     def test_rank_comparison_respects_explicit_metric_ascending(self):
         plan = self._plan(
@@ -94,7 +94,8 @@ class TestPatternRegistry(unittest.TestCase):
         )
 
         self.assertEqual(result["data"][0]["date"], "2026-08-02")
-        self.assertEqual(result["data"][1]["mom_change_pct"], -16.67)
+        self.assertIsNone(result["data"][1]["mom_change_pct"])
+        self.assertEqual(result["data"][0]["mom_change_pct"], 20)
 
 
 if __name__ == "__main__":

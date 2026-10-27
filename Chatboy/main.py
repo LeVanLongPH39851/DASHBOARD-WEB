@@ -10,7 +10,9 @@ from pathlib import Path
 from config.llm_config import LLMClient
 from config.doris_config import DorisDatabase
 from src.core.text_to_sql.d_015_rating_query_pipeline import RatingQueryPipeline, RatingQueryPipelineResult
-from src.core.text_to_sql.request_logger import log_request
+def log_request(**kwargs):
+    """Legacy planning hook: production traces are emitted by ChatService."""
+    return None
 
 
 def _configure_pattern_router_logging() -> None:
@@ -73,6 +75,9 @@ def _payload(result: RatingQueryPipelineResult) -> dict:
         "semantic_extraction": _semantic_extraction_payload(result),
         "canonical_binding": _canonical_binding_payload(result),
         "resolution_policy": result.resolution_policy,
+        "outcome": asdict(result.outcome),
+        "semantic_coverage": asdict(result.semantic_coverage) if result.semantic_coverage else None,
+        "time_resolution": asdict(result.time_resolution) if result.time_resolution else None,
         "resolved_components": asdict(result.resolved_components) if result.resolved_components else None,
         "query_plan": asdict(result.query_plan) if result.query_plan else None,
         "validation": asdict(result.validation),
@@ -163,14 +168,36 @@ def _print_pipeline_log(result: RatingQueryPipelineResult, stream) -> None:
     )
 
 
-def _process_question(
+def _process_question(pipeline, question, json_output, execute_doris=False, use_router=True):
+    from src.core.text_to_sql.runtime.errors import WorkflowError
+    from src.core.text_to_sql.runtime.context import RequestContext
+    from src.core.text_to_sql.runtime.service import ChatService
+    try:
+        return _process_question_impl(pipeline, question, json_output, execute_doris, use_router)
+    except WorkflowError as exc:
+        error = exc
+    except Exception as exc:
+        logging.getLogger('chatboy.trace').error('planning_error exception_type=%s', type(exc).__name__)
+        error = WorkflowError('internal_error', 'Không thể hoàn tất yêu cầu.')
+    result = ChatService._failure(RequestContext(), error)
+    print(json.dumps(result.as_v2(), ensure_ascii=False, indent=2) if json_output else result.reply)
+    return False
+
+
+def _process_question_impl(
     pipeline: RatingQueryPipeline,
     question: str,
     json_output: bool,
     execute_doris: bool = False,
     use_router: bool = True,
 ) -> bool:
-    """Print a safe SQL plan or definition answer, and optionally execute in Doris."""
+    """Print a plan, or execute through the same application service as the API."""
+    if execute_doris:
+        from src.core.text_to_sql.runtime.bootstrap import build_service
+        svc = build_service(no_llm=pipeline.intent_router is None)
+        result = svc.handle({"type": "question", "question": question})
+        print(json.dumps(result.as_v2(), ensure_ascii=False, indent=2) if json_output else result.reply)
+        return result.status in {"answered", "no_data", "needs_clarification"}
     if use_router and pipeline.intent_router is not None:
         agent_response = pipeline.route(question)
         if agent_response.intent in ("definition", "no_scope"):
@@ -262,56 +289,6 @@ def _process_question(
             print("\nParameters:")
             print(json.dumps(query.parameters, ensure_ascii=False, indent=2, default=str))
 
-        if execute_doris:
-            if DorisDatabase is None:
-                print("\n[Doris] Thiếu dependency/config.doris_config.")
-                log_request(
-                    question=question,
-                    full_log=full_log_data,
-                    llm_output=bot_llm_output,
-                    intent="data_query",
-                    success=False,
-                    error="missing_doris_config",
-                )
-                return False
-            try:
-                database = DorisDatabase.from_env()
-                columns, rows = database.execute(query.executable_sql)
-                processed = pipeline.process_rows(result.query_plan, rows)
-                output_stream = sys.stderr if json_output else sys.stdout
-                print("\n[Doris] Kết quả:", file=output_stream)
-                output_rows = rows if processed.is_available else []
-                execution_info = {
-                    "status": processed.validation.status,
-                    "message": processed.validation.message,
-                    "columns": columns,
-                    "rows": output_rows,
-                    "analysis": processed.analysis,
-                    "output": asdict(processed.output) if processed.output else None,
-                }
-                print(
-                    json.dumps(
-                        execution_info,
-                        ensure_ascii=False,
-                        indent=2,
-                        default=str,
-                    ),
-                    file=output_stream,
-                )
-                full_log_data["execution"] = execution_info
-                if processed.output:
-                    bot_llm_output = processed.output.text
-            except Exception as exc:
-                print(f"\n[Doris] Lỗi thực thi: {exc}", file=sys.stderr if json_output else sys.stdout)
-                log_request(
-                    question=question,
-                    full_log=full_log_data,
-                    llm_output=bot_llm_output,
-                    intent="data_query",
-                    success=False,
-                    error=f"doris_error: {exc}",
-                )
-                return False
 
     log_request(
         question=question,
@@ -324,19 +301,12 @@ def _process_question(
 
 
 def _load_llm_client(disabled: bool = False):
-    """Build the configured classifier client, falling back cleanly offline."""
+    """Offline mode is explicit; configuration failures never change routing."""
     if disabled:
         return None
-    if LLMClient is None:
-        print("[LLM] Thiếu dependency cho LLM, dùng rule fallback.", file=sys.stderr)
-        return None
-    try:
-        client = LLMClient.from_env()
-        print(f"[LLM] Pattern Router enabled: {getattr(client, 'model', 'configured')}", file=sys.stderr)
-        return client
-    except RuntimeError as exc:
-        print(f"[LLM] Không bật được LLM, dùng rule fallback: {exc}", file=sys.stderr)
-        return None
+    from dotenv import load_dotenv
+    load_dotenv(override=False)
+    return LLMClient.from_env()
 
 
 def main() -> int:
@@ -377,7 +347,17 @@ def main() -> int:
         action="store_true",
         help="Gửi SQL hoàn chỉnh tới Doris bằng cấu hình DORIS_* trong .env và in kết quả.",
     )
+    parser.add_argument("--clarification-id")
+    parser.add_argument("--revision", type=int, default=1)
+    parser.add_argument("--answers", help="JSON object of pending field IDs to answers")
     args = parser.parse_args()
+    if args.clarification_id:
+        from src.core.text_to_sql.runtime.bootstrap import build_service
+        svc = build_service(no_llm=args.no_llm)
+        result = svc.handle({"type": "clarification", "clarification_id": args.clarification_id,
+                             "revision": args.revision, "answers": json.loads(args.answers or "{}")})
+        print(json.dumps(result.as_v2(), ensure_ascii=False, indent=2) if args.json else result.reply)
+        return 0 if result.status != "failed" else 1
 
     llm_client = _load_llm_client(disabled=args.no_llm)
     pipeline = RatingQueryPipeline(

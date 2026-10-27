@@ -112,6 +112,7 @@ class CanonicalBinder:
                 binding.raw_value,
                 matched_values,
                 binding.dimension_id,
+                extraction.question,
             )
         )
         for binding in unmatched:
@@ -170,22 +171,27 @@ class CanonicalBinder:
         raw_value: str,
         matched_values: tuple[tuple[str, str], ...],
         dimension_id: str | None = None,
+        question: str | None = None,
     ) -> bool:
         from src.core.text_to_sql.semantic_extraction.normalization import (
             contains_lookup_phrase,
             normalize_lookup_value,
         )
 
+        import re
         raw = normalize_lookup_value(raw_value)
-        return bool(
-            raw
-            and any(
-                contains_lookup_phrase(normalize_lookup_value(matched), raw)
-                or contains_lookup_phrase(raw, normalize_lookup_value(matched))
-                for matched_dimension_id, matched in matched_values
-                if dimension_id is None or matched_dimension_id == dimension_id
-            )
-        )
+        if not raw or not question:
+            return False
+        text = normalize_lookup_value(question)
+        occurrences = list(re.finditer(r"(?<!\w)" + re.escape(raw) + r"(?!\w)", text))
+        matched_spans = [match.span()
+                         for matched_dimension_id, matched in matched_values
+                         if dimension_id is None or matched_dimension_id == dimension_id
+                         for match in re.finditer(r"(?<!\w)" + re.escape(normalize_lookup_value(matched)) + r"(?!\w)", text)]
+        # A separate mention is a separate requested filter, even if its spelling
+        # is also a prefix of another program. Only duplicate extraction spans collapse.
+        return bool(occurrences) and all(any(start <= occurrence.start() and occurrence.end() <= end
+                                             for start, end in matched_spans) for occurrence in occurrences)
 
 
 __all__ = ("CanonicalBinder",)

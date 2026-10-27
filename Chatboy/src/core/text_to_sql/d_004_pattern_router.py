@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from src.core.text_to_sql.planning_contracts import UnsupportedRequest
+
 import json
 import logging
 import re
@@ -24,7 +26,7 @@ logger = logging.getLogger(__name__)
 
 
 class PatternRouter:
-    """Use an optional LLM classifier with deterministic fallback."""
+    """Use explicit offline rules or a validated LLM classifier."""
 
     def __init__(
         self,
@@ -37,57 +39,21 @@ class PatternRouter:
         self._patterns = pattern_catalog or self._catalog.patterns
 
     def classify(self, extracted: ExtractedInput, components: ResolvedSQLComponents) -> str:
-        """Return one registered pattern; never let an LLM outage stop planning."""
+        """Return a registered, compatible pattern; propagate dependency failures."""
         context = self._semantic_context(extracted, components)
         self._log_context(context)
         if not context["has_semantic_evidence"]:
-            raise ValueError(NO_DASHBOARD_VALUE_ERROR)
+            raise UnsupportedRequest("no_semantic_evidence")
 
         # Pattern là ý định phân tích. Metric đơn hay metric bundle chỉ được
         # compiler quyết định sau khi pattern đã được chọn.
         if self._llm is not None:
-            try:
-                pattern = self._llm_classify(extracted, context)
-            except Exception as exc:
-                pattern = self._rule_classify(extracted, components)
-                self._log_decision("rules", pattern, reason="llm_failed", error=exc)
+            from src.core.text_to_sql.runtime.semantic_loop import validated_call
+            def validate(pattern):
+                if not self._pattern_is_compatible(pattern, components):
+                    raise ValueError(f"pattern_incompatible:{pattern}")
                 return pattern
-            if not self._pattern_is_compatible(pattern, components):
-                rule_pattern = self._rule_classify(
-                    extracted,
-                    components,
-                    allow_fallback=True,
-                )
-                self._log_decision(
-                    "rules",
-                    rule_pattern,
-                    reason="llm_incompatible",
-                    error=ValueError(f"llm_pattern_incompatible:{pattern}"),
-                )
-                return rule_pattern
-            if not self._has_required_context(pattern, components):
-                try:
-                    rule_pattern = self._rule_classify(
-                        extracted,
-                        components,
-                        allow_fallback=False,
-                    )
-                except ValueError:
-                    # Giữ lại pattern LLM để PatternContextValidator trả đúng
-                    # missing fields thay vì hạ xuống metric_lookup.
-                    self._log_decision(
-                        "llm",
-                        pattern,
-                        reason="context_validation_deferred",
-                    )
-                    return pattern
-                self._log_decision(
-                    "rules",
-                    rule_pattern,
-                    reason="llm_incompatible",
-                    error=ValueError(f"llm_pattern_incompatible:{pattern}"),
-                )
-                return rule_pattern
+            pattern = validated_call(lambda feedback: self._llm_classify(extracted, context, feedback), validate, stage_name="select_pattern")
             self._log_decision("llm", pattern)
             return pattern
 
@@ -115,15 +81,7 @@ class PatternRouter:
             )
             if not has_unfiltered_dimension and not has_grouped_filter:
                 return False
-        if pattern_id != "period_comparison":
-            return True
-        # period_comparison compares two period rows. A non-time GROUP BY adds
-        # multiple rows per period, which requires per-group trend computation.
-        return all(
-            (dimension := self._catalog.get_dimension(dimension_id)) is not None
-            and dimension.semantic_type == "time"
-            for dimension_id in components.dimensions
-        )
+        return True
 
     def _has_required_context(
         self,
@@ -226,7 +184,7 @@ class PatternRouter:
             "has_semantic_evidence": bool(components.metric_id or bundle_context),
         }
 
-    def _llm_classify(self, extracted: ExtractedInput, context: dict[str, Any]) -> str:
+    def _llm_classify(self, extracted: ExtractedInput, context: dict[str, Any], feedback=None) -> str:
         patterns_info = {}
         for name, spec in self._patterns.items():
             info: dict[str, Any] = {"description": spec.description}
@@ -255,7 +213,7 @@ class PatternRouter:
             "Trả về đúng một tên pattern từ danh sách, không giải thích."
         )
         response = self._llm.complete_text(
-            prompt=prompt,
+            prompt=prompt + (f"\nSửa lỗi contract: {feedback}" if feedback else ""),
             system_prompt="Bạn là classifier BI. Chỉ trả về một tên pattern trong danh sách.",
             temperature=0.0,
             max_tokens=512,
@@ -266,20 +224,13 @@ class PatternRouter:
         return pattern
 
     def _parse_pattern_name(self, response: Any) -> str:
-        """Extract a registry name from exact, fenced, or truncated LLM text."""
+        """Accept an exact registry name, optionally surrounded by fences."""
         raw = str(response).strip().strip("`").strip().strip('"').strip("'")
         normalized = raw.lower()
         if normalized in self._patterns:
             return normalized
 
-        for name in sorted(self._patterns, key=len, reverse=True):
-            if re.search(rf"(?<![a-z0-9_]){re.escape(name)}(?![a-z0-9_])", normalized):
-                return name
 
-        if re.fullmatch(r"[a-z_]+", normalized):
-            candidates = [name for name in self._patterns if name.startswith(normalized)]
-            if len(candidates) == 1:
-                return candidates[0]
         raise ValueError(f"unknown_pattern_from_llm:{raw}")
 
     def _rule_classify(
@@ -380,7 +331,7 @@ class PatternRouter:
 
         candidates = matches or fallbacks
         if not candidates:
-            raise ValueError("no_matching_pattern_rule")
+            raise UnsupportedRequest("no_matching_pattern_rule")
         highest_priority = max(priority for priority, _pattern_id in candidates)
         selected = {
             pattern_id
@@ -388,5 +339,5 @@ class PatternRouter:
             if priority == highest_priority
         }
         if len(selected) != 1:
-            raise ValueError(f"ambiguous_pattern_rules:{','.join(sorted(selected))}")
+            raise UnsupportedRequest(f"ambiguous_pattern_rules:{','.join(sorted(selected))}")
         return next(iter(selected))

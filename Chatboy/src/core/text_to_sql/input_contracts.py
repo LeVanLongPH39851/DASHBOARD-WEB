@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Literal
+from src.core.text_to_sql.query_plan import TimeRange, ComparisonSpec
 
 
 NO_DASHBOARD_VALUE_ERROR = "Không có giá trị nào phục vụ dashboard"
@@ -47,6 +48,8 @@ class ExtractedInput:
     unresolved_terms: tuple[str, ...] = ()
     notes: tuple[str, ...] = ()
     sort_intents: tuple[ExtractedSortIntent, ...] = ()
+    time_range_override: TimeRange | None = None
+    comparison_override: ComparisonSpec | None = None
     channel_weight_scope: Literal["total", "active_channels"] = "total"
     error: str | None = None
 

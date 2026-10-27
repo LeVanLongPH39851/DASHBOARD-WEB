@@ -26,7 +26,7 @@ class IntentClassificationResult:
 class IntentRouter:
     """
     Phân loại câu hỏi thành data_query, definition, hoặc no_scope.
-    Phụ thuộc 100% vào LLM. Nếu LLM không khả dụng → raise RuntimeError.
+    Dùng LLM có schema validation và một lượt sửa trong ngân sách runtime.
 
     3 intent levels:
         - data_query  : Người dùng muốn xem/so sánh/phân tích số liệu từ database.
@@ -64,31 +64,25 @@ class IntentRouter:
     def route(self, question: str) -> IntentClassificationResult:
         """
         Phân loại intent từ câu hỏi thô.
-        Nếu LLM response không chứa JSON hoặc lỗi, fallback an toàn về data_query.
+        JSON/schema sai được sửa một lần; lỗi dependency không đổi intent.
         """
-        try:
-            response = self._llm.complete_text(
-                prompt=f"Câu hỏi: {question}",
-                system_prompt=self._SYSTEM_PROMPT,
-                temperature=0.0,
-                max_tokens=500,
-            )
+        from src.core.text_to_sql.runtime.semantic_loop import validated_call
+
+        def call(feedback):
+            return self._llm.complete_text(
+                prompt=f"Câu hỏi: {question}" + (f"\nSửa lỗi contract: {feedback}" if feedback else ""),
+                system_prompt=self._SYSTEM_PROMPT, temperature=0.0, max_tokens=500)
+
+        def validate(response):
             payload = self._parse(response)
-            intent = payload.get("intent", "data_query")
-            if intent not in self._VALID_INTENTS:
-                logger.warning(
-                    "[IntentRouter] LLM trả intent không hợp lệ '%s', fallback data_query",
-                    intent,
-                )
-                intent = "data_query"
-            confidence = float(payload.get("confidence", 0.9))
-        except Exception as exc:
-            logger.warning(
-                "[IntentRouter] Không parse được intent từ LLM (%s), fallback data_query",
-                exc,
-            )
-            intent = "data_query"
-            confidence = 0.5
+            if set(payload) != {"intent", "confidence"} or payload["intent"] not in self._VALID_INTENTS:
+                raise ValueError("invalid_intent_schema")
+            confidence = payload["confidence"]
+            if isinstance(confidence, bool) or not isinstance(confidence, (int, float)) or not 0 <= confidence <= 1:
+                raise ValueError("invalid_intent_confidence")
+            return payload["intent"], confidence
+
+        intent, confidence = validated_call(call, validate, stage_name="route")
 
         result = IntentClassificationResult(
             intent=intent,
@@ -105,15 +99,10 @@ class IntentRouter:
 
     @staticmethod
     def _parse(response: Any) -> dict:
-        text = str(response)
-        match = re.search(r"\{.*?\}", text, re.DOTALL)
-        if not match:
-            raise RuntimeError(
-                f"IntentRouter: LLM response không chứa JSON hợp lệ: {text!r}"
-            )
-        try:
-            return json.loads(match.group())
-        except json.JSONDecodeError as exc:
-            raise RuntimeError(
-                f"IntentRouter: JSON parse failed: {exc} — raw: {text!r}"
-            ) from exc
+        text = str(response).strip()
+        if text.startswith("```json") and text.endswith("```"):
+            text = text[7:-3].strip()
+        payload = json.loads(text)
+        if not isinstance(payload, dict):
+            raise ValueError("intent_must_be_object")
+        return payload

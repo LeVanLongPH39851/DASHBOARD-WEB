@@ -110,8 +110,6 @@ class WeightedChannelRecipe:
         missing = [name for name in required_joins if name not in joins]
         if missing:
             raise ValueError(f"missing_weighted_join:{','.join(missing)}")
-        if not required_measures:
-            raise ValueError(f"weighted_measure_contract_invalid:{metric.id}")
         unknown_measures = [item for item in required_measures if item not in measure_aggregations]
         if unknown_measures:
             raise ValueError(f"unsupported_weighted_measure:{','.join(unknown_measures)}")
@@ -168,7 +166,8 @@ class WeightedChannelRecipe:
         measure_names = self._measure_names(required_measures)
         fact_select.extend(measure_aggregations[item] for item in measure_names)
         fact_where = [
-            f"{helpers._identifier(fact_date.column)} BETWEEN :time_start AND :time_end",
+            f"{helpers._identifier(fact_date.column)} >= :time_start",
+            f"{helpers._identifier(fact_date.column)} < :time_end",
         ]
         fact_where.extend(self._fixed_fact_predicates(plan, table, parameters, helpers))
         for index, predicate in enumerate(plan.filters):
@@ -200,7 +199,7 @@ class WeightedChannelRecipe:
                 None,
             )
             where = (
-                [f"{helpers._identifier(dependency_date)} BETWEEN :time_start AND :time_end"]
+                [f"{helpers._identifier(dependency_date)} >= :time_start", f"{helpers._identifier(dependency_date)} < :time_end"]
                 if dependency_date
                 else []
             )
@@ -279,10 +278,8 @@ class WeightedChannelRecipe:
                 else:
                     raise ValueError(f"order_field_not_selected:{item.field}")
             sql.append("ORDER BY " + ", ".join(clauses))
-        limit = plan.limit if plan.limit is not None else int(helpers.catalog.constant("weighted_default_limit", 50000))
-        if limit <= 0:
-            raise ValueError("invalid_weighted_limit")
-        sql.append(f"LIMIT {limit}")
+        if plan.limit is not None:
+            sql.append(f"LIMIT {plan.limit}")
         return helpers._generated_batch("primary", "\n".join(sql), parameters, tuple(selected_columns))
 
     def _scope(self, plan: RatingQueryPlan) -> str:
@@ -432,13 +429,12 @@ class WeightedChannelRecipe:
 
     @staticmethod
     def _time_parameters(plan: RatingQueryPlan) -> dict[str, str]:
-        """Convert the plan's half-open range to inclusive BETWEEN bounds."""
+        """Preserve the plan's exclusive end, including subsecond timestamps."""
         start = date.fromisoformat(plan.time_range.start)
         exclusive_end = date.fromisoformat(plan.time_range.end)
-        end = exclusive_end - timedelta(days=1)
         return {
             "time_start": f"{start.isoformat()}T00:00:00",
-            "time_end": f"{end.isoformat()}T23:59:59",
+            "time_end": f"{exclusive_end.isoformat()}T00:00:00",
         }
 
     @classmethod

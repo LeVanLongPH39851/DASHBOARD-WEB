@@ -51,8 +51,7 @@ patterns:
       - target: dimension
         direction: asc
     limit:
-      required: true
-      default: 100
+      required: false
     compute_handler: null
     narration_prompt_id: dimension_listing
     routing:
@@ -83,8 +82,7 @@ patterns:
       - target: dimension
         direction: asc
     limit:
-      required: true
-      default: 100
+      required: false
     compute_handler: null
     narration_prompt_id: dimension_breakdown
     routing:

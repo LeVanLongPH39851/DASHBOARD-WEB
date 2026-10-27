@@ -8,7 +8,7 @@ from src.core.text_to_sql.d_007_canonical_filter_binder import CanonicalFilterBi
 from src.core.text_to_sql.catalog import RatingCatalog
 from src.core.text_to_sql.catalog_models import PatternSpec
 from src.core.text_to_sql.input_contracts import ExtractedInput, NO_DASHBOARD_VALUE_ERROR
-from src.core.text_to_sql.query_plan import MetricRef, OrderSpec, QueryPlanError, RatingQueryPlan
+from src.core.text_to_sql.query_plan import MetricRef, OrderSpec, QueryPlanError, RatingQueryPlan, TimeRange
 from src.core.text_to_sql.resolved_entities import ResolvedSort, ResolvedSQLComponents
 from src.core.text_to_sql.d_008_time_resolver import RatingTimeResolver
 
@@ -116,7 +116,12 @@ class RatingPlanCompiler:
                 raise QueryPlanError("missing_time_dimension")
             dimensions = (*dimensions, date_dimension.id)
         query_shape = pattern.query_shape
-        time_range = self.time_resolver.resolve(extracted)
+        comparison_spec = self.time_resolver.comparison(extracted) if pattern_name == "period_comparison" else None
+        if comparison_spec:
+            ranges = [p.time_range for p in comparison_spec.periods]
+            time_range = TimeRange(min(r.start for r in ranges), max(r.end for r in ranges), ranges[-1].grain)
+        else:
+            time_range = self.time_resolver.resolve(extracted)
         limit = self._limit(extracted, pattern, metric)
         order_by = self._order_by(
             pattern,
@@ -137,6 +142,7 @@ class RatingPlanCompiler:
             pattern_name=pattern.name,
             channel_weight_scope=extracted.channel_weight_scope,
             denominator_scope=denominator_scope,
+            comparison_spec=comparison_spec,
         )
 
     def _limit(
@@ -155,8 +161,6 @@ class RatingPlanCompiler:
                 raise QueryPlanError("invalid_limit") from exc
         elif pattern.needs_limit and pattern.default_limit:
             limit = int(pattern.default_limit)
-        elif metric and (recipe_limit := self.catalog.require_recipe(metric.recipe).default_limit) is not None:
-            limit = int(recipe_limit)
         elif pattern.needs_limit:
             limit = int(self.catalog.default_limit)
         else:

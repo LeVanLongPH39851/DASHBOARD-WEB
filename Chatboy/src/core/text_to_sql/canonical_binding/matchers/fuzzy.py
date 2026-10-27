@@ -62,8 +62,8 @@ class FuzzyCanonicalMatcher:
         return CanonicalValueBinding(
             dimension_id=dimension.id,
             raw_value=raw_value,
-            canonical_value=top[0][1],
-            status="matched",
+            canonical_value=None,
+            status="ambiguous",
             match_type="fuzzy",
             score=top[0][0],
             alternatives=alternatives,

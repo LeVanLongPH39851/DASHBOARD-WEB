@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import re
+import yaml
 from dataclasses import dataclass
 
 from src.core.text_to_sql.catalog import RatingCatalog
@@ -26,6 +27,7 @@ class RuleSemanticExtractionProvider:
     def __init__(self, catalog: RatingCatalog, memory: CanonicalMemory):
         self._catalog = catalog
         self._memory = memory
+        self._default_family = yaml.safe_load((catalog.project_root / 'data/dashboard/rating/semantic_policies.yaml').read_text())['default_fact_family']
 
     def extract(self, question: str, context: CatalogContext) -> SemanticExtractionResult:
         normalized = normalize_lookup_value(question)
@@ -180,7 +182,9 @@ class RuleSemanticExtractionProvider:
             "agg_info_program.start_time",
             "agg_info_program.end_time",
         }
-        if any(d in program_exclusive for d in dimension_ids) and metric.fact_family != "program":
+        if any(d in program_exclusive for d in dimension_ids):
+            if metric.fact_family == "program":
+                return metric_id
             aligned = self._catalog.metric_for_semantic_key("program", metric.semantic_key)
             return aligned.id if aligned is not None else metric_id
 
@@ -197,6 +201,9 @@ class RuleSemanticExtractionProvider:
             and table.fact_family
         }
         target_families = non_time_fact_families or fact_families
+        if len(target_families) > 1:
+            aligned = self._catalog.metric_for_semantic_key(self._default_family, metric.semantic_key)
+            return aligned.id if aligned is not None else metric_id
         if metric.fact_family in target_families or len(target_families) != 1:
             return metric_id
         aligned = self._catalog.metric_for_semantic_key(

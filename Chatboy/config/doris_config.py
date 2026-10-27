@@ -7,12 +7,9 @@ import re
 from dataclasses import dataclass
 from typing import Any, Callable
 
-from dotenv import load_dotenv
-
 from config.doris_bind_translator import translate_named_to_positional
-
-
-load_dotenv()
+from src.core.text_to_sql.runtime.context import CURRENT_CONTEXT, stage, fingerprint
+from src.core.text_to_sql.runtime.errors import WorkflowError
 
 
 @dataclass(frozen=True)
@@ -67,19 +64,31 @@ class DorisExecutor:
         explain_plan = self._run(f"EXPLAIN VERBOSE {positional_sql}", values)
         self.cost_guardrail(explain_plan)
 
-        limited_sql = positional_sql
-        if not re.search(r"\blimit\b", positional_sql, flags=re.IGNORECASE):
-            limited_sql = f"{positional_sql} LIMIT {limit_override}"
-        return self._run(limited_sql, values, timeout_s=5.0)
+        # Never inject a LIMIT that could silently change share/trend calculations.
+        return self._run(positional_sql, values, timeout_s=5.0)
 
     def _run(self, sql: str, values: tuple[Any, ...] = (), timeout_s: float | None = None) -> QueryResult:
-        if self.runner:
-            result = self.runner(sql, values, timeout_s)
-            if isinstance(result, QueryResult):
+        ctx = CURRENT_CONTEXT.get()
+        timeout_s = min(timeout_s or 5, ctx.remaining(), ctx.limits.doris_timeout_s) if ctx else min(timeout_s or 5, 5)
+        try:
+            with stage("doris", query_fingerprint=fingerprint(sql)):
+                if self.runner:
+                    result = self.runner(sql, values, timeout_s)
+                    if not isinstance(result, QueryResult):
+                        columns, rows = result
+                        result = QueryResult(columns=tuple(columns), rows=tuple(rows))
+                else:
+                    result = self._run_mysql(sql, values, timeout_s)
+                if ctx:
+                    ctx.consume_rows(len(result.rows))
+                    ctx.emit("doris_rows", outcome="ok", row_count=len(result.rows), query_fingerprint=fingerprint(sql))
+                elif len(result.rows) > 50_000:
+                    raise WorkflowError("resource_exceeded", "Kết quả quá lớn; hãy thu hẹp phạm vi.")
                 return result
-            columns, rows = result
-            return QueryResult(columns=tuple(columns), rows=tuple(rows))
-        return self._run_mysql(sql, values, timeout_s)
+        except WorkflowError:
+            raise
+        except Exception as exc:
+            raise WorkflowError("dependency_unavailable", "Không thể thực thi truy vấn Doris.", retryable=True) from exc
 
     def _run_mysql(self, sql: str, values: tuple[Any, ...], timeout_s: float | None) -> QueryResult:
         try:
@@ -96,17 +105,39 @@ class DorisExecutor:
             database=self.database,
             user=self.user,
             password=self.password,
-            connection_timeout=int(timeout_s or 10),
-            read_timeout=int(timeout_s or 10),
+            connection_timeout=max(1, int(timeout_s or 5)),
+            read_timeout=max(1, int(timeout_s or 5)),
+            write_timeout=max(1, int(timeout_s or 5)),
         )
         try:
             cursor = connection.cursor(dictionary=True)
+            cursor.execute("SET query_timeout = %s", (max(1, int(timeout_s or 5)),))
+            ctx = CURRENT_CONTEXT.get()
+            if ctx:
+                ctx.remaining()
             cursor.execute(sql, values)
-            rows = tuple(dict(row) for row in cursor.fetchall()) if cursor.with_rows else ()
+            cap = ctx.limits.max_rows - ctx.rows_used if ctx else 50_000
+            collected = []
+            if cursor.with_rows:
+                while True:
+                    if ctx:
+                        ctx.remaining()
+                    batch = cursor.fetchmany(min(1000, cap + 1 - len(collected)))
+                    if not batch:
+                        break
+                    collected.extend(dict(row) for row in batch)
+                    if len(collected) > cap:
+                        raise WorkflowError("resource_exceeded", "Kết quả vượt giới hạn; hãy thu hẹp phạm vi.")
+            rows = tuple(collected)
             columns = tuple(cursor.column_names or ())
             return QueryResult(columns=columns, rows=rows)
         finally:
             connection.close()
+
+    def execute_result(self, sql: str, params: dict[str, Any]) -> QueryResult:
+        positional_sql, values = translate_named_to_positional(sql, params)
+        self._assert_read_only(positional_sql)
+        return self._run(positional_sql, values, timeout_s=5)
 
     @staticmethod
     def _assert_read_only(sql: str) -> None:

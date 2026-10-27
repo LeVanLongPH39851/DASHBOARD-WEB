@@ -1,12 +1,152 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import axiosClient from "../../../api/axiosClient";
 
+// ── Clarification form (inline sub-component) ──────────────
+const ClarificationForm = ({ clarification, fieldErrors, onSubmit, disabled }) => {
+  const [answers, setAnswers] = useState({});
+  const [localErrors, setLocalErrors] = useState({});
+
+  useEffect(() => {
+    setAnswers({});
+    setLocalErrors({});
+  }, [clarification?.id, clarification?.revision]);
+
+  const handleSubmit = () => {
+    // Validate required fields
+    const errors = {};
+    for (const field of clarification.fields) {
+      if (!answers[field.id] || !answers[field.id].trim()) {
+        errors[field.id] = "Vui lòng nhập thông tin";
+      }
+    }
+    if (Object.keys(errors).length > 0) {
+      setLocalErrors(errors);
+      return;
+    }
+    onSubmit(answers);
+  };
+
+  if (!clarification) return null;
+
+  return (
+    <div className="mt-2 space-y-2">
+      {clarification.fields.map((field) => {
+        const error = localErrors[field.id] || fieldErrors?.[field.id];
+        return (
+          <div key={field.id}>
+            <label className="block text-[12px] font-medium text-color-black-80 dark:text-color-white-70 mb-1">
+              {field.label}
+            </label>
+            {field.input === "choice" ? (
+              <select
+                value={answers[field.id] || ""}
+                onChange={(e) => setAnswers((p) => ({ ...p, [field.id]: e.target.value }))}
+                disabled={disabled}
+                className="w-full px-3 py-2 text-[12px] rounded-lg border bg-background-light dark:bg-background-dark transition-colors duration-300 outline-none focus:border-teal-400"
+                style={{
+                  borderColor: error ? "#ef4444" : "rgba(0,0,0,0.1)",
+                }}
+              >
+                <option value="">— Chọn —</option>
+                {field.options.map((opt) => (
+                  <option key={opt.id} value={opt.id}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <input
+                type="text"
+                value={answers[field.id] || ""}
+                onChange={(e) => setAnswers((p) => ({ ...p, [field.id]: e.target.value }))}
+                disabled={disabled}
+                placeholder={field.label}
+                className="w-full px-3 py-2 text-[12px] rounded-lg border bg-background-light dark:bg-background-dark transition-colors duration-300 outline-none focus:border-teal-400"
+                style={{
+                  borderColor: error ? "#ef4444" : "rgba(0,0,0,0.1)",
+                }}
+              />
+            )}
+            {error && (
+              <p className="text-[11px] text-red-500 mt-0.5">{error}</p>
+            )}
+          </div>
+        );
+      })}
+      <button
+        onClick={handleSubmit}
+        disabled={disabled}
+        className="w-full py-2 text-[12px] font-medium text-white rounded-lg transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed hover:opacity-90"
+        style={{
+          background: "linear-gradient(135deg, rgba(47,196,198,1), rgba(91,214,216,1))",
+        }}
+      >
+        Gửi
+      </button>
+    </div>
+  );
+};
+
+// ── Data table (inline sub-component) ───────────────────────
+const DataTable = ({ data }) => {
+  if (!data || !data.columns || !data.rows || data.rows.length === 0) return null;
+
+  // Truncate display if needed
+  const maxRows = 50;
+  const truncated = data.rows.length > maxRows;
+  const displayRows = truncated ? data.rows.slice(0, maxRows) : data.rows;
+
+  return (
+    <div className="mt-2 overflow-x-auto">
+      <table className="w-full text-[11px] border-collapse">
+        <thead>
+          <tr className="bg-background-black-4 dark:bg-background-white-8">
+            {data.columns.map((col) => (
+              <th
+                key={col.name}
+                className="px-2 py-1.5 text-left font-medium text-color-black-80 dark:text-color-white-70 border-b border-border-black-10 dark:border-border-white-10 whitespace-nowrap"
+              >
+                {col.name}
+                {col.unit ? ` (${col.unit})` : ""}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {displayRows.map((row, idx) => (
+            <tr key={idx} className="hover:bg-background-black-2 dark:hover:bg-background-white-4 transition-colors">
+              {data.columns.map((col) => {
+                const val = row[col.name];
+                const display = val === null || val === undefined ? "—" : String(val);
+                return (
+                  <td
+                    key={col.name}
+                    className="px-2 py-1.5 text-color-black-90 dark:text-color-white-80 border-b border-border-black-5 dark:border-border-white-5 whitespace-nowrap"
+                  >
+                    {display}
+                  </td>
+                );
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      {truncated && (
+        <p className="text-[10px] text-color-black-50 dark:text-color-white-50 mt-1">
+          Hiển thị {maxRows}/{data.rows.length} dòng
+        </p>
+      )}
+    </div>
+  );
+};
+
+// ── Main ChatBot component ───────────────────────────────────
 const ChatBot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
     {
       id: 1,
-      text: "Xin chào! Tôi là trợ lý ảo. Bạn cần hỗ trợ gì?",
+      text: "Xin chào! Tôi là trợ lý AI Dashboard Rating. Bạn có thể hỏi về Rating, Lượt xem, Reach, Thời lượng của các kênh truyền hình.",
       sender: "bot",
       time: new Date().toLocaleTimeString("vi-VN", {
         hour: "2-digit",
@@ -19,7 +159,6 @@ const ChatBot = () => {
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
-  // Auto-scroll to bottom
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, []);
@@ -28,59 +167,183 @@ const ChatBot = () => {
     scrollToBottom();
   }, [messages, isLoading, scrollToBottom]);
 
-  // Focus input when chat opens
   useEffect(() => {
     if (isOpen) {
       setTimeout(() => inputRef.current?.focus(), 300);
     }
   }, [isOpen]);
 
+  const formatTime = () =>
+    new Date().toLocaleTimeString("vi-VN", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+
+  // ── Process V2 response ──────────────────────────────────
+  const processResponse = (data) => {
+    const { status, reply, data: tableData, clarification, error, meta } = data;
+    let botText = reply || "";
+
+    // Add status-specific prefix
+    if (status === "no_data") {
+      botText = "📊 " + botText;
+    } else if (status === "unsupported") {
+      botText = "⚠️ " + botText;
+    } else if (status === "answered" && meta?.data_status === "partial") {
+      botText = "⚠️ Dữ liệu chưa đầy đủ\n\n" + botText;
+    } else if (status === "answered" && meta?.data_status === "available") {
+      botText = "✅ " + botText;
+    }
+
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: Date.now() + 1,
+        text: botText,
+        sender: "bot",
+        time: formatTime(),
+        clarification: status === "needs_clarification" ? clarification : null,
+        tableData: status === "answered" && tableData?.rows?.length > 0 ? tableData : null,
+        status,
+      },
+    ]);
+  };
+
+  // ── Process error response ──────────────────────────────
+  const processError = (err) => {
+    let errorText = "Xin lỗi, đã xảy ra lỗi. Vui lòng thử lại.";
+
+    if (err.response?.data) {
+      const { reply, error, clarification } = err.response.data;
+
+      if (error?.code === "dependency_unavailable") {
+        errorText = "Dịch vụ mô hình đang không khả dụng. Vui lòng thử lại sau.";
+      } else if (error?.code === "deadline_exceeded") {
+        errorText = "Hết thời gian xử lý. Vui lòng rút gọn câu hỏi và thử lại.";
+      } else if (error?.code === "busy") {
+        errorText = "Hệ thống đang bận. Vui lòng thử lại sau.";
+      } else if (error?.code === "clarification_expired") {
+        errorText = "Phiên bổ sung đã hết hạn. Vui lòng gửi lại câu hỏi mới.";
+      } else if (error?.code === "clarification_limit") {
+        errorText = "Đã hết lượt bổ sung. Vui lòng gửi lại câu hỏi đầy đủ hơn.";
+      } else if (error?.code === "budget_exceeded") {
+        errorText = "Đã hết giới hạn xử lý. Vui lòng diễn đạt lại câu hỏi ngắn gọn hơn.";
+      } else if (error?.code === "resource_exceeded") {
+        errorText = "Kết quả quá lớn. Vui lòng thu hẹp khoảng thời gian hoặc đối tượng.";
+      } else if (reply) {
+        errorText = reply;
+      }
+
+      // 422 with clarification = keep form for fixing
+      if (clarification && err.response.status === 422) {
+        return { keepForm: true, clarification, error, reply };
+      }
+    } else if (err.code === "ECONNABORTED") {
+      errorText = "Hết thời gian kết nối. Vui lòng thử lại.";
+    }
+
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: Date.now() + 1,
+        text: errorText,
+        sender: "bot",
+        time: formatTime(),
+        isError: true,
+      },
+    ]);
+    return null;
+  };
+
+  // ── Send new question ────────────────────────────────────
   const handleSend = async () => {
     const trimmed = inputValue.trim();
     if (!trimmed || isLoading) return;
 
-    const userMsg = {
-      id: Date.now(),
-      text: trimmed,
-      sender: "user",
-      time: new Date().toLocaleTimeString("vi-VN", {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
-    };
-
-    setMessages((prev) => [...prev, userMsg]);
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: Date.now(),
+        text: trimmed,
+        sender: "user",
+        time: formatTime(),
+      },
+    ]);
     setInputValue("");
     setIsLoading(true);
 
     try {
-      const { data } = await axiosClient.post("/api/query", {
+      const { data } = await axiosClient.post("/api/v2/query", {
+        type: "question",
         question: trimmed,
       });
+      processResponse(data);
+    } catch (err) {
+      processError(err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-      const botMsg = {
-        id: Date.now() + 1,
-        text: data?.reply || data?.output?.text || "Không có phản hồi.",
-        sender: "bot",
-        time: new Date().toLocaleTimeString("vi-VN", {
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
-      };
-      setMessages((prev) => [...prev, botMsg]);
-    } catch {
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: Date.now() + 1,
-          text: "Xin lỗi, đã xảy ra lỗi. Vui lòng thử lại.",
-          sender: "bot",
-          time: new Date().toLocaleTimeString("vi-VN", {
-            hour: "2-digit",
-            minute: "2-digit",
-          }),
-        },
-      ]);
+  // ── Submit clarification form ─────────────────────────────
+  const handleClarificationSubmit = async (messageId, clarification, answers) => {
+    if (!clarification || isLoading) return;
+
+    // Display user's answers
+    const answerText = Object.entries(answers)
+      .map(([fieldId, value]) => {
+        const field = clarification.fields.find((f) => f.id === fieldId);
+        return field ? `${field.label}: ${value}` : value;
+      })
+      .join("\n");
+
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: Date.now(),
+        text: answerText,
+        sender: "user",
+        time: formatTime(),
+      },
+    ]);
+
+    // Remove form from previous bot message
+    setMessages((prev) =>
+      prev.map((msg) =>
+        msg.id === messageId ? { ...msg, clarification: null } : msg
+      )
+    );
+
+    setIsLoading(true);
+
+    try {
+      const { data } = await axiosClient.post("/api/v2/query", {
+        type: "clarification",
+        clarification_id: clarification.id,
+        revision: clarification.revision,
+        answers,
+      });
+      processResponse(data);
+    } catch (err) {
+      const result = processError(err);
+      if (result?.keepForm) {
+        // Restore form with field errors
+        setMessages((prev) =>
+          prev.map((msg) =>
+            msg.id === messageId
+              ? {
+                  ...msg,
+                  clarification: result.clarification,
+                  fieldErrors: (result.error?.field_errors || []).reduce((acc, fe) => {
+                    acc[fe.field] = fe.message;
+                    return acc;
+                  }, {}),
+                  text: result.reply || msg.text,
+                }
+              : msg
+          )
+        );
+      }
     } finally {
       setIsLoading(false);
     }
@@ -106,7 +369,6 @@ const ChatBot = () => {
         }}
         title="Mở ChatBot"
       >
-        {/* Icon: chat bubble / close */}
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
@@ -140,7 +402,6 @@ const ChatBot = () => {
               "linear-gradient(135deg, rgba(47,196,198,1) 0%, rgba(33,184,184,1) 50%, rgba(91,214,216,1) 100%)",
           }}
         >
-          {/* Avatar */}
           <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -192,9 +453,11 @@ const ChatBot = () => {
               className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
             >
               <div
-                className={`max-w-[80%] px-4 py-2.5 text-[13px] leading-relaxed transition-colors duration-300 ${
+                className={`max-w-[85%] px-4 py-2.5 text-[13px] leading-relaxed transition-colors duration-300 ${
                   msg.sender === "user"
                     ? "rounded-2xl rounded-br-md text-white"
+                    : msg.isError
+                    ? "rounded-2xl rounded-bl-md bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800"
                     : "rounded-2xl rounded-bl-md bg-background-black-4 dark:bg-background-white-8 text-color-black-100 dark:text-color-white-90"
                 }`}
                 style={
@@ -207,6 +470,22 @@ const ChatBot = () => {
                 }
               >
                 <p className="whitespace-pre-wrap">{msg.text}</p>
+
+                {/* Data table */}
+                {msg.tableData && <DataTable data={msg.tableData} />}
+
+                {/* Clarification form */}
+                {msg.clarification && (
+                  <ClarificationForm
+                    clarification={msg.clarification}
+                    fieldErrors={msg.fieldErrors}
+                    onSubmit={(answers) =>
+                      handleClarificationSubmit(msg.id, msg.clarification, answers)
+                    }
+                    disabled={isLoading}
+                  />
+                )}
+
                 <p
                   className={`text-[10px] mt-1 ${
                     msg.sender === "user"
@@ -224,18 +503,9 @@ const ChatBot = () => {
           {isLoading && (
             <div className="flex justify-start">
               <div className="px-4 py-3 rounded-2xl rounded-bl-md bg-background-black-4 dark:bg-background-white-8 flex items-center gap-1.5">
-                <span
-                  className="chatbot-dot"
-                  style={{ animationDelay: "0ms" }}
-                />
-                <span
-                  className="chatbot-dot"
-                  style={{ animationDelay: "150ms" }}
-                />
-                <span
-                  className="chatbot-dot"
-                  style={{ animationDelay: "300ms" }}
-                />
+                <span className="chatbot-dot" style={{ animationDelay: "0ms" }} />
+                <span className="chatbot-dot" style={{ animationDelay: "150ms" }} />
+                <span className="chatbot-dot" style={{ animationDelay: "300ms" }} />
               </div>
             </div>
           )}

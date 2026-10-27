@@ -242,7 +242,7 @@ export const chart1124 = {
       legendOrientation: "left",
       legendType: "scroll",
       map_label_colors: {
-        Tiktok: "#1FA8C9",
+        "Unique users": "#454E7C",
       },
       markerSize: 6,
       markerSizeB: 6,
@@ -409,7 +409,7 @@ export const chart1124 = {
       truncateXAxis: true,
       url_params: {
         native_filters_key:
-          "J1KgUH_aO0Pi00DNE0_qgXHy_HQpgld34d1UyBl3MPICK0gdCd7THnSTbtGhX6if",
+          "15P9PBrl79awXeT-jp85QETLz74MdDNVIraEUn88VWCE-q4ct-zqQ3epL5blmiR7",
       },
       viz_type: "mixed_timeseries",
       x_axis: "date",
@@ -476,7 +476,7 @@ export const chart1124 = {
           'DATEADD(DATETIME("today"),-1, DAY) : DATEADD(DATETIME("today"),-1, SECOND)',
         url_params: {
           native_filters_key:
-            "J1KgUH_aO0Pi00DNE0_qgXHy_HQpgld34d1UyBl3MPICK0gdCd7THnSTbtGhX6if",
+            "15P9PBrl79awXeT-jp85QETLz74MdDNVIraEUn88VWCE-q4ct-zqQ3epL5blmiR7",
         },
       },
       {
@@ -531,7 +531,7 @@ export const chart1124 = {
           'DATEADD(DATETIME("today"),-1, DAY) : DATEADD(DATETIME("today"),-1, SECOND)',
         url_params: {
           native_filters_key:
-            "J1KgUH_aO0Pi00DNE0_qgXHy_HQpgld34d1UyBl3MPICK0gdCd7THnSTbtGhX6if",
+            "15P9PBrl79awXeT-jp85QETLz74MdDNVIraEUn88VWCE-q4ct-zqQ3epL5blmiR7",
         },
       },
     ],

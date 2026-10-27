@@ -275,9 +275,7 @@ export const chart1080 = {
       legendOrientation: "left",
       legendType: "scroll",
       map_label_colors: {
-        daily_active_user: "#2f4554",
-        time_user_per_day: "#c23531",
-        "Unique users": "#1FA8C9",
+        "Unique users": "#454E7C",
       },
       markerSize: 6,
       metrics: ["Total_Records"],
@@ -445,7 +443,7 @@ export const chart1080 = {
       truncateXAxis: true,
       url_params: {
         native_filters_key:
-          "VDzX3RFWGRTTrLCrr0V9IPCdWIt6JTDhdC_IL-IBF_d4tIeVR8RIQHln9svyXbhj",
+          "15P9PBrl79awXeT-jp85QETLz74MdDNVIraEUn88VWCE-q4ct-zqQ3epL5blmiR7",
       },
       viz_type: "echarts_area",
       x_axis: "time_band_label",
@@ -535,7 +533,7 @@ export const chart1080 = {
           'DATEADD(DATETIME("today"),-1, DAY) : DATEADD(DATETIME("today"),-1, SECOND)',
         url_params: {
           native_filters_key:
-            "VDzX3RFWGRTTrLCrr0V9IPCdWIt6JTDhdC_IL-IBF_d4tIeVR8RIQHln9svyXbhj",
+            "15P9PBrl79awXeT-jp85QETLz74MdDNVIraEUn88VWCE-q4ct-zqQ3epL5blmiR7",
         },
       },
     ],

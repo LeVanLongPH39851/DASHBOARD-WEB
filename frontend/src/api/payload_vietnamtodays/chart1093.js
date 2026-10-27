@@ -257,7 +257,7 @@ export const chart1093 = {
         Zimbabwe: "#31906e",
       },
       map_label_colors: {
-        Tiktok: "#1FA8C9",
+        "Unique users": "#454E7C",
       },
       metric: "Views",
       result_format: "json",
@@ -409,7 +409,7 @@ export const chart1093 = {
       time_format: "smart_date",
       url_params: {
         native_filters_key:
-          "J1KgUH_aO0Pi00DNE0_qgXHy_HQpgld34d1UyBl3MPICK0gdCd7THnSTbtGhX6if",
+          "15P9PBrl79awXeT-jp85QETLz74MdDNVIraEUn88VWCE-q4ct-zqQ3epL5blmiR7",
       },
       viz_type: "big_number_total",
       y_axis_format: ".2~s",
@@ -444,7 +444,7 @@ export const chart1093 = {
           'DATEADD(DATETIME("today"),-1, DAY) : DATEADD(DATETIME("today"),-1, SECOND)',
         url_params: {
           native_filters_key:
-            "J1KgUH_aO0Pi00DNE0_qgXHy_HQpgld34d1UyBl3MPICK0gdCd7THnSTbtGhX6if",
+            "15P9PBrl79awXeT-jp85QETLz74MdDNVIraEUn88VWCE-q4ct-zqQ3epL5blmiR7",
         },
       },
     ],

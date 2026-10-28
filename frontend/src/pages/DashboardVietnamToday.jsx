@@ -29,7 +29,9 @@ import InforTab from "../components/layouts/headers/InforTab";
 import InforFilter from "../components/layouts/headers/InforFilter";
 import { LABEL_VIETNAMTODAY } from "../utils/label";
 import Title from "../components/layouts/components/Title";
+import HeatMap from "../components/charts/HeatMap";
 import logoVietnamToday from "../assets/logo_vietnamtoday.png";
+import { transformApiHeatMapData } from "../utils/transformApiHeatMap";
 import {
   useDarkMode,
   useIsOpen,
@@ -1083,6 +1085,37 @@ const DashboardContent = () => {
                                           )}
                                         />
                                       </div>
+                                      <div className="w-full pb-6 max-lg:pb-5 max-md:pb-4">
+                                        <HeatMap
+                                          height={450}
+                                          data={useMemo(
+                                            () =>
+                                              !dashboard.isLoading.chart1030Data
+                                                ? transformApiHeatMapData(
+                                                    dashboard.chart1030Data
+                                                      ?.data,
+                                                    dashboard.chart1030Data
+                                                      ?.colnames,
+                                                    "time_band_label",
+                                                    "DoW",
+                                                  )
+                                                : "isLoading",
+                                            [dashboard.isLoading.chart1030Data],
+                                          )}
+                                          fontFamily={
+                                            CUSTOM_CHART.allChart.fontFamily
+                                          }
+                                          nameChart="Avg.Reach by Time Slot"
+                                          description={false}
+                                          refetch={useCallback(
+                                            () =>
+                                              dashboard.refetch(
+                                                "chart1030Data",
+                                              ),
+                                            [dashboard.isLoading.chart1030Data],
+                                          )}
+                                        />
+                                      </div>
                                     </>
                                   ),
                                 },
@@ -1300,6 +1333,37 @@ const DashboardContent = () => {
                                                 "chart1038Data",
                                               ),
                                             [dashboard.isLoading.chart1038Data],
+                                          )}
+                                        />
+                                      </div>
+                                      <div className="w-full pb-6 max-lg:pb-5 max-md:pb-4">
+                                        <HeatMap
+                                          height={450}
+                                          data={useMemo(
+                                            () =>
+                                              !dashboard.isLoading.chart1031Data
+                                                ? transformApiHeatMapData(
+                                                    dashboard.chart1031Data
+                                                      ?.data,
+                                                    dashboard.chart1031Data
+                                                      ?.colnames,
+                                                    "time_band_label",
+                                                    "DoW",
+                                                  )
+                                                : "isLoading",
+                                            [dashboard.isLoading.chart1031Data],
+                                          )}
+                                          fontFamily={
+                                            CUSTOM_CHART.allChart.fontFamily
+                                          }
+                                          nameChart="Rating by Time Slot"
+                                          description={false}
+                                          refetch={useCallback(
+                                            () =>
+                                              dashboard.refetch(
+                                                "chart1031Data",
+                                              ),
+                                            [dashboard.isLoading.chart1031Data],
                                           )}
                                         />
                                       </div>
@@ -1526,6 +1590,37 @@ const DashboardContent = () => {
                                                 "chart1043Data",
                                               ),
                                             [dashboard.isLoading.chart1043Data],
+                                          )}
+                                        />
+                                      </div>
+                                      <div className="w-full pb-6 max-lg:pb-5 max-md:pb-4">
+                                        <HeatMap
+                                          height={450}
+                                          data={useMemo(
+                                            () =>
+                                              !dashboard.isLoading.chart1033Data
+                                                ? transformApiHeatMapData(
+                                                    dashboard.chart1033Data
+                                                      ?.data,
+                                                    dashboard.chart1033Data
+                                                      ?.colnames,
+                                                    "time_band_label",
+                                                    "DoW",
+                                                  )
+                                                : "isLoading",
+                                            [dashboard.isLoading.chart1033Data],
+                                          )}
+                                          fontFamily={
+                                            CUSTOM_CHART.allChart.fontFamily
+                                          }
+                                          nameChart="Watch Time by Time Slot"
+                                          description={false}
+                                          refetch={useCallback(
+                                            () =>
+                                              dashboard.refetch(
+                                                "chart1033Data",
+                                              ),
+                                            [dashboard.isLoading.chart1033Data],
                                           )}
                                         />
                                       </div>

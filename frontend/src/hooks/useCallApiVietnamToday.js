@@ -252,6 +252,15 @@ export const useChart1215 = () =>
 export const useChart1124 = () =>
   createChartHook(getChart.chart1124, "chart1124Data")();
 
+export const useChart1030 = () =>
+  createChartHook(getChart.chart1030, "chart1030Data")();
+
+export const useChart1031 = () =>
+  createChartHook(getChart.chart1031, "chart1031Data")();
+
+export const useChart1033 = () =>
+  createChartHook(getChart.chart1033, "chart1033Data")();
+
 export const useMaxInsertReturnApi = () => {
   return useApi(getChart.getMaxInsert);
 };

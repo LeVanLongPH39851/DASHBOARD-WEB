@@ -83,3 +83,6 @@ export { chart1079 } from "./chart1079";
 export { chart1086 } from "./chart1086";
 export { chart1087 } from "./chart1087";
 export { chart1124 } from "./chart1124";
+export { chart1030 } from "./chart1030";
+export { chart1031 } from "./chart1031";
+export { chart1033 } from "./chart1033";

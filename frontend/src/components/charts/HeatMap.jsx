@@ -88,6 +88,7 @@ const HeatmapChart = ({
 
   showLabel = true,
   showVisualMap = true,
+  calculable = true,
   KMB = true,
   decimals = 0,
 
@@ -124,6 +125,7 @@ const HeatmapChart = ({
   crossFilterBy = "row",
 
   onCellClick,
+  onRangeChange,
 }) => {
   const chartRef = useRef(null);
 
@@ -243,13 +245,15 @@ const HeatmapChart = ({
 
         return {
           value: [xIndex, yIndex, value],
-          itemStyle: {
-            opacity: hasSelection && !isSelected ? 0.3 : 1,
-            ...(isSelected && {
-              borderColor: darkMode ? "#5eead4" : "#14b8a6",
-              borderWidth: 2,
-            }),
-          },
+          ...(hasSelection && {
+            itemStyle: {
+              opacity: isSelected ? 1 : 0.3,
+              ...(isSelected && {
+                borderColor: darkMode ? "#5eead4" : "#14b8a6",
+                borderWidth: 2,
+              }),
+            },
+          }),
         };
       }),
     [cells, labels, rows, selectedValue, crossFilterBy, darkMode],
@@ -265,6 +269,17 @@ const HeatmapChart = ({
       }
 
       const [xIndex, yIndex, value] = params.value;
+
+      const instance = chartRef.current?.getEchartsInstance?.();
+      const vm = instance?.getModel?.()?.getComponent?.("visualMap");
+      const selectedRange = vm?.getSelected?.();
+
+      if (
+        selectedRange &&
+        (value < selectedRange[0] || value > selectedRange[1])
+      ) {
+        return;
+      }
 
       const cell = {
         column: labels[xIndex],
@@ -345,11 +360,21 @@ const HeatmapChart = ({
     ],
   );
 
+  const handleDataRangeSelected = useCallback(
+    (params) => {
+      if (Array.isArray(params?.selected)) {
+        onRangeChange?.(params.selected);
+      }
+    },
+    [onRangeChange],
+  );
+
   const onEvents = useMemo(
     () => ({
       click: handleCellClick,
+      datarangeselected: handleDataRangeSelected,
     }),
-    [handleCellClick],
+    [handleCellClick, handleDataRangeSelected],
   );
 
   const getEChartsData = useCallback(() => {
@@ -433,6 +458,17 @@ const HeatmapChart = ({
 
         formatter: (params) => {
           const [xIndex, yIndex, value] = params.value;
+
+          const instance = chartRef.current?.getEchartsInstance?.();
+          const vm = instance?.getModel?.()?.getComponent?.("visualMap");
+          const selectedRange = vm?.getSelected?.();
+
+          if (
+            selectedRange &&
+            (value < selectedRange[0] || value > selectedRange[1])
+          ) {
+            return "";
+          }
 
           const rowName = escapeHtml(rows[yIndex]?.name);
           const columnName = escapeHtml(labels[xIndex]);
@@ -593,7 +629,8 @@ const HeatmapChart = ({
         itemWidth: 10,
         itemHeight: visualMapWidth,
 
-        calculable: false,
+        calculable,
+        realtime: true,
         precision: decimals,
 
         text: [formatValue(scale.max), formatValue(scale.min)],
@@ -607,10 +644,23 @@ const HeatmapChart = ({
 
         inRange: {
           color: palette,
+          opacity: 1,
         },
 
         outOfRange: {
-          color: [palette[0], palette[palette.length - 1]],
+          color: ["transparent"],
+          opacity: 0,
+        },
+
+        handleSize: "120%",
+        handleStyle: {
+          borderColor: darkMode ? "#475569" : "#cbd5e1",
+          borderWidth: 1,
+          shadowBlur: 3,
+          shadowColor: "rgba(0, 0, 0, 0.2)",
+        },
+        indicatorStyle: {
+          borderColor: darkMode ? "#2dd4bf" : "#0d9488",
         },
 
         borderWidth: 0,
@@ -695,7 +745,7 @@ const HeatmapChart = ({
           },
 
           label: {
-            show: showLabel,
+            show: screenMd ? false : showLabel,
             position: "inside",
             fontFamily,
             fontSize: labelFontSize,
@@ -703,6 +753,17 @@ const HeatmapChart = ({
 
             formatter: (params) => {
               const value = params.value[2];
+
+              const instance = chartRef.current?.getEchartsInstance?.();
+              const vm = instance?.getModel?.()?.getComponent?.("visualMap");
+              const selectedRange = vm?.getSelected?.();
+
+              if (
+                selectedRange &&
+                (value < selectedRange[0] || value > selectedRange[1])
+              ) {
+                return "";
+              }
 
               const ratio = Math.max(
                 0,
@@ -757,6 +818,7 @@ const HeatmapChart = ({
     left,
     right,
     showVisualMap,
+    calculable,
     enableZoom,
     xAxisTitle,
     yAxisTitle,

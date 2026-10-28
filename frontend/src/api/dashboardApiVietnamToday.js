@@ -503,6 +503,15 @@ export const chart1214 = (appliedFilters, force = false) =>
 export const chart1215 = (appliedFilters, force = false) =>
   postChart(payloads.chart1215, appliedFilters, tabVodDisabledFilters, force);
 
+export const chart1030 = (appliedFilters, force = false) =>
+  postChart(payloads.chart1030, appliedFilters, tabLiveDisabledFilters, force);
+
+export const chart1031 = (appliedFilters, force = false) =>
+  postChart(payloads.chart1031, appliedFilters, tabLiveDisabledFilters, force);
+
+export const chart1033 = (appliedFilters, force = false) =>
+  postChart(payloads.chart1033, appliedFilters, tabLiveDisabledFilters, force);
+
 export const getMaxInsert = () => {
   const userId = sessionStorage.getItem("user_id");
   return axiosClient.post(apiRoute, {

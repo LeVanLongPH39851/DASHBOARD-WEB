@@ -26,6 +26,7 @@ import Header from "../components/layouts/headers/Header";
 import BreadCrumb from "../components/layouts/headers/BreadCrumb";
 import InforTab from "../components/layouts/headers/InforTab";
 import InforFilter from "../components/layouts/headers/InforFilter";
+import ChatBot from "../components/layouts/components/ChatBot";
 import {
   useDarkMode,
   useIsOpen,

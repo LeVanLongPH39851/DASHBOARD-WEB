@@ -1,22 +1,4 @@
-import axios from "axios";
-
-/**
- * Chatboy Accuracy v2.2 Client API
- * Endpoint: POST /api/v2/query
- * Base URL: Configurable via VITE_CHATBOT_API_URL or defaults to http://localhost:8010
- */
-
-const CHATBOT_BASE_URL = import.meta.env.VITE_CHATBOT_API_URL || "";
-
-export const chatbotClient = axios.create({
-  baseURL: CHATBOT_BASE_URL,
-  timeout: 60000, // 60s timeout as recommended by contract
-  headers: {
-    "Content-Type": "application/json",
-  },
-  // Ensure we receive envelope body even for HTTP 4xx / 5xx error responses
-  validateStatus: () => true,
-});
+import axiosClient from "./axiosClient";
 
 /**
  * Send a query or clarification to Chatboy v2.2
@@ -26,7 +8,7 @@ export const chatbotClient = axios.create({
  */
 export async function sendChatbotQuery(payload) {
   try {
-    const res = await chatbotClient.post("/api/v2/query", payload);
+    const res = await axiosClient.post("/api/v2/query", payload);
 
     if (res.data && typeof res.data === "object" && res.data.status) {
       return {

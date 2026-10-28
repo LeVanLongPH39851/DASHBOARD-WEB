@@ -3324,7 +3324,7 @@ const Dashboard = () => {
   return (
     <DashboardFilterProvider>
       <DashboardContent />
-      <ChatBot />
+      {/* <ChatBot /> */}
     </DashboardFilterProvider>
   );
 };

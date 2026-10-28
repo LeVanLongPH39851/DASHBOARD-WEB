@@ -1,5 +1,5 @@
 const pathName = window.location.pathname;
-const path = import.meta.env.VITE_API_BASE_URL == "/rating" ? pathName : "/";
+const path = "/";
 const origin = window.location.origin + path;
 const favicon = document.getElementById("favicon");
 

@@ -249,7 +249,6 @@ const DataTable = ({ data, meta }) => {
 const ClarificationForm = ({
   clarification,
   error,
-  previousQuestion,
   onSubmit,
   onCancel,
   isSubmitting,
@@ -378,29 +377,6 @@ const ClarificationForm = ({
         <ClarificationCountdown expiresAt={clarification.expires_at} />
       </div>
 
-      {/* Đính kèm câu hỏi trước của khách hàng ở trên và làm mờ nhẹ */}
-      {previousQuestion && (
-        <div className="p-2.5 rounded-lg bg-black/5 dark:bg-white/5 border-l-2 border-teal-500/80 text-[11px] opacity-75 transition-opacity">
-          <div className="flex items-center gap-1.5 font-medium text-teal-600 dark:text-teal-400 text-[10px] uppercase tracking-wide">
-            <svg
-              viewBox="0 0 20 20"
-              fill="currentColor"
-              className="w-3 h-3 shrink-0"
-            >
-              <path
-                fillRule="evenodd"
-                d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0ZM8.94 6.94a.75.75 0 1 1-1.061-1.061 3 3 0 1 1 2.871 5.026v.345a.75.75 0 0 1-1.5 0v-.5c0-.72.57-1.172 1.081-1.287A1.5 1.5 0 1 0 8.94 6.94ZM10 15a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
-                clipRule="evenodd"
-              />
-            </svg>
-            <span>Câu hỏi của bạn</span>
-          </div>
-          <p className="mt-1 text-color-black-100 dark:text-color-white-90 italic whitespace-pre-wrap">
-            "{previousQuestion}"
-          </p>
-        </div>
-      )}
-
       <div className="space-y-3.5">
         {clarification.fields.map((field) => {
           const err = localErrors[field.id] || fieldErrorsMap[field.id];
@@ -498,7 +474,6 @@ const ClarificationForm = ({
 const MessageBubble = ({
   msg,
   isLatestPendingClarification,
-  previousQuestion,
   onClarifySubmit,
   onClarifyCancel,
   onRetry,
@@ -570,6 +545,35 @@ const MessageBubble = ({
           </div>
         )}
 
+        {msg.contextQuestion && (
+          <div
+            className={`mb-2.5 rounded-lg border-l-2 px-2.5 py-2 text-[11px] ${
+              isUser
+                ? "border-white/70 bg-white/10"
+                : "border-teal-500/80 bg-black/5 dark:bg-white/5"
+            }`}
+          >
+            <div
+              className={`font-medium text-[10px] uppercase tracking-wide ${
+                isUser
+                  ? "text-white/75"
+                  : "text-teal-600 dark:text-teal-400"
+              }`}
+            >
+              Câu hỏi của bạn
+            </div>
+            <p
+              className={`mt-1 whitespace-pre-wrap ${
+                isUser
+                  ? "text-white"
+                  : "text-color-black-100 dark:text-color-white-90"
+              }`}
+            >
+              “{msg.contextQuestion}”
+            </p>
+          </div>
+        )}
+
         {/* Message Content */}
         {isUser ? (
           <p className="whitespace-pre-wrap">{msg.text}</p>
@@ -585,7 +589,6 @@ const MessageBubble = ({
           <ClarificationForm
             clarification={msg.clarification}
             error={msg.error}
-            previousQuestion={previousQuestion}
             onSubmit={onClarifySubmit}
             onCancel={onClarifyCancel}
             isSubmitting={isSubmittingClarification}
@@ -679,6 +682,8 @@ const ChatBot = () => {
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [activeClarificationId, setActiveClarificationId] = useState(null);
+  const [activeClarificationQuestion, setActiveClarificationQuestion] =
+    useState(null);
 
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
@@ -700,6 +705,10 @@ const ChatBot = () => {
   // Execute request against Chatboy Accuracy v2.2
   const executeQuery = async (payload, isClarification = false) => {
     setIsLoading(true);
+    const contextQuestion =
+      payload.type === "question"
+        ? payload.question
+        : activeClarificationQuestion;
 
     try {
       const response = await sendChatbotQuery(payload);
@@ -720,6 +729,7 @@ const ChatBot = () => {
         clarification: response.clarification,
         error: response.error,
         meta: response.meta,
+        contextQuestion,
         submittedPayload: payload,
         time: new Date().toLocaleTimeString("vi-VN", {
           hour: "2-digit",
@@ -735,9 +745,11 @@ const ChatBot = () => {
         response.clarification
       ) {
         setActiveClarificationId(response.clarification.id);
+        setActiveClarificationQuestion(contextQuestion);
       } else {
         // Closed / completed
         setActiveClarificationId(null);
+        setActiveClarificationQuestion(null);
       }
 
       setMessages((prev) => [...prev, botMsg]);
@@ -750,6 +762,7 @@ const ChatBot = () => {
           sender: "bot",
           status: "failed",
           error: { code: "network_error", retryable: true },
+          contextQuestion,
           submittedPayload: payload,
           time: new Date().toLocaleTimeString("vi-VN", {
             hour: "2-digit",
@@ -769,6 +782,7 @@ const ChatBot = () => {
 
     // Reset active clarification if user starts a new question
     setActiveClarificationId(null);
+    setActiveClarificationQuestion(null);
 
     const userMsg = {
       id: `user-${Date.now()}`,
@@ -801,6 +815,7 @@ const ChatBot = () => {
         displayText ||
         `Bổ sung: ${Object.values(clarificationPayload.answers).join(", ")}`,
       sender: "user",
+      contextQuestion: activeClarificationQuestion,
       time: new Date().toLocaleTimeString("vi-VN", {
         hour: "2-digit",
         minute: "2-digit",
@@ -813,6 +828,7 @@ const ChatBot = () => {
 
   const handleClarifyCancel = () => {
     setActiveClarificationId(null);
+    setActiveClarificationQuestion(null);
   };
 
   const handleRetry = (payloadToRetry) => {
@@ -941,21 +957,11 @@ const ChatBot = () => {
               msg.clarification.id === activeClarificationId &&
               index === messages.length - 1;
 
-            // Tìm câu hỏi trước đó của khách hàng để đính kèm
-            let previousQuestion = null;
-            for (let i = index - 1; i >= 0; i--) {
-              if (messages[i].sender === "user") {
-                previousQuestion = messages[i].text;
-                break;
-              }
-            }
-
             return (
               <MessageBubble
                 key={msg.id || index}
                 msg={msg}
                 isLatestPendingClarification={isLatestPending}
-                previousQuestion={previousQuestion}
                 onClarifySubmit={handleClarifySubmit}
                 onClarifyCancel={handleClarifyCancel}
                 onRetry={handleRetry}

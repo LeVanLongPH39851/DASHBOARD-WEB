@@ -111,7 +111,20 @@ async function getCurrentUser(sessionCookie) {
   };
 }
 
+async function logout(sessionCookie) {
+  const response = await axios.get(`${SUPERSET_URL}/logout/`, {
+    headers: {
+      Cookie: sessionCookie,
+      Accept: "text/html,application/xhtml+xml",
+    },
+    timeout: 10000,
+  });
+
+  return response;
+}
+
 module.exports = {
   login,
   getCurrentUser,
+  logout,
 };

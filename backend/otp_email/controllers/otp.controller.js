@@ -20,6 +20,25 @@ async function sendOtp(req, res, next) {
   }
 }
 
+async function resendOtp(req, res) {
+  try {
+    const { challengeId } = req.body;
+
+    const result = await otpService.resendOtp(challengeId);
+
+    return res.status(200).json({
+      status: "success",
+      message: "OTP mới đã được gửi đến email",
+      data: result,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      status: "error",
+      message: error.message,
+    });
+  }
+}
+
 async function verifyOtp(req, res, next) {
   try {
     const { challengeId, otp } = req.body;
@@ -52,5 +71,6 @@ async function verifyOtp(req, res, next) {
 
 module.exports = {
   sendOtp,
+  resendOtp,
   verifyOtp,
 };

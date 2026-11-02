@@ -16,7 +16,17 @@ const { loginRateLimit } = require("../middleware/rate-limit");
 
 router.post("/auth/login", loginRateLimit, authController.loginController);
 
-router.get("/auth/me", authController.meController);
+// Gửi lại OTP
+router.post("/auth/resend-otp", authController.resendOtpController);
+
+// Xác minh OTP
+router.post("/auth/verify-otp", authController.verifyOtpController);
+
+// Lấy thông tin user
+router.get("/auth/me", authenticate, authController.meController);
+
+// Logout
+router.post("/auth/logout", authenticate, authController.logoutController);
 
 router.use("/backend", authenticate, authorize("backend:read"), (req, res) => {
   forwardRequest(req, res, services.backend);

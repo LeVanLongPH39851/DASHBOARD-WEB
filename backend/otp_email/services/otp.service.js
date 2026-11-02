@@ -36,6 +36,7 @@ async function createOtp({ email, sessionCookie, user }) {
     otpHash: hashOtp(challengeId, otp),
     sessionCookie,
     user,
+    email,
     attempts: 0,
   };
 
@@ -57,6 +58,73 @@ async function createOtp({ email, sessionCookie, user }) {
   return {
     challengeId,
     email: maskEmail(email),
+    expiresIn: OTP_TTL,
+  };
+}
+
+async function resendOtp(challengeId) {
+  if (!challengeId) {
+    throw new Error("Thiếu challengeId");
+  }
+
+  const redisKey = `${OTP_PREFIX}${challengeId}`;
+  const raw = await otpRedis.get(redisKey);
+
+  if (!raw) {
+    throw new Error("OTP không tồn tại hoặc đã hết hạn");
+  }
+
+  const data = JSON.parse(raw);
+
+  if (!data.email) {
+    throw new Error("Không tìm thấy email nhận OTP");
+  }
+
+  const otp = crypto.randomInt(100000, 1000000).toString();
+  const newOtpHash = hashOtp(challengeId, otp);
+
+  // Gửi email OTP mới
+  await emailService.sendOtpEmail(data.email, otp);
+
+  // Cập nhật OTP mới và reset TTL
+  const script = `
+    local raw = redis.call("GET", KEYS[1])
+
+    if not raw then
+      return 0
+    end
+
+    local data = cjson.decode(raw)
+
+    data.otpHash = ARGV[1]
+    data.attempts = 0
+
+    redis.call(
+      "SET",
+      KEYS[1],
+      cjson.encode(data),
+      "EX",
+      tonumber(ARGV[2])
+    )
+
+    return 1
+  `;
+
+  const updated = await otpRedis.eval(
+    script,
+    1,
+    redisKey,
+    newOtpHash,
+    String(OTP_TTL),
+  );
+
+  if (Number(updated) !== 1) {
+    throw new Error("OTP không tồn tại hoặc đã hết hạn");
+  }
+
+  return {
+    challengeId,
+    email: maskEmail(data.email),
     expiresIn: OTP_TTL,
   };
 }
@@ -133,5 +201,6 @@ async function verifyOtp(challengeId, otp) {
 
 module.exports = {
   createOtp,
+  resendOtp,
   verifyOtp,
 };

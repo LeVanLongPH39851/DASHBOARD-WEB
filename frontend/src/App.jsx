@@ -7,7 +7,6 @@ import VietnamToday from "./pages/VietnamToday.jsx";
 import DashboardVietnamToday from "./pages/DashboardVietnamToday.jsx";
 import BaoTri from "./pages/BaoTri";
 import Login from "./pages/Login";
-import ChatBot from "./components/layouts/components/ChatBot";
 
 const ProtectedRoute = ({ children }) => {
   const token = sessionStorage.getItem("userToken");
@@ -23,13 +22,62 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* <Route path="/" element={<PublicRoute><Login /></PublicRoute>}/> */}
-        <Route path="/rating" element={<Dashboard />} />
-        <Route path="/spot" element={<DashboardSpot />} />
-        <Route path="/brand" element={<DashboardBrand />} />
-        <Route path="/world-cup-2026" element={<DashboardWorldCup />} />
-        <Route path="/survey" element={<VietnamToday />} />
-        <Route path="/vietnam-today" element={<DashboardVietnamToday />} />
+        <Route
+          path="/"
+          element={
+            <PublicRoute>
+              <Login />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/rating"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/spot"
+          element={
+            <ProtectedRoute>
+              <DashboardSpot />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/brand"
+          element={
+            <ProtectedRoute>
+              <DashboardBrand />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/world-cup-2026"
+          element={
+            <ProtectedRoute>
+              <DashboardWorldCup />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/survey"
+          element={
+            <ProtectedRoute>
+              <VietnamToday />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/vietnam-today"
+          element={
+            <ProtectedRoute>
+              <DashboardVietnamToday />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );

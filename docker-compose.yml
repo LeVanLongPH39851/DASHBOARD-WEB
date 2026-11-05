@@ -14,12 +14,12 @@ services:
 
   backend:
     build:
-      context: ./backend_superset
+      context: ./backend
       dockerfile: Dockerfile
     ports:
       - "5000:5000"
     env_file:
-      - ./backend_superset/.env
+      - ./backend/.env
     restart: unless-stopped
     networks:
       - app-network
@@ -38,6 +38,23 @@ services:
     networks:
       - app-network
 
+  postgres:
+    image: postgres:16
+    container_name: custom-role-postgres
+    restart: unless-stopped
+    env_file:
+      - ./backend/.env
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_custom_role_data:/var/lib/postgresql/data
+      - ./backend/database/init.sql:/docker-entrypoint-initdb.d/01-init.sql
+    networks:
+      - app-network
+
 networks:
   app-network:
     driver: bridge
+
+volumes:
+  postgres_custom_role_data:

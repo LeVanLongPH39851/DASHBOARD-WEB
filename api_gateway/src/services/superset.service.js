@@ -123,8 +123,30 @@ async function logout(sessionCookie) {
   return response;
 }
 
+async function getDashboards(sessionCookie) {
+  const query =
+    "(order_column:changed_on_delta_humanized,order_direction:desc,page:0,page_size:1000,select_columns:!(id,dashboard_title))";
+
+  const response = await axios.get(
+    `${SUPERSET_URL}/api/v1/dashboard/?q=${encodeURIComponent(query)}`,
+    {
+      headers: {
+        Cookie: sessionCookie,
+        Accept: "application/json",
+      },
+      timeout: 15000,
+    },
+  );
+
+  return (response.data?.result || []).map((item) => ({
+    id: item.id,
+    dashboard_title: item.dashboard_title,
+  }));
+}
+
 module.exports = {
   login,
   getCurrentUser,
   logout,
+  getDashboards,
 };

@@ -15,7 +15,8 @@ import { useNavigate } from "react-router-dom";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
-import { login, resendOtp, verifyOtp } from "../services/authService";
+import { getDashboards, login, resendOtp, verifyOtp } from "../services/authService";
+import { filterMappedDashboards } from "../utils/dashboardMap";
 
 const Login = () => {
   const settings = {
@@ -40,6 +41,7 @@ const Login = () => {
   const [errorLogin, setErrorLogin] = useState("");
   const [showErrorName, setShowErrorName] = useState(false);
   const [showErrorPass, setShowErrorPass] = useState(false);
+  const [showErrorLogin, setShowErrorLogin] = useState(false);
   const [loading, setLoading] = useState(false);
   const [otpChallengeId, setOtpChallengeId] = useState("");
   const [otpEmail, setOtpEmail] = useState("");
@@ -49,6 +51,20 @@ const Login = () => {
   const [verifyingOtp, setVerifyingOtp] = useState(false);
   const [resendingOtp, setResendingOtp] = useState(false);
   const navigate = useNavigate(); // ← Hook navigate
+
+  const redirectAfterLogin = async () => {
+    try {
+      const dashRes = await getDashboards();
+      const mapped = filterMappedDashboards(dashRes?.dashboards);
+      if (mapped.length === 1) {
+        navigate(mapped[0].path, { replace: true });
+        return;
+      }
+    } catch {
+      // Nếu lỗi thì chuyển về trang danh sách /dashboard
+    }
+    navigate("/dashboard", { replace: true });
+  };
 
   useEffect(() => {
     // Trigger animation khi load
@@ -65,7 +81,7 @@ const Login = () => {
 
     setShowErrorName(false);
     setShowErrorPass(false);
-    setErrorLogin("");
+    setShowErrorLogin(false);
 
     // Giữ hiệu ứng chờ 700ms nếu bạn muốn
     await new Promise((resolve) => setTimeout(resolve, 700));
@@ -94,6 +110,11 @@ const Login = () => {
 
       console.log("[LOGIN RESPONSE]", result);
 
+      if (result.status === "success") {
+        await redirectAfterLogin();
+        return;
+      }
+
       if (result.status === "otp_required") {
         const challengeId = result.data?.challengeId;
 
@@ -120,10 +141,12 @@ const Login = () => {
         error.message ||
         "Đăng nhập thất bại. Vui lòng thử lại.";
 
-      if (status === 401 || status === 403) {
+      if (status === 401 || status === 403 || status === 500) {
         setErrorLogin("Tài khoản hoặc mật khẩu không chính xác");
+        setShowErrorLogin(true);
       } else {
         setErrorLogin(message);
+        setShowErrorLogin(true);
       }
     } finally {
       setLoading(false);
@@ -143,19 +166,21 @@ const Login = () => {
     try {
       setVerifyingOtp(true);
       const result = await verifyOtp(otpChallengeId, otp);
-      const sessionCookie = result.data?.sessionCookie;
 
-      if (result.status !== "success" || !sessionCookie) {
+
+      if (result.status !== "success") {
         throw new Error(result.message || "Không thể xác thực mã OTP");
       }
 
-      sessionStorage.setItem("userToken", sessionCookie);
-      navigate("/rating", { replace: true });
+
+      await redirectAfterLogin();
     } catch (error) {
       setOtpError(
-        error.response?.data?.message ||
-          error.message ||
-          "Xác thực OTP thất bại. Vui lòng thử lại.",
+        error.status == 500
+          ? "Mã OTP không chính xác"
+          : error.response?.data?.message ||
+              error.message ||
+              "Xác thực OTP thất bại. Vui lòng thử lại.",
       );
     } finally {
       setVerifyingOtp(false);
@@ -178,9 +203,11 @@ const Login = () => {
       setOtpMessage(result.message || "Mã OTP mới đã được gửi đến email.");
     } catch (error) {
       setOtpError(
-        error.response?.data?.message ||
-          error.message ||
-          "Gửi lại mã OTP thất bại. Vui lòng thử lại.",
+        error.status == 500
+          ? "Gửi lại mã OTP thất bại"
+          : error.response?.data?.message ||
+              error.message ||
+              "Gửi lại mã OTP thất bại. Vui lòng thử lại.",
       );
     } finally {
       setResendingOtp(false);
@@ -280,7 +307,7 @@ const Login = () => {
                     </figure>
                   </div>
                 </div>
-                <div className="flex justify-between mb-8">
+                {/* <div className="flex justify-between mb-8">
                   <div className="flex items-center">
                     <input type="checkbox" className="mr-1.5" />
                     <span className="text-color-p-login text-sm font-normal">
@@ -290,12 +317,25 @@ const Login = () => {
                   <p className="cursor-pointer text-sm text-color-p-black-login font-normal">
                     Forgot password ?
                   </p>
+                </div> */}
+                <div className="mb-2">
+                  {!errorLogin && (
+                    <p className="text-color-error font-normal text-sm opacity-0">
+                      Sai tài khoản hoặc mật khẩu
+                    </p>
+                  )}
+                  <p
+                    className={`${showErrorLogin ? "w-full opacity-100 visible" : "w-0 opacity-0 invisible"} text-nowrap overflow-hidden text-color-error transition-all duration-700 font-normal text-sm`}
+                  >
+                    {errorLogin}
+                  </p>
                 </div>
                 <button
                   type="submit"
-                  className="cursor-pointer w-full h-12 flex justify-center items-center bg-color-p-black-login text-base text-color-white-90 font-medium rounded-[10px]"
+                  disabled={loading}
+                  className="cursor-pointer w-full h-12 flex justify-center items-center hover:opacity-90 bg-color-p-black-login text-base text-color-white-90 font-medium rounded-[10px] disabled:cursor-not-allowed disabled:opacity-60 transition-all duration-300"
                 >
-                  Đăng nhập
+                  {loading ? "Đang đăng nhập..." : "Đăng nhập"}
                 </button>
               </form>
             </div>
@@ -361,108 +401,104 @@ const Login = () => {
           />
         </figure>
       </section>
-      {otpChallengeId && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4 py-6"
-          role="presentation"
+      <div
+        className={`fixed inset-0 bottom-auto ${otpChallengeId ? "top-0 bottom-0" : "-top-full"} z-50 flex items-center justify-center bg-black/50 px-4 py-6 w-full h-full transition-all duration-300`}
+        role="presentation"
+      >
+        <section
+          aria-labelledby="otp-modal-title"
+          aria-modal="true"
+          className="w-full max-w-md rounded-2xl bg-white p-7 shadow-2xl sm:p-9"
+          role="dialog"
         >
-          <section
-            aria-labelledby="otp-modal-title"
-            aria-modal="true"
-            className="w-full max-w-md rounded-2xl bg-white p-7 shadow-2xl sm:p-9"
-            role="dialog"
-          >
-            <div className="mb-7 text-center">
-              <h2
-                id="otp-modal-title"
-                className="mb-2 text-2xl font-semibold text-color-p-black-login"
-              >
-                Xác thực email
-              </h2>
-              <p className="text-sm leading-6 text-color-p-login">
-                Nhập mã OTP gồm 6 chữ số đã gửi đến{" "}
-                <span className="font-medium text-color-p-black-login">
-                  {otpEmail || "email của bạn"}
-                </span>
-                .
+          <div className="mb-7 text-center">
+            <h2
+              id="otp-modal-title"
+              className="mb-2 text-2xl font-semibold text-color-p-black-login"
+            >
+              Xác thực email
+            </h2>
+            <p className="text-sm leading-6 text-color-p-login">
+              Nhập mã OTP gồm 6 chữ số đã gửi đến{" "}
+              <span className="font-medium text-color-p-black-login">
+                {otpEmail || "email của bạn"}
+              </span>
+              .
+            </p>
+          </div>
+
+          <form onSubmit={handleVerifyOtp}>
+            <label
+              className="mb-2 block text-sm font-medium text-color-p-black-login"
+              htmlFor="otp-code"
+            >
+              Mã xác thực
+            </label>
+            <input
+              autoComplete="one-time-code"
+              autoFocus
+              className={`w-full rounded-[10px] border px-4 py-3 text-center text-xl font-semibold tracking-[0.35em] text-color-p-black-login outline-none transition focus:border-color-primary-700 ${
+                otpError ? "border-color-error" : "border-background-line-gray"
+              }`}
+              id="otp-code"
+              inputMode="numeric"
+              maxLength={6}
+              onChange={(event) => {
+                setOtp(event.target.value.replace(/\D/g, "").slice(0, 6));
+                setOtpError("");
+                setOtpMessage("");
+              }}
+              pattern="[0-9]{6}"
+              placeholder="••••••"
+              required
+              type="text"
+              value={otp}
+            />
+
+            {otpError && (
+              <p className="mt-2 text-sm text-color-error" role="alert">
+                {otpError}
               </p>
-            </div>
-
-            <form onSubmit={handleVerifyOtp}>
-              <label
-                className="mb-2 block text-sm font-medium text-color-p-black-login"
-                htmlFor="otp-code"
+            )}
+            {otpMessage && (
+              <p
+                className="mt-2 text-sm text-color-succes-type-1"
+                role="status"
               >
-                Mã xác thực
-              </label>
-              <input
-                autoComplete="one-time-code"
-                autoFocus
-                className={`w-full rounded-[10px] border px-4 py-3 text-center text-xl font-semibold tracking-[0.35em] text-color-p-black-login outline-none transition focus:border-color-primary-700 ${
-                  otpError
-                    ? "border-color-error"
-                    : "border-background-line-gray"
-                }`}
-                id="otp-code"
-                inputMode="numeric"
-                maxLength={6}
-                onChange={(event) => {
-                  setOtp(event.target.value.replace(/\D/g, "").slice(0, 6));
-                  setOtpError("");
-                  setOtpMessage("");
-                }}
-                pattern="[0-9]{6}"
-                placeholder="••••••"
-                required
-                type="text"
-                value={otp}
-              />
-
-              {otpError && (
-                <p className="mt-2 text-sm text-color-error" role="alert">
-                  {otpError}
-                </p>
-              )}
-              {otpMessage && (
-                <p
-                  className="mt-2 text-sm text-color-succes-type-1"
-                  role="status"
-                >
-                  {otpMessage}
-                </p>
-              )}
-
-              <button
-                className="mt-6 flex h-12 w-full items-center justify-center rounded-[10px] bg-color-p-black-login text-base font-medium text-color-white-90 transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
-                disabled={verifyingOtp || resendingOtp}
-                type="submit"
-              >
-                {verifyingOtp ? "Đang xác thực..." : "Xác nhận"}
-              </button>
-            </form>
-
-            <div className="mt-5 flex flex-wrap items-center justify-center gap-x-1 text-sm">
-              <span className="text-color-p-login">Chưa nhận được mã?</span>
-              <button
-                className="font-medium text-color-primary-700 hover:underline disabled:cursor-not-allowed disabled:opacity-60"
-                disabled={resendingOtp || verifyingOtp}
-                onClick={handleResendOtp}
-                type="button"
-              >
-                {resendingOtp ? "Đang gửi..." : "Gửi lại mã"}
-              </button>
-            </div>
+                {otpMessage}
+              </p>
+            )}
 
             <button
-              className="mt-5 w-full text-sm font-medium text-color-p-login hover:text-color-p-black-login"
-              onClick={closeOtpModal}
+              className="mt-6 flex h-12 w-full items-center justify-center rounded-[10px] bg-color-p-black-login text-base font-medium text-color-white-90 hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer transition-all duration-300"
+              disabled={verifyingOtp || resendingOtp}
+              type="submit"
+            >
+              {verifyingOtp ? "Đang xác thực..." : "Xác nhận"}
+            </button>
+          </form>
+
+          <div className="mt-5 flex flex-wrap items-center justify-center gap-x-1 text-sm">
+            <span className="text-color-p-login">Chưa nhận được mã?</span>
+            <button
+              className="font-medium text-color-primary-700 hover:underline disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer transition-all duration-300"
+              disabled={resendingOtp || verifyingOtp}
+              onClick={handleResendOtp}
               type="button"
             >
-              Quay lại đăng nhập
+              {resendingOtp ? "Đang gửi..." : "Gửi lại mã"}
             </button>
-          </section>
-        </div>
-      )}
+          </div>
+
+          <button
+            className="mt-5 w-full text-sm font-medium text-color-p-login hover:text-color-p-black-login cursor-pointer transition-all duration-300"
+            onClick={closeOtpModal}
+            type="button"
+          >
+            Quay lại đăng nhập
+          </button>
+        </section>
+      </div>
     </main>
   );
 };

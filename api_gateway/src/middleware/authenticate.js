@@ -4,7 +4,8 @@ async function authenticate(req, res, next) {
   try {
     const sessionCookie = req.headers.cookie;
 
-    if (!sessionCookie) {
+    // Kiểm tra có cookie và có chứa session cookie dạng "session=..."
+    if (!sessionCookie || !/(?:^|;\s*)session=\.[^;]+/.test(sessionCookie)) {
       return res.status(401).json({
         status: "error",
         message: "Chưa đăng nhập",

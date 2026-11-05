@@ -1,5 +1,6 @@
 const axios = require("axios");
 const supersetService = require("./superset.service");
+const backendService = require("./backend.service");
 
 const internalClient = axios.create({
   baseURL: process.env.BACKEND_URL,
@@ -21,6 +22,19 @@ async function login(username, password) {
     throw new Error("Tài khoản Superset chưa có email");
   }
 
+  // Kiểm tra quyền của user từ Custom Backend
+  const userPermissions = await backendService.getUserPermissions(user.id);
+  const permissions = userPermissions?.permissions || [];
+
+  // Nếu không có quyền otp.verify thì trả thẳng sessionCookie về cho frontend
+  if (!permissions.includes("otp.verify")) {
+    return {
+      otpRequired: false,
+      sessionCookie: credentials.sessionCookie,
+      user,
+    };
+  }
+
   // Gửi session và email sang Custom Backend
   const response = await internalClient.post("/internal/auth/otp/send", {
     email,
@@ -28,7 +42,10 @@ async function login(username, password) {
     user,
   });
 
-  return response.data.data;
+  return {
+    otpRequired: true,
+    ...response.data.data,
+  };
 }
 
 // Bước 2: Gửi lại OTP

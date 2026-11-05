@@ -3,8 +3,9 @@ const express = require("express");
 const cors = require("cors");
 const mysql = require("mysql2/promise");
 const { buildCacheKey, getCache, setCache } = require("./redis");
-const otpRoutes = require("./otp_email/routes/otp.routes");
-const internalAuth = require("./otp_email/middlewares/internal-auth");
+const otpRoutes = require("./otp_email_and_role/routes/otp.routes");
+const roleRoutes = require("./otp_email_and_role/routes/role.routes");
+const internalAuth = require("./otp_email_and_role/middlewares/internal-auth");
 
 const pool = mysql.createPool({
   host: "100.100.10.3",
@@ -285,6 +286,7 @@ app.post("/api/v2/query", async (req, res) => {
 });
 
 app.use("/internal/auth/otp", internalAuth, otpRoutes);
+app.use("/internal/auth/role", internalAuth, roleRoutes);
 
 // Health check
 app.get("/api/health", (req, res) => {

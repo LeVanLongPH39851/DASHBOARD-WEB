@@ -28,7 +28,57 @@ router.get("/auth/me", authenticate, authController.meController);
 // Logout
 router.post("/auth/logout", authenticate, authController.logoutController);
 
-router.use("/backend", authenticate, authorize("backend:read"), (req, res) => {
+router.get("/auth/permissions", authenticate, authController.roleController);
+
+// Lấy danh sách dashboard user được phép xem
+router.get(
+  "/dashboards",
+  authenticate,
+  authorize("dashboard.view"),
+  authController.getDashboardsController,
+);
+router.get(
+  "/auth/dashboards",
+  authenticate,
+  authorize("dashboard.view"),
+  authController.getDashboardsController,
+);
+
+// Kiểm tra quyền truy cập vào 1 dashboard cụ thể (theo slug hoặc id)
+router.get(
+  "/dashboards/check-access/:target",
+  authenticate,
+  authorize("dashboard.view"),
+  authController.checkDashboardAccessController,
+);
+router.get(
+  "/auth/dashboards/check-access/:target",
+  authenticate,
+  authorize("dashboard.view"),
+  authController.checkDashboardAccessController,
+);
+
+// Quản lý Group và danh sách Dashboard cấp phát cho Group (Role & Permission)
+router.get(
+  "/groups",
+  authenticate,
+  authorize("group.view"),
+  authController.getManagedGroupsController,
+);
+router.post(
+  "/groups",
+  authenticate,
+  authorize("group.create"),
+  authController.createManagedGroupController,
+);
+router.put(
+  "/groups/:groupId/dashboards",
+  authenticate,
+  authorize("group_dashboard.assign"),
+  authController.updateGroupDashboardsController,
+);
+
+router.use("/backend", authenticate, (req, res) => {
   forwardRequest(req, res, services.backend);
 });
 

@@ -8,9 +8,13 @@ import {
   useDarkMode,
 } from "../context/DashboardFilterContext";
 import {
+  assignGroupMember,
   createManagedGroup,
+  getAssignableUsers,
+  getGroupMembers,
   getManagedGroups,
   getMe,
+  removeGroupMember,
   updateGroupDashboards,
 } from "../services/authService";
 
@@ -90,8 +94,10 @@ const GroupCardNode = ({
   level = 0,
   canEditDashboards,
   canCreateGroup,
+  canManageMembers,
   onOpenEditModal,
   onOpenCreateChildModal,
+  onOpenMembersModal,
 }) => {
   const accent = GROUP_ACCENTS[(index + level) % GROUP_ACCENTS.length];
   const dashboards = group.dashboards || [];
@@ -138,10 +144,12 @@ const GroupCardNode = ({
                   {group.group_name}
                 </h2>
 
-                {/* Icon thành viên (People Icon) */}
-                <span
-                  title="Số thành viên trong Group"
-                  className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold border ${accent.badge}`}
+                {/* Icon thành viên (People Icon) - Click để quản lý thành viên */}
+                <button
+                  type="button"
+                  onClick={() => onOpenMembersModal(group)}
+                  title="Xem & Gán thành viên / quản trị cho Group"
+                  className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold border cursor-pointer hover:opacity-85 transition ${accent.badge}`}
                 >
                   <svg
                     className="w-3.5 h-3.5"
@@ -162,8 +170,8 @@ const GroupCardNode = ({
                       d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"
                     />
                   </svg>
-                  <span>{group.member_count || 0}</span>
-                </span>
+                  <span>{group.member_count || 0} thành viên</span>
+                </button>
 
                 {level > 0 && (
                   <span className="px-2 py-0.5 rounded-md text-[11px] font-medium bg-background-black-4 dark:bg-background-white-8 text-color-black-50 dark:text-color-white-50">
@@ -180,15 +188,27 @@ const GroupCardNode = ({
             </div>
           </div>
 
-          {canCreateGroup && (
-            <button
-              type="button"
-              onClick={() => onOpenCreateChildModal(group)}
-              className="px-3 py-1.5 rounded-xl text-xs font-medium border border-border-black-10 dark:border-background-white-15 text-color-black-70 dark:text-color-white-80 hover:border-color-neotam hover:text-color-neotam transition cursor-pointer flex items-center gap-1.5"
-            >
-              <span>+ Thêm Group con</span>
-            </button>
-          )}
+          <div className="flex flex-wrap items-center gap-2">
+            {canManageMembers && (
+              <button
+                type="button"
+                onClick={() => onOpenMembersModal(group)}
+                className="px-3 py-1.5 rounded-xl text-xs font-semibold border border-[#7367f0]/40 bg-[#7367f0]/10 text-[#7367f0] dark:text-[#a59ff8] hover:bg-[#7367f0] hover:text-white transition cursor-pointer flex items-center gap-1.5"
+              >
+                <span>Quản lý User ({group.member_count || 0})</span>
+              </button>
+            )}
+
+            {canCreateGroup && (
+              <button
+                type="button"
+                onClick={() => onOpenCreateChildModal(group)}
+                className="px-3 py-1.5 rounded-xl text-xs font-medium border border-border-black-10 dark:border-background-white-15 text-color-black-70 dark:text-color-white-80 hover:border-color-neotam hover:text-color-neotam transition cursor-pointer flex items-center gap-1.5"
+              >
+                <span>+ Thêm Group con</span>
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Bố cục chính: Bảng Dashboard bên trái & Nút Edit Dashboard list bên phải (như ảnh mẫu) */}
@@ -272,8 +292,10 @@ const GroupCardNode = ({
               level={level + 1}
               canEditDashboards={canEditDashboards}
               canCreateGroup={canCreateGroup}
+              canManageMembers={canManageMembers}
               onOpenEditModal={onOpenEditModal}
               onOpenCreateChildModal={onOpenCreateChildModal}
+              onOpenMembersModal={onOpenMembersModal}
             />
           ))}
         </div>
@@ -305,6 +327,17 @@ const RolePermissionContent = () => {
   const [newParentGroupId, setNewParentGroupId] = useState("");
   const [creatingGroup, setCreatingGroup] = useState(false);
   const [modalError, setModalError] = useState("");
+
+  // Modal Quản lý thành viên / Quản trị viên của Group
+  const [memberModalGroup, setMemberModalGroup] = useState(null);
+  const [groupMembers, setGroupMembers] = useState([]);
+  const [assignableUsers, setAssignableUsers] = useState([]);
+  const [loadingMembers, setLoadingMembers] = useState(false);
+  const [targetUserId, setTargetUserId] = useState("");
+  const [roleInGroup, setRoleInGroup] = useState("group_member");
+  const [memberDashIds, setMemberDashIds] = useState([]);
+  const [savingMember, setSavingMember] = useState(false);
+  const [memberModalError, setMemberModalError] = useState("");
 
   const fetchGroupData = useCallback(async () => {
     try {
@@ -346,6 +379,17 @@ const RolePermissionContent = () => {
   const canEditDashboards =
     permissions.includes("system.manage") ||
     permissions.includes("group_dashboard.assign");
+
+  const canManageMembers =
+    permissions.includes("system.manage") ||
+    permissions.includes("group_admin.assign") ||
+    permissions.includes("member.create") ||
+    permissions.includes("member.update") ||
+    permissions.includes("member_dashboard.assign");
+
+  const canAssignGroupAdmin =
+    permissions.includes("system.manage") ||
+    permissions.includes("group_admin.assign");
 
   const flatGroupOptions = useMemo(() => flattenGroups(groups), [groups]);
 
@@ -453,6 +497,102 @@ const RolePermissionContent = () => {
     }
   };
 
+  // Mở modal Quản lý thành viên / quản trị của Group
+  const handleOpenMembersModal = async (group) => {
+    setMemberModalGroup(group);
+    setMemberModalError("");
+    setTargetUserId("");
+    setRoleInGroup("group_member");
+    setMemberDashIds((group.dashboards || []).map((d) => Number(d.id)));
+    setLoadingMembers(true);
+
+    try {
+      const [membersRes, assignableRes] = await Promise.all([
+        getGroupMembers(group.id).catch(() => ({ members: [] })),
+        getAssignableUsers().catch(() => ({ users: [] })),
+      ]);
+
+      setGroupMembers(membersRes?.members || []);
+      setAssignableUsers(assignableRes?.users || []);
+    } catch (err) {
+      setMemberModalError(
+        err.response?.data?.message ||
+          err.message ||
+          "Không thể tải danh sách thành viên của Group",
+      );
+    } finally {
+      setLoadingMembers(false);
+    }
+  };
+
+  const toggleMemberDashId = (id) => {
+    setMemberDashIds((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id],
+    );
+  };
+
+  const handleSelectExistingMemberForEdit = (member) => {
+    const memberId = member.id ?? member.user_id;
+    const roleCode = member.role_code || member.role_in_group || "group_member";
+    const dashIds = Array.isArray(member.member_dashboard_ids)
+      ? member.member_dashboard_ids.map((id) => Number(id))
+      : (member.dashboards || []).map((d) => Number(d.id || d.dashboard_id));
+
+    setTargetUserId(String(memberId));
+    setRoleInGroup(roleCode);
+    setMemberDashIds(dashIds);
+  };
+
+  const handleAssignMember = async (e) => {
+    e.preventDefault();
+    if (!memberModalGroup) return;
+    if (!targetUserId) {
+      setMemberModalError("Vui lòng chọn User cần gán vào Group");
+      return;
+    }
+
+    try {
+      setSavingMember(true);
+      setMemberModalError("");
+      await assignGroupMember(memberModalGroup.id, {
+        targetUserId: Number(targetUserId),
+        roleCode: roleInGroup,
+        roleInGroup,
+        dashboardIds: memberDashIds,
+      });
+
+      const membersRes = await getGroupMembers(memberModalGroup.id);
+      setGroupMembers(membersRes?.members || []);
+      setTargetUserId("");
+      await fetchGroupData();
+    } catch (err) {
+      setMemberModalError(
+        err.response?.data?.message ||
+          err.message ||
+          "Gán thành viên vào Group thất bại",
+      );
+    } finally {
+      setSavingMember(false);
+    }
+  };
+
+  const handleRemoveMember = async (memberUserId) => {
+    if (!memberModalGroup) return;
+    try {
+      setMemberModalError("");
+      await removeGroupMember(memberModalGroup.id, memberUserId);
+      const membersRes = await getGroupMembers(memberModalGroup.id);
+      setGroupMembers(membersRes?.members || []);
+      await fetchGroupData();
+    } catch (err) {
+      setMemberModalError(
+        err.response?.data?.message ||
+          err.message ||
+          "Xóa thành viên khỏi Group thất bại",
+      );
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col font-family-be-vietnam-pro bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300">
       <Header username={user?.username || user?.profile?.username} />
@@ -525,8 +665,10 @@ const RolePermissionContent = () => {
                 level={0}
                 canEditDashboards={canEditDashboards}
                 canCreateGroup={canCreateGroup}
+                canManageMembers={canManageMembers}
                 onOpenEditModal={handleOpenEditModal}
                 onOpenCreateChildModal={handleOpenCreateModal}
+                onOpenMembersModal={handleOpenMembersModal}
               />
             ))}
           </div>
@@ -722,6 +864,293 @@ const RolePermissionContent = () => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal: Quản lý thành viên & quản trị viên của Group */}
+      {memberModalGroup && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4 py-6 overflow-y-auto">
+          <div className="w-full max-w-3xl rounded-2xl bg-background-light dark:bg-background-dark border border-border-black-10 dark:border-background-white-15 p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between gap-3 mb-3">
+              <div>
+                <h3 className="text-lg font-bold text-color-black-100 dark:text-color-white-90">
+                  Quản lý Thành viên & Quản trị — {memberModalGroup.group_name}
+                </h3>
+                <p className="text-xs text-color-black-50 dark:text-color-white-50">
+                  {isSystemManager
+                    ? "Bạn có quyền system.manage nên được phép gán các User khác trong bảng user_global_roles."
+                    : "Bạn chỉ được gán các User khác do chính bạn tạo ra vào Group (không thể sửa hoặc xóa User trong hệ thống)."}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setMemberModalGroup(null)}
+                className="px-3 py-1.5 rounded-xl text-xs font-medium border border-border-black-10 dark:border-background-white-15 text-color-black-70 dark:text-color-white-80 cursor-pointer"
+              >
+                Đóng
+              </button>
+            </div>
+
+            {/* Form Gán User vào Group */}
+            {canManageMembers && (
+              <form
+                onSubmit={handleAssignMember}
+                className="p-4 mb-5 rounded-xl bg-background-dashboard dark:bg-background-white-8 border border-border-black-10 dark:border-background-white-15 space-y-3.5"
+              >
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                  <div>
+                    <label className="block text-xs font-semibold text-color-black-70 dark:text-color-white-80 mb-1">
+                      Chọn User cần gán *
+                    </label>
+                    <select
+                      value={targetUserId}
+                      onChange={(e) => setTargetUserId(e.target.value)}
+                      className="w-full px-3 py-2 rounded-xl border border-border-black-10 dark:border-background-white-15 bg-background-light dark:bg-background-dark text-xs text-color-black-100 dark:text-color-white-90 outline-none focus:border-color-neotam"
+                      required
+                    >
+                      <option value="">-- Chọn User --</option>
+                      {assignableUsers
+                        .filter((u) => {
+                          const uid = Number(u.id ?? u.user_id);
+                          const currentId = Number(
+                            user?.user_id ||
+                              user?.id ||
+                              user?.profile?.id ||
+                              sessionStorage.getItem("user_id"),
+                          );
+                          if (uid === currentId) return false;
+                          if (!isSystemManager) {
+                            const alreadyInGroup = groupMembers.some(
+                              (m) => Number(m.id ?? m.user_id) === uid,
+                            );
+                            if (alreadyInGroup) return false;
+                          }
+                          return true;
+                        })
+                        .map((u) => {
+                          const uid = u.id ?? u.user_id;
+                          const roleLabels = (u.global_roles || [])
+                            .map((r) =>
+                              typeof r === "string"
+                                ? r
+                                : r?.role_name || r?.role_code || "",
+                            )
+                            .filter(Boolean)
+                            .join(", ");
+                          return (
+                            <option key={uid} value={uid}>
+                              #{uid} — {u.username} ({u.email || "no-email"})
+                              {roleLabels ? ` [${roleLabels}]` : ""}
+                            </option>
+                          );
+                        })}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-color-black-70 dark:text-color-white-80 mb-1">
+                      Vai trò trong Group *
+                    </label>
+                    <select
+                      value={roleInGroup}
+                      onChange={(e) => setRoleInGroup(e.target.value)}
+                      className="w-full px-3 py-2 rounded-xl border border-border-black-10 dark:border-background-white-15 bg-background-light dark:bg-background-dark text-xs text-color-black-100 dark:text-color-white-90 outline-none focus:border-color-neotam"
+                    >
+                      <option value="group_member">
+                        Thành viên xem Dashboard (group_member)
+                      </option>
+                      {canAssignGroupAdmin && (
+                        <>
+                          <option value="group_admin">
+                            Quản trị Group (group_admin)
+                          </option>
+                          <option value="super_admin">
+                            Quản trị cấp cao (super_admin)
+                          </option>
+                        </>
+                      )}
+                    </select>
+                  </div>
+                </div>
+
+                {/* Chọn các Dashboard cho phép thành viên xem (từ danh sách Dashboard của Group) */}
+                {roleInGroup === "group_member" && (
+                  <div>
+                    <label className="block text-xs font-semibold text-color-black-70 dark:text-color-white-80 mb-1.5">
+                      Cấp phát Dashboard xem trong Group ({memberDashIds.length}/
+                      {(memberModalGroup.dashboards || []).length}):
+                    </label>
+                    {(memberModalGroup.dashboards || []).length === 0 ? (
+                      <p className="text-xs text-color-black-50 dark:text-color-white-50">
+                        Group này chưa có Dashboard nào.
+                      </p>
+                    ) : (
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-40 overflow-y-auto pr-1">
+                        {(memberModalGroup.dashboards || []).map((dash) => {
+                          const checked = memberDashIds.includes(
+                            Number(dash.id),
+                          );
+                          return (
+                            <label
+                              key={dash.id}
+                              className={`flex items-center justify-between px-3 py-2 rounded-xl border text-xs cursor-pointer transition ${
+                                checked
+                                  ? "border-color-neotam bg-background-checked dark:bg-[#20A7C9]/15"
+                                  : "border-border-black-10 dark:border-background-white-15"
+                              }`}
+                            >
+                              <span className="flex items-center gap-2 font-medium text-color-black-100 dark:text-color-white-90">
+                                <input
+                                  type="checkbox"
+                                  checked={checked}
+                                  onChange={() =>
+                                    toggleMemberDashId(Number(dash.id))
+                                  }
+                                  className="w-3.5 h-3.5 accent-[#20A7C9]"
+                                />
+                                <span>{dash.dashboard_title}</span>
+                              </span>
+                              <span className="text-[11px] text-color-black-50 dark:text-color-white-50">
+                                #{dash.id}
+                              </span>
+                            </label>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {memberModalError && (
+                  <p className="text-xs text-color-error">{memberModalError}</p>
+                )}
+
+                <div className="flex justify-end">
+                  <button
+                    type="submit"
+                    disabled={savingMember}
+                    className="px-4 py-2 rounded-xl text-xs font-semibold bg-gradient-to-r from-[#20A7C9] to-[#2fc4c6] text-white cursor-pointer disabled:opacity-60"
+                  >
+                    {savingMember
+                      ? "Đang lưu..."
+                      : isSystemManager
+                        ? "Gán / Cập nhật User vào Group"
+                        : "Gán User vào Group"}
+                  </button>
+                </div>
+              </form>
+            )}
+
+            {/* Danh sách thành viên hiện tại trong Group */}
+            <div>
+              <h4 className="text-xs font-bold uppercase tracking-wider text-color-neotam dark:text-[#5bd6d8] mb-2.5">
+                Danh sách Thành viên & Quản trị hiện tại ({groupMembers.length})
+              </h4>
+
+              {loadingMembers ? (
+                <Loading height="160px" />
+              ) : groupMembers.length === 0 ? (
+                <div className="p-6 rounded-xl border border-dashed border-border-black-10 dark:border-background-white-15 text-center text-xs text-color-black-50 dark:text-color-white-50">
+                  Group này chưa có thành viên nào.
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left border-collapse text-xs">
+                    <thead>
+                      <tr className="border-b border-border-black-10 dark:border-background-white-15 text-color-black-50 dark:text-color-white-50 uppercase">
+                        <th className="py-2 pr-3">User</th>
+                        <th className="py-2 px-3">Email</th>
+                        <th className="py-2 px-3">Vai trò</th>
+                        <th className="py-2 px-3">Dashboards</th>
+                        {isSystemManager && (
+                          <th className="py-2 pl-3 text-right">Thao tác</th>
+                        )}
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-border-black-10 dark:divide-background-white-15">
+                      {groupMembers.map((m) => {
+                        const memberId = m.id ?? m.user_id;
+                        const currentId = Number(
+                          user?.user_id ||
+                            user?.id ||
+                            user?.profile?.id ||
+                            sessionStorage.getItem("user_id"),
+                        );
+                        const isSelf = Number(memberId) === currentId;
+                        const roleCode =
+                          m.role_code || m.role_in_group || "group_member";
+                        const roleLabel = m.role_name || roleCode;
+                        const dashCount = Array.isArray(m.member_dashboard_ids)
+                          ? m.member_dashboard_ids.length
+                          : (m.dashboards || []).length;
+
+                        return (
+                          <tr key={memberId}>
+                            <td className="py-2.5 pr-3 font-semibold text-color-black-100 dark:text-color-white-90">
+                              <div>
+                                #{memberId} — {m.username}
+                              </div>
+                              {m.full_name && (
+                                <div className="text-[11px] font-normal text-color-black-50 dark:text-color-white-50">
+                                  {m.full_name}
+                                </div>
+                              )}
+                            </td>
+                            <td className="py-2.5 px-3 text-color-black-70 dark:text-color-white-80">
+                              {m.email || "-"}
+                            </td>
+                            <td className="py-2.5 px-3">
+                              <span
+                                className={`inline-block px-2 py-0.5 rounded-full text-[11px] font-semibold ${
+                                  roleCode === "super_admin" ||
+                                  roleCode === "group_admin"
+                                    ? "bg-[#7367f0]/15 text-[#7367f0] dark:text-[#a59ff8]"
+                                    : "bg-[#20A7C9]/15 text-[#20A7C9] dark:text-[#5bd6d8]"
+                                }`}
+                              >
+                                {roleLabel} ({roleCode})
+                              </span>
+                            </td>
+                            <td className="py-2.5 px-3 text-color-black-70 dark:text-color-white-80">
+                              {roleCode === "group_member"
+                                ? `${dashCount} dashboard`
+                                : "Tất cả trong Group"}
+                            </td>
+                            {isSystemManager && (
+                              <td className="py-2.5 pl-3 text-right space-x-2">
+                                {!isSelf && (
+                                  <>
+                                    <button
+                                      type="button"
+                                      onClick={() =>
+                                        handleSelectExistingMemberForEdit(m)
+                                      }
+                                      className="text-color-neotam hover:underline cursor-pointer font-medium"
+                                    >
+                                      Sửa
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() =>
+                                        handleRemoveMember(memberId)
+                                      }
+                                      className="text-color-error hover:underline cursor-pointer font-medium"
+                                    >
+                                      Xóa
+                                    </button>
+                                  </>
+                                )}
+                              </td>
+                            )}
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}

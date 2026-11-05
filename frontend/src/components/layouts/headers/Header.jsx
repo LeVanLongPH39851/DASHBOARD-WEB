@@ -26,7 +26,10 @@ const Header = ({ username }) => {
   const isRolePermissionActive =
     location.pathname === "/role-permission" ||
     location.search.includes("tab=role-permission");
-  const isDashboardActive = !isRolePermissionActive;
+  const isUserInfoActive =
+    location.pathname === "/user-info" ||
+    location.search.includes("tab=user-info");
+  const isDashboardActive = !isRolePermissionActive && !isUserInfoActive;
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -154,6 +157,31 @@ const Header = ({ username }) => {
               />
             </svg>
             <span>Role and Permission</span>
+          </Link>
+
+          <Link
+            to="/user-info"
+            className={`px-4 max-md:px-2.5 py-2 max-md:py-1.5 rounded-xl text-sm max-lg:text-xs font-semibold transition-all duration-200 flex items-center gap-2 ${
+              isUserInfoActive
+                ? "bg-gradient-to-r from-[#f2994a] to-[#f7b731] text-white shadow-sm"
+                : "text-color-black-50 dark:text-color-white-80 hover:bg-background-black-4 dark:hover:bg-background-white-8"
+            }`}
+          >
+            <svg
+              className="w-4 h-4 max-md:w-3.5 max-md:h-3.5"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"
+              />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+            <span>User Info</span>
           </Link>
         </nav>
       </div>

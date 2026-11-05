@@ -65,6 +65,12 @@ async function loginController(req, res, next) {
       data: result,
     });
   } catch (error) {
+    if (error.statusCode || error.status) {
+      return res.status(error.statusCode || error.status).json({
+        status: "error",
+        message: error.message,
+      });
+    }
     next(error);
   }
 }
@@ -439,6 +445,154 @@ async function updateGroupDashboardsController(req, res) {
   }
 }
 
+// Lấy danh sách user có thể gán vào Group (từ bảng user_global_roles + Superset DB)
+async function getAssignableUsersController(req, res) {
+  try {
+    const userId = req.user.profile.id;
+    const result = await backendService.getAssignableUsers(userId);
+    return res.status(200).json(result);
+  } catch (error) {
+    console.error("[Get Assignable Users Error]", error.message);
+    return res.status(error.response?.status || 500).json({
+      status: "error",
+      message:
+        error.response?.data?.message ||
+        "Không thể lấy danh sách user có thể gán",
+    });
+  }
+}
+
+// Lấy thông tin chi tiết cho trang User Info (của chính user đang đăng nhập)
+async function getUsersInfoController(req, res) {
+  try {
+    const userId = req.user.profile.id;
+    const sessionCookie = req.sessionCookie || req.headers.cookie;
+
+    const infoData = await backendService.getUsersInfo(userId);
+    const rawUser =
+      infoData?.user || (Array.isArray(infoData?.users) ? infoData.users[0] : null);
+
+    if (!rawUser) {
+      return res.status(404).json({
+        status: "error",
+        message: "Không tìm thấy thông tin User",
+      });
+    }
+
+    const titleMap = new Map();
+    try {
+      const supersetDashboards = await supersetService.getDashboards(sessionCookie);
+      supersetDashboards.forEach((d) => {
+        titleMap.set(Number(d.id), d.dashboard_title);
+      });
+    } catch (err) {
+      console.warn("[UsersInfo Superset Lookup Warning]", err.message);
+    }
+
+    const rawIds = rawUser.can_view_all_dashboards
+      ? MAPPED_DASHBOARD_IDS
+      : (rawUser.dashboard_ids || []).filter((id) =>
+          Boolean(DASHBOARD_ROUTES[Number(id)]),
+        );
+
+    const dashboards = rawIds.map((id) => {
+      const numId = Number(id);
+      return {
+        id: numId,
+        dashboard_title: titleMap.get(numId) || `Dashboard #${numId}`,
+        path: DASHBOARD_ROUTES[numId]?.path || `/dashboard/${numId}`,
+      };
+    });
+
+    const enrichedUser = {
+      ...rawUser,
+      dashboards,
+    };
+
+    return res.status(200).json({
+      status: "success",
+      user: enrichedUser,
+    });
+  } catch (error) {
+    console.error("[Get Users Info Error]", error.message);
+    return res.status(error.response?.status || 500).json({
+      status: "error",
+      message:
+        error.response?.data?.message || "Không thể lấy thông tin User Info",
+    });
+  }
+}
+
+// Lấy danh sách thành viên trong 1 Group
+async function getGroupMembersController(req, res) {
+  try {
+    const userId = req.user.profile.id;
+    const groupId = Number(req.params.groupId);
+    const result = await backendService.getGroupMembers(userId, groupId);
+    return res.status(200).json(result);
+  } catch (error) {
+    console.error("[Get Group Members Error]", error.message);
+    return res.status(error.response?.status || 500).json({
+      status: "error",
+      message:
+        error.response?.data?.message ||
+        "Không thể lấy danh sách thành viên của Group",
+    });
+  }
+}
+
+// Gán user làm Quản trị hoặc Thành viên của Group kèm Dashboard
+async function assignGroupMemberController(req, res) {
+  try {
+    const userId = req.user.profile.id;
+    const groupId = Number(req.params.groupId);
+    const { targetUserId, roleCode, dashboardIds } = req.body || {};
+
+    const result = await backendService.assignGroupMember({
+      userId,
+      groupId,
+      targetUserId,
+      roleCode,
+      dashboardIds,
+    });
+
+    return res.status(200).json(result);
+  } catch (error) {
+    console.error("[Assign Group Member Error]", error.message);
+    return res.status(error.response?.status || 500).json({
+      status: "error",
+      message:
+        error.response?.data?.message ||
+        "Không thể gán thành viên vào Group",
+    });
+  }
+}
+
+// Xóa thành viên khỏi Group
+async function removeGroupMemberController(req, res) {
+  try {
+    const userId = req.user.profile.id;
+    const groupId = Number(req.params.groupId);
+    const targetUserId = Number(req.params.targetUserId);
+
+    const result = await backendService.removeGroupMember({
+      userId,
+      groupId,
+      targetUserId,
+    });
+
+    return res.status(200).json(result);
+  } catch (error) {
+    console.error("[Remove Group Member Error]", error.message);
+    return res.status(error.response?.status || 500).json({
+      status: "error",
+      message:
+        error.response?.data?.message ||
+        "Không thể xóa thành viên khỏi Group",
+    });
+  }
+}
+
 module.exports = {
   loginController,
   resendOtpController,
@@ -451,4 +605,9 @@ module.exports = {
   getManagedGroupsController,
   createManagedGroupController,
   updateGroupDashboardsController,
+  getAssignableUsersController,
+  getUsersInfoController,
+  getGroupMembersController,
+  assignGroupMemberController,
+  removeGroupMemberController,
 };

@@ -15,8 +15,12 @@ import { useNavigate } from "react-router-dom";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
-import { getDashboards, login, resendOtp, verifyOtp } from "../services/authService";
-import { filterMappedDashboards } from "../utils/dashboardMap";
+import {
+  getDashboards,
+  login,
+  resendOtp,
+  verifyOtp,
+} from "../services/authService";
 
 const Login = () => {
   const settings = {
@@ -55,7 +59,7 @@ const Login = () => {
   const redirectAfterLogin = async () => {
     try {
       const dashRes = await getDashboards();
-      const mapped = filterMappedDashboards(dashRes?.dashboards);
+      const mapped = dashRes?.dashboards || [];
       if (mapped.length === 1) {
         navigate(mapped[0].path, { replace: true });
         return;
@@ -167,11 +171,9 @@ const Login = () => {
       setVerifyingOtp(true);
       const result = await verifyOtp(otpChallengeId, otp);
 
-
       if (result.status !== "success") {
         throw new Error(result.message || "Không thể xác thực mã OTP");
       }
-
 
       await redirectAfterLogin();
     } catch (error) {

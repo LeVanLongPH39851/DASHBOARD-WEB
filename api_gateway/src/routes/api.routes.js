@@ -78,6 +78,38 @@ router.put(
   authController.updateGroupDashboardsController,
 );
 
+// Quản lý thành viên trong Group & thông tin User Info
+router.get(
+  "/users/info",
+  authenticate,
+  authorize("dashboard.view"),
+  authController.getUsersInfoController,
+);
+router.get(
+  "/users/assignable",
+  authenticate,
+  authorize(["member.create", "member.view", "group_admin.assign"]),
+  authController.getAssignableUsersController,
+);
+router.get(
+  "/groups/:groupId/members",
+  authenticate,
+  authorize(["member.view", "group.view"]),
+  authController.getGroupMembersController,
+);
+router.post(
+  "/groups/:groupId/members",
+  authenticate,
+  authorize(["member.create", "member.update", "group_admin.assign", "member_dashboard.assign"]),
+  authController.assignGroupMemberController,
+);
+router.delete(
+  "/groups/:groupId/members/:targetUserId",
+  authenticate,
+  authorize("system.manage"),
+  authController.removeGroupMemberController,
+);
+
 router.use("/backend", authenticate, (req, res) => {
   forwardRequest(req, res, services.backend);
 });

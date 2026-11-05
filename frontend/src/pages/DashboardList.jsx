@@ -10,7 +10,6 @@ import {
   useDarkMode,
 } from "../context/DashboardFilterContext";
 import { getDashboards, getMe } from "../services/authService";
-import { filterMappedDashboards } from "../utils/dashboardMap";
 
 // Bộ bảng màu đặc trưng theo biến theme của VTV Ratings (index.css)
 const CARD_THEMES = [
@@ -194,8 +193,8 @@ const DashboardListContent = () => {
           setUser(meRes.user);
         }
 
-        // Chỉ giữ lại các dashboard nằm trong danh sách map (58, 67, 64, 62, 80, 75)
-        const mappedList = filterMappedDashboards(dashRes?.dashboards);
+        const mappedList = dashRes?.dashboards || [];
+
         setDashboards(mappedList);
       } catch (err) {
         if (!isMounted) return;
@@ -246,16 +245,15 @@ const DashboardListContent = () => {
   }
 
   const displayName =
-    (user?.profile?.first_name || "") +
-      " " +
-      (user?.profile?.last_name || "") ||
-    user?.username ||
-    user?.profile?.username ||
-    "bạn";
+    user?.profile?.first_name && user?.profile?.last_name
+      ? (user?.profile?.first_name || "") +
+        " " +
+        (user?.profile?.last_name || "")
+      : "Bạn";
 
   return (
     <div className="min-h-screen flex flex-col font-family-be-vietnam-pro bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300">
-      <Header username={user?.username || user?.profile?.username} />
+      <Header username={user?.username} />
 
       <main className="flex-1 px-6 max-lg:px-5 max-md:px-4 py-6 max-lg:py-5 max-md:py-4 w-full">
         {/* Hero Banner rực rỡ theo tông màu VTV Ratings */}

@@ -426,37 +426,6 @@ async function createManagedGroup({
 
     const newGroup = rows[0];
 
-    // Nếu người tạo không có system.manage mà có quyền group.create, tự động gán họ vào group_members với role có quyền group.create
-    if (!permissions.includes("system.manage")) {
-      const roleRes = await client.query(
-        `
-          SELECT r.id
-          FROM roles r
-          JOIN role_permissions rp ON rp.role_id = r.id
-          JOIN permissions p ON p.id = rp.permission_id
-          WHERE p.permission_code IN ('group.create', 'group_dashboard.assign', 'group_admin.assign')
-            AND NOT EXISTS (
-              SELECT 1
-              FROM role_permissions rp2
-              JOIN permissions p2 ON p2.id = rp2.permission_id
-              WHERE rp2.role_id = r.id AND p2.permission_code = 'system.manage'
-            )
-          ORDER BY r.id ASC
-          LIMIT 1
-        `,
-      );
-      if (roleRes.rows[0]) {
-        await client.query(
-          `
-            INSERT INTO group_members (group_id, superset_user_id, role_id, created_by)
-            VALUES ($1, $2, $3, $2)
-            ON CONFLICT (group_id, superset_user_id) DO NOTHING
-          `,
-          [newGroup.id, userId, roleRes.rows[0].id],
-        );
-      }
-    }
-
     await client.query("COMMIT");
     return newGroup;
   } catch (error) {

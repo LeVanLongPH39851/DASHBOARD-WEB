@@ -26,6 +26,13 @@ async function login(username, password) {
   const userPermissions = await backendService.getUserPermissions(user.id);
   const permissions = userPermissions?.permissions || [];
 
+  if (!Array.isArray(permissions) || permissions.length === 0) {
+    const err = new Error("Tài khoản chưa được phân quyền trong hệ thống");
+    err.status = 403;
+    err.statusCode = 403;
+    throw err;
+  }
+
   // Nếu không có quyền otp.verify thì trả thẳng sessionCookie về cho frontend
   if (!permissions.includes("otp.verify")) {
     return {

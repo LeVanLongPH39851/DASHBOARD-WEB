@@ -23,4 +23,20 @@ router
   .put(roleController.updateGroupDashboards)
   .post(roleController.updateGroupDashboards);
 
+router
+  .route("/users/assignable")
+  .get(roleController.getAssignableUsers)
+  .post(roleController.getAssignableUsers);
+
+router
+  .route("/users/info")
+  .get(roleController.getUsersInfo)
+  .post(roleController.getUsersInfo);
+
+router
+  .route("/groups/members")
+  .get(roleController.getGroupMembers)
+  .post(roleController.assignGroupMember)
+  .delete(roleController.removeGroupMember);
+
 module.exports = router;

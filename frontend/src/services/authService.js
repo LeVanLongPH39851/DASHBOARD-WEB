@@ -91,4 +91,41 @@ export const updateGroupDashboards = async (groupId, dashboardIds) => {
   return response.data;
 };
 
+// Lấy thông tin User Info (username, email, status, ngày tạo, group, vai trò, các dashboard được xem)
+export const getUsersInfo = async () => {
+  const response = await api.get("/api/users/info");
+
+  return response.data;
+};
+
+// Lấy danh sách user từ bảng users (Superset) có trong user_global_roles để gán vào Group
+export const getAssignableUsers = async () => {
+  const response = await api.get("/api/users/assignable");
+
+  return response.data;
+};
+
+// Lấy danh sách thành viên/quản trị của 1 Group
+export const getGroupMembers = async (groupId) => {
+  const response = await api.get(`/api/groups/${groupId}/members`);
+
+  return response.data;
+};
+
+// Gán user làm quản trị hoặc thành viên của Group (kèm danh sách dashboard của thành viên)
+export const assignGroupMember = async (groupId, payload) => {
+  const response = await api.post(`/api/groups/${groupId}/members`, payload);
+
+  return response.data;
+};
+
+// Xóa user khỏi Group
+export const removeGroupMember = async (groupId, targetUserId) => {
+  const response = await api.delete(
+    `/api/groups/${groupId}/members/${targetUserId}`,
+  );
+
+  return response.data;
+};
+
 export default api;

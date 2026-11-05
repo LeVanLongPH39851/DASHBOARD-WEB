@@ -10,6 +10,7 @@ import {
 import Dashboard from "./pages/Dashboard";
 import DashboardList from "./pages/DashboardList";
 import RolePermission from "./pages/RolePermission";
+import UserInfo from "./pages/UserInfo";
 import DashboardSpot from "./pages/DashboardSpot";
 import DashboardBrand from "./pages/DashboardBrand";
 import DashboardWorldCup from "./pages/DashboardWorldCup";
@@ -22,7 +23,6 @@ import {
   getDashboards,
   getMe,
 } from "./services/authService";
-import { filterMappedDashboards } from "./utils/dashboardMap";
 
 const DASHBOARD_COMPONENT_BY_SLUG = {
   rating: Dashboard,
@@ -161,7 +161,7 @@ const PublicRoute = ({ children }) => {
           let targetPath = "/dashboard";
           try {
             const dashRes = await getDashboards();
-            const mapped = filterMappedDashboards(dashRes?.dashboards);
+            const mapped = dashRes?.dashboards || [];
             if (mapped.length === 1) {
               targetPath = mapped[0].path;
             }
@@ -240,8 +240,19 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/user-info"
+          element={
+            <ProtectedRoute>
+              <UserInfo />
+            </ProtectedRoute>
+          }
+        />
         {/* Cho phép truy cập bằng cả /dashboard/spot, /dashboard/rating... lẫn /dashboard/62, /dashboard/58... */}
-        <Route path="/dashboard/:target" element={<ProtectedDashboardRoute />} />
+        <Route
+          path="/dashboard/:target"
+          element={<ProtectedDashboardRoute />}
+        />
 
         {/* Tương thích các đường dẫn cũ (cũng kiểm tra quyền qua API Gateway và chuẩn hóa sang /dashboard/...) */}
         <Route

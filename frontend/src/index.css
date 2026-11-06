@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --breakpoint-md: 1025px;
   --breakpoint-lg: 1707px;
@@ -65,7 +66,9 @@
   --font-family-be-vietnam-pro: "Be Vietnam Pro", sans-serif;
 }
 
-html, #root, body {
+html,
+#root,
+body {
   min-height: 100vh;
   box-sizing: border-box;
 }
@@ -81,7 +84,9 @@ html, #root, body {
   border-radius: 0;
 }
 
-html.dark body::-webkit-scrollbar-thumb, html.dark #filter::-webkit-scrollbar-thumb, html.dark .divTable::-webkit-scrollbar-thumb {
+html.dark body::-webkit-scrollbar-thumb,
+html.dark #filter::-webkit-scrollbar-thumb,
+html.dark .divTable::-webkit-scrollbar-thumb {
   background: rgb(91 214 216);
   /* border: 1px solid #e5e7eb; */
   border-radius: 50px;
@@ -146,11 +151,14 @@ html.dark body::-webkit-scrollbar-thumb, html.dark #filter::-webkit-scrollbar-th
 @keyframes slideFromRight {
   0% {
     opacity: 0;
-    transform: translateX(100px); /* Bắt đầu từ PHÁI */
+    transform: translateX(100px);
+    /* Bắt đầu từ PHÁI */
   }
+
   100% {
     opacity: 1;
-    transform: translateX(0); /* Kết thúc TRÁI */
+    transform: translateX(0);
+    /* Kết thúc TRÁI */
   }
 }
 
@@ -159,7 +167,8 @@ html.dark body::-webkit-scrollbar-thumb, html.dark #filter::-webkit-scrollbar-th
 }
 
 .animate-slide-right {
-  animation: slideFromRight 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.3s forwards; /* Delay 0.3s */
+  animation: slideFromRight 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.3s forwards;
+  /* Delay 0.3s */
 }
 
 /* Initial state */

@@ -205,6 +205,14 @@ const appendFilters = (existingFilters, newFilters) => {
   return [...existingFilters, ...newFilters];
 };
 
+const getSessionUserId = () => {
+  try {
+    return sessionStorage.getItem('user_id');
+  } catch (error) {
+    return null;
+  }
+};
+
 export const buildPayloadWithFilters = (basePayload, filterState, enabledFilters = []) => {
 
   const next = structuredClone(basePayload);
@@ -215,6 +223,18 @@ export const buildPayloadWithFilters = (basePayload, filterState, enabledFilters
     } else {
       next.payload.queries[0].filters = [{ col: 'date', op: 'TEMPORAL_RANGE', val: 'No filter' }, { "col": "event_hour_minute", "op": "NOT IN", "val": ["active"] }];
     }
+  }
+
+  const sessionUserId = getSessionUserId();
+  if (sessionUserId) {
+    next.payload.queries = (next.payload.queries || []).map((q) => ({
+      ...q,
+      filters: appendFilters(q.filters || [], [{
+        col: 'user_id',
+        op: 'IN',
+        val: [sessionUserId]
+      }])
+    }));
   }
 
   const timeRange = toTimeRangeString(filterState?.startDate, filterState?.endDate);

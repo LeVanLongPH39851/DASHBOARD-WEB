@@ -1,29 +1,9 @@
 .loading-wave {
   width: 300px;
-  height: 100px;
+  /* height: 100px; */
   display: flex;
   justify-content: center;
   align-items: flex-end;
-}
-
-.loading-bar {
-  width: 20px;
-  height: 10px;
-  margin: 0 5px;
-  border-radius: 5px;
-  animation: loading-wave-animation 1s ease-in-out infinite;
-}
-
-.loading-bar:nth-child(2) {
-  animation-delay: 0.1s;
-}
-
-.loading-bar:nth-child(3) {
-  animation-delay: 0.2s;
-}
-
-.loading-bar:nth-child(4) {
-  animation-delay: 0.3s;
 }
 
 @keyframes loading-wave-animation {
@@ -38,4 +18,124 @@
   100% {
     height: 10px;
   }
+}
+
+.loading-bar {
+  width: 20px;
+  height: 10px;
+  margin: 0 5px;
+  border-radius: 5px;
+  animation: loading-wave-animation 1s ease-in-out infinite;
+}
+
+@media (width < 1707px) {
+  @keyframes loading-wave-animation {
+    0% {
+      height: 8px;
+    }
+
+    50% {
+      height: 48px;
+    }
+
+    100% {
+      height: 8px;
+    }
+  }
+
+  @keyframes loading-wave-animation-auto {
+    0% {
+      height: 6px;
+    }
+
+    50% {
+      height: 40px;
+    }
+
+    100% {
+      height: 6px;
+    }
+  }
+
+  .loading-bar {
+    width: 18px;
+    height: 8px;
+    margin: 0 4.5px;
+    border-radius: 5px;
+    animation: loading-wave-animation 1s ease-in-out infinite;
+  }
+
+  .loading-bar.auto {
+    width: 18px;
+    height: 6px;
+    margin: 0 4.5px;
+    border-radius: 5px;
+    animation: loading-wave-animation-auto 1s ease-in-out infinite;
+  }
+
+  .loading-wave {
+    width: 290px;
+  }
+}
+
+@media (width < 1025px) {
+  @keyframes loading-wave-animation {
+    0% {
+      height: 5px;
+    }
+
+    50% {
+      height: 45px;
+    }
+
+    100% {
+      height: 5px;
+    }
+  }
+
+  @keyframes loading-wave-animation-auto {
+    0% {
+      height: 4px;
+    }
+
+    50% {
+      height: 30px;
+    }
+
+    100% {
+      height: 4px;
+    }
+  }
+
+  .loading-bar {
+    width: 15px;
+    height: 5px;
+    margin: 0 4px;
+    border-radius: 5px;
+    animation: loading-wave-animation 1s ease-in-out infinite;
+  }
+
+  .loading-bar.auto {
+    width: 15px;
+    height: 4px;
+    margin: 0 4.5px;
+    border-radius: 5px;
+    animation: loading-wave-animation-auto 1s ease-in-out infinite;
+  }
+
+  .loading-wave {
+    width: 280px;
+  }
+}
+
+.loading-bar:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.loading-bar:nth-child(3) {
+  animation-delay: 0.2s;
+}
+
+.loading-bar:nth-child(4) {
+  animation-delay: 0.3s;
 }

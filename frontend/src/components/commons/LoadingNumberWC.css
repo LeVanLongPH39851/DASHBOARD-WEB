@@ -1,0 +1,45 @@
+/* From Uiverse.io by ayman-ashine */
+.loader {
+    --c-1: rgb(255, 65, 106);
+    --c-2: rgb(252, 183, 55);
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.layer {
+    font-family: "Segoe UI", Tahoma;
+    font-weight: 800;
+    text-transform: uppercase;
+    position: absolute;
+    white-space: nowrap;
+}
+
+.layer:nth-child(1) {
+    color: var(--c-1);
+    animation: kfs-3412 1s infinite;
+}
+
+.layer:nth-child(2) {
+    color: var(--c-2);
+    animation: kfs-3412 1s 0.5s infinite;
+}
+
+@keyframes kfs-3412 {
+    0% {
+        text-shadow: 0 0 30px var(--c-1);
+        transform: scaleY(0);
+        z-index: 2;
+    }
+
+    50% {
+        transform: scaleY(1.5);
+        z-index: 2;
+    }
+
+    100% {
+        transform: scaleY(1.5);
+        z-index: 0;
+    }
+}

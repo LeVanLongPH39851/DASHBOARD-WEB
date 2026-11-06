@@ -2,7 +2,7 @@ export const filterProgramPayload = {
   url: `${import.meta.env.VITE_API_DOMAIN}/api/v1/chart/data`,
   payload: {
     "datasource": {
-      "id": 195,
+      "id": 223,
       "type": "table"
     },
     "force": false,
@@ -32,11 +32,11 @@ export const filterProgramPayload = {
           ]
         ],
         "annotation_layers": [],
-        "row_limit": 1000,
+        "row_limit": 10000,
         "series_limit": 0,
         "order_desc": true,
         "url_params": {
-          "native_filters_key": "lItp2UHHv9WwzsHwV2xHwArdIlQehCU5yY2wbhqSKZlcG87G5ygnMiCYfQR1Dqyw"
+          "native_filters_key": "OYRD5Qk2Kiduvq0hRWIzyxNgdWfrNbATuCSTHB9D2xedhFjrSxwZAjiOpZ1EGHdG"
         },
         "custom_params": {},
         "custom_form_data": {}
@@ -48,7 +48,7 @@ export const filterProgramPayload = {
       "multiSelect": true,
       "searchAllOptions": false,
       "inverseSelection": false,
-      "datasource": "195__table",
+      "datasource": "223__table",
       "groupby": [
         "program_name"
       ],
@@ -75,16 +75,16 @@ export const filterProgramPayload = {
       "metrics": [
         "count"
       ],
-      "row_limit": 1000,
+      "row_limit": 10000,
       "showSearch": true,
       "time_range": "No filter",
       "url_params": {
-        "native_filters_key": "lItp2UHHv9WwzsHwV2xHwArdIlQehCU5yY2wbhqSKZlcG87G5ygnMiCYfQR1Dqyw"
+        "native_filters_key": "OYRD5Qk2Kiduvq0hRWIzyxNgdWfrNbATuCSTHB9D2xedhFjrSxwZAjiOpZ1EGHdG"
       },
       "inView": true,
       "viz_type": "filter_select",
       "type": "NATIVE_FILTER",
-      "dashboardId": 49,
+      "dashboardId": 52,
       "native_filter_id": "NATIVE_FILTER-_ynpR2LbP8yFDoVbzt4yI",
       "force": false,
       "result_format": "json",

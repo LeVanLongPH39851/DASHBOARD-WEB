@@ -1,11 +1,24 @@
-import { useApi } from './useApi';
-import * as getChart from '../api/dashboardApiBrand';
-import { useDashboardFilters } from '../context/DashboardFilterContext';
+import { useApi } from "./useApi";
+import * as getChart from "../api/dashboardApiBrand";
+import {
+  useDashboardFilters,
+  useDashboardCrossFilters,
+} from "../context/DashboardFilterContext";
 
-const createChartHook = (apiFn) => () => {
-  const { appliedFilters } = useDashboardFilters();
-  return useApi(apiFn, [appliedFilters]);
-};
+const createChartHook =
+  (apiFn, keyMain = "") =>
+  () => {
+    const { appliedFilters } = useDashboardFilters();
+    const { crossFilters } = useDashboardCrossFilters();
+
+    const shouldSkip =
+      crossFilters?.skipNext === keyMain ||
+      (crossFilters?.main && keyMain === crossFilters.main);
+
+    // Only pass appliedFilters to useApi, not crossFilters
+    // crossFilters is only used for shouldSkip logic
+    return useApi(apiFn, [appliedFilters], { shouldSkip });
+  };
 
 // ===== ADCODE =====
 export const useAdcodeTableChartProgramReturnApi = () =>
@@ -15,8 +28,8 @@ export const useAdcodeTableChartProgramReturnApi = () =>
 export const useAllTableChartBrandReturnApi = () =>
   createChartHook(getChart.getAllTableChartBrand)();
 
-export const useAllTableChartCampaignReturnApi = () =>
-  createChartHook(getChart.getAllTableChartCampaign)();
+// export const useAllTableChartCampaignReturnApi = () =>
+//   createChartHook(getChart.getAllTableChartCampaign)();
 
 export const useAllTableChartDeviceReturnApi = () =>
   createChartHook(getChart.getAllTableChartDevice)();

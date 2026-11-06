@@ -12,7 +12,6 @@ import iconUserInfor from "../../../assets/icon_user_infor.png";
 import iconUserInforDark from "../../../assets/icon_user_infor_dark.png";
 import iconLogout from "../../../assets/icon_logout.png";
 import useGlobalEffects from "../../../hooks/useGlobalEffects";
-import { logout } from "../../../services/authService";
 
 const Header = ({ username, isEnglish = false }) => {
   const { value: darkMode, setValue: setDarkMode } = useDarkMode();
@@ -72,22 +71,6 @@ const Header = ({ username, isEnglish = false }) => {
       localStorage.setItem("theme", "light");
     }
   };
-
-  const handleLogout = useCallback(async () => {
-    sessionStorage.removeItem("user_id");
-    sessionStorage.removeItem("dashboard_filters");
-    sessionStorage.removeItem("filter_values");
-    sessionStorage.removeItem("dashboard_filter_spots");
-    sessionStorage.removeItem("filter_value_spots");
-    sessionStorage.removeItem("open_filters");
-    sessionStorage.removeItem("filter_sessions_ratings");
-    try {
-      await logout();
-    } catch {
-      // ignore logout error
-    }
-    navigate("/", { replace: true });
-  }, [navigate]);
 
   useGlobalEffects();
 

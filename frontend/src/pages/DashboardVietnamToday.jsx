@@ -132,6 +132,7 @@ const DashboardContent = () => {
             icon={logoVietnamToday}
             widthIcon="w-12 max-lg:w-8 max-md:w-7.25"
             isEnglish={true}
+            hrefInstruct="https://ratings.vtv.vn/huongdan-vietnamtoday/"
           />
           <div className="bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300">
             <ParentTabs
@@ -1668,7 +1669,7 @@ const DashboardContent = () => {
                                 Entertainment: "#66CBE2",
                                 "Educational & Training": "#5470C6",
                                 Sports: "#FF874E",
-                                "Events/Specials": "#03748E",
+                                "Events/ Specials": "#03748E",
                               }),
                               [],
                             )}
@@ -1705,7 +1706,7 @@ const DashboardContent = () => {
                                 Entertainment: "#66CBE2",
                                 "Educational & Training": "#5470C6",
                                 Sports: "#FF874E",
-                                "Events/Specials": "#03748E",
+                                "Events/ Specials": "#03748E",
                               }),
                               [],
                             )}
@@ -2669,7 +2670,7 @@ const DashboardContent = () => {
                           <NumberCard
                             title={"Engagement"}
                             description={
-                              "Tổng số lượt tương tác phát sinh trên các bài viết được đăng trong khoảng thời gian báo cáo."
+                              "Tổng số lượt tương tác phát sinh trên các bài viết được đăng trong khoảng thời gian được chọn."
                             }
                             value={useMemo(
                               () =>
@@ -2696,7 +2697,7 @@ const DashboardContent = () => {
                           <NumberCard
                             title={"Views"}
                             description={
-                              "Tổng lượt xem nội dung. Các tỉnh khác nhau tùy nền tảng:\n- FB >=3s (chỉ video)\n- YT >=30s\n- TT >=autoplay\n- IG >=3s (Reels>=1s)"
+                              "Tổng lượt xem phát sinh trên các bài viết được đăng trong khoảng thời gian được chọn.\nCách tính khác nhau tuỳ nền tảng:\n- FB >=3s (chỉ video)\n- YT >=0s (Lưu ý: YouTube đã cập nhật cách tính view mới kể từ sau ngày 24/08/2026)\n- TT >=autoplay\n- IG >=3s (Reels>=1s)"
                             }
                             value={useMemo(
                               () =>
@@ -2723,7 +2724,7 @@ const DashboardContent = () => {
                           <NumberCard
                             title={"Total Shares"}
                             description={
-                              "Tổng số lượt chia sẻ của các bài viết được đăng trong khoảng thời gian báo cáo."
+                              "Tổng số lượt chia sẻ phát sinh trên các bài viết được đăng trong khoảng thời gian được chọn."
                             }
                             value={useMemo(
                               () =>

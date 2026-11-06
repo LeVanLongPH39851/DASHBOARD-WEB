@@ -28,6 +28,7 @@ import BreadCrumb from "../components/layouts/headers/BreadCrumb";
 import InforTab from "../components/layouts/headers/InforTab";
 import InforFilter from "../components/layouts/headers/InforFilter";
 import { LABEL_VIETNAMTODAY } from "../utils/label";
+import { FILTER_LABEL_VIETNAM_TODAY } from "../utils/label";
 import Title from "../components/layouts/components/Title";
 import HeatMap from "../components/charts/HeatMap";
 import logoVietnamToday from "../assets/logo_vietnamtoday.png";
@@ -120,7 +121,7 @@ const DashboardContent = () => {
 
   return (
     <main className="font-family-be-vietnam-pro w-full h-full tracking-[0.1px] overflow-x-clip">
-      <Header username={user?.username} />
+      <Header username={user?.username} isEnglish={true} />
       <div className="flex w-full h-full bg-background-light dark:bg-background-dark transition-all duration-300">
         <FilterVietNamToDay filters={scopeFilterData} />
         <div
@@ -130,6 +131,7 @@ const DashboardContent = () => {
             dashboardName="VIETNAM TODAY"
             icon={logoVietnamToday}
             widthIcon="w-12 max-lg:w-8 max-md:w-7.25"
+            isEnglish={true}
           />
           <div className="bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300">
             <ParentTabs
@@ -153,11 +155,14 @@ const DashboardContent = () => {
                             "MAX(check_time)"
                           ]
                         }
+                        isEnglish={true}
                       />
                       <InforFilter
                         filters={scopeFilterData}
                         FilterComponent={FilterVietNamToDay}
                         nameFilter="FilterVietNamToDay"
+                        filterLabel={FILTER_LABEL_VIETNAM_TODAY}
+                        isEnglish={true}
                       />
                       <div className="px-6 max-lg:px-5 max-md:px-4 pt-6 max-lg:pt-5 max-md:pt-4">
                         <div className="w-full grid grid-cols-5 max-lg:grid-cols-3 max-md:grid-cols-2 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4">
@@ -440,6 +445,7 @@ const DashboardContent = () => {
                               () => dashboard.refetch("chart1078Data"),
                               [dashboard.isLoading.chart1078Data],
                             )}
+                            isEnglish={true}
                           />
                         </div>
                         <div className="w-full grid grid-cols-2 max-md:flex-wrap max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4">
@@ -476,6 +482,7 @@ const DashboardContent = () => {
                               () => dashboard.refetch("chart1210Data"),
                               [dashboard.isLoading.chart1210Data],
                             )}
+                            isEnglish={true}
                           />
                           <PivotTableChart
                             data={useMemo(
@@ -510,6 +517,7 @@ const DashboardContent = () => {
                               () => dashboard.refetch("chart1209Data"),
                               [dashboard.isLoading.chart1209Data],
                             )}
+                            isEnglish={true}
                           />
                         </div>
                         <div className="w-full pb-6 max-lg:pb-5 max-md:pb-4">
@@ -743,11 +751,14 @@ const DashboardContent = () => {
                             "MAX(check_time)"
                           ]
                         }
+                        isEnglish={true}
                       />
                       <InforFilter
                         filters={scopeFilterData}
                         FilterComponent={FilterVietNamToDay}
                         nameFilter="FilterVietNamToDay"
+                        filterLabel={FILTER_LABEL_VIETNAM_TODAY}
+                        isEnglish={true}
                       />
                       <div className="px-6 max-lg:px-5 max-md:px-4 py-6 max-lg:py-5 max-md:py-4">
                         <div className="w-full grid grid-cols-4 max-lg:grid-cols-4 max-md:grid-cols-2 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4">
@@ -945,9 +956,7 @@ const DashboardContent = () => {
                                           fontWeight={
                                             CUSTOM_CHART.pieChart.fontWeight
                                           }
-                                          nameChart={
-                                            "Watch Time by Content Category"
-                                          }
+                                          nameChart={"Avg.Reach by Country"}
                                           center={true}
                                           description={false}
                                           donut={CUSTOM_CHART.pieChart.donut}
@@ -1001,6 +1010,7 @@ const DashboardContent = () => {
                                               ),
                                             [dashboard.isLoading.chart1094Data],
                                           )}
+                                          isEnglish={true}
                                         />
                                       </div>
                                       <div className="w-full grid grid-cols-2 max-md:flex-wrap max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4">
@@ -1254,6 +1264,7 @@ const DashboardContent = () => {
                                               ),
                                             [dashboard.isLoading.chart1095Data],
                                           )}
+                                          isEnglish={true}
                                         />
                                       </div>
                                       <div className="w-full grid grid-cols-2 max-md:flex-wrap max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4">
@@ -1507,6 +1518,7 @@ const DashboardContent = () => {
                                               ),
                                             [dashboard.isLoading.chart1096Data],
                                           )}
+                                          isEnglish={true}
                                         />
                                       </div>
                                       <div className="w-full grid grid-cols-2 max-md:flex-wrap max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4">
@@ -1756,6 +1768,7 @@ const DashboardContent = () => {
                                           dashboard.refetch("chart1040Data"),
                                         [dashboard.isLoading.chart1040Data],
                                       )}
+                                      isEnglish={true}
                                     />
                                   ),
                                 },
@@ -1797,6 +1810,7 @@ const DashboardContent = () => {
                                           dashboard.refetch("chart1041Data"),
                                         [dashboard.isLoading.chart1041Data],
                                       )}
+                                      isEnglish={true}
                                     />
                                   ),
                                 },
@@ -1828,11 +1842,14 @@ const DashboardContent = () => {
                             "MAX(check_time)"
                           ]
                         }
+                        isEnglish={true}
                       />
                       <InforFilter
                         filters={scopeFilterData}
                         FilterComponent={FilterVietNamToDay}
                         nameFilter="FilterVietNamToDay"
+                        filterLabel={FILTER_LABEL_VIETNAM_TODAY}
+                        isEnglish={true}
                       />
                       <div className="px-6 max-lg:px-5 max-md:px-4">
                         <div className="w-full grid grid-cols-5 max-lg:grid-cols-4 max-md:grid-cols-2 gap-6 max-lg:gap-5 max-md:gap-4 py-6 max-lg:py-5 max-md:py-4">
@@ -2038,6 +2055,7 @@ const DashboardContent = () => {
                               () => dashboard.refetch("chart1069Data"),
                               [dashboard.isLoading.chart1069Data],
                             )}
+                            isEnglish={true}
                           />
                           <TableChart
                             data={useMemo(
@@ -2065,6 +2083,7 @@ const DashboardContent = () => {
                               () => dashboard.refetch("chart1070Data"),
                               [dashboard.isLoading.chart1070Data],
                             )}
+                            isEnglish={true}
                           />
                         </div>
                         <div></div>
@@ -2280,6 +2299,7 @@ const DashboardContent = () => {
                                               ),
                                             [dashboard.isLoading.chart1059Data],
                                           )}
+                                          isEnglish={true}
                                         />
                                       </div>
                                       <div className="w-full pb-6 max-lg:pb-5 max-md:pb-4">
@@ -2370,6 +2390,7 @@ const DashboardContent = () => {
                                               ),
                                             [dashboard.isLoading.chart1060Data],
                                           )}
+                                          isEnglish={true}
                                         />
                                       </div>
                                       <div className="w-full pb-6 max-lg:pb-5 max-md:pb-4">
@@ -2460,6 +2481,7 @@ const DashboardContent = () => {
                                               ),
                                             [dashboard.isLoading.chart1061Data],
                                           )}
+                                          isEnglish={true}
                                         />
                                       </div>
                                       <div className="w-full pb-6 max-lg:pb-5 max-md:pb-4">
@@ -2577,6 +2599,7 @@ const DashboardContent = () => {
                               () => dashboard.refetch("chart1058Data"),
                               [dashboard.isLoading.chart1058Data],
                             )}
+                            isEnglish={true}
                           />
                         </div>
                       </div>
@@ -2603,11 +2626,14 @@ const DashboardContent = () => {
                             "MAX(check_time)"
                           ]
                         }
+                        isEnglish={true}
                       />
                       <InforFilter
                         filters={scopeFilterData}
                         FilterComponent={FilterVietNamToDay}
                         nameFilter="FilterVietNamToDay"
+                        filterLabel={FILTER_LABEL_VIETNAM_TODAY}
+                        isEnglish={true}
                       />
                       <div className="px-6 max-lg:px-5 max-md:px-4">
                         <div className="w-full grid grid-cols-4 max-md:grid-cols-2 gap-6 max-lg:gap-5 max-md:gap-4 py-6 max-lg:py-5 max-md:py-4">
@@ -2774,6 +2800,7 @@ const DashboardContent = () => {
                               () => dashboard.refetch("chart1090Data"),
                               [dashboard.isLoading.chart1090Data],
                             )}
+                            isEnglish={true}
                           />
                         </div>
                         <div className="px-6 max-lg:px-5 max-md:px-0 pt-4 max-lg:pt-3 max-md:pt-0 bg-background-black-4 max-md:bg-background-dashboard dark:bg-background-dark max-md:dark:bg-background-dashboard-dark rounded-2xl mb-6 max-lg:mb-5 max-md:mb-4">
@@ -2837,6 +2864,7 @@ const DashboardContent = () => {
                                 () => dashboard.refetch("chart1103Data"),
                                 [dashboard.isLoading.chart1103Data],
                               )}
+                              isEnglish={true}
                             />
                           </div>
                           <div className="w-full grid grid-cols-2 max-md:flex-wrap max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4">
@@ -2978,6 +3006,7 @@ const DashboardContent = () => {
                                 () => dashboard.refetch("chart1107Data"),
                                 [dashboard.isLoading.chart1107Data],
                               )}
+                              isEnglish={true}
                             />
                           </div>
                           {/* <div className="w-full grid grid-cols-2 max-md:flex-wrap max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4">
@@ -3009,6 +3038,7 @@ const DashboardContent = () => {
                                 () => dashboard.refetch("chart1208Data"),
                                 [dashboard.isLoading.chart1208Data],
                               )}
+                              isEnglish={true}
                             />
                             <TableChart
                               data={useMemo(
@@ -3036,6 +3066,7 @@ const DashboardContent = () => {
                                 () => dashboard.refetch("chart1211Data"),
                                 [dashboard.isLoading.chart1211Data],
                               )}
+                              isEnglish={true}
                             />
                           </div> */}
                           <div className="w-full grid grid-cols-2 max-md:flex-wrap max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4">
@@ -3161,6 +3192,7 @@ const DashboardContent = () => {
                                 () => dashboard.refetch("chart1205Data"),
                                 [dashboard.isLoading.chart1205Data],
                               )}
+                              isEnglish={true}
                             />
                             <PieChart
                               data={useMemo(
@@ -3239,6 +3271,7 @@ const DashboardContent = () => {
                                 () => dashboard.refetch("chart1088Data"),
                                 [dashboard.isLoading.chart1088Data],
                               )}
+                              isEnglish={true}
                             />
                             <TableChart
                               data={useMemo(
@@ -3275,6 +3308,7 @@ const DashboardContent = () => {
                                 () => dashboard.refetch("chart1079Data"),
                                 [dashboard.isLoading.chart1079Data],
                               )}
+                              isEnglish={true}
                             />
                           </div>
                           <div className="w-full grid grid-cols-2 max-md:flex-wrap max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4">
@@ -3313,6 +3347,7 @@ const DashboardContent = () => {
                                 () => dashboard.refetch("chart1086Data"),
                                 [dashboard.isLoading.chart1086Data],
                               )}
+                              isEnglish={true}
                             />
                             <TableChart
                               data={useMemo(
@@ -3349,6 +3384,7 @@ const DashboardContent = () => {
                                 () => dashboard.refetch("chart1087Data"),
                                 [dashboard.isLoading.chart1087Data],
                               )}
+                              isEnglish={true}
                             />
                           </div>
                         </div>

@@ -34,6 +34,7 @@ const BreadCrumb = ({
   dashboardName = "Kênh truyền hình VTV",
   icon = false,
   widthIcon = "",
+  isEnglish = false,
 }) => {
   // console.log("BreadCrumb");
 
@@ -128,7 +129,7 @@ const BreadCrumb = ({
               widthImage="w-4 max-lg:w-3.5"
               heightImage="h-4 max-lg:h-3.5"
               alt="Icon Instruct"
-              text={"Hướng dẫn"}
+              text={!isEnglish ? "Hướng dẫn" : "Manual"}
               src2={iconSucces}
               widthImage2="w-3.5 max-lg:w-3"
               alt2="Icon Succes"
@@ -144,7 +145,7 @@ const BreadCrumb = ({
                   widthImage="w-3.5 max-lg:w-3"
                   heightImage="h-3.5 max-lg:h-3"
                   alt="Icon Download"
-                  text={"Tải xuống"}
+                  text={!isEnglish ? "Tải xuống" : "Export"}
                   click={handleToggle}
                 />
               </div>
@@ -166,7 +167,7 @@ const BreadCrumb = ({
                     src={iconIMG}
                     widthImage="w-4 max-lg:w-3.75"
                     alt="Icon Instruct"
-                    text={"Tải Ảnh"}
+                    text={!isEnglish ? "Tải Ảnh" : "Export Image"}
                   />
                 </div>
                 <div
@@ -183,7 +184,7 @@ const BreadCrumb = ({
                     src={iconPDF}
                     widthImage="w-4 max-lg:w-3.75"
                     alt="Icon Instruct"
-                    text={"Tải PDF"}
+                    text={!isEnglish ? "Tải PDF" : "Export PDF"}
                   />
                 </div>
               </div>
@@ -220,7 +221,7 @@ const BreadCrumb = ({
                     widthImage="w-4 max-md:w-3"
                     heightImage="h-4 max-md:h-3"
                     alt="Icon Instruct"
-                    text={"Hướng dẫn"}
+                    text={!isEnglish ? "Hướng dẫn" : "Manual"}
                     src2={iconSucces}
                     widthImage2="w-3.5 max-md:w-2.5"
                     alt2="Icon Succes"
@@ -243,7 +244,7 @@ const BreadCrumb = ({
                   src={iconIMG}
                   widthImage="w-4 max-md:w-3.5"
                   alt="Icon Instruct"
-                  text={"Tải Ảnh"}
+                  text={!isEnglish ? "Tải Ảnh" : "Export Image"}
                 />
               </div>
             )}
@@ -261,7 +262,7 @@ const BreadCrumb = ({
                 src={iconPDF}
                 widthImage="w-4 max-md:w-3.5"
                 alt="Icon Instruct"
-                text={"Tải PDF"}
+                text={!isEnglish ? "Tải PDF" : "Export PDF"}
               />
             </div>
           </div>

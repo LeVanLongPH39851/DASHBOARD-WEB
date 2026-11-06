@@ -36,6 +36,8 @@ const InforFilter = ({
   filters,
   FilterComponent = Filter,
   nameFilter = "FilterRating",
+  filterLabel = FILTER_LABEL,
+  isEnglish = false,
 }) => {
   // console.log("InforFilter");
 
@@ -202,8 +204,8 @@ const InforFilter = ({
           <div className="flex gap-4 max-lg:gap-3 max-md:gap-2 items-center flex-wrap">
             <ul className="flex gap-2 items-center flex-wrap">
               <InforFilterItem
-                keyFilter={"Ngày"}
-                nameFilter={"Ngày"}
+                keyFilter={isEnglish ? "Date" : "Ngày"}
+                nameFilter={isEnglish ? "Date" : "Ngày"}
                 valueFilters={[
                   formatDate(
                     appliedFilters?.startDate ||
@@ -224,9 +226,10 @@ const InforFilter = ({
                     <InforFilterItem
                       key={key}
                       keyFilter={key}
-                      nameFilter={FILTER_LABEL[key] || key}
+                      nameFilter={filterLabel[key] || key}
                       valueFilters={values}
                       space={", "}
+                      isEnglish={isEnglish}
                     />
                   ))}
             </ul>

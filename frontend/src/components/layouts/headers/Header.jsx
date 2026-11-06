@@ -14,7 +14,7 @@ import iconLogout from "../../../assets/icon_logout.png";
 import useGlobalEffects from "../../../hooks/useGlobalEffects";
 import { logout } from "../../../services/authService";
 
-const Header = ({ username }) => {
+const Header = ({ username, isEnglish = false }) => {
   const { value: darkMode, setValue: setDarkMode } = useDarkMode();
   const location = useLocation();
   const navigate = useNavigate();
@@ -236,7 +236,7 @@ const Header = ({ username }) => {
                 src={iconLogout}
                 widthImage="w-4.5 max-lg:w-4.25 max-md:w-4"
                 alt="Icon Logout"
-                text={"Đăng xuất"}
+                text={isEnglish ? "Logout" : "Đăng xuất"}
                 click={handleLogout}
               />
             </div>

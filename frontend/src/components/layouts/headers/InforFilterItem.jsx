@@ -1,6 +1,7 @@
 import iconX from "../../../assets/icon_x.png";
 import iconXDark from "../../../assets/icon_x_dark.png";
 import { VALUE_LABEL } from "../../../utils/label";
+import { VALUE_LABEL_ENGLISH } from "../../../utils/label";
 import {
   useDashboardFilters,
   useDashboardFilterValues,
@@ -28,6 +29,7 @@ const InforFilterItem = ({
   nameFilter,
   valueFilters = [],
   space,
+  isEnglish = false,
 }) => {
   // console.log("InforFilterItem");
 
@@ -36,12 +38,14 @@ const InforFilterItem = ({
   const { value: darkMode, setValue: setDarkMode } = useDarkMode();
   const { crossFilters, setCrossFilters } = useDashboardCrossFilters();
 
+  const VALUE_FILTER = isEnglish ? VALUE_LABEL_ENGLISH : VALUE_LABEL;
+
   const displayValue = Array.isArray(valueFilters)
     ? valueFilters
-        .map((item) => VALUE_LABEL[item] ?? item)
+        .map((item) => VALUE_FILTER[item] ?? item)
         .filter((item) => item !== "")
         .join(space)
-    : (VALUE_LABEL[valueFilters] ?? valueFilters);
+    : (VALUE_FILTER[valueFilters] ?? valueFilters);
   if (!displayValue) return null;
   return (
     <li

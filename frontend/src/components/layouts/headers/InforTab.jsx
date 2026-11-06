@@ -14,10 +14,9 @@ import {
 } from "../../../helpers/helper";
 import React, { useState, useEffect } from "react";
 
-const InforTab = ({ inforTab, maxInsert = false }) => {
+const InforTab = ({ inforTab, maxInsert = false, isEnglish = false }) => {
   // console.log("InforTab");
 
-  const { appliedFilters, setAppliedFilters } = useDashboardFilters();
   const { value: darkMode, setValue: setDarkMode } = useDarkMode();
   const { value: isInfor, setValue: setIsInfor } = useIsInfor();
 
@@ -68,12 +67,13 @@ const InforTab = ({ inforTab, maxInsert = false }) => {
           />
         </figure>
         <span className="text-color-black-100 dark:text-color-white-80 transition-all duration-300 font-normal text-sm max-lg:text-[13px]">
-          Dữ liệu đến ngày {formatDate(getYesterday())}
+          {!isEnglish ? "Dữ liệu đến ngày" : "Data up to"}{" "}
+          {formatDate(getYesterday())}
         </span>
       </div>
       <div className="w-px h-5 rounded-full bg-background-line-gray max-md:hidden"></div>
       <span className="text-color-black-50 font-normal text-sm max-lg:text-[13px] dark:text-color-white-50 transition-all duration-300 max-md:text-xs text-nowrap max-md:hidden">
-        Ngày xử lý{" "}
+        {!isEnglish ? "Ngày xử lý" : "Last updated at"}{" "}
         {maxInsert
           ? formatDateTime(maxInsert)
           : formatDate(new Date()) + " 09:00"}

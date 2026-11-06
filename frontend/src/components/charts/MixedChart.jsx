@@ -179,7 +179,7 @@ const MixedChart = ({
               <div style="margin: 2px 0; display: flex; align-items: center;">
                 <span style="${markerStyle}"></span>
                 <span style="font-weight: 500; font-size: ${!screenMd ? (!screenLg ? "12" : "11") : "10.5"}px; margin-right: 4px; color: rgba(0, 0, 0, 0.7);">${p.seriesName}:</span> 
-                <span style="font-size: ${!screenMd ? (!screenLg ? "12" : "11") : "10.5"}px; font-weight: 400; color: rgba(0, 0, 0, 0.7);">${typeof p.value === "number" ? formatNumber(p.value, { isPercent: p.seriesName.includes("%") }) : p.value || "-"}
+                <span style="font-size: ${!screenMd ? (!screenLg ? "12" : "11") : "10.5"}px; font-weight: 400; color: rgba(0, 0, 0, 0.7);">${typeof p.value === "number" ? formatNumber(p.value, { isPercent: p.seriesName.includes("%") || p.seriesName.includes("site/user/day") }) : p.value || "-"}
                 </span>
               </div>`;
               })
@@ -488,7 +488,8 @@ const MixedChart = ({
             ],
             formatter: (params) => {
               return typeof params.value === "number"
-                ? params.seriesName.includes("%")
+                ? params.seriesName.includes("%") ||
+                  params.seriesName.includes("site/user/day")
                   ? params.value.toLocaleString(undefined, {
                       maximumFractionDigits: 2,
                     })

@@ -19,6 +19,7 @@ const SelectMultiFilter = ({
   disabled = false,
   marginBottom,
   horizontalFixed = false,
+  isEnglish = false,
 }) => {
   // console.log("SelectMultiFilter");
 
@@ -224,7 +225,9 @@ const SelectMultiFilter = ({
             isDisabled={disabled}
             styles={customStyles}
             classNamePrefix="react-select"
-            noOptionsMessage={() => "Không có dữ liệu"}
+            noOptionsMessage={() =>
+              !isEnglish ? "Không có dữ liệu" : "Nodata"
+            }
             closeMenuOnSelect={false}
             menuPlacement="auto"
             menuPosition="fixed"

@@ -12,6 +12,7 @@ const DateRangeFilter = ({
   endDate,
   onChange,
   horizontalFixed = false,
+  isEnglish = false,
 }) => {
   // console.log("DateRangeFilter");
 
@@ -99,7 +100,7 @@ const DateRangeFilter = ({
           className={`flex cursor-pointer group justify-between items-center h-10.5 max-lg:h-9 max-md:h-8 ${isOpenFilter ? "mb-1" : ""}`}
         >
           <label className="cursor-pointer text-[16px] max-lg:text-sm max-md:text-xs text-background-black-child-tab dark:text-color-white-90 transition-all duration-300 font-medium">
-            Ngày
+            {isEnglish ? "Date" : "Ngày"}
           </label>
           <figure
             className={`cursor-pointer ${isOpenFilter ? "" : "rotate-180"}`}
@@ -125,7 +126,7 @@ const DateRangeFilter = ({
         >
           {!horizontalFixed && (
             <label className="text-sm max-lg:text-[13px] max-md:text-xs font-normal text-color-black-50 dark:text-color-white-50 transition-all duration-300 mb-1.5 max-md:mb-1">
-              Từ ngày
+              {isEnglish ? "From date" : "Từ ngày"}
             </label>
           )}
           <div className={`relative w-full ${!horizontalFixed ? "mb-2" : ""}`}>
@@ -153,7 +154,7 @@ const DateRangeFilter = ({
           </div>
           {!horizontalFixed && (
             <label className="text-sm max-lg:text-[13px] max-md:text-xs font-normal text-color-black-50 dark:text-color-white-50 transition-all duration-300 mb-1.5 max-md:mb-1">
-              Đến ngày
+              {isEnglish ? "To date" : "Đến ngày"}
             </label>
           )}
           <div className="relative w-full">

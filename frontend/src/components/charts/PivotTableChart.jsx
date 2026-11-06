@@ -193,6 +193,7 @@ const PivotTableChart = ({
   crossFilter = false,
   keyChart = false,
   refetch = undefined,
+  isEnglish = false,
 }) => {
   const { value: darkMode, setValue: setDarkMode } = useDarkMode();
   const { value: screenMd, setValue: setScreenMd } = useScreenMd();
@@ -528,14 +529,14 @@ const PivotTableChart = ({
                 />
               </figure>
               <span className="text-sm max-lg:text-xs max-md:text-[10.5px] font-normal text-background-black-90 dark:text-color-white-50 transition-all duration-300">
-                Chọn cột
+                {isEnglish ? "Select columns" : "Chọn cột"}
               </span>
             </button>
             {showColumnMenu && (
               <div className="absolute left-0 top-full mt-2 max-lg:mt-1.5 max-md:mt-1 bg-background-light dark:bg-background-dark dark:border-background-white-15 transition-all duration-300 border border-border-black-10 rounded-lg z-50 min-w-55 max-md:min-w-50">
                 <div className="p-3 max-lg:p-2.5 max-md:p-2 max-h-80 max-lg:max-h-75 max-md:max-h-70 overflow-y-auto">
                   <div className="text-xs max-lg:text-[11px] max-md:text-[10.5px] font-medium text-color-black-50 dark:text-color-white-80 transition-all duration-300 uppercase mb-2 px-2 max-md:px-1">
-                    Danh sách cột
+                    {isEnglish ? "List column" : "Danh sách cột"}
                   </div>
                   {table.getAllLeafColumns().map((column) => (
                     <label
@@ -602,7 +603,7 @@ const PivotTableChart = ({
             type="text"
             value={globalFilter ?? ""}
             onChange={(e) => setGlobalFilter(e.target.value)}
-            placeholder="Tìm kiếm"
+            placeholder={!isEnglish ? "Tìm kiếm" : "Search"}
             className="pl-4 max-lg:pl-3.75 pr-11 max-lg:pr:10.75 max-md:pr-10 py-2.25 max-lg:py-2.25 max-md:py-2 border border-border-black-10 dark:border-background-white-15 rounded-2xl outline-none bg-background-search dark:bg-background-white-8 transition-all duration-300 text-sm max-lg:text-xs max-md:text-[10.5px] font-normal text-color-black-50 placeholder-color-black-50 dark:text-color-white-50 dark:placeholder-color-white-50 w-70 max-lg:w-60 max-md:w-35"
           />
           <figure className="absolute top-1/2 -translate-y-1/2 right-4 max-lg:right-3.75 cursor-pointer">

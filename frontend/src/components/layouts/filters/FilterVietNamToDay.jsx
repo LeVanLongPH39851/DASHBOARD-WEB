@@ -46,15 +46,15 @@ const FilterVietNamToDay = ({ filters, horizontalFixed = false }) => {
 
   const ALL_DAYS = useMemo(
     () => [
-      { value: "Weekend", label: "Cuối tuần", groupId: "week-type" },
-      { value: "InWeek", label: "Ngày thường", groupId: "week-type" },
-      { value: "Monday", label: "Thứ hai" },
-      { value: "Tuesday", label: "Thứ ba" },
-      { value: "Wednesday", label: "Thứ tư" },
-      { value: "Thursday", label: "Thứ năm" },
-      { value: "Friday", label: "Thứ sáu" },
-      { value: "Saturday", label: "Thứ bảy" },
-      { value: "Sunday", label: "Chủ nhật" },
+      { value: "Weekend", label: "Weekend", groupId: "week-type" },
+      { value: "InWeek", label: "Weekdays", groupId: "week-type" },
+      { value: "Monday", label: "Monday" },
+      { value: "Tuesday", label: "Tuesday" },
+      { value: "Wednesday", label: "Wednesday" },
+      { value: "Thursday", label: "Thursday" },
+      { value: "Friday", label: "Friday" },
+      { value: "Saturday", label: "Saturday" },
+      { value: "Sunday", label: "Sunday" },
     ],
     [],
   );
@@ -160,10 +160,18 @@ const FilterVietNamToDay = ({ filters, horizontalFixed = false }) => {
   const VALUE_DEFAULT = useMemo(() => [], []);
 
   const toOptions = (items = [], field) =>
-    items.map((item) => ({
-      value: item[field],
-      label: item[field],
-    }));
+    (Array.isArray(items) ? items : [])
+      .filter(
+        (item) =>
+          item &&
+          item[field] !== undefined &&
+          item[field] !== null &&
+          item[field] !== "",
+      )
+      .map((item) => ({
+        value: item[field],
+        label: item[field],
+      }));
 
   const FILTER_SESSION_KEY = "dashboard_filters_vietnamtodays";
   const FILTERS = "filter_sessions_vietnamtodays";
@@ -275,22 +283,20 @@ const FilterVietNamToDay = ({ filters, horizontalFixed = false }) => {
       days: ALL_DAYS,
       otts: ALL_OTTS,
       events: ALL_EVENTS,
-      countries: ALL_COUNTRIES[0].value
+      countries: ALL_COUNTRIES[0]?.value
         ? ALL_COUNTRIES
-        : sessionStorage.getItem(FILTERS) !== "{}"
-          ? JSON.parse(sessionStorage.getItem(FILTERS)).countries
-          : ALL_COUNTRIES,
+        : JSON.parse(sessionStorage.getItem(FILTERS) || "{}")?.countries ||
+          ALL_COUNTRIES,
       countryTypes: ALL_COUNTRY_TYPES,
       keyCountries: ALL_KEY_COUNTRIES,
       continents: ALL_CONTINENTS,
       devices: ALL_DEVICES,
       firstLevels: ALL_FIRST_LEVELS,
       platforms: ALL_PLATFORMS,
-      sources: ALL_SOURCES[0].value
+      sources: ALL_SOURCES[0]?.value
         ? ALL_SOURCES
-        : sessionStorage.getItem(FILTERS) !== "{}"
-          ? JSON.parse(sessionStorage.getItem(FILTERS)).sources
-          : ALL_SOURCES,
+        : JSON.parse(sessionStorage.getItem(FILTERS) || "{}")?.sources ||
+          ALL_SOURCES,
     };
 
     sessionStorage.setItem(FILTER_SESSION_KEY, JSON.stringify(appliedFilters));
@@ -304,7 +310,7 @@ const FilterVietNamToDay = ({ filters, horizontalFixed = false }) => {
         Object.entries(lookups).map(([field, options]) => [
           field,
           (appliedFilters[field] || [])
-            .map((val) => options.find((item) => item.value === val))
+            .map((val) => (options || []).find((item) => item?.value === val))
             .filter(Boolean),
         ]),
       ),
@@ -446,37 +452,41 @@ const FilterVietNamToDay = ({ filters, horizontalFixed = false }) => {
     () => [
       <CheckboxMultiFilter
         label="Country type"
-        placeholder="Chọn country type"
+        placeholder="Select country type"
         options={ALL_COUNTRY_TYPES}
         value={filterValues?.countryTypes || VALUE_DEFAULT}
         onChange={createFilterChangeHandler("countryTypes")}
         marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
+        isEnglish={true}
       />,
       <CheckboxMultiFilter
         label="Key country"
-        placeholder="Chọn key country"
+        placeholder="Select key country"
         options={ALL_KEY_COUNTRIES}
         value={filterValues?.keyCountries || VALUE_DEFAULT}
         onChange={createFilterChangeHandler("keyCountries")}
         marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
         isSearch={false}
+        isEnglish={true}
       />,
       <SelectMultiFilter
         label="Country"
-        placeholder="Chọn country"
+        placeholder="Select country"
         options={ALL_COUNTRIES}
         value={filterValues?.countries || VALUE_DEFAULT}
         onChange={createFilterChangeHandler("countries")}
         marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
         horizontalFixed={horizontalFixed}
+        isEnglish={true}
       />,
       <CheckboxMultiFilter
         label="Continent"
-        placeholder="Chọn Continent"
+        placeholder="Select Continent"
         options={ALL_CONTINENTS}
         value={filterValues?.continents || VALUE_DEFAULT}
         onChange={createFilterChangeHandler("continents")}
         marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
+        isEnglish={true}
       />,
     ],
     [
@@ -500,7 +510,7 @@ const FilterVietNamToDay = ({ filters, horizontalFixed = false }) => {
           {!horizontalFixed && (
             <div className="flex justify-between items-center h-10.5 max-lg:h-9 max-md:h-8 mb-2 max-lg:mb-1.5 max-md:mb-1">
               <span className="text-background-black-child-tab dark:text-color-white-90 transition-all duration-300 text-[16px] max-lg:text-sm max-md:text-xs font-semibold">
-                Bộ lọc
+                Filters
               </span>
               <figure
                 className="cursor-pointer transition-all duration-300 hover:rotate-180"
@@ -525,6 +535,7 @@ const FilterVietNamToDay = ({ filters, horizontalFixed = false }) => {
                 endDate={filterValues?.endDate || getYesterday()}
                 onChange={handleDateRangeChange}
                 horizontalFixed={horizontalFixed}
+                isEnglish={true}
               />
             </div>
 
@@ -532,55 +543,60 @@ const FilterVietNamToDay = ({ filters, horizontalFixed = false }) => {
               (!horizontal ? (
                 <CheckboxMultiFilter
                   label="Category"
-                  placeholder="Chọn category"
+                  placeholder="Select category"
                   options={ALL_FIRST_LEVELS}
                   value={filterValues?.firstLevels || VALUE_DEFAULT}
                   onChange={createFilterChangeHandler("firstLevels")}
                   marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
+                  isEnglish={true}
                 />
               ) : (
                 <SelectMultiFilter
                   label="Category"
-                  placeholder="Chọn category"
+                  placeholder="Select category"
                   options={ALL_FIRST_LEVELS}
                   value={filterValues?.firstLevels || VALUE_DEFAULT}
                   onChange={createFilterChangeHandler("firstLevels")}
                   marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
                   horizontalFixed={horizontalFixed}
+                  isEnglish={true}
                 />
               ))}
 
             {[DISABLE_TABS.vod].includes(currentTab) && (
               <SelectMultiFilter
                 label="Source"
-                placeholder="Chọn source"
+                placeholder="Select source"
                 options={ALL_SOURCES}
                 value={filterValues?.sources || VALUE_DEFAULT}
                 onChange={createFilterChangeHandler("sources")}
                 marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
                 horizontalFixed={horizontalFixed}
+                isEnglish={true}
               />
             )}
 
             {[DISABLE_TABS.overview, DISABLE_TABS.live].includes(currentTab) &&
               (!horizontal ? (
                 <CheckboxMultiFilter
-                  label="Nhóm ngày"
-                  placeholder="Chọn ngày..."
+                  label="Day of Week"
+                  placeholder="Select day..."
                   options={ALL_DAYS}
                   value={filterValues?.days || VALUE_DEFAULT}
                   onChange={handleDaysChange}
                   marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
+                  isEnglish={true}
                 />
               ) : (
                 <SelectMultiFilter
-                  label="Nhóm ngày"
-                  placeholder="Chọn ngày..."
+                  label="Day of Week"
+                  placeholder="Select day..."
                   options={ALL_DAYS}
                   value={filterValues?.days || VALUE_DEFAULT}
                   onChange={handleDaysChange}
                   marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
                   horizontalFixed={horizontalFixed}
+                  isEnglish={true}
                 />
               ))}
 
@@ -588,21 +604,23 @@ const FilterVietNamToDay = ({ filters, horizontalFixed = false }) => {
               (!horizontal ? (
                 <CheckboxMultiFilter
                   label="Live/VOD"
-                  placeholder="Chọn event..."
+                  placeholder="Select event..."
                   options={ALL_EVENTS}
                   value={filterValues?.events || VALUE_DEFAULT}
                   onChange={createFilterChangeHandler("events")}
                   marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
+                  isEnglish={true}
                 />
               ) : (
                 <SelectMultiFilter
                   label="Live/TSV"
-                  placeholder="Chọn event..."
+                  placeholder="Select event..."
                   options={ALL_EVENTS}
                   value={filterValues?.events || VALUE_DEFAULT}
                   onChange={createFilterChangeHandler("events")}
                   marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
                   horizontalFixed={horizontalFixed}
+                  isEnglish={true}
                 />
               ))}
 
@@ -610,21 +628,23 @@ const FilterVietNamToDay = ({ filters, horizontalFixed = false }) => {
               (!horizontal ? (
                 <CheckboxMultiFilter
                   label="OTT"
-                  placeholder="Chọn nền tảng"
+                  placeholder="Select OTT"
                   options={ALL_OTTS}
                   value={filterValues?.otts || VALUE_DEFAULT}
                   onChange={createFilterChangeHandler("otts")}
                   marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
+                  isEnglish={true}
                 />
               ) : (
                 <SelectMultiFilter
                   label="OTT"
-                  placeholder="Chọn nền tảng"
+                  placeholder="Select OTT"
                   options={ALL_OTTS}
                   value={filterValues?.otts || VALUE_DEFAULT}
                   onChange={createFilterChangeHandler("otts")}
                   marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
                   horizontalFixed={horizontalFixed}
+                  isEnglish={true}
                 />
               ))}
 
@@ -636,39 +656,43 @@ const FilterVietNamToDay = ({ filters, horizontalFixed = false }) => {
               <>
                 <SelectMultiFilter
                   label="Country type"
-                  placeholder="Chọn country type"
+                  placeholder="Select country type"
                   options={ALL_COUNTRY_TYPES}
                   value={filterValues?.countryTypes || VALUE_DEFAULT}
                   onChange={createFilterChangeHandler("countryTypes")}
                   marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
                   horizontalFixed={horizontalFixed}
+                  isEnglish={true}
                 />
                 <SelectMultiFilter
                   label="Key country"
-                  placeholder="Chọn key country"
+                  placeholder="Select key country"
                   options={ALL_KEY_COUNTRIES}
                   value={filterValues?.keyCountries || VALUE_DEFAULT}
                   onChange={createFilterChangeHandler("keyCountries")}
                   marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
                   horizontalFixed={horizontalFixed}
+                  isEnglish={true}
                 />
                 <SelectMultiFilter
                   label="Country"
-                  placeholder="Chọn country"
+                  placeholder="Select country"
                   options={ALL_COUNTRIES}
                   value={filterValues?.countries || VALUE_DEFAULT}
                   onChange={createFilterChangeHandler("countries")}
                   marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
                   horizontalFixed={horizontalFixed}
+                  isEnglish={true}
                 />
                 <SelectMultiFilter
                   label="Continent"
-                  placeholder="Chọn continent"
+                  placeholder="Select continent"
                   options={ALL_CONTINENTS}
                   value={filterValues?.continents || VALUE_DEFAULT}
                   onChange={createFilterChangeHandler("continents")}
                   marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
                   horizontalFixed={horizontalFixed}
+                  isEnglish={true}
                 />
               </>
             )}
@@ -677,21 +701,23 @@ const FilterVietNamToDay = ({ filters, horizontalFixed = false }) => {
               (!horizontal ? (
                 <CheckboxMultiFilter
                   label="Device"
-                  placeholder="Chọn thiết bị"
+                  placeholder="Select device"
                   options={ALL_DEVICES}
                   value={filterValues?.devices || VALUE_DEFAULT}
                   onChange={createFilterChangeHandler("devices")}
                   marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
+                  isEnglish={true}
                 />
               ) : (
                 <SelectMultiFilter
                   label="Device"
-                  placeholder="Chọn thiết bị"
+                  placeholder="Select device"
                   options={ALL_DEVICES}
                   value={filterValues?.devices || VALUE_DEFAULT}
                   onChange={createFilterChangeHandler("devices")}
                   marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
                   horizontalFixed={horizontalFixed}
+                  isEnglish={true}
                 />
               ))}
 
@@ -699,21 +725,23 @@ const FilterVietNamToDay = ({ filters, horizontalFixed = false }) => {
               (!horizontal ? (
                 <CheckboxMultiFilter
                   label="Platform"
-                  placeholder="Chọn platform"
+                  placeholder="Select platform"
                   options={ALL_PLATFORMS}
                   value={filterValues?.platforms || VALUE_DEFAULT}
                   onChange={createFilterChangeHandler("platforms")}
                   marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
+                  isEnglish={true}
                 />
               ) : (
                 <SelectMultiFilter
                   label="Platform"
-                  placeholder="Chọn platform"
+                  placeholder="Select platform"
                   options={ALL_PLATFORMS}
                   value={filterValues?.platforms || VALUE_DEFAULT}
                   onChange={createFilterChangeHandler("platforms")}
                   marginBottom="mb-4 max-lg:mb-3 max-md:mb-2"
                   horizontalFixed={horizontalFixed}
+                  isEnglish={true}
                 />
               ))}
 
@@ -721,13 +749,13 @@ const FilterVietNamToDay = ({ filters, horizontalFixed = false }) => {
               className={`flex justify-center items-center transition-all duration-700 bg-background-light ${!horizontalFixed ? `dark:bg-background-dark fixed bottom-0 left-0 w-[16%] max-md:w-[65%] border-r border-background-line-gray dark:border-background-white-15 ${!isOpen || horizontal ? "-translate-x-full" : ""} shadow-2xl shadow-color-black-50 dark:shadow-color-white-90 py-3 max-lg:py-2.5 max-lg:gap-2 gap-4` : "gap-1 dark:bg-background-chart-dark max-md:justify-start max-md:col-span-2"}`}
             >
               <ButtonFilter
-                text={"Áp dụng bộ lọc"}
+                text={"Apply Filters"}
                 background={"bg-background-primary"}
                 color={"text-background-check-box"}
                 type={"submit"}
               />
               <ButtonFilter
-                text={"Đặt lại"}
+                text={"Reset"}
                 background={"bg-background-light dark:bg-transparent"}
                 color={"text-background-black-90 dark:text-color-white-50"}
                 type={"reset"}

@@ -16,6 +16,7 @@ const CheckboxMultiFilter = ({
   disabled = false,
   marginBottom,
   isSearch = true,
+  isEnglish = false,
 }) => {
   // console.log("CheckboxMultiFilter " + label);
 
@@ -94,7 +95,7 @@ const CheckboxMultiFilter = ({
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Tìm kiếm..."
+                placeholder={!isEnglish ? "Tìm kiếm..." : "Search..."}
                 className="w-full text-sm max-lg:text-[13px] max-md:text-xs outline-none text-color-black-50 font-normal placeholder:text-color-black-50 dark:text-color-white-50 dark:placeholder:text-color-white-50 bg-transparent transition-all duration-300"
               />
               {search && (
@@ -164,7 +165,7 @@ const CheckboxMultiFilter = ({
               ))
             ) : (
               <li className="px-3 max-lg:px-2.5 max-md:px-2 py-2 max-md:py-1 text-sm max-md:text-xs text-[rgba(0,0,0,0.4)] dark:text-color-white-90 transition-all duration-300">
-                Không có dữ liệu
+                {!isEnglish ? "Không có dữ liệu" : "Nodata"}
               </li>
             )}
           </ul>

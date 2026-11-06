@@ -159,6 +159,7 @@ export const LABEL_VIETNAMTODAY = {
   "Total Comment": "Comments",
   "Total Share": "Shares",
   Views: "Views",
+  name_en: "Description",
 };
 
 export const LABEL_METRIC = {
@@ -196,6 +197,31 @@ export const FILTER_LABEL = {
   campaigns: "Chiến dịch",
   platforms: "Thiết bị",
   firstLevels: "Thể loại",
+};
+
+export const FILTER_LABEL_VIETNAM_TODAY = {
+  otts: "OTT",
+  days: "Day of Week",
+  countryTypes: "Country Type",
+  keyCountries: "Key Country",
+  countries: "Country",
+  continents: "Continent",
+  devices: "Device",
+  firstLevels: "Category",
+  platforms: "Platform",
+  sources: "Source",
+};
+
+export const VALUE_LABEL_ENGLISH = {
+  Monday: "Monday",
+  Tuesday: "Tuesday",
+  Wednesday: "Wednesday",
+  Thursday: "Thursday",
+  Friday: "Friday",
+  Saturday: "Saturday",
+  Sunday: "Sunday",
+  InWeek: "",
+  Weekend: "",
 };
 
 export const VALUE_LABEL = {

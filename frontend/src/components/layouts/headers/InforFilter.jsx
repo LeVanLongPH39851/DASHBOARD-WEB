@@ -152,7 +152,7 @@ const InforFilter = ({
               rotate={`${isOpen ? (!horizontal ? "" : "rotate-90") : !horizontal ? "rotate-180" : "rotate-270"} transition-all duration-300`}
               heightImage={"h-2.5 max-lg:h-2.25 max-md:h-2"}
               alt="Icon Arrow Down Line"
-              text={`Bộ lọc (${Object.entries(appliedFilters || {}).filter(([, values]) => Array.isArray(values) && values.length > 0).length + 1 || 1})`}
+              text={`${isEnglish ? "Filters" : "Bộ lọc"} (${Object.entries(appliedFilters || {}).filter(([, values]) => Array.isArray(values) && values.length > 0).length + 1 || 1})`}
               click={useCallback(() => {
                 document
                   .getElementById("inforFilterRelative")

@@ -1,40 +1,40 @@
 export const CUSTOM_TAB = {
   childTabRatingReach: {
     rating: {
-      id: 'rating',
-      label: 'Rating'
+      id: "rating",
+      label: "Rating",
     },
     ave_reach: {
-      id: 'ave_reach',
-      label: 'Ave.Reach'
-    }
+      id: "ave_reach",
+      label: "Avg.Reach",
+    },
   },
   childTabArea: {
     regional: {
-      id: 'regional',
-      label: 'Vùng'
+      id: "regional",
+      label: "Vùng",
     },
     key_city: {
-      id: 'key_city',
-      label: 'Thành phố lớn'
+      id: "key_city",
+      label: "Thành phố lớn",
     },
     province: {
-      id: 'province',
-      label: 'Tỉnh/TP'
+      id: "province",
+      label: "Tỉnh/TP",
     },
     others: {
-      id: 'others',
-      label: 'Toàn quốc'
-    }
+      id: "others",
+      label: "Toàn quốc",
+    },
   },
   childTabChannel: {
     channel: {
-      id: 'channel',
-      label: 'Tổng khán giả'
+      id: "channel",
+      label: "Tổng khán giả",
     },
     event: {
-      id: 'event',
-      label: 'Live/TSV'
-    }
-  }
+      id: "event",
+      label: "Live/TSV",
+    },
+  },
 };

@@ -169,7 +169,7 @@ const DashboardContent = () => {
                             )}
                           />
                           <NumberCard
-                            title={"Ave.Reach (000)"}
+                            title={"Avg.Reach (000)"}
                             description={false}
                             value={useMemo(
                               () =>

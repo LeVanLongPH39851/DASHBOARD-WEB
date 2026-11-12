@@ -77,6 +77,12 @@ router.put(
   authorize("group_dashboard.assign"),
   authController.updateGroupDashboardsController,
 );
+router.delete(
+  "/groups/:groupId",
+  authenticate,
+  authorize(["group.delete", "system.manage"]),
+  authController.deleteManagedGroupController,
+);
 
 // Quản lý thành viên trong Group & thông tin User Info
 router.get(
@@ -94,7 +100,7 @@ router.get(
 router.get(
   "/groups/:groupId/members",
   authenticate,
-  authorize(["member.view", "group.view"]),
+  authorize(["member.view", "group.view", "dashboard.view"]),
   authController.getGroupMembersController,
 );
 router.post(
@@ -106,8 +112,66 @@ router.post(
 router.delete(
   "/groups/:groupId/members/:targetUserId",
   authenticate,
-  authorize("system.manage"),
+  authorize([
+    "system.manage",
+    "member.delete",
+    "member.update",
+    "member.create",
+    "group_admin.assign",
+  ]),
   authController.removeGroupMemberController,
+);
+
+// Quản lý Users (3 admin: admin_ami, super_admin, group_admin)
+const ADMIN_ROLES = ["admin_ami", "super_admin", "group_admin", "system.manage"];
+
+router.get(
+  "/manage/users",
+  authenticate,
+  authorize(ADMIN_ROLES),
+  authController.getManagedUsersController,
+);
+router.get(
+  "/manage/roles",
+  authenticate,
+  authorize(ADMIN_ROLES),
+  authController.getRoleOptionsController,
+);
+router.get(
+  "/manage/users/detail",
+  authenticate,
+  authorize(ADMIN_ROLES),
+  authController.getManagedUserDetailController,
+);
+router.post(
+  "/manage/users",
+  authenticate,
+  authorize(ADMIN_ROLES),
+  authController.createManagedUserController,
+);
+router.put(
+  "/manage/users/:id",
+  authenticate,
+  authorize(ADMIN_ROLES),
+  authController.updateManagedUserController,
+);
+router.put(
+  "/manage/users",
+  authenticate,
+  authorize(ADMIN_ROLES),
+  authController.updateManagedUserController,
+);
+router.delete(
+  "/manage/users/:id",
+  authenticate,
+  authorize(ADMIN_ROLES),
+  authController.deleteManagedUserController,
+);
+router.delete(
+  "/manage/users",
+  authenticate,
+  authorize(ADMIN_ROLES),
+  authController.deleteManagedUserController,
 );
 
 router.use("/backend", authenticate, (req, res) => {

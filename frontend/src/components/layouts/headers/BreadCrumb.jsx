@@ -35,6 +35,7 @@ const BreadCrumb = ({
   icon = false,
   widthIcon = "",
   isEnglish = false,
+  hrefInstruct = "https://ratings.vtv.vn/huongdan/",
 }) => {
   // console.log("BreadCrumb");
 
@@ -121,7 +122,7 @@ const BreadCrumb = ({
         <div className="flex items-center gap-4 max-md:hidden">
           {/* <Button background={'bg-background-black-4 dark:bg-background-white-15'} color={'text-color-black-100 dark:text-color-white-80'} src={!darkMode ? iconDisplay : iconDisplayDark}
                             widthImage='w-3.75' heightImage='h-3.75' alt='Icon Display' text={'Quản lý hiển thị'} /> */}
-          <a href="https://ratings.vtv.vn/huongdan/" target="_blank">
+          <a href={hrefInstruct} target="_blank">
             <Button
               background={"bg-background-black-4 dark:bg-background-white-15"}
               color={"text-color-black-100 dark:text-color-white-80"}
@@ -213,7 +214,7 @@ const BreadCrumb = ({
                         </div> */}
             {!userLoading && user?.username !== "vtvguest" && (
               <div className="hover:bg-background-black-4 dark:hover:bg-color-black-70 transition-all duration-300">
-                <a href="https://ratings.vtv.vn/huongdan/" target="_blank">
+                <a href={hrefInstruct} target="_blank">
                   <Button
                     background={"bg-transparent"}
                     color={"text-color-black-100 dark:text-color-white-80"}

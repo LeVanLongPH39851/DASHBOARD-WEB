@@ -17,7 +17,7 @@
   --color-color-rating: rgba(235, 87, 87, 1);
   --color-background-ave-reach-percent: rgba(242, 153, 74, 0.1);
   --color-color-ave-reach-percent: rgba(242, 153, 74, 1);
-  --color-background-rating-percent: rgba(115, 103, 240, 0.10);
+  --color-background-rating-percent: rgba(115, 103, 240, 0.1);
   --color-color-rating-percent: rgba(115, 103, 240, 1);
   --color-background-line-gray: rgba(225, 227, 234, 1);
   --color-border-black-10: rgba(0, 0, 0, 0.1);
@@ -61,7 +61,7 @@
   --color-background-white-8: rgba(255, 255, 255, 0.08);
   --color-background-hover-dark: #1f2937;
   --color-background-chart-dark: rgba(28, 37, 52, 1);
-  --color-color-neotam: #20A7C9;
+  --color-color-neotam: #20a7c9;
   --color-background-checked: #e8f7fb;
   --font-family-be-vietnam-pro: "Be Vietnam Pro", sans-serif;
 }
@@ -167,7 +167,8 @@ html.dark .divTable::-webkit-scrollbar-thumb {
 }
 
 .animate-slide-right {
-  animation: slideFromRight 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.3s forwards;
+  animation: slideFromRight 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.3s
+    forwards;
   /* Delay 0.3s */
 }
 
@@ -225,4 +226,156 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .range-slider .range-input-max {
   z-index: 3;
+}
+
+@keyframes fadeUp {
+  0% {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleInModal {
+  0% {
+    opacity: 0;
+    transform: scale(0.95) translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes floatSlow {
+  0%,
+  100% {
+    transform: translateY(0px) scale(1);
+  }
+  50% {
+    transform: translateY(-8px) scale(1.04);
+  }
+}
+
+@keyframes gradientShift {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes shimmerSweep {
+  0% {
+    transform: translateX(-120%) skewX(-20deg);
+  }
+  100% {
+    transform: translateX(260%) skewX(-20deg);
+  }
+}
+
+@keyframes spinSlow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes popIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  70% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* fill-mode "backwards": sau khi chạy xong không giữ lại transform, tránh tạo stacking context / containing block thừa */
+.animate-fade-up {
+  animation: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+.animate-scale-in {
+  animation: scaleInModal 0.28s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+.animate-pop-in {
+  animation: popIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+.animate-float-slow {
+  animation: floatSlow 6s ease-in-out infinite;
+}
+
+.animate-spin-slow {
+  animation: spinSlow 8s linear infinite;
+}
+
+/* Nền gradient chuyển động chậm cho các Hero Banner */
+.animate-gradient-shift {
+  background-size: 200% 200%;
+  animation: gradientShift 12s ease-in-out infinite;
+}
+
+/* Vệt sáng quét ngang: đặt class "shine" lên phần tử cha (relative + overflow-hidden) */
+.shine::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.28),
+    transparent
+  );
+  transform: translateX(-120%) skewX(-20deg);
+  pointer-events: none;
+}
+
+.shine:hover::after {
+  animation: shimmerSweep 0.9s ease-out;
+}
+
+/* Vệt sáng tự động lặp lại (dùng cho Hero Banner) */
+.shine-auto::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 30%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.12),
+    transparent
+  );
+  pointer-events: none;
+  animation: shimmerSweep 7s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-up,
+  .animate-scale-in,
+  .animate-pop-in,
+  .animate-float-slow,
+  .animate-spin-slow,
+  .animate-gradient-shift,
+  .shine-auto::after,
+  .shine:hover::after {
+    animation: none !important;
+  }
 }

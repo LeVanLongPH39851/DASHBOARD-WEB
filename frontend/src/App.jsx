@@ -10,6 +10,7 @@ import {
 import Dashboard from "./pages/Dashboard";
 import DashboardList from "./pages/DashboardList";
 import RolePermission from "./pages/RolePermission";
+import Users from "./pages/Users";
 import UserInfo from "./pages/UserInfo";
 import DashboardSpot from "./pages/DashboardSpot";
 import DashboardBrand from "./pages/DashboardBrand";
@@ -32,6 +33,8 @@ const DASHBOARD_COMPONENT_BY_SLUG = {
   "vietnam-today": DashboardVietnamToday,
   survey: VietnamToday,
 };
+
+const GLOBAL_ADMIN_ROLES = ["admin_ami", "super_admin", "group_admin"];
 
 const ProtectedRoute = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
@@ -61,6 +64,63 @@ const ProtectedRoute = ({ children }) => {
   }
 
   return isAuthenticated ? children : <Navigate to="/" replace />;
+};
+
+// Chỉ 3 Admin ở Global (admin_ami, super_admin, group_admin trong user_global_roles) mới được vào /role-permission
+const ProtectedAdminRoute = ({ children }) => {
+  const [authState, setAuthState] = useState({
+    loading: true,
+    isAuthenticated: false,
+    isGlobalAdmin: false,
+  });
+
+  useEffect(() => {
+    let isMounted = true;
+
+    getMe()
+      .then((res) => {
+        if (!isMounted) return;
+        const isAuth = Boolean(res?.status === "success" && res?.user);
+        const globalRoles = Array.isArray(res?.user?.global_roles)
+          ? res.user.global_roles
+          : [];
+        const isAdmin = globalRoles.some((r) =>
+          GLOBAL_ADMIN_ROLES.includes(String(r).toLowerCase()),
+        );
+        setAuthState({
+          loading: false,
+          isAuthenticated: isAuth,
+          isGlobalAdmin: isAuth && isAdmin,
+        });
+      })
+      .catch(() => {
+        if (isMounted) {
+          setAuthState({
+            loading: false,
+            isAuthenticated: false,
+            isGlobalAdmin: false,
+          });
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  if (authState.loading) {
+    return null;
+  }
+
+  if (!authState.isAuthenticated) {
+    return <Navigate to="/" replace />;
+  }
+
+  if (!authState.isGlobalAdmin) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  return children;
 };
 
 // Kiểm tra quyền xem từng Dashboard cụ thể qua API Gateway khi user gõ /dashboard/spot hoặc /dashboard/62
@@ -235,9 +295,17 @@ function App() {
         <Route
           path="/role-permission"
           element={
-            <ProtectedRoute>
+            <ProtectedAdminRoute>
               <RolePermission />
-            </ProtectedRoute>
+            </ProtectedAdminRoute>
+          }
+        />
+        <Route
+          path="/users"
+          element={
+            <ProtectedAdminRoute>
+              <Users />
+            </ProtectedAdminRoute>
           }
         />
         <Route

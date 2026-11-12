@@ -83,11 +83,11 @@ async function updateGroupDashboards(payload) {
   return response.data;
 }
 
-async function getAssignableUsers(userId) {
+async function getAssignableUsers(userId, groupId = null) {
   const response = await axios.get(
     `${BACKEND_URL}/internal/auth/role/users/assignable`,
     {
-      params: { userId },
+      params: { userId, ...(groupId ? { groupId } : {}) },
       headers: {
         "x-internal-api-key": process.env.API_GATEWAY_INTERNAL_KEY,
       },
@@ -158,15 +158,124 @@ async function removeGroupMember(payload) {
   return response.data;
 }
 
+async function deleteManagedGroup(payload) {
+  const response = await axios.delete(
+    `${BACKEND_URL}/internal/auth/role/groups`,
+    {
+      data: payload,
+      headers: {
+        "x-internal-api-key": process.env.API_GATEWAY_INTERNAL_KEY,
+      },
+      timeout: 8000,
+    },
+  );
+
+  return response.data;
+}
+
+// -------------------------------------------------------------
+// Users Management APIs (Dành cho 3 Admin)
+// -------------------------------------------------------------
+async function getManagedUsers(userId) {
+  const response = await axios.get(
+    `${BACKEND_URL}/internal/auth/role/manage/users`,
+    {
+      params: { userId },
+      headers: {
+        "x-internal-api-key": process.env.API_GATEWAY_INTERNAL_KEY,
+      },
+      timeout: 10000,
+    },
+  );
+  return response.data;
+}
+
+async function getRoleOptions(userId) {
+  const response = await axios.get(
+    `${BACKEND_URL}/internal/auth/role/manage/roles`,
+    {
+      params: { userId },
+      headers: {
+        "x-internal-api-key": process.env.API_GATEWAY_INTERNAL_KEY,
+      },
+      timeout: 8000,
+    },
+  );
+  return response.data;
+}
+
+async function getManagedUserDetail(userId, targetUserId) {
+  const response = await axios.get(
+    `${BACKEND_URL}/internal/auth/role/manage/users/detail`,
+    {
+      params: { userId, targetUserId },
+      headers: {
+        "x-internal-api-key": process.env.API_GATEWAY_INTERNAL_KEY,
+      },
+      timeout: 10000,
+    },
+  );
+  return response.data;
+}
+
+async function createManagedUser(payload) {
+  const response = await axios.post(
+    `${BACKEND_URL}/internal/auth/role/manage/users`,
+    payload,
+    {
+      headers: {
+        "x-internal-api-key": process.env.API_GATEWAY_INTERNAL_KEY,
+      },
+      timeout: 12000,
+    },
+  );
+  return response.data;
+}
+
+async function updateManagedUser(payload) {
+  const response = await axios.put(
+    `${BACKEND_URL}/internal/auth/role/manage/users`,
+    payload,
+    {
+      headers: {
+        "x-internal-api-key": process.env.API_GATEWAY_INTERNAL_KEY,
+      },
+      timeout: 12000,
+    },
+  );
+  return response.data;
+}
+
+async function deleteManagedUser(payload) {
+  const response = await axios.delete(
+    `${BACKEND_URL}/internal/auth/role/manage/users`,
+    {
+      data: payload,
+      headers: {
+        "x-internal-api-key": process.env.API_GATEWAY_INTERNAL_KEY,
+      },
+      timeout: 12000,
+    },
+  );
+  return response.data;
+}
+
 module.exports = {
   getUserPermissions,
   getUserDashboards,
   getManagedGroups,
   createManagedGroup,
   updateGroupDashboards,
+  deleteManagedGroup,
   getAssignableUsers,
   getUsersInfo,
   getGroupMembers,
   assignGroupMember,
   removeGroupMember,
+  getManagedUsers,
+  getRoleOptions,
+  getManagedUserDetail,
+  createManagedUser,
+  updateManagedUser,
+  deleteManagedUser,
 };

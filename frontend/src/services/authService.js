@@ -91,6 +91,13 @@ export const updateGroupDashboards = async (groupId, dashboardIds) => {
   return response.data;
 };
 
+// Xóa Group và các dữ liệu liên quan
+export const deleteManagedGroup = async (groupId) => {
+  const response = await api.delete(`/api/groups/${groupId}`);
+
+  return response.data;
+};
+
 // Lấy thông tin User Info (username, email, status, ngày tạo, group, vai trò, các dashboard được xem)
 export const getUsersInfo = async () => {
   const response = await api.get("/api/users/info");
@@ -99,8 +106,10 @@ export const getUsersInfo = async () => {
 };
 
 // Lấy danh sách user từ bảng users (Superset) có trong user_global_roles để gán vào Group
-export const getAssignableUsers = async () => {
-  const response = await api.get("/api/users/assignable");
+export const getAssignableUsers = async (groupId = null) => {
+  const response = await api.get("/api/users/assignable", {
+    params: groupId ? { groupId } : {},
+  });
 
   return response.data;
 };
@@ -125,6 +134,41 @@ export const removeGroupMember = async (groupId, targetUserId) => {
     `/api/groups/${groupId}/members/${targetUserId}`,
   );
 
+  return response.data;
+};
+
+// -------------------------------------------------------------
+// Quản lý Users (3 Admin: admin_ami, super_admin, group_admin)
+// -------------------------------------------------------------
+export const getManagedUsers = async () => {
+  const response = await api.get("/api/manage/users");
+  return response.data;
+};
+
+export const getManageableRoles = async () => {
+  const response = await api.get("/api/manage/roles");
+  return response.data;
+};
+
+export const getManagedUserDetail = async (targetUserId) => {
+  const response = await api.get("/api/manage/users/detail", {
+    params: { targetUserId },
+  });
+  return response.data;
+};
+
+export const createManagedUser = async (payload) => {
+  const response = await api.post("/api/manage/users", payload);
+  return response.data;
+};
+
+export const updateManagedUser = async (targetUserId, payload) => {
+  const response = await api.put(`/api/manage/users/${targetUserId}`, payload);
+  return response.data;
+};
+
+export const deleteManagedUser = async (targetUserId) => {
+  const response = await api.delete(`/api/manage/users/${targetUserId}`);
   return response.data;
 };
 

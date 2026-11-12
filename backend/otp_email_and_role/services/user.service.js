@@ -8,7 +8,10 @@ const rolePool = new Pool({
   user: process.env.POSTGRES_USER,
   password: process.env.POSTGRES_PASSWORD,
   database: process.env.POSTGRES_DB,
-  connectionTimeoutMillis: 5000,
+  connectionTimeoutMillis: 10000,
+  idleTimeoutMillis: 30000,
+  keepAlive: true,
+  max: 20,
 });
 
 rolePool.on("error", (error) => {
@@ -22,7 +25,11 @@ const supersetPool = new Pool({
   user: process.env.SUPERSET_PG_USER || "superset",
   password: process.env.SUPERSET_PG_PASSWORD || "superset",
   database: process.env.SUPERSET_PG_DB || "superset",
-  connectionTimeoutMillis: 5000,
+  connectionTimeoutMillis: Number(process.env.SUPERSET_PG_TIMEOUT_MS || 15000),
+  idleTimeoutMillis: 30000,
+  keepAlive: true,
+  keepAliveInitialDelayMillis: 10000,
+  max: 15,
 });
 
 supersetPool.on("error", (error) => {
@@ -30,6 +37,18 @@ supersetPool.on("error", (error) => {
 });
 
 let cachedSupersetUserTable = null;
+
+// Thứ tự cấp bậc Role từ thấp đến cao
+const ROLE_RANK = {
+  group_member: 1,
+  group_admin: 2,
+  super_admin: 3,
+  admin_ami: 4,
+};
+
+function getRoleRank(roleCode) {
+  return ROLE_RANK[String(roleCode || "").toLowerCase()] || 1;
+}
 
 // Tự động nhận diện bảng users hoặc ab_user trong Superset DB
 async function resolveSupersetUserTable() {
@@ -122,16 +141,16 @@ async function getSupersetUsersByIds(userIds = []) {
 
 /**
  * Lấy danh sách users có id trong bảng user_global_roles (init.sql:L124)
- * - Nếu người gọi có quyền system.manage: lấy tất cả user trong user_global_roles
+ * - Không bao giờ lấy các user có quyền system (admin_ami / system.manage) vì system không được gán vào Group
+ * - Nếu truyền groupId: loại bỏ các user đã thuộc bất kỳ Group cha / ông hoặc con / cháu trên cùng nhánh với groupId
+ * - Nếu người gọi có quyền system.manage: lấy tất cả user hợp lệ trong user_global_roles
  * - Nếu không có system.manage: chỉ lấy các user do chính người gọi tạo ra
- *   (assigned_by = actorUserId trong user_global_roles hoặc created_by_fk = actorUserId trong Superset DB)
  */
-async function getAssignableUsers(actorUserId) {
-  const roleInfo = await roleService.getUserRoles(actorUserId);
-  const permissions = roleInfo?.permissions || [];
-  const hasSystemManage = permissions.includes("system.manage");
+async function getAssignableUsers(actorUserId, groupId = null) {
+  // Role ở global chỉ check xem có phải là system hay không
+  const hasSystemManage = await roleService.isGlobalSystemUser(actorUserId);
 
-  // 1. Lấy tất cả các bản ghi trong bảng user_global_roles (init.sql:L124)
+  // 1. Lấy tất cả các bản ghi trong bảng user_global_roles kèm kiểm tra xem có phải là system không
   const { rows: globalRoleRows } = await rolePool.query(
     `
       SELECT
@@ -140,7 +159,14 @@ async function getAssignableUsers(actorUserId) {
         ugr.assigned_by,
         ugr.assigned_at,
         r.role_code,
-        r.role_name
+        r.role_name,
+        EXISTS (
+          SELECT 1
+          FROM role_permissions rp
+          JOIN permissions p ON p.id = rp.permission_id
+          WHERE rp.role_id = r.id
+            AND p.permission_code = 'system.manage'
+        ) AS is_system_role
       FROM user_global_roles ugr
       JOIN roles r ON r.id = ugr.role_id
       ORDER BY ugr.superset_user_id ASC
@@ -151,6 +177,60 @@ async function getAssignableUsers(actorUserId) {
     return [];
   }
 
+  // Lấy danh sách các group mà từng user đang tham gia (để kiểm tra nhánh cha - con - cháu)
+  const { rows: allMemberRows } = await rolePool.query(
+    `
+      SELECT gm.superset_user_id, gm.group_id
+      FROM group_members gm
+      JOIN groups g ON g.id = gm.group_id
+      WHERE g.is_active = TRUE
+    `,
+  );
+  const userGroupIdsMap = new Map();
+  allMemberRows.forEach((r) => {
+    const uid = Number(r.superset_user_id);
+    if (!userGroupIdsMap.has(uid)) {
+      userGroupIdsMap.set(uid, []);
+    }
+    userGroupIdsMap.get(uid).push(Number(r.group_id));
+  });
+
+  // Nếu có truyền groupId -> tìm chính group đó kèm toàn bộ các group cha/ông (ancestors) và con/cháu (descendants) cùng nhánh
+  let sameLineageGroupSet = new Set();
+  const targetGId = Number(groupId);
+  if (Number.isInteger(targetGId) && targetGId > 0) {
+    const { rows: lineageRows } = await rolePool.query(
+      `
+        WITH RECURSIVE ancestors AS (
+          SELECT parent_group_id AS id
+          FROM groups
+          WHERE id = $1 AND parent_group_id IS NOT NULL
+          UNION
+          SELECT g.parent_group_id AS id
+          FROM groups g
+          JOIN ancestors a ON g.id = a.id
+          WHERE g.parent_group_id IS NOT NULL
+        ),
+        descendants AS (
+          SELECT id
+          FROM groups
+          WHERE parent_group_id = $1
+          UNION
+          SELECT g.id
+          FROM groups g
+          JOIN descendants d ON g.parent_group_id = d.id
+        )
+        SELECT $1::bigint AS id
+        UNION
+        SELECT id FROM ancestors
+        UNION
+        SELECT id FROM descendants
+      `,
+      [targetGId],
+    );
+    sameLineageGroupSet = new Set(lineageRows.map((r) => Number(r.id)));
+  }
+
   const allUserIdsInGlobalTable = Array.from(
     new Set(globalRoleRows.map((r) => Number(r.superset_user_id))),
   );
@@ -158,7 +238,7 @@ async function getAssignableUsers(actorUserId) {
   // 2. Lấy metadata từ bảng users (ab_user) của Superset DB
   const supersetUserMap = await getSupersetUsersByIds(allUserIdsInGlobalTable);
 
-  // 3. Gom thông tin theo từng superset_user_id trong bảng user_global_roles
+  // 3. Gom thông tin theo từng superset_user_id trong bảng user_global_roles (chỉ check xem có phải là system không)
   const userRecordMap = new Map();
   globalRoleRows.forEach((row) => {
     const uid = Number(row.superset_user_id);
@@ -167,6 +247,7 @@ async function getAssignableUsers(actorUserId) {
         superset_user_id: uid,
         assigned_by: row.assigned_by ? Number(row.assigned_by) : null,
         assigned_at: row.assigned_at,
+        has_system_role: false,
         global_roles: [],
       });
     }
@@ -178,16 +259,40 @@ async function getAssignableUsers(actorUserId) {
       role_id: Number(row.role_id),
       role_code: row.role_code,
       role_name: row.role_name,
+      rank: getRoleRank(row.role_code),
     });
+    if (
+      Boolean(row.is_system_role) ||
+      String(row.role_code || "").toLowerCase() === "admin_ami"
+    ) {
+      entry.has_system_role = true;
+    }
   });
 
   // 4. Lọc theo quyền:
-  // - Luôn loại bỏ chính user đang thao tác (không thể tự gán chính mình vào group / làm quản trị)
-  // - Có system.manage -> lấy toàn bộ các user khác trong user_global_roles
-  // - Không có system.manage -> chỉ lấy các user khác do chính quản trị viên đó tạo ra
+  // - Luôn loại bỏ chính user đang thao tác (không thể tự gán chính mình)
+  // - Luôn loại bỏ các user có quyền system ở global vì system không được gán vào Group
+  // - Nếu có groupId: loại bỏ user đã có chức vụ trong Group hoặc trong nhánh cha/ông - con/cháu của Group đó
+  // - Có system ở global -> lấy toàn bộ các user hợp lệ khác
+  // - Không phải system ở global -> chỉ lấy các user hợp lệ khác do chính quản trị viên đó tạo ra
   const result = [];
   userRecordMap.forEach((entry, uid) => {
     if (Number(uid) === Number(actorUserId)) {
+      return;
+    }
+
+    // Không cho phép gán các admin system vào bất kỳ Group nào
+    if (entry.has_system_role) {
+      return;
+    }
+
+    const memberGroupIds = userGroupIdsMap.get(uid) || [];
+
+    // Nếu user đã có chức vụ trong Group hoặc trên cùng nhánh cha - con - cháu với groupId -> loại bỏ
+    if (
+      sameLineageGroupSet.size > 0 &&
+      memberGroupIds.some((gId) => sameLineageGroupSet.has(Number(gId)))
+    ) {
       return;
     }
 
@@ -209,11 +314,24 @@ async function getAssignableUsers(actorUserId) {
       Number(meta.created_by_fk) === Number(actorUserId);
 
     if (hasSystemManage || isCreatedByActor) {
+      const globalRanks = (entry.global_roles || []).map((r) => r.rank || 1);
+      const maxGlobalRank =
+        globalRanks.length > 0 ? Math.max(...globalRanks) : 1;
+      const highestGlobalRole =
+        entry.global_roles.find((r) => r.rank === maxGlobalRank) || null;
+
       result.push({
         ...meta,
         assigned_by: entry.assigned_by || meta.created_by_fk || null,
+        created_by_fk: meta.created_by_fk || entry.assigned_by || null,
         assigned_at: entry.assigned_at,
+        member_group_ids: memberGroupIds,
         global_roles: entry.global_roles,
+        max_global_role_rank: maxGlobalRank,
+        highest_global_role_code:
+          highestGlobalRole?.role_code || "group_member",
+        highest_global_role_name:
+          highestGlobalRole?.role_name || "Thành viên",
       });
     }
   });
@@ -264,7 +382,46 @@ async function getGroupMembersDetail(actorUserId, groupId) {
   });
 
   const userIds = memberRows.map((m) => Number(m.superset_user_id));
-  const supersetUserMap = await getSupersetUsersByIds(userIds);
+  const [supersetUserMap, globalAssignedRes] = await Promise.all([
+    getSupersetUsersByIds(userIds),
+    userIds.length > 0
+      ? rolePool.query(
+          `
+            SELECT ugr.superset_user_id, ugr.assigned_by, r.role_code, r.role_name
+            FROM user_global_roles ugr
+            LEFT JOIN roles r ON r.id = ugr.role_id
+            WHERE ugr.superset_user_id = ANY($1::bigint[])
+          `,
+          [userIds],
+        )
+      : Promise.resolve({ rows: [] }),
+  ]);
+
+  const assignedByMap = new Map();
+  const globalRoleMap = new Map();
+  globalAssignedRes.rows.forEach((r) => {
+    const uid = Number(r.superset_user_id);
+    if (r.assigned_by && !assignedByMap.has(uid)) {
+      assignedByMap.set(uid, Number(r.assigned_by));
+    }
+    const rank = getRoleRank(r.role_code);
+    if (!globalRoleMap.has(uid)) {
+      globalRoleMap.set(uid, {
+        maxRank: rank,
+        roleCode: r.role_code,
+        roleName: r.role_name,
+      });
+    } else {
+      const cur = globalRoleMap.get(uid);
+      if (rank > cur.maxRank) {
+        globalRoleMap.set(uid, {
+          maxRank: rank,
+          roleCode: r.role_code,
+          roleName: r.role_name,
+        });
+      }
+    }
+  });
 
   return memberRows.map((m) => {
     const uid = Number(m.superset_user_id);
@@ -275,6 +432,14 @@ async function getGroupMembersDetail(actorUserId, groupId) {
       email: "",
       status: "Active",
       created_on: m.created_at,
+      created_by_fk: null,
+    };
+
+    const assignedBy = assignedByMap.get(uid) || null;
+    const gRole = globalRoleMap.get(uid) || {
+      maxRank: 1,
+      roleCode: "group_member",
+      roleName: "Thành viên",
     };
 
     return {
@@ -285,7 +450,12 @@ async function getGroupMembersDetail(actorUserId, groupId) {
       role_name: m.role_name,
       joined_at: m.created_at,
       created_by: m.created_by ? Number(m.created_by) : null,
+      assigned_by: assignedBy || meta.created_by_fk || null,
+      created_by_fk: meta.created_by_fk || assignedBy || null,
       member_dashboard_ids: memberDashMap.get(uid) || [],
+      max_global_role_rank: gRole.maxRank,
+      highest_global_role_code: gRole.roleCode,
+      highest_global_role_name: gRole.roleName,
     };
   });
 }
@@ -304,21 +474,28 @@ async function assignUserToGroup({
   roleCode,
   dashboardIds = [],
 }) {
-  const roleInfo = await roleService.getUserRoles(actorUserId);
-  const permissions = roleInfo?.permissions || [];
+  // Chỉ check ở global xem có phải là system không, còn lại chỉ check role & permission của người gán ở trong chính Group đó
+  const groupRoleInfo = await roleService.getUserGroupRoleAndPermissions(
+    actorUserId,
+    groupId,
+  );
+  const hasSystemManage = Boolean(groupRoleInfo?.isSystem);
+  const groupPermissions = groupRoleInfo?.permissions || [];
+  const actorGroupRoles = groupRoleInfo?.roles || [];
 
-  const hasSystemManage = permissions.includes("system.manage");
   const canAssignAdmin =
-    hasSystemManage || permissions.includes("group_admin.assign");
+    hasSystemManage || groupPermissions.includes("group_admin.assign");
   const canAssignMember =
     hasSystemManage ||
     canAssignAdmin ||
-    permissions.includes("member.create") ||
-    permissions.includes("member.update") ||
-    permissions.includes("member_dashboard.assign");
+    groupPermissions.includes("member.create") ||
+    groupPermissions.includes("member.update") ||
+    groupPermissions.includes("member_dashboard.assign");
 
   if (!canAssignMember) {
-    const err = new Error("Bạn không có quyền gán người dùng vào Group");
+    const err = new Error(
+      "Bạn không có quyền gán người dùng vào Group này",
+    );
     err.statusCode = 403;
     throw err;
   }
@@ -332,41 +509,121 @@ async function assignUserToGroup({
     throw err;
   }
 
-  // Kiểm tra user mục tiêu có nằm trong danh sách assignableUsers của người gán không
-  const assignableUsers = await getAssignableUsers(actorUserId);
-  const targetUser = assignableUsers.find(
-    (u) => Number(u.id) === Number(targetUserId),
-  );
-
-  if (!targetUser) {
+  // Ở global chỉ check xem targetUserId có phải là system không -> system không được gán vào Group
+  const isTargetSystem = await roleService.isGlobalSystemUser(targetUserId);
+  if (isTargetSystem) {
     const err = new Error(
-      "User không tồn tại trong bảng phân quyền hoặc không phải do bạn tạo ra",
+      "User có quyền quản trị hệ thống (system) không được phép gán vào Group",
     );
     err.statusCode = 403;
     throw err;
+  }
+
+  // Kiểm tra xem user đã là thành viên trong Group này chưa (trường hợp Sửa thành viên)
+  const existingMemberCheck = await rolePool.query(
+    `
+      SELECT id, created_by
+      FROM group_members
+      WHERE group_id = $1 AND superset_user_id = $2
+      LIMIT 1
+    `,
+    [groupId, targetUserId],
+  );
+  const existingMember = existingMemberCheck.rows[0] || null;
+
+  if (existingMember) {
+    // Trường hợp SỬA thành viên đã có trong Group:
+    // Trừ system, mặc dù user đó do mình tạo ra nhưng nếu không phải chính mình gán vào Group này (existingMember.created_by) thì không được sửa
+    if (!hasSystemManage) {
+      const [ugrRes, supersetMap] = await Promise.all([
+        rolePool.query(
+          `SELECT assigned_by FROM user_global_roles WHERE superset_user_id = $1`,
+          [targetUserId],
+        ),
+        getSupersetUsersByIds([Number(targetUserId)]),
+      ]);
+      const meta = supersetMap.get(Number(targetUserId));
+      const isCreatedByActor =
+        Number(meta?.created_by_fk) === Number(actorUserId) ||
+        ugrRes.rows.some(
+          (r) => Number(r.assigned_by) === Number(actorUserId),
+        );
+      const isAssignedToGroupByActor =
+        Number(existingMember.created_by) === Number(actorUserId);
+
+      if (!isCreatedByActor || !isAssignedToGroupByActor) {
+        const err = new Error(
+          "Bạn không thể sửa thành viên không phải do bạn gán vào Group này",
+        );
+        err.statusCode = 403;
+        throw err;
+      }
+    }
+  } else {
+    // Trường hợp GÁN MỚI user vào Group: kiểm tra user mục tiêu có nằm trong danh sách assignableUsers của người gán không
+    const assignableUsers = await getAssignableUsers(actorUserId, groupId);
+    const targetUser = assignableUsers.find(
+      (u) => Number(u.id) === Number(targetUserId),
+    );
+
+    if (!targetUser) {
+      const err = new Error(
+        "User không tồn tại, không phải do bạn tạo ra hoặc đã có chức vụ trong nhánh Group này",
+      );
+      err.statusCode = 403;
+      throw err;
+    }
   }
 
   const client = await rolePool.connect();
   try {
     await client.query("BEGIN");
 
-    // Kiểm tra xem user đã được gán trong Group này chưa
-    const existingMemberRes = await client.query(
+    // Kiểm tra xem user đã có vai trò ở bất kỳ Group cha/ông hoặc con/cháu trên cùng nhánh với groupId chưa
+    const lineageConflictRes = await client.query(
       `
-        SELECT id
-        FROM group_members
-        WHERE group_id = $1 AND superset_user_id = $2
+        WITH RECURSIVE ancestors AS (
+          SELECT parent_group_id AS id
+          FROM groups
+          WHERE id = $1 AND parent_group_id IS NOT NULL
+          UNION
+          SELECT g.parent_group_id AS id
+          FROM groups g
+          JOIN ancestors a ON g.id = a.id
+          WHERE g.parent_group_id IS NOT NULL
+        ),
+        descendants AS (
+          SELECT id
+          FROM groups
+          WHERE parent_group_id = $1
+          UNION
+          SELECT g.id
+          FROM groups g
+          JOIN descendants d ON g.parent_group_id = d.id
+        ),
+        same_lineage_groups AS (
+          SELECT id FROM ancestors
+          UNION
+          SELECT id FROM descendants
+        )
+        SELECT gm.group_id, g.group_name, r.role_code, r.role_name
+        FROM group_members gm
+        JOIN same_lineage_groups slg ON slg.id = gm.group_id
+        JOIN groups g ON g.id = gm.group_id
+        JOIN roles r ON r.id = gm.role_id
+        WHERE gm.superset_user_id = $2
+          AND g.is_active = TRUE
         LIMIT 1
       `,
       [groupId, targetUserId],
     );
 
-    // Các user admin không có quyền system.manage chỉ được gán mới user do nó tạo ra, không thể sửa user trong hệ thống
-    if (existingMemberRes.rows[0] && !hasSystemManage) {
+    if (lineageConflictRes.rows[0]) {
+      const conflict = lineageConflictRes.rows[0];
       const err = new Error(
-        "Bạn chỉ được phép gán user do mình tạo ra vào Group, không có quyền sửa user trong hệ thống",
+        `User này đã có vai trò (${conflict.role_name}) trong Group "${conflict.group_name}" thuộc cùng nhánh cha - con - cháu, không thể gán vào nhiều Group trên cùng một nhánh`,
       );
-      err.statusCode = 403;
+      err.statusCode = 400;
       throw err;
     }
 
@@ -393,11 +650,64 @@ async function assignUserToGroup({
     }
 
     const selectedRole = roleRows[0];
+    const desiredRoleRank = getRoleRank(selectedRole.role_code);
 
-    // Nếu gán quyền quản trị group mà không có quyền group_admin.assign / system.manage -> chặn
+    // Không cho phép gán role system vào Group
+    if (desiredRoleRank >= 4 || selectedRole.role_code === "admin_ami") {
+      const err = new Error("Không thể gán vai trò system vào Group");
+      err.statusCode = 400;
+      throw err;
+    }
+
+    // Role của thành viên trong Group không được cao hơn role global của chính user đó
+    const { rows: targetGlobalRows } = await client.query(
+      `
+        SELECT r.role_code, r.role_name
+        FROM user_global_roles ugr
+        JOIN roles r ON r.id = ugr.role_id
+        WHERE ugr.superset_user_id = $1
+      `,
+      [targetUserId],
+    );
+
+    const targetGlobalRanks = targetGlobalRows.map((r) =>
+      getRoleRank(r.role_code),
+    );
+    const targetMaxGlobalRank =
+      targetGlobalRanks.length > 0 ? Math.max(...targetGlobalRanks) : 1;
+    const targetHighestRole = targetGlobalRows.find(
+      (r) => getRoleRank(r.role_code) === targetMaxGlobalRank,
+    );
+    const targetRoleName =
+      targetHighestRole?.role_name || "Thành viên (group_member)";
+
+    if (desiredRoleRank > targetMaxGlobalRank) {
+      const err = new Error(
+        `Không thể gán vai trò "${selectedRole.role_name}" trong Group vì người dùng này chỉ có vai trò toàn cục là "${targetRoleName}". Vai trò của thành viên trong Group không được cao hơn vai trò toàn cục.`,
+      );
+      err.statusCode = 400;
+      throw err;
+    }
+
+    // Chỉ check theo role & permission của người gán ở trong chính Group đó (nếu không phải system ở global)
+    if (!hasSystemManage) {
+      const actorGroupRanks = actorGroupRoles.map((r) => getRoleRank(r));
+      const actorMaxGroupRank =
+        actorGroupRanks.length > 0 ? Math.max(...actorGroupRanks) : 1;
+
+      if (desiredRoleRank > actorMaxGroupRank) {
+        const err = new Error(
+          `Bạn không thể gán vai trò trong Group (${selectedRole.role_name}) cao hơn vai trò của bạn trong Group này`,
+        );
+        err.statusCode = 403;
+        throw err;
+      }
+    }
+
+    // Nếu gán quyền quản trị group mà không có quyền group_admin.assign trong Group này (hoặc system ở global) -> chặn
     if (selectedRole.is_admin_role && !canAssignAdmin) {
       const err = new Error(
-        "Bạn chỉ có quyền thêm thành viên xem Dashboard, không có quyền gán Quản trị Group",
+        "Bạn chỉ có quyền thêm thành viên xem Dashboard trong Group này, không có quyền gán Quản trị Group",
       );
       err.statusCode = 403;
       throw err;
@@ -465,28 +775,84 @@ async function assignUserToGroup({
 }
 
 /**
- * Xóa thành viên khỏi Group (Chỉ dành cho admin có quyền system.manage; admin không có quyền system không được xóa user)
+ * Xóa thành viên khỏi Group:
+ * - Nếu là system: được xóa tất cả thành viên khác trong Group
+ * - Nếu không phải system: mặc dù user đó do mình tạo ra nhưng nếu không phải chính mình gán vào Group này thì không thể xóa
  */
 async function removeUserFromGroup({ actorUserId, groupId, targetUserId }) {
-  const roleInfo = await roleService.getUserRoles(actorUserId);
-  const permissions = roleInfo?.permissions || [];
-
-  const hasSystemManage = permissions.includes("system.manage");
-
-  if (!hasSystemManage) {
-    const err = new Error(
-      "Bạn không có quyền xóa user đã tạo trong hệ thống",
-    );
-    err.statusCode = 403;
-    throw err;
-  }
-
   if (Number(targetUserId) === Number(actorUserId)) {
     const err = new Error("Bạn không thể tự xóa chính mình");
     err.statusCode = 403;
     throw err;
   }
 
+  const groupRoleInfo = await roleService.getUserGroupRoleAndPermissions(
+    actorUserId,
+    groupId,
+  );
+  const hasSystemManage = Boolean(groupRoleInfo?.isSystem);
+  const groupPermissions = groupRoleInfo?.permissions || [];
+
+  const canManageGroupMembers =
+    hasSystemManage ||
+    groupPermissions.includes("system.manage") ||
+    groupPermissions.includes("group_admin.assign") ||
+    groupPermissions.includes("member.delete") ||
+    groupPermissions.includes("member.update") ||
+    groupPermissions.includes("member.create");
+
+  if (!canManageGroupMembers) {
+    const err = new Error("Bạn không có quyền quản lý thành viên trong Group này");
+    err.statusCode = 403;
+    throw err;
+  }
+
+  const existingMemberRes = await rolePool.query(
+    `
+      SELECT id, created_by
+      FROM group_members
+      WHERE group_id = $1 AND superset_user_id = $2
+      LIMIT 1
+    `,
+    [groupId, targetUserId],
+  );
+  const existingMember = existingMemberRes.rows[0];
+  if (!existingMember) {
+    const err = new Error("Thành viên không tồn tại trong Group này");
+    err.statusCode = 404;
+    throw err;
+  }
+
+  if (!hasSystemManage) {
+    const [ugrRes, supersetMap] = await Promise.all([
+      rolePool.query(
+        `SELECT assigned_by FROM user_global_roles WHERE superset_user_id = $1`,
+        [targetUserId],
+      ),
+      getSupersetUsersByIds([Number(targetUserId)]),
+    ]);
+    const meta = supersetMap.get(Number(targetUserId));
+    const isCreatedByActor =
+      Number(meta?.created_by_fk) === Number(actorUserId) ||
+      ugrRes.rows.some(
+        (r) => Number(r.assigned_by) === Number(actorUserId),
+      );
+    const isAssignedToGroupByActor =
+      Number(existingMember.created_by) === Number(actorUserId);
+
+    if (!isCreatedByActor || !isAssignedToGroupByActor) {
+      const err = new Error(
+        "Bạn không thể xóa thành viên không phải do bạn gán vào Group này",
+      );
+      err.statusCode = 403;
+      throw err;
+    }
+  }
+
+  await rolePool.query(
+    `DELETE FROM member_dashboards WHERE group_id = $1 AND superset_user_id = $2`,
+    [groupId, targetUserId],
+  );
   await rolePool.query(
     `DELETE FROM group_members WHERE group_id = $1 AND superset_user_id = $2`,
     [groupId, targetUserId],
@@ -508,7 +874,18 @@ async function getUsersInfoList(actorUserId) {
     await Promise.all([
       rolePool.query(
         `
-          SELECT ugr.superset_user_id, ugr.assigned_at, r.role_code, r.role_name
+          SELECT
+            ugr.superset_user_id,
+            ugr.assigned_at,
+            r.role_code,
+            r.role_name,
+            EXISTS (
+              SELECT 1
+              FROM role_permissions rp
+              JOIN permissions p ON p.id = rp.permission_id
+              WHERE rp.role_id = r.id
+                AND p.permission_code = 'system.manage'
+            ) AS is_system_role
           FROM user_global_roles ugr
           JOIN roles r ON r.id = ugr.role_id
           WHERE ugr.superset_user_id = $1
@@ -554,15 +931,48 @@ async function getUsersInfoList(actorUserId) {
     role_name: r.role_name,
   }));
 
+  const isSystemUser = globalRes.rows.some(
+    (r) =>
+      Boolean(r.is_system_role) ||
+      String(r.role_code || "").toLowerCase() === "admin_ami",
+  );
+
   const assignedAt = globalRes.rows[0]?.assigned_at || null;
 
-  const userGroups = groupMemberRes.rows.map((r) => ({
-    group_id: Number(r.group_id),
-    group_name: r.group_name,
-    role_code: r.role_code,
-    role_name: r.role_name,
-    joined_at: r.created_at,
-  }));
+  let userGroups = [];
+  if (isSystemUser) {
+    // Với tài khoản system: chỉ hiển thị các nhánh Group cha cao nhất (parent_group_id IS NULL)
+    const sysRoleRow =
+      globalRes.rows.find(
+        (r) =>
+          Boolean(r.is_system_role) ||
+          String(r.role_code || "").toLowerCase() === "admin_ami",
+      ) || globalRes.rows[0];
+    const allGroupsRes = await rolePool.query(
+      `
+        SELECT id AS group_id, group_name, created_at
+        FROM groups
+        WHERE is_active = TRUE
+          AND parent_group_id IS NULL
+        ORDER BY id ASC
+      `,
+    );
+    userGroups = allGroupsRes.rows.map((g) => ({
+      group_id: Number(g.group_id),
+      group_name: g.group_name,
+      role_code: sysRoleRow?.role_code || "admin_ami",
+      role_name: sysRoleRow?.role_name || "Admin AMI",
+      joined_at: g.created_at,
+    }));
+  } else {
+    userGroups = groupMemberRes.rows.map((r) => ({
+      group_id: Number(r.group_id),
+      group_name: r.group_name,
+      role_code: r.role_code,
+      role_name: r.role_name,
+      joined_at: r.created_at,
+    }));
+  }
 
   const userDetail = {
     id: uid,
@@ -590,5 +1000,7 @@ module.exports = {
   assignUserToGroup,
   removeUserFromGroup,
   getUsersInfoList,
+  rolePool,
+  supersetPool,
 };
 

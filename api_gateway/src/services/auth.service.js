@@ -22,19 +22,28 @@ async function login(username, password) {
     throw new Error("Tài khoản Superset chưa có email");
   }
 
-  // Kiểm tra quyền của user từ Custom Backend
+  // Kiểm tra phân quyền Global của user từ Custom Backend (bảng user_global_roles)
   const userPermissions = await backendService.getUserPermissions(user.id);
-  const permissions = userPermissions?.permissions || [];
+  const globalRoles = userPermissions?.global_roles || [];
+  const globalPermissions = userPermissions?.global_permissions || [];
 
-  if (!Array.isArray(permissions) || permissions.length === 0) {
+  if (
+    !Array.isArray(globalRoles) ||
+    globalRoles.length === 0 ||
+    !Array.isArray(globalPermissions) ||
+    globalPermissions.length === 0
+  ) {
     const err = new Error("Tài khoản chưa được phân quyền trong hệ thống");
     err.status = 403;
     err.statusCode = 403;
     throw err;
   }
 
-  // Nếu không có quyền otp.verify thì trả thẳng sessionCookie về cho frontend
-  if (!permissions.includes("otp.verify")) {
+  user.global_roles = globalRoles;
+  user.global_permissions = globalPermissions;
+
+  // Nếu không có quyền otp.verify trong phân quyền Global thì trả thẳng sessionCookie về cho frontend
+  if (!globalPermissions.includes("otp.verify")) {
     return {
       otpRequired: false,
       sessionCookie: credentials.sessionCookie,

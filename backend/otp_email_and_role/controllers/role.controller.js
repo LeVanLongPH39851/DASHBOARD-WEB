@@ -84,6 +84,12 @@ async function getManagedGroups(req, res, next) {
       ...result,
     });
   } catch (error) {
+    if (error.statusCode) {
+      return res.status(error.statusCode).json({
+        status: "error",
+        message: error.message,
+      });
+    }
     next(error);
   }
 }
@@ -170,6 +176,8 @@ async function updateGroupDashboards(req, res, next) {
 
 async function getAssignableUsers(req, res, next) {
   const userId = Number(req.body?.userId ?? req.query?.userId);
+  const rawGroupId = req.body?.groupId ?? req.query?.groupId;
+  const groupId = rawGroupId ? Number(rawGroupId) : null;
 
   if (!Number.isSafeInteger(userId) || userId <= 0) {
     return res.status(400).json({
@@ -179,7 +187,7 @@ async function getAssignableUsers(req, res, next) {
   }
 
   try {
-    const users = await userService.getAssignableUsers(userId);
+    const users = await userService.getAssignableUsers(userId, groupId);
     return res.status(200).json({
       status: "success",
       users,
@@ -326,12 +334,50 @@ async function removeGroupMember(req, res, next) {
   }
 }
 
+async function deleteManagedGroup(req, res, next) {
+  const userId = Number(req.body?.userId ?? req.query?.userId);
+  const groupId = Number(req.body?.groupId ?? req.query?.groupId);
+
+  if (
+    !Number.isSafeInteger(userId) ||
+    userId <= 0 ||
+    !Number.isSafeInteger(groupId) ||
+    groupId <= 0
+  ) {
+    return res.status(400).json({
+      status: "error",
+      message: "userId và groupId không hợp lệ",
+    });
+  }
+
+  try {
+    const result = await roleService.deleteManagedGroup({
+      userId,
+      groupId,
+    });
+
+    return res.status(200).json({
+      status: "success",
+      ...result,
+    });
+  } catch (error) {
+    if (error.statusCode) {
+      return res.status(error.statusCode).json({
+        status: "error",
+        message: error.message,
+      });
+    }
+    next(error);
+  }
+}
+
 module.exports = {
   checkRoles,
   getAccessibleDashboards,
   getManagedGroups,
   createManagedGroup,
   updateGroupDashboards,
+  deleteManagedGroup,
   getAssignableUsers,
   getUsersInfo,
   getGroupMembers,

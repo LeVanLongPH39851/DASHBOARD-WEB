@@ -128,6 +128,19 @@ async function verifyOtpController(req, res, next) {
 
 // Lấy thông tin user
 async function meController(req, res) {
+  try {
+    const userId = req.user?.profile?.id;
+    if (userId) {
+      const permData = await backendService.getUserPermissions(userId);
+      req.user.roles = permData?.roles || [];
+      req.user.permissions = permData?.permissions || [];
+      req.user.global_roles = permData?.global_roles || [];
+      req.user.global_permissions = permData?.global_permissions || [];
+    }
+  } catch (err) {
+    console.warn("[Me Controller Role Lookup Warning]", err.message);
+  }
+
   return res.json({
     status: "success",
     user: req.user,
@@ -338,6 +351,8 @@ async function getManagedGroupsController(req, res) {
     const rawGroups = groupData?.groups || [];
     const roles = groupData?.roles || [];
     const permissions = groupData?.permissions || [];
+    const globalRoles = groupData?.global_roles || [];
+    const globalPermissions = groupData?.global_permissions || [];
 
     const titleMap = new Map();
     let availableDashboards = [];
@@ -367,21 +382,14 @@ async function getManagedGroupsController(req, res) {
       }
     }
 
-    // Fallback nếu Superset chưa trả về một số ID trong map
-    if (availableDashboards.length === 0) {
-      availableDashboards = MAPPED_DASHBOARD_IDS.map((id) => ({
-        id,
-        dashboard_title: titleMap.get(id) || `Dashboard #${id}`,
-        path: DASHBOARD_ROUTES[id].path,
-      }));
-    }
-
     const groups = enrichGroupTreeWithDashboards(rawGroups, titleMap);
 
     return res.status(200).json({
       status: "success",
       roles,
       permissions,
+      global_roles: globalRoles,
+      global_permissions: globalPermissions,
       groups,
       availableDashboards,
     });
@@ -390,7 +398,8 @@ async function getManagedGroupsController(req, res) {
 
     return res.status(error.response?.status || 503).json({
       status: "error",
-      message: "Không thể lấy danh sách Group quản lý",
+      message:
+        error.response?.data?.message || "Không thể lấy danh sách Group quản lý",
     });
   }
 }
@@ -449,7 +458,8 @@ async function updateGroupDashboardsController(req, res) {
 async function getAssignableUsersController(req, res) {
   try {
     const userId = req.user.profile.id;
-    const result = await backendService.getAssignableUsers(userId);
+    const groupId = req.query?.groupId ? Number(req.query.groupId) : null;
+    const result = await backendService.getAssignableUsers(userId, groupId);
     return res.status(200).json(result);
   } catch (error) {
     console.error("[Get Assignable Users Error]", error.message);
@@ -470,7 +480,8 @@ async function getUsersInfoController(req, res) {
 
     const infoData = await backendService.getUsersInfo(userId);
     const rawUser =
-      infoData?.user || (Array.isArray(infoData?.users) ? infoData.users[0] : null);
+      infoData?.user ||
+      (Array.isArray(infoData?.users) ? infoData.users[0] : null);
 
     if (!rawUser) {
       return res.status(404).json({
@@ -481,7 +492,8 @@ async function getUsersInfoController(req, res) {
 
     const titleMap = new Map();
     try {
-      const supersetDashboards = await supersetService.getDashboards(sessionCookie);
+      const supersetDashboards =
+        await supersetService.getDashboards(sessionCookie);
       supersetDashboards.forEach((d) => {
         titleMap.set(Number(d.id), d.dashboard_title);
       });
@@ -562,8 +574,7 @@ async function assignGroupMemberController(req, res) {
     return res.status(error.response?.status || 500).json({
       status: "error",
       message:
-        error.response?.data?.message ||
-        "Không thể gán thành viên vào Group",
+        error.response?.data?.message || "Không thể gán thành viên vào Group",
     });
   }
 }
@@ -587,8 +598,132 @@ async function removeGroupMemberController(req, res) {
     return res.status(error.response?.status || 500).json({
       status: "error",
       message:
-        error.response?.data?.message ||
-        "Không thể xóa thành viên khỏi Group",
+        error.response?.data?.message || "Không thể xóa thành viên khỏi Group",
+    });
+  }
+}
+
+// Xóa Group và toàn bộ dữ liệu liên quan
+async function deleteManagedGroupController(req, res) {
+  try {
+    const userId = req.user.profile.id;
+    const groupId = Number(req.params.groupId);
+
+    const result = await backendService.deleteManagedGroup({
+      userId,
+      groupId,
+    });
+
+    return res.status(200).json(result);
+  } catch (error) {
+    console.error("[Delete Group Error]", error.message);
+
+    return res.status(error.response?.status || 500).json({
+      status: "error",
+      message: error.response?.data?.message || "Không thể xóa Group",
+    });
+  }
+}
+
+// -------------------------------------------------------------
+// Users Management Controllers
+// -------------------------------------------------------------
+async function getManagedUsersController(req, res) {
+  try {
+    const userId = req.user.profile.id;
+    const result = await backendService.getManagedUsers(userId);
+    return res.status(200).json(result);
+  } catch (error) {
+    console.error("[Get Managed Users Error]", error.message);
+    return res.status(error.response?.status || 500).json({
+      status: "error",
+      message: error.response?.data?.message || "Không thể lấy danh sách người dùng",
+      fieldErrors: error.response?.data?.fieldErrors,
+    });
+  }
+}
+
+async function getRoleOptionsController(req, res) {
+  try {
+    const userId = req.user.profile.id;
+    const result = await backendService.getRoleOptions(userId);
+    return res.status(200).json(result);
+  } catch (error) {
+    console.error("[Get Role Options Error]", error.message);
+    return res.status(error.response?.status || 500).json({
+      status: "error",
+      message: error.response?.data?.message || "Không thể lấy danh sách role",
+    });
+  }
+}
+
+async function getManagedUserDetailController(req, res) {
+  try {
+    const userId = req.user.profile.id;
+    const targetUserId = req.query?.targetUserId || req.params?.id;
+    const result = await backendService.getManagedUserDetail(userId, targetUserId);
+    return res.status(200).json(result);
+  } catch (error) {
+    console.error("[Get Managed User Detail Error]", error.message);
+    return res.status(error.response?.status || 500).json({
+      status: "error",
+      message: error.response?.data?.message || "Không thể lấy chi tiết người dùng",
+    });
+  }
+}
+
+async function createManagedUserController(req, res) {
+  try {
+    const userId = req.user.profile.id;
+    const result = await backendService.createManagedUser({
+      ...req.body,
+      userId,
+    });
+    return res.status(201).json(result);
+  } catch (error) {
+    console.error("[Create Managed User Error]", error.message);
+    return res.status(error.response?.status || 500).json({
+      status: "error",
+      message: error.response?.data?.message || "Không thể tạo người dùng mới",
+      fieldErrors: error.response?.data?.fieldErrors,
+    });
+  }
+}
+
+async function updateManagedUserController(req, res) {
+  try {
+    const userId = req.user.profile.id;
+    const targetUserId = req.params?.id || req.body?.targetUserId || req.body?.id;
+    const result = await backendService.updateManagedUser({
+      ...req.body,
+      userId,
+      targetUserId,
+    });
+    return res.status(200).json(result);
+  } catch (error) {
+    console.error("[Update Managed User Error]", error.message);
+    return res.status(error.response?.status || 500).json({
+      status: "error",
+      message: error.response?.data?.message || "Không thể cập nhật người dùng",
+      fieldErrors: error.response?.data?.fieldErrors,
+    });
+  }
+}
+
+async function deleteManagedUserController(req, res) {
+  try {
+    const userId = req.user.profile.id;
+    const targetUserId = req.params?.id || req.body?.targetUserId || req.body?.id;
+    const result = await backendService.deleteManagedUser({
+      userId,
+      targetUserId,
+    });
+    return res.status(200).json(result);
+  } catch (error) {
+    console.error("[Delete Managed User Error]", error.message);
+    return res.status(error.response?.status || 500).json({
+      status: "error",
+      message: error.response?.data?.message || "Không thể xóa người dùng",
     });
   }
 }
@@ -605,9 +740,16 @@ module.exports = {
   getManagedGroupsController,
   createManagedGroupController,
   updateGroupDashboardsController,
+  deleteManagedGroupController,
   getAssignableUsersController,
   getUsersInfoController,
   getGroupMembersController,
   assignGroupMemberController,
   removeGroupMemberController,
+  getManagedUsersController,
+  getRoleOptionsController,
+  getManagedUserDetailController,
+  createManagedUserController,
+  updateManagedUserController,
+  deleteManagedUserController,
 };

@@ -8,17 +8,33 @@ function authorize(requiredPermission) {
       const user = await backendService.getUserPermissions(userId);
 
       const permissions = user.permissions || [];
+      const roles = user.roles || [];
+      const globalRoles = user.global_roles || [];
+      const globalPermissions = user.global_permissions || [];
 
       // Lưu Role và Permission vào request
-      req.user.roles = user.roles || [];
+      req.user.roles = roles;
       req.user.permissions = permissions;
+      req.user.global_roles = globalRoles;
+      req.user.global_permissions = globalPermissions;
 
-      // Kiểm tra quyền (nếu có system.manage hoặc có quyền yêu cầu)
+      const allTokens = [
+        ...permissions,
+        ...roles,
+        ...globalRoles,
+        ...globalPermissions,
+      ];
+
+      // Kiểm tra quyền (nếu có system.manage, admin_ami hoặc có quyền/role yêu cầu)
       const hasPermission = Array.isArray(requiredPermission)
-        ? requiredPermission.some((perm) => permissions.includes(perm))
-        : permissions.includes(requiredPermission);
+        ? requiredPermission.some((perm) => allTokens.includes(perm))
+        : allTokens.includes(requiredPermission);
 
-      if (!permissions.includes("system.manage") && !hasPermission) {
+      if (
+        !allTokens.includes("system.manage") &&
+        !allTokens.includes("admin_ami") &&
+        !hasPermission
+      ) {
         return res.status(403).json({
           message: "You do not have permission",
         });

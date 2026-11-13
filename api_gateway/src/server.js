@@ -26,13 +26,64 @@ app.set("trust proxy", trustProxyHops);
 // Security Headers
 app.use(helmet());
 
-// CORS
+// CORS Configuration
+const defaultOrigins = [
+  "http://localhost:3098",
+  "http://localhost:5173",
+  "http://localhost:3000",
+  "http://localhost:3022",
+  "http://127.0.0.1:3098",
+  "http://127.0.0.1:5173",
+  "http://127.0.0.1:3000",
+  "http://100.100.10.5:3098",
+];
+
+const envOrigins = process.env.CORS_ORIGIN
+  ? process.env.CORS_ORIGIN.split(",")
+      .map((o) => o.trim())
+      .filter(Boolean)
+  : [];
+
+const allowedOrigins = [...new Set([...defaultOrigins, ...envOrigins])];
+
 app.use(
   cors({
-    origin: ["http://localhost:3000", "http://localhost:5173"],
+    origin: (origin, callback) => {
+      // 1. Cho phép các request không có origin (curl, postman, mobile apps, server-to-server)
+      if (!origin) {
+        return callback(null, true);
+      }
+
+      // 2. Cho phép các origin nằm trong danh sách whitelist
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      // 3. Cho phép localhost (bất kỳ port nào) và các dải IP mạng nội bộ (LAN)
+      const isLocalOrLAN =
+        /^https?:\/\/(localhost|127\.0\.0\.1|192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+|172\.(1[6-9]|2\d|3[0-1])\.\d+\.\d+)(:\d+)?$/.test(
+          origin,
+        );
+
+      if (isLocalOrLAN || process.env.NODE_ENV !== "production") {
+        return callback(null, true);
+      }
+
+      // 4. Chặn các origin không hợp lệ
+      return callback(new Error(`Origin ${origin} is not allowed by CORS`));
+    },
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "Idempotency-Key", "Cookie"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "Idempotency-Key",
+      "Cookie",
+      "X-Requested-With",
+      "Accept",
+      "Origin",
+    ],
+    optionsSuccessStatus: 200,
   }),
 );
 

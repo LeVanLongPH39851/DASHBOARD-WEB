@@ -1,12 +1,12 @@
 const { Pool } = require("pg");
 
 const pool = new Pool({
-  host: process.env.POSTGRES_HOST || "localhost",
-  port: Number(process.env.POSTGRES_PORT || 5433),
+  host: process.env.POSTGRES_HOST || "postgres",
+  port: Number(process.env.POSTGRES_PORT || 5432),
   user: process.env.POSTGRES_USER,
   password: process.env.POSTGRES_PASSWORD,
   database: process.env.POSTGRES_DB,
-  connectionTimeoutMillis: 5000,
+  connectionTimeoutMillis: 50000,
 });
 
 pool.on("error", (error) => {
@@ -36,13 +36,14 @@ async function isGlobalSystemUser(userId) {
 }
 
 /**
- * Lấy danh sách roles và permissions Global của user từ bảng user_global_roles
+ * Lấy danh sách roles và permissions Global của user từ bảng user_global_roles,
+ * kèm cấu hình require_otp và can_change_password
  */
 async function getUserRoles(userId) {
   const { rows } = await pool.query(
     `
       WITH assigned_roles AS (
-        SELECT role_id
+        SELECT role_id, require_otp, can_change_password
         FROM user_global_roles
         WHERE superset_user_id = $1
       ),
@@ -65,17 +66,36 @@ async function getUserRoles(userId) {
         COALESCE(
           (SELECT ARRAY_AGG(permission_code ORDER BY permission_code) FROM permission_list),
           ARRAY[]::text[]
-        ) AS permissions
+        ) AS permissions,
+        COALESCE(
+          (SELECT bool_and(require_otp) FROM assigned_roles),
+          TRUE
+        ) AS require_otp,
+        COALESCE(
+          (SELECT bool_and(can_change_password) FROM assigned_roles),
+          TRUE
+        ) AS can_change_password
     `,
     [userId],
   );
 
-  const row = rows[0] || { roles: [], permissions: [] };
+  const row = rows[0] || {
+    roles: [],
+    permissions: [],
+    require_otp: true,
+    can_change_password: true,
+  };
   return {
     roles: row.roles || [],
     permissions: row.permissions || [],
     global_roles: row.roles || [],
     global_permissions: row.permissions || [],
+    require_otp:
+      row.require_otp !== undefined ? Boolean(row.require_otp) : true,
+    can_change_password:
+      row.can_change_password !== undefined
+        ? Boolean(row.can_change_password)
+        : true,
   };
 }
 
@@ -514,6 +534,51 @@ async function createManagedGroup({
   try {
     await client.query("BEGIN");
 
+    if (parentGroupId) {
+      // 1. Kiểm tra giới hạn: Mỗi một group cha chỉ tồn tại tối đa 10 group con
+      const childCountRes = await client.query(
+        `
+          SELECT COUNT(*)::int AS count
+          FROM groups
+          WHERE parent_group_id = $1 AND is_active = TRUE
+        `,
+        [parentGroupId],
+      );
+      const childCount = childCountRes.rows[0]?.count || 0;
+      if (childCount >= 10) {
+        const err = new Error(
+          "Mỗi Group cha chỉ được phép có tối đa 10 Group con. Group này đã đạt giới hạn 10 Group con.",
+        );
+        err.statusCode = 400;
+        throw err;
+      }
+
+      // 2. Kiểm tra giới hạn: 1 nhánh chỉ được phép tồn tại tối đa 5 cấp
+      const levelRes = await client.query(
+        `
+          WITH RECURSIVE ancestors AS (
+            SELECT id, parent_group_id, 1 AS level
+            FROM groups
+            WHERE id = $1
+            UNION ALL
+            SELECT g.id, g.parent_group_id, a.level + 1
+            FROM groups g
+            JOIN ancestors a ON a.parent_group_id = g.id
+          )
+          SELECT MAX(level)::int AS current_level FROM ancestors
+        `,
+        [parentGroupId],
+      );
+      const currentLevel = levelRes.rows[0]?.current_level || 1;
+      if (currentLevel >= 5) {
+        const err = new Error(
+          "Một nhánh Group chỉ được phép tồn tại tối đa 5 cấp (từ Cấp 1 đến Cấp 5). Không thể tạo thêm Group con cho cấp này.",
+        );
+        err.statusCode = 400;
+        throw err;
+      }
+    }
+
     const { rows } = await client.query(
       `
         INSERT INTO groups (group_name, description, parent_group_id, created_by)
@@ -672,34 +737,45 @@ async function updateGroupDashboards({ userId, groupId, dashboardIds }) {
 }
 
 async function deleteManagedGroup({ userId, groupId }) {
-  const groupRoleInfo = await getUserGroupRoleAndPermissions(userId, groupId);
-  const groupPermissions = groupRoleInfo?.permissions || [];
+  const isSystem = await isGlobalSystemUser(userId);
 
-  // Chỉ cho phép xóa Group nếu là system hoặc (ở Group con distance > 0 và có quyền group.delete)
-  const canDelete =
-    groupRoleInfo?.isSystem ||
-    groupPermissions.includes("system.manage") ||
-    (groupRoleInfo?.distance > 0 && groupPermissions.includes("group.delete"));
-
-  if (!canDelete) {
-    const err = new Error("Bạn không có quyền xóa Group này");
-    err.statusCode = 403;
+  const groupCheck = await pool.query(
+    `SELECT id, group_name, created_by, parent_group_id FROM groups WHERE id = $1 AND is_active = TRUE LIMIT 1`,
+    [groupId],
+  );
+  if (!groupCheck.rows[0]) {
+    const err = new Error("Group không tồn tại");
+    err.statusCode = 404;
     throw err;
+  }
+
+  const targetGroup = groupCheck.rows[0];
+  const isCreator = Number(targetGroup.created_by) === Number(userId);
+
+  // Quy định: Chỉ có group nào do chính user đó tạo ra mới có thể xóa group, còn admin ami (isSystem) được xóa hết
+  if (!isSystem) {
+    if (!isCreator) {
+      const err = new Error("Bạn chỉ có thể xóa Group do chính bạn tạo ra");
+      err.statusCode = 403;
+      throw err;
+    }
+
+    const groupRoleInfo = await getUserGroupRoleAndPermissions(userId, groupId);
+    const groupPermissions = groupRoleInfo?.permissions || [];
+    const hasGroupDeletePerm =
+      groupPermissions.includes("group.delete") ||
+      groupPermissions.includes("system.manage");
+
+    if (!hasGroupDeletePerm) {
+      const err = new Error("Bạn không có quyền xóa Group này");
+      err.statusCode = 403;
+      throw err;
+    }
   }
 
   const client = await pool.connect();
   try {
     await client.query("BEGIN");
-
-    const groupCheck = await client.query(
-      `SELECT id, group_name FROM groups WHERE id = $1 LIMIT 1`,
-      [groupId],
-    );
-    if (!groupCheck.rows[0]) {
-      const err = new Error("Group không tồn tại");
-      err.statusCode = 404;
-      throw err;
-    }
 
     // Tìm toàn bộ ID của Group này và các Group con/cháu trực thuộc
     const subGroupsRes = await client.query(
@@ -733,10 +809,9 @@ async function deleteManagedGroup({ userId, groupId }) {
       `UPDATE groups SET parent_group_id = NULL WHERE id = ANY($1::bigint[])`,
       [targetGroupIds],
     );
-    await client.query(
-      `DELETE FROM groups WHERE id = ANY($1::bigint[])`,
-      [targetGroupIds],
-    );
+    await client.query(`DELETE FROM groups WHERE id = ANY($1::bigint[])`, [
+      targetGroupIds,
+    ]);
 
     await client.query("COMMIT");
     return {

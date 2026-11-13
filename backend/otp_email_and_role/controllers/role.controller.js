@@ -371,6 +371,73 @@ async function deleteManagedGroup(req, res, next) {
   }
 }
 
+async function updateUserProfile(req, res, next) {
+  const userId = Number(req.body?.userId ?? req.query?.userId);
+  const { first_name, last_name, email } = req.body || {};
+
+  if (!Number.isSafeInteger(userId) || userId <= 0) {
+    return res.status(400).json({
+      status: "error",
+      message: "userId phải là số nguyên dương",
+    });
+  }
+
+  try {
+    const user = await userService.updateUserProfile(userId, {
+      first_name,
+      last_name,
+      email,
+    });
+
+    return res.status(200).json({
+      status: "success",
+      message: "Cập nhật thông tin thành công",
+      user,
+    });
+  } catch (error) {
+    if (error.statusCode) {
+      return res.status(error.statusCode).json({
+        status: "error",
+        message: error.message,
+      });
+    }
+    next(error);
+  }
+}
+
+async function changeUserPassword(req, res, next) {
+  const userId = Number(req.body?.userId ?? req.query?.userId);
+  const { old_password, new_password, confirm_new_password } = req.body || {};
+
+  if (!Number.isSafeInteger(userId) || userId <= 0) {
+    return res.status(400).json({
+      status: "error",
+      message: "userId phải là số nguyên dương",
+    });
+  }
+
+  try {
+    const result = await userService.changeUserPassword(userId, {
+      old_password,
+      new_password,
+      confirm_new_password,
+    });
+
+    return res.status(200).json({
+      status: "success",
+      ...result,
+    });
+  } catch (error) {
+    if (error.statusCode) {
+      return res.status(error.statusCode).json({
+        status: "error",
+        message: error.message,
+      });
+    }
+    next(error);
+  }
+}
+
 module.exports = {
   checkRoles,
   getAccessibleDashboards,
@@ -380,6 +447,8 @@ module.exports = {
   deleteManagedGroup,
   getAssignableUsers,
   getUsersInfo,
+  updateUserProfile,
+  changeUserPassword,
   getGroupMembers,
   assignGroupMember,
   removeGroupMember,

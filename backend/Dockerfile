@@ -17,6 +17,6 @@ RUN addgroup -g 1001 -S nodejs && \
     adduser -S nextjs -u 1001
 USER nextjs
 
-EXPOSE 5000
+EXPOSE 5050
 
 CMD ["node", "server.js"]

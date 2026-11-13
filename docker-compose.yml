@@ -1,25 +1,29 @@
 # ← **SỬA 1**: Bỏ version (deprecated)
 
 services:
-  nginx:
-    image: nginx:alpine
-    ports:
-      - "79:80"
-    depends_on:
-      - frontend
-      - backend
-    restart: unless-stopped
-    networks:
-      - app-network
-
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
     ports:
-      - "5000:5000"
+      - "5050:5050"
     env_file:
       - ./backend/.env
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  api_gateway:
+    build:
+      context: ./api_gateway
+      dockerfile: Dockerfile
+    container_name: api-gateway
+    ports:
+      - "8090:8090"
+    env_file:
+      - ./api_gateway/.env
+    depends_on:
+      - backend
     restart: unless-stopped
     networks:
       - app-network
@@ -29,11 +33,12 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     ports:
-      - "3022:3022"
+      - "3098:3098"
     env_file:
       - ./frontend/.env
     depends_on:
       - backend
+      - api_gateway
     restart: unless-stopped
     networks:
       - app-network

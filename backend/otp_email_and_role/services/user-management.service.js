@@ -211,6 +211,7 @@ async function getGlobalRolesMap(userIds) {
   const { rows } = await rolePool.query(
     `
       SELECT ugr.superset_user_id, ugr.assigned_by, ugr.assigned_at,
+             ugr.require_otp, ugr.can_change_password,
              r.id AS role_id, r.role_code, r.role_name,
              EXISTS (
                SELECT 1
@@ -229,7 +230,13 @@ async function getGlobalRolesMap(userIds) {
   rows.forEach((r) => {
     const uid = Number(r.superset_user_id);
     if (!map.has(uid)) {
-      map.set(uid, { roles: [], assigned_by: null, assigned_at: null });
+      map.set(uid, {
+        roles: [],
+        assigned_by: null,
+        assigned_at: null,
+        require_otp: true,
+        can_change_password: true,
+      });
     }
     const entry = map.get(uid);
     entry.roles.push({
@@ -243,6 +250,12 @@ async function getGlobalRolesMap(userIds) {
       entry.assigned_by = Number(r.assigned_by);
     }
     if (!entry.assigned_at) entry.assigned_at = r.assigned_at;
+    if (r.require_otp !== undefined && r.require_otp !== null) {
+      entry.require_otp = Boolean(r.require_otp);
+    }
+    if (r.can_change_password !== undefined && r.can_change_password !== null) {
+      entry.can_change_password = Boolean(r.can_change_password);
+    }
   });
 
   return map;
@@ -384,6 +397,14 @@ function mapSupersetRow(row, roleEntry, creatorMap, actor, includeAll = false) {
     username: row.username,
     email: row.email,
     active: Boolean(row.active),
+    require_otp:
+      roleEntry?.require_otp !== undefined
+        ? Boolean(roleEntry.require_otp)
+        : true,
+    can_change_password:
+      roleEntry?.can_change_password !== undefined
+        ? Boolean(roleEntry.can_change_password)
+        : true,
     role_id: topRole?.role_id ?? null,
     role_code: topRole?.role_code ?? null,
     role_name: topRole?.role_name ?? null,
@@ -441,6 +462,18 @@ function normalizePayload(raw = {}) {
       raw.active === undefined || raw.active === null
         ? true
         : raw.active === true || raw.active === "true" || raw.active === 1,
+    require_otp:
+      raw.require_otp === undefined || raw.require_otp === null
+        ? true
+        : raw.require_otp === true ||
+          raw.require_otp === "true" ||
+          raw.require_otp === 1,
+    can_change_password:
+      raw.can_change_password === undefined || raw.can_change_password === null
+        ? true
+        : raw.can_change_password === true ||
+          raw.can_change_password === "true" ||
+          raw.can_change_password === 1,
     role_id: Number(raw.role_id ?? raw.roleId),
     password: raw.password === undefined ? undefined : String(raw.password),
     confirm_password:
@@ -739,10 +772,16 @@ async function createManagedUser(actorUserId, rawPayload) {
     // 3. Lưu vào bảng user_global_roles của Database Backend
     await rcClient.query(
       `
-        INSERT INTO user_global_roles (superset_user_id, role_id, assigned_by)
-        VALUES ($1, $2, $3)
+        INSERT INTO user_global_roles (superset_user_id, role_id, assigned_by, require_otp, can_change_password)
+        VALUES ($1, $2, $3, $4, $5)
       `,
-      [newUserId, data.role_id, actor.actorUserId],
+      [
+        newUserId,
+        data.role_id,
+        actor.actorUserId,
+        data.require_otp,
+        data.can_change_password,
+      ],
     );
 
     // Commit Superset DB trước, nếu Role DB lỗi thì rollback / bù trừ
@@ -844,7 +883,7 @@ async function updateManagedUser(actorUserId, targetUserId, rawPayload) {
       );
     }
 
-    // 3. Cập nhật role_id trong user_global_roles của Database Backend
+    // 3. Cập nhật role_id, require_otp, can_change_password trong user_global_roles của Database Backend
     const assignedBy = currentEntry?.assigned_by || actor.actorUserId;
     await rcClient.query(
       `DELETE FROM user_global_roles WHERE superset_user_id = $1`,
@@ -852,10 +891,16 @@ async function updateManagedUser(actorUserId, targetUserId, rawPayload) {
     );
     await rcClient.query(
       `
-        INSERT INTO user_global_roles (superset_user_id, role_id, assigned_by)
-        VALUES ($1, $2, $3)
+        INSERT INTO user_global_roles (superset_user_id, role_id, assigned_by, require_otp, can_change_password)
+        VALUES ($1, $2, $3, $4, $5)
       `,
-      [tid, data.role_id, assignedBy],
+      [
+        tid,
+        data.role_id,
+        assignedBy,
+        data.require_otp,
+        data.can_change_password,
+      ],
     );
 
     await rcClient.query("COMMIT");
@@ -870,8 +915,14 @@ async function updateManagedUser(actorUserId, targetUserId, rawPayload) {
         );
         for (const r of currentEntry?.roles || []) {
           await rolePool.query(
-            `INSERT INTO user_global_roles (superset_user_id, role_id, assigned_by) VALUES ($1, $2, $3)`,
-            [tid, r.role_id, currentEntry.assigned_by],
+            `INSERT INTO user_global_roles (superset_user_id, role_id, assigned_by, require_otp, can_change_password) VALUES ($1, $2, $3, $4, $5)`,
+            [
+              tid,
+              r.role_id,
+              currentEntry.assigned_by,
+              currentEntry.require_otp,
+              currentEntry.can_change_password,
+            ],
           );
         }
       } catch (compErr) {

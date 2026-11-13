@@ -12,7 +12,7 @@ async function getUserPermissions(userId) {
       headers: {
         "x-internal-api-key": process.env.API_GATEWAY_INTERNAL_KEY,
       },
-      timeout: 5000,
+      timeout: 50000,
     },
   );
 
@@ -29,7 +29,7 @@ async function getUserDashboards(userId) {
       headers: {
         "x-internal-api-key": process.env.API_GATEWAY_INTERNAL_KEY,
       },
-      timeout: 5000,
+      timeout: 50000,
     },
   );
 
@@ -37,18 +37,15 @@ async function getUserDashboards(userId) {
 }
 
 async function getManagedGroups(userId) {
-  const response = await axios.get(
-    `${BACKEND_URL}/internal/auth/role/groups`,
-    {
-      params: {
-        userId,
-      },
-      headers: {
-        "x-internal-api-key": process.env.API_GATEWAY_INTERNAL_KEY,
-      },
-      timeout: 5000,
+  const response = await axios.get(`${BACKEND_URL}/internal/auth/role/groups`, {
+    params: {
+      userId,
     },
-  );
+    headers: {
+      "x-internal-api-key": process.env.API_GATEWAY_INTERNAL_KEY,
+    },
+    timeout: 50000,
+  });
 
   return response.data;
 }
@@ -61,7 +58,7 @@ async function createManagedGroup(payload) {
       headers: {
         "x-internal-api-key": process.env.API_GATEWAY_INTERNAL_KEY,
       },
-      timeout: 5000,
+      timeout: 50000,
     },
   );
 
@@ -76,7 +73,7 @@ async function updateGroupDashboards(payload) {
       headers: {
         "x-internal-api-key": process.env.API_GATEWAY_INTERNAL_KEY,
       },
-      timeout: 5000,
+      timeout: 50000,
     },
   );
 
@@ -260,6 +257,40 @@ async function deleteManagedUser(payload) {
   return response.data;
 }
 
+async function updateUserProfile(userId, data) {
+  const response = await axios.put(
+    `${BACKEND_URL}/internal/auth/role/users/profile`,
+    {
+      userId,
+      ...data,
+    },
+    {
+      headers: {
+        "x-internal-api-key": process.env.API_GATEWAY_INTERNAL_KEY,
+      },
+      timeout: 10000,
+    },
+  );
+  return response.data;
+}
+
+async function changeUserPassword(userId, data) {
+  const response = await axios.put(
+    `${BACKEND_URL}/internal/auth/role/users/change-password`,
+    {
+      userId,
+      ...data,
+    },
+    {
+      headers: {
+        "x-internal-api-key": process.env.API_GATEWAY_INTERNAL_KEY,
+      },
+      timeout: 10000,
+    },
+  );
+  return response.data;
+}
+
 module.exports = {
   getUserPermissions,
   getUserDashboards,
@@ -269,6 +300,8 @@ module.exports = {
   deleteManagedGroup,
   getAssignableUsers,
   getUsersInfo,
+  updateUserProfile,
+  changeUserPassword,
   getGroupMembers,
   assignGroupMember,
   removeGroupMember,

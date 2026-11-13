@@ -515,7 +515,8 @@ const DashboardListContent = () => {
               </>
             ) : (
               <p className="text-xs text-color-black-50 dark:text-color-white-50">
-                Vui lòng liên hệ Quản trị viên để được cấp phát quyền xem Dashboard.
+                Vui lòng liên hệ Quản trị viên để được cấp phát quyền xem
+                Dashboard.
               </p>
             )}
           </div>

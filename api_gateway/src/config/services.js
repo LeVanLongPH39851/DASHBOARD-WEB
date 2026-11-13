@@ -6,7 +6,7 @@ const services = {
 
     instances: [
       {
-        url: "http://localhost:5000",
+        url: process.env.BACKEND_URL || "http://backend:5050",
         healthy: false,
         failures: 0,
         successes: 0,

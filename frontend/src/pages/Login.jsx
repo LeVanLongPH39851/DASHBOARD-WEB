@@ -224,62 +224,62 @@ const Login = () => {
   };
 
   return (
-    <main className="p-7.5 flex h-lvh tracking-[0.1px] overflow-hidden font-family-be-vietnam-pro">
+    <main className="p-7.5 max-lg:p-6 max-md:p-5 flex min-h-lvh tracking-[0.1px] overflow-hidden font-family-be-vietnam-pro">
       <section
         ref={leftSectionRef}
-        className="flex flex-col justify-between w-1/2 section-left"
+        className="flex flex-col justify-between w-1/2 max-md:w-full section-left"
       >
         <div>
           <figure>
             <img
               src={logoVTVRatings}
-              className="w-43.25"
+              className="w-43.25 max-lg:w-40 max-md:w-30"
               alt="Logo VTVRatings"
             />
           </figure>
         </div>
         <div className="flex justify-center">
-          <div>
+          <div className="w-full">
             <div className="text-center">
-              <h2 className="text-color-black-100 font-semibold text-[32px] mb-6">
+              <h2 className="text-color-black-100 font-semibold text-[32px] max-lg:text-3xl max-md:text-2xl mb-6 max-lg:mb-5 max-md:mb-4">
                 Xin chào
               </h2>
-              <p className="text-color-p-login text-sm font-normal mb-16.75">
+              <p className="text-color-p-login text-sm max-lg:text-[13px] max-md:text-xs font-normal mb-16.75 max-lg:mb-15 max-md:mb-12">
                 Vui lòng điền thông tin đăng nhập
               </p>
             </div>
-            <div className="w-122.5">
-              <p className="text-color-footer text-sm font-normal mb-1">
+            <div className="px-54.75 max-lg:px-30 max-md:px-0">
+              <p className="text-color-footer text-sm max-lg:text-[13px] max-md:text-xs font-normal mb-1">
                 Hoặc sử dụng tài khoản công khai
               </p>
-              <p className="text-sm font-normal text-color-p-login">
+              <p className="text-sm max-lg:text-[13px] max-md:text-xs font-normal text-color-p-login">
                 Tên tài khoản:{" "}
                 <span className="text-color-p-black-login">vtvguest</span>
               </p>
-              <p className="text-sm font-normal text-color-p-login mb-8.75">
+              <p className="text-sm max-lg:text-[13px] max-md:text-xs font-normal text-color-p-login mb-8.75 max-lg:mb-7 max-md:mb-5">
                 Mật khẩu:{" "}
                 <span className="text-color-p-black-login">guest@neotam</span>
               </p>
               <form onSubmit={handleLogin}>
-                <div className="flex flex-col mb-5.5 relative">
-                  <label className="mb-2 text-color-p-login text-sm font-normal">
+                <div className="flex flex-col mb-5.5 max-lg:mb-5 max-md:mb-4.5 relative">
+                  <label className="mb-2 max-lg:mb-1.5 max-md:mb-1 text-color-p-login text-sm max-lg:text-[13px] max-md:text-xs font-normal">
                     Tài khoản
                   </label>
                   <input
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     type="text"
-                    className={`w-full py-3 px-4 rounded-[10px] border ${showErrorName ? "border-color-error" : "border-background-line-gray"} outline-none transition-all duration-700 placeholder:text-color-p-login text-base placeholder:font-normal placeholder:text-sm text-color-p-black-login font-medium`}
+                    className={`w-full py-3 max-lg:py-2.75 max-md:py-2.5 px-4 max-lg:px-3.75 max-md:px-3.5 rounded-[10px] border ${showErrorName ? "border-color-error" : "border-background-line-gray"} outline-none transition-all duration-700 placeholder:text-color-p-login text-sm max-lg:text-[13px] max-md:text-xs placeholder:font-normal placeholder:text-sm max-lg:placeholder:text-[13px] max-md:placeholder:text-xs text-color-p-black-login font-medium`}
                     placeholder="Nhập tài khoản ..."
                   />
                   <p
-                    className={`${showErrorName ? "w-full opacity-100 visible" : "w-0 opacity-0 invisible"} text-nowrap overflow-hidden text-color-error transition-all duration-700 font-normal text-sm absolute left-0 bottom-0 translate-y-full`}
+                    className={`${showErrorName ? "w-full opacity-100 visible" : "w-0 opacity-0 invisible"} text-nowrap overflow-hidden text-color-error transition-all duration-700 font-normal text-sm max-lg:text-[13px] max-md:text-xs absolute left-0 bottom-0 translate-y-full`}
                   >
                     {errorName}
                   </p>
                 </div>
-                <div className="flex flex-col mb-5.5">
-                  <label className="mb-2 text-color-p-login text-sm font-normal">
+                <div className="flex flex-col mb-5.5 max-lg:mb-5 max-md:mb-4.5">
+                  <label className="mb-2 max-lg:mb-1.5 max-md:mb-1 text-color-p-login text-sm max-lg:text-[13px] max-md:text-xs font-normal">
                     Mật khẩu
                   </label>
                   <div className="relative">
@@ -287,11 +287,11 @@ const Login = () => {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       type={type ? "password" : "text"}
-                      className={`w-full py-3 px-4 rounded-[10px] border ${showErrorPass ? "border-color-error" : "border-background-line-gray"} outline-none transition-all duration-700 placeholder:text-color-p-login text-base placeholder:font-normal placeholder:text-sm text-color-p-black-login font-medium`}
+                      className={`w-full py-3 max-lg:py-2.75 max-md:py-2.5 px-4 max-lg:px-3.75 max-md:px-3.5 rounded-[10px] border ${showErrorPass ? "border-color-error" : "border-background-line-gray"} outline-none transition-all duration-700 placeholder:text-color-p-login text-sm max-lg:text-[13px] max-md:text-xs placeholder:font-normal placeholder:text-sm max-lg:placeholder:text-[13px] max-md:placeholder:text-xs text-color-p-black-login font-medium`}
                       placeholder="Nhập mật khẩu ..."
                     />
                     <p
-                      className={`${showErrorPass ? "w-full opacity-100 visible" : "w-0 opacity-0 invisible"} text-nowrap overflow-hidden text-color-error transition-all duration-700 font-normal text-sm absolute left-0 bottom-0 translate-y-full`}
+                      className={`${showErrorPass ? "w-full opacity-100 visible" : "w-0 opacity-0 invisible"} text-nowrap overflow-hidden text-color-error transition-all duration-700 font-normal text-sm max-lg:text-[13px] max-md:text-xs absolute left-0 bottom-0 translate-y-full`}
                     >
                       {errorPass}
                     </p>
@@ -303,7 +303,7 @@ const Login = () => {
                     >
                       <img
                         src={type ? iconHideEye : iconBlockEye}
-                        className="w-4.25 absolute top-1/2 -translate-y-1/2 right-4"
+                        className="w-4.25 max-lg:w-4 max-md:w-3.75 absolute top-1/2 -translate-y-1/2 right-4 max-lg:right-3.75 max-md:right-3.5"
                         alt="Icon Hide Eye"
                       />
                     </figure>
@@ -320,14 +320,14 @@ const Login = () => {
                     Forgot password ?
                   </p>
                 </div> */}
-                <div className="mb-2">
+                <div className="mb-2 max-lg:mb-1.75 max-md:mb-1.5">
                   {!errorLogin && (
-                    <p className="text-color-error font-normal text-sm opacity-0">
+                    <p className="text-color-error font-normal text-sm max-lg:text-[13px] max-md:text-xs opacity-0">
                       Sai tài khoản hoặc mật khẩu
                     </p>
                   )}
                   <p
-                    className={`${showErrorLogin ? "w-full opacity-100 visible" : "w-0 opacity-0 invisible"} text-nowrap overflow-hidden text-color-error transition-all duration-700 font-normal text-sm`}
+                    className={`${showErrorLogin ? "w-full opacity-100 visible" : "w-0 opacity-0 invisible"} text-nowrap overflow-hidden text-color-error transition-all duration-700 font-normal text-sm max-lg:text-[13px] max-md:text-xs`}
                   >
                     {errorLogin}
                   </p>
@@ -335,7 +335,7 @@ const Login = () => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="cursor-pointer w-full h-12 flex justify-center items-center hover:opacity-90 bg-color-p-black-login text-base text-color-white-90 font-medium rounded-[10px] disabled:cursor-not-allowed disabled:opacity-60 transition-all duration-300"
+                  className="cursor-pointer w-full h-12 max-lg:h-11 max-md:h-10 flex justify-center items-center hover:opacity-90 bg-color-p-black-login text-base max-lg:text-[15px] max-md:text-sm text-color-white-90 font-medium rounded-[10px] disabled:cursor-not-allowed disabled:opacity-60 transition-all duration-300"
                 >
                   {loading ? "Đang đăng nhập..." : "Đăng nhập"}
                 </button>
@@ -350,18 +350,18 @@ const Login = () => {
       <section
         ref={rightSectionRef}
         style={{ backgroundImage: `url(${bannerBackGroundLogin})` }}
-        className="w-1/2 rounded-2xl bg-cover bg-center bg-no-repeat relative flex flex-col justify-center items-center section-right"
+        className="w-1/2 rounded-2xl bg-cover bg-center bg-no-repeat relative flex flex-col justify-center items-center section-right max-md:hidden"
       >
-        <div className="mb-19.5 relative z-10">
-          <h1 className="text-color-p-black-login text-[38px] font-semibold mb-4">
+        <div className="mb-19.5 max-lg:mb-18 relative z-10">
+          <h1 className="text-color-p-black-login text-[38px] max-lg:text-[35px] font-semibold mb-4 max-lg:mb-3.5">
             Kết nối dễ dàng cho tất cả
           </h1>
-          <p className="max-w-129.5 text-color-p-black-login text-sm font-normal">
+          <p className="max-w-129.5 max-lg:max-w-120 text-color-p-black-login text-sm max-lg:text-[13px] font-normal">
             Mang AI đến cho tất cả mọi người — bất kể trình độ kỹ thuật, mọi
             người đều có thể sử dụng AI hiệu quả trong công việc và cuộc sống.
           </p>
         </div>
-        <figure className="w-[70%] relative z-10 border-[9px] rounded-[11px] border-color-p-black-login bg-color-p-black-login">
+        <figure className="w-[70%] max-lg:w-[75%] relative z-10 border-[9px] rounded-[11px] border-color-p-black-login bg-color-p-black-login">
           <Slider {...settings}>
             <img
               src={tabOverview}

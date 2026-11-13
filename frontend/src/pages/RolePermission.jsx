@@ -299,6 +299,7 @@ const GroupDetailWorkspace = ({
   group,
   groups,
   isSystemManager,
+  currentUserId,
   onOpenEditModal,
   onOpenCreateChildModal,
   onOpenMembersModal,
@@ -315,20 +316,41 @@ const GroupDetailWorkspace = ({
   const groupRoles = Array.isArray(group.my_group_roles)
     ? group.my_group_roles
     : [];
-  const level = group.parent_group_id ? 1 : 0;
+
+  const flatGroup = flattenGroups(groups).find(
+    (g) => Number(g.id) === Number(group.id),
+  );
+  const actualLevel = flatGroup
+    ? flatGroup.level
+    : group.parent_group_id
+      ? 1
+      : 0;
+
+  // 1 nhánh chỉ được phép tồn tại tối đa 5 cấp (level 0..4)
+  const isMaxDepthReached = actualLevel >= 4;
+  // Mỗi một group cha chỉ tồn tại tối đa 10 group con
+  const isMaxChildrenReached = children.length >= 10;
 
   const canEditGroupDashboards =
     isSystemManager ||
     groupPerms.includes("system.manage") ||
-    (level > 0 && groupPerms.includes("group_dashboard.assign"));
+    (actualLevel > 0 && groupPerms.includes("group_dashboard.assign"));
+
   const canCreateChildGroup =
-    isSystemManager ||
-    groupPerms.includes("system.manage") ||
-    groupPerms.includes("group.create");
+    (isSystemManager ||
+      groupPerms.includes("system.manage") ||
+      groupPerms.includes("group.create")) &&
+    !isMaxDepthReached &&
+    !isMaxChildrenReached;
+
+  // Chỉ có group nào do chính user đó tạo ra mới có thể xóa group, còn admin ami được xóa hết
+  const isCreator = Number(group.created_by) === Number(currentUserId);
   const canDeleteGroup =
     isSystemManager ||
-    groupPerms.includes("system.manage") ||
-    (level > 0 && groupPerms.includes("group.delete"));
+    (isCreator &&
+      (groupPerms.includes("group.delete") ||
+        groupPerms.includes("system.manage")));
+
   const canManageGroupMembers =
     isSystemManager ||
     groupPerms.includes("system.manage") ||
@@ -482,7 +504,7 @@ const GroupDetailWorkspace = ({
                 <span>Quản lý User</span>
               </button>
             )}
-            {canCreateChildGroup && (
+            {canCreateChildGroup ? (
               <button
                 type="button"
                 onClick={() => onOpenCreateChildModal(group)}
@@ -503,7 +525,18 @@ const GroupDetailWorkspace = ({
                 </svg>
                 <span>Thêm Group con</span>
               </button>
-            )}
+            ) : isSystemManager || groupPerms.includes("group.create") ? (
+              <span
+                className="px-3 py-2 rounded-xl text-xs font-medium border border-border-black-10 dark:border-background-white-15 bg-background-search dark:bg-background-white-8 text-color-black-40 dark:text-color-white-40 select-none cursor-not-allowed"
+                title={
+                  isMaxDepthReached
+                    ? "Nhánh này đã đạt giới hạn tối đa 5 cấp"
+                    : "Group này đã đạt giới hạn tối đa 10 Group con"
+                }
+              >
+                {isMaxDepthReached ? "Tối đa 5 cấp" : "Đủ 10 Group con"}
+              </span>
+            ) : null}
             {canDeleteGroup && (
               <button
                 type="button"
@@ -709,6 +742,7 @@ const GroupCardNode = ({
   index,
   level = 0,
   isSystemManager,
+  currentUserId,
   onOpenEditModal,
   onOpenCreateChildModal,
   onOpenMembersModal,
@@ -727,19 +761,32 @@ const GroupCardNode = ({
     ? group.my_group_roles
     : [];
 
+  // 1 nhánh chỉ được phép tồn tại tối đa 5 cấp (level 0..4)
+  const isMaxDepthReached = level >= 4;
+  // Mỗi một group cha chỉ tồn tại tối đa 10 group con
+  const isMaxChildrenReached = children.length >= 10;
+
   // super_admin không thể sửa Edit Dashboard list ở cấp cao nhất do nó quản lý (level === 0), chỉ sửa được ở các Group con (level > 0)
   const canEditGroupDashboards =
     isSystemManager ||
     groupPerms.includes("system.manage") ||
     (level > 0 && groupPerms.includes("group_dashboard.assign"));
+
   const canCreateChildGroup =
-    isSystemManager ||
-    groupPerms.includes("system.manage") ||
-    groupPerms.includes("group.create");
+    (isSystemManager ||
+      groupPerms.includes("system.manage") ||
+      groupPerms.includes("group.create")) &&
+    !isMaxDepthReached &&
+    !isMaxChildrenReached;
+
+  // Chỉ có group nào do chính user đó tạo ra mới có thể xóa group, còn admin ami được xóa hết
+  const isCreator = Number(group.created_by) === Number(currentUserId);
   const canDeleteGroup =
     isSystemManager ||
-    groupPerms.includes("system.manage") ||
-    (level > 0 && groupPerms.includes("group.delete"));
+    (isCreator &&
+      (groupPerms.includes("group.delete") ||
+        groupPerms.includes("system.manage")));
+
   const canManageGroupMembers =
     isSystemManager ||
     groupPerms.includes("system.manage") ||
@@ -917,7 +964,7 @@ const GroupCardNode = ({
               </button>
             )}
 
-            {canCreateChildGroup && (
+            {canCreateChildGroup ? (
               <button
                 type="button"
                 onClick={() => onOpenCreateChildModal(group)}
@@ -938,7 +985,18 @@ const GroupCardNode = ({
                 </svg>
                 <span>Thêm Group con</span>
               </button>
-            )}
+            ) : isSystemManager || groupPerms.includes("group.create") ? (
+              <span
+                className="px-3 py-1.5 rounded-xl text-xs font-medium border border-border-black-10 dark:border-background-white-15 bg-background-search dark:bg-background-white-8 text-color-black-40 dark:text-color-white-40 select-none cursor-not-allowed"
+                title={
+                  isMaxDepthReached
+                    ? "Nhánh này đã đạt giới hạn tối đa 5 cấp"
+                    : "Group này đã đạt giới hạn tối đa 10 Group con"
+                }
+              >
+                {isMaxDepthReached ? "Tối đa 5 cấp" : "Đủ 10 Group con"}
+              </span>
+            ) : null}
 
             {canDeleteGroup && (
               <button
@@ -1077,6 +1135,7 @@ const GroupCardNode = ({
               index={childIdx}
               level={level + 1}
               isSystemManager={isSystemManager}
+              currentUserId={currentUserId}
               onOpenEditModal={onOpenEditModal}
               onOpenCreateChildModal={onOpenCreateChildModal}
               onOpenMembersModal={onOpenMembersModal}
@@ -1214,16 +1273,28 @@ const RolePermissionContent = () => {
 
   const isSystemManager = permissions.includes("system.manage");
 
-  // Chỉ lấy danh sách các Group mà user thực sự có quyền tạo Group con (group.create) tại chính Group đó
+  const currentUserId = Number(
+    user?.user_id ||
+      user?.id ||
+      user?.profile?.id ||
+      sessionStorage.getItem("user_id"),
+  );
+
+  // Chỉ lấy danh sách các Group mà user thực sự có quyền tạo Group con (group.create) tại chính Group đó,
+  // đồng thời chưa đạt tối đa 5 cấp (level < 4) và chưa đạt tối đa 10 group con (children < 10)
   const creatableParentGroupOptions = useMemo(
     () =>
-      flatGroupOptions.filter(
-        (g) =>
+      flatGroupOptions.filter((g) => {
+        const hasPerm =
           isSystemManager ||
           (g.my_group_permissions || []).includes("system.manage") ||
-          (g.my_group_permissions || []).includes("group.create"),
-      ),
-    [flatGroupOptions, isSystemManager],
+          (g.my_group_permissions || []).includes("group.create");
+        const isMaxDepth = g.level >= 4;
+        const originalNode = findGroupById(groups, g.id);
+        const isMaxChildren = (originalNode?.children || []).length >= 10;
+        return hasPerm && !isMaxDepth && !isMaxChildren;
+      }),
+    [flatGroupOptions, isSystemManager, groups],
   );
 
   // Nút "+ Add new group" ở đầu trang và cuối trang chỉ xuất hiện khi là admin_ami và có quyền group.create
@@ -1311,6 +1382,21 @@ const RolePermissionContent = () => {
 
   // Mở modal tạo Group mới hoặc thêm Group con
   const handleOpenCreateModal = (parentGroup = null) => {
+    if (parentGroup) {
+      const flatG = flatGroupOptions.find(
+        (g) => Number(g.id) === Number(parentGroup.id),
+      );
+      const actualLevel = flatG ? flatG.level : (parentGroup.parent_group_id ? 1 : 0);
+      if (actualLevel >= 4) {
+        alert("Một nhánh Group chỉ được phép tồn tại tối đa 5 cấp. Không thể thêm Group con.");
+        return;
+      }
+      const originalNode = findGroupById(groups, parentGroup.id) || parentGroup;
+      if ((originalNode.children || []).length >= 10) {
+        alert("Mỗi Group cha chỉ được phép có tối đa 10 Group con. Group này đã đạt giới hạn 10 Group con.");
+        return;
+      }
+    }
     setModalError("");
     setNewGroupName("");
     setNewGroupDesc("");
@@ -1324,6 +1410,31 @@ const RolePermissionContent = () => {
     if (!newGroupName.trim()) {
       setModalError("Vui lòng nhập tên Group");
       return;
+    }
+
+    if (creatingParentGroup) {
+      const flatG = flatGroupOptions.find(
+        (g) => Number(g.id) === Number(creatingParentGroup.id),
+      );
+      const actualLevel = flatG
+        ? flatG.level
+        : creatingParentGroup.parent_group_id
+          ? 1
+          : 0;
+      if (actualLevel >= 4) {
+        setModalError(
+          "Một nhánh Group chỉ được phép tồn tại tối đa 5 cấp. Không thể tạo thêm Group con cho cấp này.",
+        );
+        return;
+      }
+      const originalNode =
+        findGroupById(groups, creatingParentGroup.id) || creatingParentGroup;
+      if ((originalNode.children || []).length >= 10) {
+        setModalError(
+          "Mỗi Group cha chỉ được phép có tối đa 10 Group con. Group này đã đạt giới hạn 10 Group con.",
+        );
+        return;
+      }
     }
 
     try {
@@ -1464,6 +1575,10 @@ const RolePermissionContent = () => {
 
   // Mở popup xác nhận xóa Group
   const handleRequestDeleteGroup = (group) => {
+    if (!isSystemManager && Number(group.created_by) !== currentUserId) {
+      alert("Bạn chỉ có thể xóa Group do chính bạn tạo ra");
+      return;
+    }
     setConfirmDeleteError("");
     setConfirmDelete({
       type: "group",
@@ -1491,6 +1606,9 @@ const RolePermissionContent = () => {
       setConfirmDeleteError("");
 
       if (confirmDelete.type === "group" && confirmDelete.group) {
+        if (!isSystemManager && Number(confirmDelete.group.created_by) !== currentUserId) {
+          throw new Error("Bạn chỉ có thể xóa Group do chính bạn tạo ra");
+        }
         await deleteManagedGroup(confirmDelete.group.id);
         setConfirmDelete(null);
         await fetchGroupData();
@@ -1785,6 +1903,7 @@ const RolePermissionContent = () => {
                   group={selectedGroup}
                   groups={groups}
                   isSystemManager={isSystemManager}
+                  currentUserId={currentUserId}
                   onOpenEditModal={handleOpenEditModal}
                   onOpenCreateChildModal={handleOpenCreateModal}
                   onOpenMembersModal={handleOpenMembersModal}
@@ -1808,6 +1927,7 @@ const RolePermissionContent = () => {
                 index={idx}
                 level={0}
                 isSystemManager={isSystemManager}
+                currentUserId={currentUserId}
                 onOpenEditModal={handleOpenEditModal}
                 onOpenCreateChildModal={handleOpenCreateModal}
                 onOpenMembersModal={handleOpenMembersModal}
@@ -2034,8 +2154,8 @@ const RolePermissionContent = () => {
             </div>
             <p className="text-xs text-color-black-50 dark:text-color-white-50 mb-4">
               {creatingParentGroup
-                ? `Tạo Group con trực thuộc "${creatingParentGroup.group_name}".`
-                : "Tạo Group mới cấp cao nhất."}
+                ? `Tạo Group con trực thuộc "${creatingParentGroup.group_name}" (Cấp ${(flatGroupOptions.find((g) => Number(g.id) === Number(creatingParentGroup.id))?.level ?? 0) + 2}/5, ${(creatingParentGroup.children || []).length + 1}/10 group con).`
+                : "Tạo Group mới cấp cao nhất (Cấp 1/5)."}
             </p>
 
             <form onSubmit={handleCreateGroup} className="space-y-3.5">

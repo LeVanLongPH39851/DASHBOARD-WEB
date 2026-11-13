@@ -108,6 +108,8 @@ const UsersManagementContent = () => {
     email: "",
     role_id: "",
     active: true,
+    require_otp: true,
+    can_change_password: true,
     password: "",
     confirm_password: "",
   });
@@ -243,6 +245,8 @@ const UsersManagementContent = () => {
       email: "",
       role_id: roleOptions[0]?.id ? String(roleOptions[0].id) : "",
       active: true,
+      require_otp: true,
+      can_change_password: true,
       password: "",
       confirm_password: "",
     });
@@ -271,6 +275,12 @@ const UsersManagementContent = () => {
       email: user.email || "",
       role_id: user.role_id ? String(user.role_id) : "",
       active: Boolean(user.active),
+      require_otp:
+        user.require_otp !== undefined ? Boolean(user.require_otp) : true,
+      can_change_password:
+        user.can_change_password !== undefined
+          ? Boolean(user.can_change_password)
+          : true,
       password: "",
       confirm_password: "",
     });
@@ -357,6 +367,8 @@ const UsersManagementContent = () => {
         email: formData.email.trim(),
         role_id: Number(formData.role_id),
         active: Boolean(formData.active),
+        require_otp: Boolean(formData.require_otp),
+        can_change_password: Boolean(formData.can_change_password),
         password: formData.password,
         confirm_password: formData.confirm_password,
       };
@@ -388,7 +400,8 @@ const UsersManagementContent = () => {
     if (!targetUser) return;
     if (!targetUser.can_manage) {
       showToast(
-        targetUser.cannot_manage_reason === "admin_ami_peer" || targetUser.is_admin_ami
+        targetUser.cannot_manage_reason === "admin_ami_peer" ||
+          targetUser.is_admin_ami
           ? "Các Admin AMI không thể quản trị lẫn nhau"
           : "Bạn không có quyền quản lý người dùng này",
         "error",
@@ -406,6 +419,8 @@ const UsersManagementContent = () => {
         email: formData.email.trim(),
         role_id: Number(formData.role_id),
         active: Boolean(formData.active),
+        require_otp: Boolean(formData.require_otp),
+        can_change_password: Boolean(formData.can_change_password),
       };
 
       const res = await updateManagedUser(targetUser.id, payload);
@@ -437,7 +452,8 @@ const UsersManagementContent = () => {
     if (!targetUser) return;
     if (!targetUser.can_manage) {
       showToast(
-        targetUser.cannot_manage_reason === "admin_ami_peer" || targetUser.is_admin_ami
+        targetUser.cannot_manage_reason === "admin_ami_peer" ||
+          targetUser.is_admin_ami
           ? "Các Admin AMI không thể quản trị lẫn nhau"
           : "Bạn không có quyền quản lý người dùng này",
         "error",
@@ -828,19 +844,34 @@ const UsersManagementContent = () => {
             onChange={(e) => setRoleFilter(e.target.value)}
             className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-background-dashboard dark:bg-background-white-8 border border-border-black-10 dark:border-background-white-15 text-color-black-70 dark:text-color-white-80 focus:outline-none focus:border-color-neotam dark:focus:border-[#5bd6d8] cursor-pointer"
           >
-            <option value="all" className="bg-background-light dark:bg-background-dark text-color-black-100 dark:text-color-white-90">
+            <option
+              value="all"
+              className="bg-background-light dark:bg-background-dark text-color-black-100 dark:text-color-white-90"
+            >
               Tất cả vai trò
             </option>
-            <option value="admin_ami" className="bg-background-light dark:bg-background-dark text-color-black-100 dark:text-color-white-90">
+            <option
+              value="admin_ami"
+              className="bg-background-light dark:bg-background-dark text-color-black-100 dark:text-color-white-90"
+            >
               Admin AMI
             </option>
-            <option value="super_admin" className="bg-background-light dark:bg-background-dark text-color-black-100 dark:text-color-white-90">
+            <option
+              value="super_admin"
+              className="bg-background-light dark:bg-background-dark text-color-black-100 dark:text-color-white-90"
+            >
               Super Admin
             </option>
-            <option value="group_admin" className="bg-background-light dark:bg-background-dark text-color-black-100 dark:text-color-white-90">
+            <option
+              value="group_admin"
+              className="bg-background-light dark:bg-background-dark text-color-black-100 dark:text-color-white-90"
+            >
               Group Admin
             </option>
-            <option value="group_member" className="bg-background-light dark:bg-background-dark text-color-black-100 dark:text-color-white-90">
+            <option
+              value="group_member"
+              className="bg-background-light dark:bg-background-dark text-color-black-100 dark:text-color-white-90"
+            >
               Thành viên
             </option>
           </select>
@@ -963,6 +994,9 @@ const UsersManagementContent = () => {
                     Trạng Thái
                   </th>
                   <th scope="col" className="px-6 py-4 font-bold">
+                    Bảo Mật
+                  </th>
+                  <th scope="col" className="px-6 py-4 font-bold">
                     Người Tạo
                   </th>
                   <th scope="col" className="px-6 py-4 font-bold">
@@ -1077,7 +1111,60 @@ const UsersManagementContent = () => {
                         )}
                       </td>
 
-                      {/* Cột 5: Người tạo */}
+                      {/* Cột 5: Bảo mật (OTP & Đổi mật khẩu) */}
+                      <td className="px-6 py-4">
+                        <div className="flex flex-col gap-1">
+                          <span
+                            className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-semibold w-fit ${
+                              user.require_otp !== false
+                                ? "bg-[#20A7C9]/15 text-[#20A7C9] dark:text-[#5bd6d8]"
+                                : "bg-color-black-10 dark:bg-white/10 text-color-black-60 dark:text-color-white-60"
+                            }`}
+                            title={
+                              user.require_otp !== false
+                                ? "Bắt buộc gửi OTP qua email khi đăng nhập"
+                                : "Bỏ qua OTP khi đăng nhập"
+                            }
+                          >
+                            <span
+                              className={`w-1.5 h-1.5 rounded-full ${
+                                user.require_otp !== false
+                                  ? "bg-[#20A7C9]"
+                                  : "bg-color-black-40 dark:bg-white/40"
+                              }`}
+                            />
+                            {user.require_otp !== false
+                              ? "OTP: Bật"
+                              : "OTP: Tắt"}
+                          </span>
+
+                          <span
+                            className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-semibold w-fit ${
+                              user.can_change_password !== false
+                                ? "bg-[#7367f0]/15 text-[#7367f0] dark:text-[#a59ff8]"
+                                : "bg-color-error/15 text-color-error"
+                            }`}
+                            title={
+                              user.can_change_password !== false
+                                ? "Người dùng được phép tự đổi mật khẩu"
+                                : "Người dùng bị khóa tính năng đổi mật khẩu"
+                            }
+                          >
+                            <span
+                              className={`w-1.5 h-1.5 rounded-full ${
+                                user.can_change_password !== false
+                                  ? "bg-[#7367f0]"
+                                  : "bg-color-error"
+                              }`}
+                            />
+                            {user.can_change_password !== false
+                              ? "Đổi MK: Bật"
+                              : "Đổi MK: Khóa"}
+                          </span>
+                        </div>
+                      </td>
+
+                      {/* Cột 6: Người tạo */}
                       <td className="px-6 py-4 text-xs text-color-black-70 dark:text-color-white-80">
                         {user.assigned_by_username || user.created_by_name ? (
                           <div className="flex flex-col">
@@ -1186,14 +1273,16 @@ const UsersManagementContent = () => {
                               title={
                                 user.cannot_manage_reason === "self"
                                   ? "Tài khoản của bạn (không thể tự sửa/xóa)"
-                                  : user.cannot_manage_reason === "admin_ami_peer" || user.is_admin_ami
+                                  : user.cannot_manage_reason ===
+                                        "admin_ami_peer" || user.is_admin_ami
                                     ? "Các Admin AMI không thể quản trị lẫn nhau"
                                     : "Chỉ xem"
                               }
                             >
                               {user.cannot_manage_reason === "self"
                                 ? "Bạn"
-                                : user.cannot_manage_reason === "admin_ami_peer" || user.is_admin_ami
+                                : user.cannot_manage_reason ===
+                                      "admin_ami_peer" || user.is_admin_ami
                                   ? "Admin AMI"
                                   : "Chỉ xem"}
                             </span>
@@ -1328,6 +1417,65 @@ const UsersManagementContent = () => {
                     <p className="font-mono text-[11px] text-color-black-50 dark:text-color-white-50 mt-0.5 italic">
                       •••••••••••• (Mã hóa scrypt Werkzeug)
                     </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Cấu hình Bảo mật */}
+              <div className="p-4 rounded-xl bg-background-dashboard dark:bg-background-white-8 border border-border-black-10 dark:border-background-white-15 space-y-3">
+                <h4 className="text-[11px] font-bold text-color-black-50 dark:text-color-white-50 uppercase tracking-wider">
+                  Cấu Hình Bảo Mật & Đăng Nhập
+                </h4>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <span className="text-color-black-50 dark:text-color-white-50">
+                      Xác thực OTP khi đăng nhập
+                    </span>
+                    <div className="mt-1">
+                      <span
+                        className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold ${
+                          detailUser.require_otp !== false
+                            ? "bg-[#20A7C9]/15 text-[#20A7C9] dark:text-[#5bd6d8]"
+                            : "bg-color-black-10 dark:bg-white/10 text-color-black-60 dark:text-color-white-60"
+                        }`}
+                      >
+                        <span
+                          className={`w-1.5 h-1.5 rounded-full ${
+                            detailUser.require_otp !== false
+                              ? "bg-[#20A7C9]"
+                              : "bg-color-black-40 dark:bg-white/40"
+                          }`}
+                        />
+                        {detailUser.require_otp !== false
+                          ? "Bắt buộc gửi OTP"
+                          : "Bỏ qua OTP"}
+                      </span>
+                    </div>
+                  </div>
+                  <div>
+                    <span className="text-color-black-50 dark:text-color-white-50">
+                      Quyền tự đổi mật khẩu
+                    </span>
+                    <div className="mt-1">
+                      <span
+                        className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold ${
+                          detailUser.can_change_password !== false
+                            ? "bg-[#7367f0]/15 text-[#7367f0] dark:text-[#a59ff8]"
+                            : "bg-color-error/15 text-color-error"
+                        }`}
+                      >
+                        <span
+                          className={`w-1.5 h-1.5 rounded-full ${
+                            detailUser.can_change_password !== false
+                              ? "bg-[#7367f0]"
+                              : "bg-color-error"
+                          }`}
+                        />
+                        {detailUser.can_change_password !== false
+                          ? "Được phép đổi mật khẩu"
+                          : "Bị khóa đổi mật khẩu"}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1621,11 +1769,18 @@ const UsersManagementContent = () => {
                         : "border-border-black-10 dark:border-background-white-15 focus:border-color-neotam dark:focus:border-[#5bd6d8]"
                     }`}
                   >
-                    <option value="" className="bg-background-light dark:bg-background-dark text-color-black-100 dark:text-color-white-90">
+                    <option
+                      value=""
+                      className="bg-background-light dark:bg-background-dark text-color-black-100 dark:text-color-white-90"
+                    >
                       -- Chọn vai trò --
                     </option>
                     {roleOptions.map((r) => (
-                      <option key={r.id} value={r.id} className="bg-background-light dark:bg-background-dark text-color-black-100 dark:text-color-white-90">
+                      <option
+                        key={r.id}
+                        value={r.id}
+                        className="bg-background-light dark:bg-background-dark text-color-black-100 dark:text-color-white-90"
+                      >
                         {r.role_name} ({r.role_code})
                       </option>
                     ))}
@@ -1739,6 +1894,128 @@ const UsersManagementContent = () => {
                       {formErrors.confirm_password}
                     </p>
                   )}
+                </div>
+              </div>
+
+              {/* Cấu hình Bảo mật & Đăng nhập */}
+              <div className="pt-2.5 pb-1 border-t border-border-black-10 dark:border-background-white-15 space-y-2.5">
+                <p className="text-xs font-bold text-color-black-100 dark:text-color-white-90 flex items-center gap-1.5">
+                  <svg
+                    className="w-4 h-4 text-[#20A7C9]"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                    />
+                  </svg>
+                  Cấu hình Bảo mật & Đăng nhập
+                </p>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {/* Xác thực OTP khi đăng nhập */}
+                  <div
+                    onClick={() =>
+                      setFormData({
+                        ...formData,
+                        require_otp: !formData.require_otp,
+                      })
+                    }
+                    className={`p-3 rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-3 ${
+                      formData.require_otp
+                        ? "bg-[#20A7C9]/10 border-[#20A7C9]/40 dark:bg-[#20A7C9]/15 dark:border-[#20A7C9]/40"
+                        : "bg-background-search dark:bg-background-white-8 border-border-black-10 dark:border-background-white-15 hover:border-gray-300 dark:hover:border-white/20"
+                    }`}
+                  >
+                    <div className="space-y-0.5 select-none">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-xs font-semibold text-color-black-100 dark:text-color-white-90">
+                          Xác thực OTP
+                        </span>
+                        <span
+                          className={`text-[10px] font-medium px-1.5 py-0.5 rounded-full ${
+                            formData.require_otp
+                              ? "bg-[#20A7C9]/20 text-[#20A7C9] dark:text-[#5bd6d8]"
+                              : "bg-gray-200 text-gray-500 dark:bg-white/10 dark:text-color-white-50"
+                          }`}
+                        >
+                          {formData.require_otp ? "Bật" : "Tắt"}
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-color-black-50 dark:text-color-white-50">
+                        Gửi mã OTP khi đăng nhập
+                      </p>
+                    </div>
+                    <div className="relative inline-flex items-center shrink-0">
+                      <input
+                        type="checkbox"
+                        checked={formData.require_otp}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            require_otp: e.target.checked,
+                          })
+                        }
+                        onClick={(e) => e.stopPropagation()}
+                        className="sr-only peer"
+                      />
+                      <div className="w-10 h-5.5 bg-gray-300 dark:bg-white/20 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4.5 after:w-4.5 after:transition-all after:shadow-sm peer-checked:bg-[#20A7C9]"></div>
+                    </div>
+                  </div>
+
+                  {/* Cho phép đổi mật khẩu */}
+                  <div
+                    onClick={() =>
+                      setFormData({
+                        ...formData,
+                        can_change_password: !formData.can_change_password,
+                      })
+                    }
+                    className={`p-3 rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-3 ${
+                      formData.can_change_password
+                        ? "bg-[#7367f0]/10 border-[#7367f0]/40 dark:bg-[#7367f0]/15 dark:border-[#7367f0]/40"
+                        : "bg-background-search dark:bg-background-white-8 border-border-black-10 dark:border-background-white-15 hover:border-gray-300 dark:hover:border-white/20"
+                    }`}
+                  >
+                    <div className="space-y-0.5 select-none">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-xs font-semibold text-color-black-100 dark:text-color-white-90">
+                          Đổi mật khẩu
+                        </span>
+                        <span
+                          className={`text-[10px] font-medium px-1.5 py-0.5 rounded-full ${
+                            formData.can_change_password
+                              ? "bg-[#7367f0]/20 text-[#7367f0] dark:text-[#a89df8]"
+                              : "bg-gray-200 text-gray-500 dark:bg-white/10 dark:text-color-white-50"
+                          }`}
+                        >
+                          {formData.can_change_password ? "Cho phép" : "Khóa"}
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-color-black-50 dark:text-color-white-50">
+                        Cho phép tự đổi mật khẩu
+                      </p>
+                    </div>
+                    <div className="relative inline-flex items-center shrink-0">
+                      <input
+                        type="checkbox"
+                        checked={formData.can_change_password}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            can_change_password: e.target.checked,
+                          })
+                        }
+                        onClick={(e) => e.stopPropagation()}
+                        className="sr-only peer"
+                      />
+                      <div className="w-10 h-5.5 bg-gray-300 dark:bg-white/20 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4.5 after:w-4.5 after:transition-all after:shadow-sm peer-checked:bg-[#7367f0]"></div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -1948,11 +2225,18 @@ const UsersManagementContent = () => {
                         : "border-border-black-10 dark:border-background-white-15 focus:border-color-rating-percent"
                     }`}
                   >
-                    <option value="" className="bg-background-light dark:bg-background-dark text-color-black-100 dark:text-color-white-90">
+                    <option
+                      value=""
+                      className="bg-background-light dark:bg-background-dark text-color-black-100 dark:text-color-white-90"
+                    >
                       -- Chọn vai trò --
                     </option>
                     {roleOptions.map((r) => (
-                      <option key={r.id} value={r.id} className="bg-background-light dark:bg-background-dark text-color-black-100 dark:text-color-white-90">
+                      <option
+                        key={r.id}
+                        value={r.id}
+                        className="bg-background-light dark:bg-background-dark text-color-black-100 dark:text-color-white-90"
+                      >
                         {r.role_name} ({r.role_code})
                       </option>
                     ))}
@@ -1978,11 +2262,133 @@ const UsersManagementContent = () => {
                         }
                         className="sr-only peer"
                       />
-                      <div className="w-10 h-5.5 bg-background-black-4 peer-focus:outline-none rounded-full peer dark:bg-background-white-15 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4.5 after:w-4.5 after:transition-all peer-checked:bg-color-rating-percent"></div>
+                      <div className="w-10 h-5.5 bg-gray-300 peer-focus:outline-none rounded-full peer dark:bg-white/20 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4.5 after:w-4.5 after:transition-all after:shadow-sm peer-checked:bg-color-rating-percent"></div>
                       <span className="ml-2.5 text-xs font-semibold text-color-black-70 dark:text-color-white-80">
                         {formData.active ? "Hoạt động" : "Tạm khóa"}
                       </span>
                     </label>
+                  </div>
+                </div>
+              </div>
+
+              {/* Cấu hình Bảo mật & Đăng nhập */}
+              <div className="pt-2.5 pb-1 border-t border-border-black-10 dark:border-background-white-15 space-y-2.5">
+                <p className="text-xs font-bold text-color-black-100 dark:text-color-white-90 flex items-center gap-1.5">
+                  <svg
+                    className="w-4 h-4 text-[#7367f0]"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                    />
+                  </svg>
+                  Cấu hình Bảo mật & Đăng nhập
+                </p>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {/* Xác thực OTP khi đăng nhập */}
+                  <div
+                    onClick={() =>
+                      setFormData({
+                        ...formData,
+                        require_otp: !formData.require_otp,
+                      })
+                    }
+                    className={`p-3 rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-3 ${
+                      formData.require_otp
+                        ? "bg-[#20A7C9]/10 border-[#20A7C9]/40 dark:bg-[#20A7C9]/15 dark:border-[#20A7C9]/40"
+                        : "bg-background-search dark:bg-background-white-8 border-border-black-10 dark:border-background-white-15 hover:border-gray-300 dark:hover:border-white/20"
+                    }`}
+                  >
+                    <div className="space-y-0.5 select-none">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-xs font-semibold text-color-black-100 dark:text-color-white-90">
+                          Xác thực OTP
+                        </span>
+                        <span
+                          className={`text-[10px] font-medium px-1.5 py-0.5 rounded-full ${
+                            formData.require_otp
+                              ? "bg-[#20A7C9]/20 text-[#20A7C9] dark:text-[#5bd6d8]"
+                              : "bg-gray-200 text-gray-500 dark:bg-white/10 dark:text-color-white-50"
+                          }`}
+                        >
+                          {formData.require_otp ? "Bật" : "Tắt"}
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-color-black-50 dark:text-color-white-50">
+                        Gửi mã OTP khi đăng nhập
+                      </p>
+                    </div>
+                    <div className="relative inline-flex items-center shrink-0">
+                      <input
+                        type="checkbox"
+                        checked={formData.require_otp}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            require_otp: e.target.checked,
+                          })
+                        }
+                        onClick={(e) => e.stopPropagation()}
+                        className="sr-only peer"
+                      />
+                      <div className="w-10 h-5.5 bg-gray-300 dark:bg-white/20 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4.5 after:w-4.5 after:transition-all after:shadow-sm peer-checked:bg-[#20A7C9]"></div>
+                    </div>
+                  </div>
+
+                  {/* Cho phép đổi mật khẩu */}
+                  <div
+                    onClick={() =>
+                      setFormData({
+                        ...formData,
+                        can_change_password: !formData.can_change_password,
+                      })
+                    }
+                    className={`p-3 rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-3 ${
+                      formData.can_change_password
+                        ? "bg-[#7367f0]/10 border-[#7367f0]/40 dark:bg-[#7367f0]/15 dark:border-[#7367f0]/40"
+                        : "bg-background-search dark:bg-background-white-8 border-border-black-10 dark:border-background-white-15 hover:border-gray-300 dark:hover:border-white/20"
+                    }`}
+                  >
+                    <div className="space-y-0.5 select-none">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-xs font-semibold text-color-black-100 dark:text-color-white-90">
+                          Đổi mật khẩu
+                        </span>
+                        <span
+                          className={`text-[10px] font-medium px-1.5 py-0.5 rounded-full ${
+                            formData.can_change_password
+                              ? "bg-[#7367f0]/20 text-[#7367f0] dark:text-[#a89df8]"
+                              : "bg-gray-200 text-gray-500 dark:bg-white/10 dark:text-color-white-50"
+                          }`}
+                        >
+                          {formData.can_change_password ? "Cho phép" : "Khóa"}
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-color-black-50 dark:text-color-white-50">
+                        Cho phép tự đổi mật khẩu
+                      </p>
+                    </div>
+                    <div className="relative inline-flex items-center shrink-0">
+                      <input
+                        type="checkbox"
+                        checked={formData.can_change_password}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            can_change_password: e.target.checked,
+                          })
+                        }
+                        onClick={(e) => e.stopPropagation()}
+                        className="sr-only peer"
+                      />
+                      <div className="w-10 h-5.5 bg-gray-300 dark:bg-white/20 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4.5 after:w-4.5 after:transition-all after:shadow-sm peer-checked:bg-[#7367f0]"></div>
+                    </div>
                   </div>
                 </div>
               </div>

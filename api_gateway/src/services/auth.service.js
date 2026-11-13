@@ -41,9 +41,23 @@ async function login(username, password) {
 
   user.global_roles = globalRoles;
   user.global_permissions = globalPermissions;
+  user.require_otp =
+    userPermissions?.require_otp !== undefined
+      ? Boolean(userPermissions.require_otp)
+      : true;
+  user.can_change_password =
+    userPermissions?.can_change_password !== undefined
+      ? Boolean(userPermissions.can_change_password)
+      : true;
 
-  // Nếu không có quyền otp.verify trong phân quyền Global thì trả thẳng sessionCookie về cho frontend
-  if (!globalPermissions.includes("otp.verify")) {
+  // Kiểm tra cấu hình có được gửi mã OTP khi đăng nhập không (check trực tiếp cột require_otp từ bảng user_global_roles)
+  const isOtpRequired =
+    userPermissions?.require_otp !== undefined
+      ? Boolean(userPermissions.require_otp)
+      : true;
+
+  // Nếu không yêu cầu OTP trong bảng user_global_roles (require_otp = false) thì trả thẳng sessionCookie về cho frontend
+  if (!isOtpRequired) {
     return {
       otpRequired: false,
       sessionCookie: credentials.sessionCookie,

@@ -55,9 +55,7 @@ VALUES
     ('member_dashboard.assign', 'Gán Dashboard cho thành viên', 'Cấp Dashboard cho thành viên'),
     ('member_dashboard.revoke', 'Thu hồi Dashboard', 'Thu hồi Dashboard của thành viên'),
 
-    ('dashboard.view', 'Xem Dashboard', 'Xem Dashboard được cấp'),
-    ('password.change', 'Đổi mật khẩu', 'Cho phép đổi mật khẩu'),
-    ('otp.verify', 'Xác thực OTP', 'Cho phép thực hiện xác thực OTP');
+    ('dashboard.view', 'Xem Dashboard', 'Xem Dashboard được cấp');
 
 
 -- 3. ROLE PERMISSIONS
@@ -114,8 +112,7 @@ INSERT INTO role_permissions (role_id, permission_id)
 SELECT r.id, p.id
 FROM roles r
 JOIN permissions p ON p.permission_code IN (
-    'dashboard.view',
-    'password.change'
+    'dashboard.view'
 )
 WHERE r.role_code = 'group_member';
 
@@ -128,12 +125,23 @@ CREATE TABLE user_global_roles (
 
     role_id BIGINT NOT NULL REFERENCES roles(id),
 
+    -- Có gửi mã OTP khi đăng nhập không (Mặc định: TRUE)
+    require_otp BOOLEAN NOT NULL DEFAULT TRUE,
+
+    -- Có được phép đổi mật khẩu không (Mặc định: TRUE)
+    can_change_password BOOLEAN NOT NULL DEFAULT TRUE,
+
     assigned_by BIGINT,
     assigned_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 
     CONSTRAINT uq_user_global_role
         UNIQUE (superset_user_id, role_id)
 );
+
+-- Khởi tạo User Admin mặc định (superset_user_id = 1, role_id = 1 [admin_ami], assigned_by = 1)
+INSERT INTO user_global_roles (superset_user_id, role_id, assigned_by, require_otp, can_change_password)
+VALUES (1, 1, 1, TRUE, TRUE)
+ON CONFLICT (superset_user_id, role_id) DO NOTHING;
 
 
 -- 5. GROUPS

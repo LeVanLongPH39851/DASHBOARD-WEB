@@ -289,7 +289,7 @@ app.use("/internal/auth/otp", internalAuth, otpRoutes);
 app.use("/internal/auth/role", internalAuth, roleRoutes);
 
 // Health check
-app.get("/api/health", (req, res) => {
+app.get(["/health", "/api/health"], (req, res) => {
   res.json({ status: "OK", message: "Server đang chạy" });
 });
 

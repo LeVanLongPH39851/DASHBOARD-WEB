@@ -1,10 +1,11 @@
 const { Pool } = require("pg");
+const crypto = require("crypto");
 const roleService = require("./role.service");
 
 // Pool kết nối tới Custom Role DB (init.sql)
 const rolePool = new Pool({
-  host: process.env.POSTGRES_HOST || "localhost",
-  port: Number(process.env.POSTGRES_PORT || 5433),
+  host: process.env.POSTGRES_HOST || "postgres",
+  port: Number(process.env.POSTGRES_PORT || 5432),
   user: process.env.POSTGRES_USER,
   password: process.env.POSTGRES_PASSWORD,
   database: process.env.POSTGRES_DB,
@@ -90,10 +91,13 @@ function normalizeSupersetUser(row) {
         : row.is_active !== undefined
           ? Boolean(row.is_active)
           : true,
-    status:
-      (row.active !== undefined ? Boolean(row.active) : Boolean(row.is_active ?? true))
-        ? "Active"
-        : "Inactive",
+    status: (
+      row.active !== undefined
+        ? Boolean(row.active)
+        : Boolean(row.is_active ?? true)
+    )
+      ? "Active"
+      : "Inactive",
     created_on: row.created_on || row.created_at || null,
     changed_on: row.changed_on || row.updated_at || null,
     last_login: row.last_login || null,
@@ -330,8 +334,7 @@ async function getAssignableUsers(actorUserId, groupId = null) {
         max_global_role_rank: maxGlobalRank,
         highest_global_role_code:
           highestGlobalRole?.role_code || "group_member",
-        highest_global_role_name:
-          highestGlobalRole?.role_name || "Thành viên",
+        highest_global_role_name: highestGlobalRole?.role_name || "Thành viên",
       });
     }
   });
@@ -493,9 +496,7 @@ async function assignUserToGroup({
     groupPermissions.includes("member_dashboard.assign");
 
   if (!canAssignMember) {
-    const err = new Error(
-      "Bạn không có quyền gán người dùng vào Group này",
-    );
+    const err = new Error("Bạn không có quyền gán người dùng vào Group này");
     err.statusCode = 403;
     throw err;
   }
@@ -545,9 +546,7 @@ async function assignUserToGroup({
       const meta = supersetMap.get(Number(targetUserId));
       const isCreatedByActor =
         Number(meta?.created_by_fk) === Number(actorUserId) ||
-        ugrRes.rows.some(
-          (r) => Number(r.assigned_by) === Number(actorUserId),
-        );
+        ugrRes.rows.some((r) => Number(r.assigned_by) === Number(actorUserId));
       const isAssignedToGroupByActor =
         Number(existingMember.created_by) === Number(actorUserId);
 
@@ -741,7 +740,9 @@ async function assignUserToGroup({
       groupDashRows.map((r) => Number(r.dashboard_id)),
     );
 
-    const validMemberDashIds = cleanDashIds.filter((id) => groupDashSet.has(id));
+    const validMemberDashIds = cleanDashIds.filter((id) =>
+      groupDashSet.has(id),
+    );
 
     await client.query(
       `DELETE FROM member_dashboards WHERE group_id = $1 AND superset_user_id = $2`,
@@ -802,7 +803,9 @@ async function removeUserFromGroup({ actorUserId, groupId, targetUserId }) {
     groupPermissions.includes("member.create");
 
   if (!canManageGroupMembers) {
-    const err = new Error("Bạn không có quyền quản lý thành viên trong Group này");
+    const err = new Error(
+      "Bạn không có quyền quản lý thành viên trong Group này",
+    );
     err.statusCode = 403;
     throw err;
   }
@@ -834,9 +837,7 @@ async function removeUserFromGroup({ actorUserId, groupId, targetUserId }) {
     const meta = supersetMap.get(Number(targetUserId));
     const isCreatedByActor =
       Number(meta?.created_by_fk) === Number(actorUserId) ||
-      ugrRes.rows.some(
-        (r) => Number(r.assigned_by) === Number(actorUserId),
-      );
+      ugrRes.rows.some((r) => Number(r.assigned_by) === Number(actorUserId));
     const isAssignedToGroupByActor =
       Number(existingMember.created_by) === Number(actorUserId);
 
@@ -877,6 +878,8 @@ async function getUsersInfoList(actorUserId) {
           SELECT
             ugr.superset_user_id,
             ugr.assigned_at,
+            ugr.require_otp,
+            ugr.can_change_password,
             r.role_code,
             r.role_name,
             EXISTS (
@@ -977,11 +980,21 @@ async function getUsersInfoList(actorUserId) {
   const userDetail = {
     id: uid,
     username: meta.username,
+    first_name: meta.first_name || "",
+    last_name: meta.last_name || "",
     full_name: meta.full_name,
     email: meta.email,
     active: meta.active,
     status: meta.status,
     created_at: meta.created_on || assignedAt || null,
+    require_otp:
+      globalRes.rows[0]?.require_otp !== undefined
+        ? Boolean(globalRes.rows[0].require_otp)
+        : true,
+    can_change_password:
+      globalRes.rows[0]?.can_change_password !== undefined
+        ? Boolean(globalRes.rows[0].can_change_password)
+        : true,
     global_roles: globalRoles,
     groups: userGroups,
     can_view_all_dashboards: dashAccess.canViewAll,
@@ -993,6 +1006,310 @@ async function getUsersInfoList(actorUserId) {
   };
 }
 
+// -------------------------------------------------------------
+// Werkzeug scrypt hashing & verification cho Superset ab_user
+// -------------------------------------------------------------
+const SCRYPT_N = 32768;
+const SCRYPT_R = 8;
+const SCRYPT_P = 1;
+const SCRYPT_KEYLEN = 64;
+const SALT_CHARS =
+  "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+function generateSalt(length = 16) {
+  const bytes = crypto.randomBytes(length);
+  let salt = "";
+  for (let i = 0; i < length; i += 1) {
+    salt += SALT_CHARS[bytes[i] % SALT_CHARS.length];
+  }
+  return salt;
+}
+
+function hashPassword(password) {
+  const salt = generateSalt(16);
+  return new Promise((resolve, reject) => {
+    crypto.scrypt(
+      password,
+      salt,
+      SCRYPT_KEYLEN,
+      {
+        N: SCRYPT_N,
+        r: SCRYPT_R,
+        p: SCRYPT_P,
+        maxmem: 132 * SCRYPT_N * SCRYPT_R * SCRYPT_P,
+      },
+      (err, derivedKey) => {
+        if (err) return reject(err);
+        return resolve(
+          `scrypt:${SCRYPT_N}:${SCRYPT_R}:${SCRYPT_P}$${salt}$${derivedKey.toString("hex")}`,
+        );
+      },
+    );
+  });
+}
+
+async function verifyPassword(password, storedHash) {
+  if (!storedHash || typeof storedHash !== "string") return false;
+  const parts = storedHash.split("$");
+  if (parts.length < 3) return false;
+  const methodSpec = parts[0];
+  const salt = parts[1];
+  const expectedHash = parts[2];
+  const methodParts = methodSpec.split(":");
+  const method = methodParts[0].toLowerCase();
+
+  if (method === "scrypt") {
+    const N = Number(methodParts[1]) || 32768;
+    const r = Number(methodParts[2]) || 8;
+    const p = Number(methodParts[3]) || 1;
+    const keylen = Buffer.from(expectedHash, "hex").length || 64;
+
+    return new Promise((resolve) => {
+      crypto.scrypt(
+        password,
+        salt,
+        keylen,
+        {
+          N,
+          r,
+          p,
+          maxmem: 132 * N * r * p,
+        },
+        (err, derivedKey) => {
+          if (err) return resolve(false);
+          const computedHex = derivedKey.toString("hex");
+          try {
+            const bufA = Buffer.from(computedHex, "utf8");
+            const bufB = Buffer.from(expectedHash, "utf8");
+            if (bufA.length !== bufB.length) return resolve(false);
+            return resolve(crypto.timingSafeEqual(bufA, bufB));
+          } catch {
+            return resolve(false);
+          }
+        },
+      );
+    });
+  } else if (method === "pbkdf2") {
+    const digest = methodParts[1] || "sha256";
+    const iterations = Number(methodParts[2]) || 260000;
+    const keylen = Buffer.from(expectedHash, "hex").length || 32;
+
+    return new Promise((resolve) => {
+      crypto.pbkdf2(
+        password,
+        salt,
+        iterations,
+        keylen,
+        digest,
+        (err, derivedKey) => {
+          if (err) return resolve(false);
+          const computedHex = derivedKey.toString("hex");
+          try {
+            const bufA = Buffer.from(computedHex, "utf8");
+            const bufB = Buffer.from(expectedHash, "utf8");
+            if (bufA.length !== bufB.length) return resolve(false);
+            return resolve(crypto.timingSafeEqual(bufA, bufB));
+          } catch {
+            return resolve(false);
+          }
+        },
+      );
+    });
+  }
+  return false;
+}
+
+// -------------------------------------------------------------
+// Cập nhật thông tin cá nhân (first_name, last_name, email)
+// -------------------------------------------------------------
+async function updateUserProfile(userId, { first_name, last_name, email }) {
+  const uid = Number(userId);
+  if (!Number.isSafeInteger(uid) || uid <= 0) {
+    const err = new Error("userId không hợp lệ");
+    err.statusCode = 400;
+    throw err;
+  }
+
+  const cleanFirstName = String(first_name ?? "").trim();
+  const cleanLastName = String(last_name ?? "").trim();
+  const cleanEmail = String(email ?? "").trim();
+
+  if (!cleanEmail) {
+    const err = new Error("Email không được để trống");
+    err.statusCode = 400;
+    throw err;
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(cleanEmail)) {
+    const err = new Error("Định dạng email không hợp lệ");
+    err.statusCode = 400;
+    throw err;
+  }
+
+  if (cleanFirstName.length > 100 || cleanLastName.length > 100) {
+    const err = new Error("Họ hoặc tên không được vượt quá 100 ký tự");
+    err.statusCode = 400;
+    throw err;
+  }
+
+  const userTable = await resolveSupersetUserTable();
+
+  // Kiểm tra trùng email (ngoại trừ chính user hiện tại)
+  const dupCheck = await supersetPool.query(
+    `SELECT id, username FROM ${userTable} WHERE LOWER(email) = LOWER($1) AND id <> $2 LIMIT 1`,
+    [cleanEmail, uid],
+  );
+
+  if (dupCheck.rows.length > 0) {
+    const err = new Error(
+      `Email "${cleanEmail}" đã được sử dụng bởi tài khoản khác (${dupCheck.rows[0].username}). Vui lòng nhập email khác.`,
+    );
+    err.statusCode = 409;
+    throw err;
+  }
+
+  // Cập nhật thông tin trong bảng user của Superset
+  const updateRes = await supersetPool.query(
+    `
+      UPDATE ${userTable}
+      SET first_name = $1,
+          last_name = $2,
+          email = $3,
+          changed_on = NOW(),
+          changed_by_fk = $4
+      WHERE id = $4
+      RETURNING id, username, first_name, last_name, email
+    `,
+    [cleanFirstName, cleanLastName, cleanEmail, uid],
+  );
+
+  if (updateRes.rows.length === 0) {
+    const err = new Error("Không tìm thấy tài khoản người dùng để cập nhật");
+    err.statusCode = 404;
+    throw err;
+  }
+
+  const updated = updateRes.rows[0];
+  const fullName =
+    `${updated.first_name || ""} ${updated.last_name || ""}`.trim() ||
+    updated.username;
+
+  return {
+    id: Number(updated.id),
+    username: updated.username,
+    first_name: updated.first_name || "",
+    last_name: updated.last_name || "",
+    full_name: fullName,
+    email: updated.email,
+  };
+}
+
+// -------------------------------------------------------------
+// Đổi mật khẩu cá nhân (old_password, new_password, confirm_new_password)
+// -------------------------------------------------------------
+async function changeUserPassword(
+  userId,
+  { old_password, new_password, confirm_new_password },
+) {
+  const uid = Number(userId);
+  if (!Number.isSafeInteger(uid) || uid <= 0) {
+    const err = new Error("userId không hợp lệ");
+    err.statusCode = 400;
+    throw err;
+  }
+
+  const oldPwd = String(old_password || "");
+  const newPwd = String(new_password || "");
+  const confirmPwd = String(confirm_new_password || "");
+
+  // Kiểm tra quyền đổi mật khẩu trong bảng user_global_roles
+  const permCheck = await rolePool.query(
+    `SELECT can_change_password FROM user_global_roles WHERE superset_user_id = $1 LIMIT 1`,
+    [uid],
+  );
+  if (
+    permCheck.rows.length > 0 &&
+    permCheck.rows[0].can_change_password === false
+  ) {
+    const err = new Error(
+      "Tài khoản của bạn không được phép đổi mật khẩu. Vui lòng liên hệ quản trị viên.",
+    );
+    err.statusCode = 403;
+    throw err;
+  }
+
+  if (!oldPwd) {
+    const err = new Error("Vui lòng nhập mật khẩu hiện tại");
+    err.statusCode = 400;
+    throw err;
+  }
+
+  if (!newPwd) {
+    const err = new Error("Vui lòng nhập mật khẩu mới");
+    err.statusCode = 400;
+    throw err;
+  }
+
+  if (newPwd.length < 8) {
+    const err = new Error("Mật khẩu mới phải có tối thiểu 8 ký tự");
+    err.statusCode = 400;
+    throw err;
+  }
+
+  if (newPwd !== confirmPwd) {
+    const err = new Error("Mật khẩu mới và xác nhận mật khẩu không khớp");
+    err.statusCode = 400;
+    throw err;
+  }
+
+  if (oldPwd === newPwd) {
+    const err = new Error(
+      "Mật khẩu mới không được trùng với mật khẩu hiện tại",
+    );
+    err.statusCode = 400;
+    throw err;
+  }
+
+  const userTable = await resolveSupersetUserTable();
+  const userRes = await supersetPool.query(
+    `SELECT id, username, password FROM ${userTable} WHERE id = $1 LIMIT 1`,
+    [uid],
+  );
+
+  if (userRes.rows.length === 0) {
+    const err = new Error("Không tìm thấy tài khoản người dùng");
+    err.statusCode = 404;
+    throw err;
+  }
+
+  const currentHashed = userRes.rows[0].password;
+  const isMatch = await verifyPassword(oldPwd, currentHashed);
+  if (!isMatch) {
+    const err = new Error("Mật khẩu cũ không chính xác");
+    err.statusCode = 400;
+    throw err;
+  }
+
+  const hashedNew = await hashPassword(newPwd);
+
+  await supersetPool.query(
+    `
+      UPDATE ${userTable}
+      SET password = $1,
+          changed_on = NOW(),
+          changed_by_fk = $2
+      WHERE id = $2
+    `,
+    [hashedNew, uid],
+  );
+
+  return {
+    success: true,
+    message: "Đổi mật khẩu thành công",
+  };
+}
+
 module.exports = {
   getSupersetUsersByIds,
   getAssignableUsers,
@@ -1000,7 +1317,8 @@ module.exports = {
   assignUserToGroup,
   removeUserFromGroup,
   getUsersInfoList,
+  updateUserProfile,
+  changeUserPassword,
   rolePool,
   supersetPool,
 };
-

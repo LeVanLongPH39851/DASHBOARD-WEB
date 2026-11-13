@@ -91,6 +91,16 @@ router.get(
   authorize("dashboard.view"),
   authController.getUsersInfoController,
 );
+router.put(
+  "/users/profile",
+  authenticate,
+  authController.updateUserProfileController,
+);
+router.put(
+  "/users/change-password",
+  authenticate,
+  authController.changeUserPasswordController,
+);
 router.get(
   "/users/assignable",
   authenticate,

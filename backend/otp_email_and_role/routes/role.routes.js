@@ -36,6 +36,16 @@ router
   .post(roleController.getUsersInfo);
 
 router
+  .route("/users/profile")
+  .put(roleController.updateUserProfile)
+  .post(roleController.updateUserProfile);
+
+router
+  .route("/users/change-password")
+  .put(roleController.changeUserPassword)
+  .post(roleController.changeUserPassword);
+
+router
   .route("/groups/members")
   .get(roleController.getGroupMembers)
   .post(roleController.assignGroupMember)

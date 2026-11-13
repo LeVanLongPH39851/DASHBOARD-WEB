@@ -105,6 +105,20 @@ export const getUsersInfo = async () => {
   return response.data;
 };
 
+// Cập nhật thông tin cá nhân (first_name, last_name, email)
+export const updateUserProfile = async (payload) => {
+  const response = await api.put("/api/users/profile", payload);
+
+  return response.data;
+};
+
+// Đổi mật khẩu tài khoản
+export const changeUserPassword = async (payload) => {
+  const response = await api.put("/api/users/change-password", payload);
+
+  return response.data;
+};
+
 // Lấy danh sách user từ bảng users (Superset) có trong user_global_roles để gán vào Group
 export const getAssignableUsers = async (groupId = null) => {
   const response = await api.get("/api/users/assignable", {

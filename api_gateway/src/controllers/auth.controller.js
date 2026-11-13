@@ -535,6 +535,48 @@ async function getUsersInfoController(req, res) {
   }
 }
 
+// Cập nhật thông tin cá nhân (first_name, last_name, email) của chính user
+async function updateUserProfileController(req, res) {
+  try {
+    const userId = req.user.profile.id;
+    const { first_name, last_name, email } = req.body || {};
+    const result = await backendService.updateUserProfile(userId, {
+      first_name,
+      last_name,
+      email,
+    });
+    return res.status(200).json(result);
+  } catch (error) {
+    console.error("[Update User Profile Error]", error.message);
+    return res.status(error.response?.status || 500).json({
+      status: "error",
+      message:
+        error.response?.data?.message || "Không thể cập nhật thông tin cá nhân",
+    });
+  }
+}
+
+// Đổi mật khẩu của chính user (old_password, new_password, confirm_new_password)
+async function changeUserPasswordController(req, res) {
+  try {
+    const userId = req.user.profile.id;
+    const { old_password, new_password, confirm_new_password } = req.body || {};
+    const result = await backendService.changeUserPassword(userId, {
+      old_password,
+      new_password,
+      confirm_new_password,
+    });
+    return res.status(200).json(result);
+  } catch (error) {
+    console.error("[Change User Password Error]", error.message);
+    return res.status(error.response?.status || 500).json({
+      status: "error",
+      message:
+        error.response?.data?.message || "Không thể thay đổi mật khẩu",
+    });
+  }
+}
+
 // Lấy danh sách thành viên trong 1 Group
 async function getGroupMembersController(req, res) {
   try {
@@ -743,6 +785,8 @@ module.exports = {
   deleteManagedGroupController,
   getAssignableUsersController,
   getUsersInfoController,
+  updateUserProfileController,
+  changeUserPasswordController,
   getGroupMembersController,
   assignGroupMemberController,
   removeGroupMemberController,

@@ -4,8 +4,8 @@ const roleService = require("./role.service");
 
 // Pool kết nối tới Custom Role DB (init.sql)
 const rolePool = new Pool({
-  host: process.env.POSTGRES_HOST || "postgres",
-  port: Number(process.env.POSTGRES_PORT || 5432),
+  host: process.env.POSTGRES_HOST,
+  port: Number(process.env.POSTGRES_PORT),
   user: process.env.POSTGRES_USER,
   password: process.env.POSTGRES_PASSWORD,
   database: process.env.POSTGRES_DB,

@@ -8,7 +8,9 @@ services:
     ports:
       - "5050:5050"
     env_file:
-      - ./backend/.env
+      - ./backend/.env.production
+    environment:
+      - NODE_ENV=production
     restart: unless-stopped
     networks:
       - app-network
@@ -19,9 +21,11 @@ services:
       dockerfile: Dockerfile
     container_name: api-gateway
     ports:
-      - "8090:8090"
+      - "8099:8090"
     env_file:
-      - ./api_gateway/.env
+      - ./api_gateway/.env.production
+    environment:
+      - NODE_ENV=production
     depends_on:
       - backend
     restart: unless-stopped
@@ -35,7 +39,7 @@ services:
     ports:
       - "3098:3098"
     env_file:
-      - ./frontend/.env
+      - ./frontend/.env.production
     depends_on:
       - backend
       - api_gateway
@@ -48,9 +52,9 @@ services:
     container_name: custom-role-postgres
     restart: unless-stopped
     env_file:
-      - ./backend/.env
+      - ./backend/.env.production
     ports:
-      - "5433:5432"
+      - "5436:5432"
     volumes:
       - postgres_custom_role_data:/var/lib/postgresql/data
       - ./backend/database/init.sql:/docker-entrypoint-initdb.d/01-init.sql

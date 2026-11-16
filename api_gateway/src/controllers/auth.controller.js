@@ -399,7 +399,8 @@ async function getManagedGroupsController(req, res) {
     return res.status(error.response?.status || 503).json({
       status: "error",
       message:
-        error.response?.data?.message || "Không thể lấy danh sách Group quản lý",
+        error.response?.data?.message ||
+        "Không thể lấy danh sách Group quản lý",
     });
   }
 }
@@ -571,8 +572,7 @@ async function changeUserPasswordController(req, res) {
     console.error("[Change User Password Error]", error.message);
     return res.status(error.response?.status || 500).json({
       status: "error",
-      message:
-        error.response?.data?.message || "Không thể thay đổi mật khẩu",
+      message: error.response?.data?.message || "Không thể thay đổi mật khẩu",
     });
   }
 }
@@ -679,7 +679,8 @@ async function getManagedUsersController(req, res) {
     console.error("[Get Managed Users Error]", error.message);
     return res.status(error.response?.status || 500).json({
       status: "error",
-      message: error.response?.data?.message || "Không thể lấy danh sách người dùng",
+      message:
+        error.response?.data?.message || "Không thể lấy danh sách người dùng",
       fieldErrors: error.response?.data?.fieldErrors,
     });
   }
@@ -703,13 +704,17 @@ async function getManagedUserDetailController(req, res) {
   try {
     const userId = req.user.profile.id;
     const targetUserId = req.query?.targetUserId || req.params?.id;
-    const result = await backendService.getManagedUserDetail(userId, targetUserId);
+    const result = await backendService.getManagedUserDetail(
+      userId,
+      targetUserId,
+    );
     return res.status(200).json(result);
   } catch (error) {
     console.error("[Get Managed User Detail Error]", error.message);
     return res.status(error.response?.status || 500).json({
       status: "error",
-      message: error.response?.data?.message || "Không thể lấy chi tiết người dùng",
+      message:
+        error.response?.data?.message || "Không thể lấy chi tiết người dùng",
     });
   }
 }
@@ -735,7 +740,8 @@ async function createManagedUserController(req, res) {
 async function updateManagedUserController(req, res) {
   try {
     const userId = req.user.profile.id;
-    const targetUserId = req.params?.id || req.body?.targetUserId || req.body?.id;
+    const targetUserId =
+      req.params?.id || req.body?.targetUserId || req.body?.id;
     const result = await backendService.updateManagedUser({
       ...req.body,
       userId,
@@ -755,7 +761,8 @@ async function updateManagedUserController(req, res) {
 async function deleteManagedUserController(req, res) {
   try {
     const userId = req.user.profile.id;
-    const targetUserId = req.params?.id || req.body?.targetUserId || req.body?.id;
+    const targetUserId =
+      req.params?.id || req.body?.targetUserId || req.body?.id;
     const result = await backendService.deleteManagedUser({
       userId,
       targetUserId,

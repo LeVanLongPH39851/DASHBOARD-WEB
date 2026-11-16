@@ -1,4 +1,20 @@
-require("dotenv").config();
+const path = require("path");
+const dotenv = require("dotenv");
+
+// Tự động nhận diện môi trường:
+// - Khi chạy "npm run dev": nạp .env.development
+// - Khi chạy bằng Docker hoặc "npm start": nạp .env.production
+const isDev =
+  process.env.npm_lifecycle_event === "dev" ||
+  process.env.NODE_ENV === "development";
+
+const envFile = isDev ? ".env.development" : ".env.production";
+dotenv.config({ path: path.resolve(__dirname, envFile) });
+dotenv.config(); // fallback nạp thêm .env nếu tồn tại
+
+console.log(
+  `[Backend] Chế độ: ${isDev ? "Development (dev)" : "Production (pro)"} | Đã nạp file: ${envFile}`,
+);
 const express = require("express");
 const cors = require("cors");
 const mysql = require("mysql2/promise");

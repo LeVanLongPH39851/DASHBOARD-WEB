@@ -34,10 +34,30 @@ const ParentTabs = ({
   const [activeTab, setActiveTab] = useState(defaultTab || tabs[0]?.id);
   const [underlineStyle, setUnderlineStyle] = useState({ left: 0, width: 0 });
   const tabsRef = useRef([]);
+  const containerRef = useRef(null);
 
   const handleTabChange = (tabId) => {
     setActiveTab(tabId);
     setCurrentTab(tabId);
+
+    // Tua ngay lập tức lên đầu tab (bấm phát được luôn, không hiệu ứng delay)
+    if (containerRef.current) {
+      const isMobile = window.innerWidth < 1025;
+      if (isMobile) {
+        window.scrollTo(0, 0);
+        return;
+      }
+
+      const breadCrumbHeight = parseFloat(height) || 0;
+      const rect = containerRef.current.getBoundingClientRect();
+      const targetTop = rect.top + window.scrollY - breadCrumbHeight;
+
+      if (window.scrollY > targetTop) {
+        window.scrollTo(0, Math.max(0, targetTop));
+      }
+    } else {
+      window.scrollTo(0, 0);
+    }
   };
 
   // Update underline sau khi DOM render
@@ -109,7 +129,7 @@ const ParentTabs = ({
     : "";
 
   return (
-    <div>
+    <div ref={containerRef}>
       <div
         id="Tab"
         className={`${currentVariant.container} ${stickyClasses}`}

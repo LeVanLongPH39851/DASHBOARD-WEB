@@ -87,9 +87,6 @@ const Login = () => {
     setShowErrorPass(false);
     setShowErrorLogin(false);
 
-    // Giữ hiệu ứng chờ 700ms nếu bạn muốn
-    await new Promise((resolve) => setTimeout(resolve, 700));
-
     // Validate username
     if (!username.trim()) {
       setErrorName("Vui lòng nhập tài khoản");
@@ -224,7 +221,7 @@ const Login = () => {
   };
 
   return (
-    <main className="p-7.5 max-lg:p-6 max-md:p-5 flex min-h-lvh tracking-[0.1px] overflow-hidden font-family-be-vietnam-pro">
+    <main className="p-7.5 max-lg:p-6 max-md:p-5 flex min-h-lvh tracking-[0.1px] overflow-hidden font-family-be-vietnam-pro bg-background-light">
       <section
         ref={leftSectionRef}
         className="flex flex-col justify-between w-1/2 max-md:w-full section-left"
@@ -404,34 +401,34 @@ const Login = () => {
         </figure>
       </section>
       <div
-        className={`fixed inset-0 bottom-auto ${otpChallengeId ? "top-0 bottom-0" : "-top-full"} z-50 flex items-center justify-center bg-black/50 px-4 py-6 w-full h-full transition-all duration-300`}
+        className={`fixed inset-0 bottom-auto ${otpChallengeId ? "top-0 bottom-0" : "-top-full"} z-50 flex items-center justify-center bg-black/50 max-md:px-4 max-md:py-6 w-full h-full transition-all duration-300`}
         role="presentation"
       >
         <section
           aria-labelledby="otp-modal-title"
           aria-modal="true"
-          className="w-full max-w-md rounded-2xl bg-white p-7 shadow-2xl sm:p-9"
+          className="w-full max-w-md max-md:max-w-full rounded-xl bg-background-light p-9 max-lg:p-8 max-md:p-7.5 shadow-2xl"
           role="dialog"
         >
-          <div className="mb-7 text-center">
+          <div className="mb-7 max-lg:mb-6.5 max-md:mb-6 text-center">
             <h2
               id="otp-modal-title"
-              className="mb-2 text-2xl font-semibold text-color-p-black-login"
+              className="mb-2 max-lg:mb-1.75 max-md:mb-1.5 text-2xl max-lg:text-xl max-md:text-lg font-semibold text-color-p-black-login"
             >
               Xác thực email
             </h2>
-            <p className="text-sm leading-6 text-color-p-login">
-              Nhập mã OTP gồm 6 chữ số đã gửi đến{" "}
+            <p className="text-sm max-lg:text-[13px] max-md:text-xs leading-6 max-lg:leading-5.5 max-md:leading-5 text-color-p-login">
+              Nhập mã OTP gồm 6 chữ số đã gửi đến
+              <br />
               <span className="font-medium text-color-p-black-login">
                 {otpEmail || "email của bạn"}
               </span>
-              .
             </p>
           </div>
 
           <form onSubmit={handleVerifyOtp}>
             <label
-              className="mb-2 block text-sm font-medium text-color-p-black-login"
+              className="mb-2 max-lg:mb-1.5 max-md:mb-1 block text-sm max-lg:text-[13px] max-md:text-xs font-medium text-color-p-black-login"
               htmlFor="otp-code"
             >
               Mã xác thực
@@ -439,7 +436,7 @@ const Login = () => {
             <input
               autoComplete="one-time-code"
               autoFocus
-              className={`w-full rounded-[10px] border px-4 py-3 text-center text-xl font-semibold tracking-[0.35em] text-color-p-black-login outline-none transition focus:border-color-primary-700 ${
+              className={`w-full rounded-[10px] border px-4 max-lg:px-3.75 max-md:px-3.5 py-3 max-lg:py-2.75 max-md:py-2.5 text-center text-base max-lg:text-sm max-md:text-[13px] font-semibold tracking-[0.35em] text-color-p-black-login outline-none transition-all duration-300 focus:border-color-primary-700 ${
                 otpError ? "border-color-error" : "border-background-line-gray"
               }`}
               id="otp-code"
@@ -456,23 +453,31 @@ const Login = () => {
               type="text"
               value={otp}
             />
-
-            {otpError && (
-              <p className="mt-2 text-sm text-color-error" role="alert">
+            <p
+              className={`mt-1 text-sm max-lg:text-[13px] max-md:text-xs opacity-0 transition-all duration-700 text-nowrap overflow-hidden ${otpError || otpMessage ? "w-full opacity-100 visible" : "w-0 opacitiy-0 invisible"} ${otpError && "text-color-error"} ${otpMessage && "text-color-succes-type-1"}`}
+              role="alert"
+            >
+              {otpError || otpMessage || <span className="opacity-0">-</span>}
+            </p>
+            {/* {otpError && (
+              <p
+                className="mt-1 text-sm max-lg:text-[13px] max-md:text-xs text-color-error"
+                role="alert"
+              >
                 {otpError}
               </p>
             )}
             {otpMessage && (
               <p
-                className="mt-2 text-sm text-color-succes-type-1"
+                className="mt-1 text-sm max-lg:text-[13px] max-md:text-xs text-color-succes-type-1"
                 role="status"
               >
                 {otpMessage}
               </p>
-            )}
+            )} */}
 
             <button
-              className="mt-6 flex h-12 w-full items-center justify-center rounded-[10px] bg-color-p-black-login text-base font-medium text-color-white-90 hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer transition-all duration-300"
+              className="mt-3 max-lg:mt-2.75 max-md:mt-2.5 flex h-12 max-lg:h-11 max-md:h-10 w-full items-center justify-center rounded-[10px] bg-color-p-black-login text-base max-lg:text-[15px] max-md:text-sm font-medium text-color-white-90 hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer transition-all duration-300"
               disabled={verifyingOtp || resendingOtp}
               type="submit"
             >
@@ -480,7 +485,7 @@ const Login = () => {
             </button>
           </form>
 
-          <div className="mt-5 flex flex-wrap items-center justify-center gap-x-1 text-sm">
+          <div className="mt-5 max-lg:mt-4.5 max-md:mt-4 flex flex-wrap items-center justify-center gap-x-1 text-sm max-lg:text-[13px] max-md:text-xs">
             <span className="text-color-p-login">Chưa nhận được mã?</span>
             <button
               className="font-medium text-color-primary-700 hover:underline disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer transition-all duration-300"
@@ -493,7 +498,7 @@ const Login = () => {
           </div>
 
           <button
-            className="mt-5 w-full text-sm font-medium text-color-p-login hover:text-color-p-black-login cursor-pointer transition-all duration-300"
+            className="mt-5 max-lg:mt-4.5 max-md:mt-4 w-full text-sm max-lg:text-[13px] max-md:text-xs font-medium text-color-p-login hover:text-color-p-black-login cursor-pointer transition-all duration-300"
             onClick={closeOtpModal}
             type="button"
           >

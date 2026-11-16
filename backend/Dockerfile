@@ -2,12 +2,11 @@ FROM node:20-alpine
 
 WORKDIR /app
 
+ENV NODE_ENV=production
+
 # Copy package files
 COPY package*.json ./
 RUN npm ci --only=production --no-optional && npm cache clean --force
-
-# Copy .env trước để runtime đọc
-COPY .env ./
 
 # Copy source code
 COPY . .

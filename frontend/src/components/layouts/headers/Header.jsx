@@ -19,6 +19,7 @@ import iconUserInfor from "../../../assets/icon_user_infor.png";
 import iconUserInforDark from "../../../assets/icon_user_infor_dark.png";
 import iconLogout from "../../../assets/icon_logout.png";
 import useGlobalEffects from "../../../hooks/useGlobalEffects";
+import { clearCurrentUserCache } from "../../../hooks/useCurrentUser";
 import { getMe, logout } from "../../../services/authService";
 
 const GLOBAL_ADMIN_ROLES = ["admin_ami", "super_admin", "group_admin"];
@@ -308,6 +309,7 @@ const Header = ({ username, isEnglish = false }) => {
     sessionStorage.removeItem("open_filters");
     sessionStorage.removeItem("filter_sessions_ratings");
     try {
+      clearCurrentUserCache();
       await logout();
     } catch {
       // ignore logout error

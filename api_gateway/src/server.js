@@ -1,4 +1,20 @@
-require("dotenv").config();
+const path = require("path");
+const dotenv = require("dotenv");
+
+// Tự động nhận diện môi trường:
+// - Khi chạy "npm run dev": nạp .env.development
+// - Khi chạy bằng Docker hoặc "npm start": nạp .env.production
+const isDev =
+  process.env.npm_lifecycle_event === "dev" ||
+  process.env.NODE_ENV === "development";
+
+const envFile = isDev ? ".env.development" : ".env.production";
+dotenv.config({ path: path.resolve(__dirname, "..", envFile) });
+dotenv.config(); // fallback nạp thêm .env nếu tồn tại
+
+console.log(
+  `[Gateway] Chế độ: ${isDev ? "Development (dev)" : "Production (pro)"} | Đã nạp file: ${envFile}`,
+);
 
 const express = require("express");
 const cors = require("cors");
@@ -27,16 +43,7 @@ app.set("trust proxy", trustProxyHops);
 app.use(helmet());
 
 // CORS Configuration
-const defaultOrigins = [
-  "http://localhost:3098",
-  "http://localhost:5173",
-  "http://localhost:3000",
-  "http://localhost:3022",
-  "http://127.0.0.1:3098",
-  "http://127.0.0.1:5173",
-  "http://127.0.0.1:3000",
-  "http://100.100.10.5:3098",
-];
+const defaultOrigins = [];
 
 const envOrigins = process.env.CORS_ORIGIN
   ? process.env.CORS_ORIGIN.split(",")

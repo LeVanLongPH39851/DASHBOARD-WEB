@@ -84,7 +84,7 @@ const BreadCrumb = ({
   return (
     <nav
       id="BreadCrumb"
-      className="px-6 max-lg:px-5 max-md:px-4 bg-background-light dark:bg-background-dark border-b border-border-black-10 dark:border-transparent transition-all duration-300 pt-2 pb-1 sticky top-0"
+      className="px-6 max-lg:px-5 max-md:px-4 bg-background-light dark:bg-background-dark border-b border-border-black-10 dark:border-background-white-15 transition-all duration-300 pt-2 pb-1 sticky top-0"
       style={{ zIndex: 300 }}
     >
       {/* <div className='flex items-center gap-2 max-lg:gap-1 max-md:hidden'>

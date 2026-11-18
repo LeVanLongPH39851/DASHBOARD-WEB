@@ -1,29 +1,18 @@
+const backendUrls = (process.env.BACKEND_URL || "")
+  .split(",")
+  .map((url) => url.trim())
+  .filter(Boolean);
+
 const services = {
   backend: {
     name: "backend",
 
-    permission: "backend:read",
-
-    instances: [
-      {
-        url: process.env.BACKEND_URL,
-        healthy: false,
-        failures: 0,
-        successes: 0,
-      },
-      //   {
-      //     url: "http://localhost:5001",
-      //     healthy: false,
-      //     failures: 0,
-      //     successes: 0,
-      //   },
-      //   {
-      //     url: "http://localhost:5002",
-      //     healthy: false,
-      //     failures: 0,
-      //     successes: 0,
-      //   },
-    ],
+    instances: backendUrls.map((url) => ({
+      url,
+      healthy: false,
+      failures: 0,
+      successes: 0,
+    })),
 
     current: 0,
   },

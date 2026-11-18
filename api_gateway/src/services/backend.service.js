@@ -1,149 +1,360 @@
 const axios = require("axios");
+const getNextInstance = require("./load-balancer");
+const services = require("../config/services");
 
-const roleClient = axios.create({
-  baseURL: `${process.env.BACKEND_URL}/internal/auth/role`,
-  timeout: 15000,
-  headers: {
-    "x-internal-api-key": process.env.API_GATEWAY_INTERNAL_KEY,
-  },
-});
+const RETRY_ATTEMPTS = Number(process.env.RETRY_ATTEMPTS ?? 2);
+const REQUEST_TIMEOUT = Number(process.env.REQUEST_TIMEOUT || 15000);
+const FAILURE_THRESHOLD = Number(process.env.HEALTH_FAILURE_THRESHOLD || 2);
+
+const RETRYABLE_STATUS = [502, 503, 504];
+const RETRYABLE_ERRORS = [
+  "ECONNREFUSED",
+  "ECONNRESET",
+  "ETIMEDOUT",
+  "ECONNABORTED",
+  "EHOSTUNREACH",
+  "EPIPE",
+];
+
+function createGatewayError(status, message) {
+  const err = new Error(message);
+  err.status = status;
+  err.statusCode = status;
+  err.response = {
+    status,
+    data: {
+      status: "error",
+      message,
+    },
+  };
+  return err;
+}
+
+/**
+ * Gọi request tới service backend thông qua Load Balancer (Round-Robin + Retry + Timeout)
+ */
+async function requestBackend({
+  method = "GET",
+  path,
+  params,
+  data,
+  timeout = REQUEST_TIMEOUT,
+}) {
+  const service = services.backend;
+  const excludedInstances = [];
+  const upperMethod = method.toUpperCase();
+  const maxAttempts = Math.max(1, RETRY_ATTEMPTS + 1);
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    let instance = getNextInstance(service, excludedInstances);
+
+    // Nếu đã thử hết các instance khác (hoặc chỉ có 1 instance), cho phép retry lại trên các instance còn healthy
+    if (!instance && excludedInstances.length > 0) {
+      excludedInstances.length = 0;
+      instance = getNextInstance(service, excludedInstances);
+    }
+
+    if (!instance) {
+      throw createGatewayError(503, `${service.name} service unavailable`);
+    }
+
+    excludedInstances.push(instance.url);
+    const targetUrl = new URL(path, instance.url).toString();
+
+    try {
+      const response = await axios({
+        method: upperMethod,
+        url: targetUrl,
+        params,
+        data,
+        timeout,
+        headers: {
+          "x-internal-api-key": process.env.API_GATEWAY_INTERNAL_KEY,
+        },
+      });
+
+      instance.failures = 0;
+      return response.data;
+    } catch (error) {
+      const status = error.response?.status;
+      const isTimeoutError =
+        error.code === "ECONNABORTED" ||
+        error.code === "ETIMEDOUT" ||
+        error.message?.toLowerCase().includes("timeout");
+      const isRetryableError =
+        isTimeoutError || RETRYABLE_ERRORS.includes(error.code);
+      const isRetryableStatus = RETRYABLE_STATUS.includes(status);
+
+      if (isRetryableError) {
+        instance.failures = (instance.failures || 0) + 1;
+        instance.successes = 0;
+
+        const hasOtherHealthyInstances =
+          service.instances.filter((i) => i.healthy && i.url !== instance.url)
+            .length > 0;
+
+        if (
+          instance.failures >= FAILURE_THRESHOLD &&
+          (hasOtherHealthyInstances || attempt === maxAttempts)
+        ) {
+          instance.healthy = false;
+        }
+      }
+
+      if ((isRetryableError || isRetryableStatus) && attempt < maxAttempts) {
+        console.warn(
+          `[Backend Retry ${attempt}/${RETRY_ATTEMPTS}] ${upperMethod} ${targetUrl} failed (${error.code || status}), retrying...`,
+        );
+        await new Promise((resolve) => setTimeout(resolve, 200 * attempt));
+        continue;
+      }
+
+      if (isTimeoutError) {
+        throw createGatewayError(
+          504,
+          `Yêu cầu tới Backend quá thời gian chờ (${timeout}ms)`,
+        );
+      }
+
+      throw error;
+    }
+  }
+
+  throw createGatewayError(503, "No backend instance available");
+}
+
+function requestRoleApi(config) {
+  return requestBackend({
+    ...config,
+    path: `/internal/auth/role${config.path}`,
+  });
+}
+
+function requestOtpApi(config) {
+  return requestBackend({
+    ...config,
+    path: `/internal/auth/otp${config.path}`,
+  });
+}
 
 // -------------------------------------------------------------
-// 1. Phân quyền & Dashboard
+// 1. OTP APIs (/internal/auth/otp/*)
+// -------------------------------------------------------------
+async function sendOtp(payload) {
+  return requestOtpApi({
+    method: "POST",
+    path: "/send",
+    data: payload,
+  });
+}
+
+async function resendOtp(payload) {
+  return requestOtpApi({
+    method: "POST",
+    path: "/resend",
+    data: payload,
+  });
+}
+
+async function verifyOtp(payload) {
+  return requestOtpApi({
+    method: "POST",
+    path: "/verify",
+    data: payload,
+  });
+}
+
+// -------------------------------------------------------------
+// 2. Phân quyền & Dashboard (/internal/auth/role/*)
 // -------------------------------------------------------------
 async function getUserPermissions(userId) {
-  const { data } = await roleClient.get("/check-roles", {
+  return requestRoleApi({
+    method: "GET",
+    path: "/check-roles",
     params: { userId },
   });
-  return data;
 }
 
 async function getUserDashboards(userId) {
-  const { data } = await roleClient.get("/dashboards", {
+  return requestRoleApi({
+    method: "GET",
+    path: "/dashboards",
     params: { userId },
   });
-  return data;
 }
 
 // -------------------------------------------------------------
-// 2. Quản lý Group & Thành viên trong Group
+// 3. Quản lý Group & Thành viên trong Group
 // -------------------------------------------------------------
 async function getManagedGroups(userId) {
-  const { data } = await roleClient.get("/groups", {
+  return requestRoleApi({
+    method: "GET",
+    path: "/groups",
     params: { userId },
   });
-  return data;
 }
 
 async function createManagedGroup(payload) {
-  const { data } = await roleClient.post("/groups", payload);
-  return data;
+  return requestRoleApi({
+    method: "POST",
+    path: "/groups",
+    data: payload,
+  });
 }
 
 async function updateGroupDashboards(payload) {
-  const { data } = await roleClient.put("/groups/dashboards", payload);
-  return data;
+  return requestRoleApi({
+    method: "PUT",
+    path: "/groups/dashboards",
+    data: payload,
+  });
 }
 
 async function deleteManagedGroup(payload) {
-  const { data } = await roleClient.delete("/groups", { data: payload });
-  return data;
+  return requestRoleApi({
+    method: "DELETE",
+    path: "/groups",
+    data: payload,
+  });
 }
 
 async function getAssignableUsers(userId, groupId = null) {
-  const { data } = await roleClient.get("/users/assignable", {
+  return requestRoleApi({
+    method: "GET",
+    path: "/users/assignable",
     params: { userId, ...(groupId ? { groupId } : {}) },
   });
-  return data;
 }
 
 async function getGroupMembers(userId, groupId) {
-  const { data } = await roleClient.get("/groups/members", {
+  return requestRoleApi({
+    method: "GET",
+    path: "/groups/members",
     params: { userId, groupId },
   });
-  return data;
 }
 
 async function assignGroupMember(payload) {
-  const { data } = await roleClient.post("/groups/members", payload);
-  return data;
+  return requestRoleApi({
+    method: "POST",
+    path: "/groups/members",
+    data: payload,
+  });
 }
 
 async function removeGroupMember(payload) {
-  const { data } = await roleClient.delete("/groups/members", {
+  return requestRoleApi({
+    method: "DELETE",
+    path: "/groups/members",
     data: payload,
   });
-  return data;
 }
 
 // -------------------------------------------------------------
-// 3. Thông tin cá nhân (User Info, Profile & Đổi mật khẩu)
+// 4. Thông tin cá nhân (User Info, Profile & Đổi mật khẩu)
 // -------------------------------------------------------------
 async function getUsersInfo(userId) {
-  const { data } = await roleClient.get("/users/info", {
+  return requestRoleApi({
+    method: "GET",
+    path: "/users/info",
     params: { userId },
   });
-  return data;
 }
 
 async function updateUserProfile(userId, payload) {
-  const { data } = await roleClient.put("/users/profile", {
-    userId,
-    ...payload,
+  return requestRoleApi({
+    method: "PUT",
+    path: "/users/profile",
+    data: {
+      userId,
+      ...payload,
+    },
   });
-  return data;
 }
 
 async function changeUserPassword(userId, payload) {
-  const { data } = await roleClient.put("/users/change-password", {
-    userId,
-    ...payload,
+  return requestRoleApi({
+    method: "PUT",
+    path: "/users/change-password",
+    data: {
+      userId,
+      ...payload,
+    },
   });
-  return data;
 }
 
 // -------------------------------------------------------------
-// 4. Quản lý Users (Dành cho 3 Admin: admin_ami, super_admin, group_admin)
+// 5. Quản lý Users (Dành cho 3 Admin: admin_ami, super_admin, group_admin)
 // -------------------------------------------------------------
 async function getManagedUsers(userId) {
-  const { data } = await roleClient.get("/manage/users", {
+  return requestRoleApi({
+    method: "GET",
+    path: "/manage/users",
     params: { userId },
   });
-  return data;
 }
 
 async function getRoleOptions(userId) {
-  const { data } = await roleClient.get("/manage/roles", {
+  return requestRoleApi({
+    method: "GET",
+    path: "/manage/roles",
     params: { userId },
   });
-  return data;
 }
 
 async function getManagedUserDetail(userId, targetUserId) {
-  const { data } = await roleClient.get("/manage/users/detail", {
+  return requestRoleApi({
+    method: "GET",
+    path: "/manage/users/detail",
     params: { userId, targetUserId },
   });
-  return data;
 }
 
 async function createManagedUser(payload) {
-  const { data } = await roleClient.post("/manage/users", payload);
-  return data;
+  return requestRoleApi({
+    method: "POST",
+    path: "/manage/users",
+    data: payload,
+  });
 }
 
 async function updateManagedUser(payload) {
-  const { data } = await roleClient.put("/manage/users", payload);
-  return data;
+  return requestRoleApi({
+    method: "PUT",
+    path: "/manage/users",
+    data: payload,
+  });
 }
 
 async function deleteManagedUser(payload) {
-  const { data } = await roleClient.delete("/manage/users", {
+  return requestRoleApi({
+    method: "DELETE",
+    path: "/manage/users",
     data: payload,
   });
-  return data;
+}
+
+// -------------------------------------------------------------
+// 6. Ghi Audit Logs (Không làm gián đoạn luồng chính nếu lỗi)
+// -------------------------------------------------------------
+async function createAuditLog(payload) {
+  try {
+    return await requestRoleApi({
+      method: "POST",
+      path: "/audit-logs",
+      data: payload,
+    });
+  } catch (error) {
+    console.warn("[Gateway Audit Log Warning]", error.message);
+    return null;
+  }
 }
 
 module.exports = {
+  requestBackend,
+  sendOtp,
+  resendOtp,
+  verifyOtp,
   getUserPermissions,
   getUserDashboards,
   getManagedGroups,
@@ -163,4 +374,5 @@ module.exports = {
   createManagedUser,
   updateManagedUser,
   deleteManagedUser,
+  createAuditLog,
 };

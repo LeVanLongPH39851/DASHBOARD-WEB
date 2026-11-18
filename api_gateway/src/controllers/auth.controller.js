@@ -22,8 +22,8 @@ function isRequestSecure(req) {
   if (req) {
     return Boolean(
       req.secure ||
-        req.headers["x-forwarded-proto"] === "https" ||
-        req.headers["x-forwarded-protocol"] === "https",
+      req.headers["x-forwarded-proto"] === "https" ||
+      req.headers["x-forwarded-protocol"] === "https",
     );
   }
 
@@ -200,6 +200,17 @@ async function logoutController(req, res) {
 
     await supersetService.logout(sessionCookie);
 
+    await backendService.createAuditLog({
+      userId: req.user?.profile?.id,
+      action: "AUTH_LOGOUT",
+      targetType: "USER",
+      targetId: req.user?.profile?.id,
+      description: `Tài khoản "${req.user?.username || req.user?.profile?.id}" đăng xuất khỏi hệ thống`,
+      metadata: {
+        username: req.user?.username,
+      },
+    });
+
     res.clearCookie("session", {
       httpOnly: true,
       sameSite: "lax",
@@ -228,8 +239,7 @@ async function roleController(req, res) {
     const globalRoles = user.global_roles || roles;
 
     req.user.roles = roles;
-    req.user.permissions =
-      user.permissions || getPermissionsForRoles(roles);
+    req.user.permissions = user.permissions || getPermissionsForRoles(roles);
     req.user.global_roles = globalRoles;
     req.user.global_permissions =
       user.global_permissions || getPermissionsForRoles(globalRoles);
@@ -337,6 +347,19 @@ async function checkDashboardAccessController(req, res) {
       });
     }
 
+    await backendService.createAuditLog({
+      userId,
+      action: "DASHBOARD_VIEW",
+      targetType: "DASHBOARD",
+      targetId: dashboardInfo.id,
+      description: `Truy cập Dashboard "${dashboardInfo.slug}" (#${dashboardInfo.id})`,
+      metadata: {
+        dashboard_id: dashboardInfo.id,
+        slug: dashboardInfo.slug,
+        path: dashboardInfo.path,
+      },
+    });
+
     return res.status(200).json({
       status: "success",
       allowed: true,
@@ -389,8 +412,7 @@ async function getManagedGroupsController(req, res) {
     const rawGroups = groupData?.groups || [];
     const roles = groupData?.roles || [];
     const globalRoles = groupData?.global_roles || roles;
-    const permissions =
-      groupData?.permissions || getPermissionsForRoles(roles);
+    const permissions = groupData?.permissions || getPermissionsForRoles(roles);
     const globalPermissions =
       groupData?.global_permissions || getPermissionsForRoles(globalRoles);
 
@@ -568,11 +590,7 @@ async function removeGroupMemberController(req, res) {
     return res.status(200).json(result);
   } catch (error) {
     console.error("[Remove Group Member Error]", error.message);
-    return sendGatewayError(
-      res,
-      error,
-      "Không thể xóa thành viên khỏi Group",
-    );
+    return sendGatewayError(res, error, "Không thể xóa thành viên khỏi Group");
   }
 }
 
@@ -647,11 +665,7 @@ async function updateUserProfileController(req, res) {
     return res.status(200).json(result);
   } catch (error) {
     console.error("[Update User Profile Error]", error.message);
-    return sendGatewayError(
-      res,
-      error,
-      "Không thể cập nhật thông tin cá nhân",
-    );
+    return sendGatewayError(res, error, "Không thể cập nhật thông tin cá nhân");
   }
 }
 

@@ -1,4 +1,3 @@
-const axios = require("axios");
 const supersetService = require("./superset.service");
 const backendService = require("./backend.service");
 const {
@@ -6,14 +5,6 @@ const {
   hasAllowedRole,
   getPermissionsForRoles,
 } = require("../config/roles");
-
-const internalClient = axios.create({
-  baseURL: process.env.BACKEND_URL,
-  timeout: 15000,
-  headers: {
-    "x-internal-api-key": process.env.API_GATEWAY_INTERNAL_KEY,
-  },
-});
 
 // Bước 1: Đăng nhập Superset, kiểm tra role_code trong user_global_roles và gửi OTP
 async function login(username, password) {
@@ -27,7 +18,8 @@ async function login(username, password) {
 
   // Kiểm tra vai trò Global của user từ Custom Backend (bảng user_global_roles) dựa theo role_code
   const userPermissions = await backendService.getUserPermissions(user.id);
-  const globalRoles = userPermissions?.global_roles || userPermissions?.roles || [];
+  const globalRoles =
+    userPermissions?.global_roles || userPermissions?.roles || [];
 
   if (!hasAllowedRole(globalRoles, ALL_ROLES)) {
     const err = new Error("Tài khoản chưa được phân quyền trong hệ thống");
@@ -52,6 +44,19 @@ async function login(username, password) {
 
   // Nếu không yêu cầu OTP trong bảng user_global_roles (require_otp = false) thì trả thẳng sessionCookie
   if (!user.require_otp) {
+    await backendService.createAuditLog({
+      userId: user.id,
+      action: "AUTH_LOGIN",
+      targetType: "USER",
+      targetId: user.id,
+      description: `Tài khoản "${user.username || user.id}" đăng nhập trực tiếp (không yêu cầu OTP)`,
+      metadata: {
+        username: user.username,
+        email,
+        require_otp: false,
+      },
+    });
+
     return {
       otpRequired: false,
       sessionCookie: credentials.sessionCookie,
@@ -59,7 +64,7 @@ async function login(username, password) {
     };
   }
 
-  const response = await internalClient.post("/internal/auth/otp/send", {
+  const responseData = await backendService.sendOtp({
     email,
     sessionCookie: credentials.sessionCookie,
     user,
@@ -67,25 +72,20 @@ async function login(username, password) {
 
   return {
     otpRequired: true,
-    ...response.data.data,
+    ...responseData.data,
   };
 }
 
 // Bước 2: Gửi lại OTP
 async function resendOtp(challengeId) {
-  const response = await internalClient.post("/internal/auth/otp/resend", {
-    challengeId,
-  });
-  return response.data.data;
+  const responseData = await backendService.resendOtp({ challengeId });
+  return responseData.data;
 }
 
 // Bước 3: Xác minh OTP
 async function verifyOtp(challengeId, otp) {
-  const response = await internalClient.post("/internal/auth/otp/verify", {
-    challengeId,
-    otp,
-  });
-  return response.data.data;
+  const responseData = await backendService.verifyOtp({ challengeId, otp });
+  return responseData.data;
 }
 
 module.exports = {

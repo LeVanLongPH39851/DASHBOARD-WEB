@@ -8,6 +8,7 @@ const {
   getPermissionsForRoles,
   createHttpError,
 } = require("../config/roles.config");
+const { AUDIT_ACTIONS, logAudit } = require("./audit.service");
 
 /**
  * Kiểm tra xem user có phải là System Admin (admin_ami) trong bảng user_global_roles hay không.
@@ -502,8 +503,29 @@ async function createManagedGroup({
       ],
     );
 
+    const newGroup = rows[0];
+
+    await logAudit(
+      {
+        userId,
+        action: AUDIT_ACTIONS.GROUP_CREATE,
+        targetType: "GROUP",
+        targetId: newGroup.id,
+        description: `Tạo Group "${newGroup.group_name}"${newGroup.parent_group_id ? ` (thuộc Group cha #${newGroup.parent_group_id})` : " (Group gốc)"}`,
+        metadata: {
+          group_id: Number(newGroup.id),
+          group_name: newGroup.group_name,
+          description: newGroup.description,
+          parent_group_id: newGroup.parent_group_id
+            ? Number(newGroup.parent_group_id)
+            : null,
+        },
+      },
+      client,
+    );
+
     await client.query("COMMIT");
-    return rows[0];
+    return newGroup;
   } catch (error) {
     await client.query("ROLLBACK");
     throw error;
@@ -623,6 +645,22 @@ async function updateGroupDashboards({ userId, groupId, dashboardIds }) {
       }
     }
 
+    await logAudit(
+      {
+        userId,
+        action: AUDIT_ACTIONS.GROUP_DASHBOARDS_UPDATE,
+        targetType: "GROUP",
+        targetId: groupId,
+        description: `Cập nhật danh sách Dashboard cho Group "${targetGroup.group_name}" (#${groupId})`,
+        metadata: {
+          group_id: Number(groupId),
+          group_name: targetGroup.group_name,
+          dashboard_ids: cleanIds,
+        },
+      },
+      client,
+    );
+
     await client.query("COMMIT");
     return { groupId: Number(groupId), dashboardIds: cleanIds };
   } catch (error) {
@@ -702,6 +740,22 @@ async function deleteManagedGroup({ userId, groupId }) {
     await client.query(`DELETE FROM groups WHERE id = ANY($1::bigint[])`, [
       targetGroupIds,
     ]);
+
+    await logAudit(
+      {
+        userId,
+        action: AUDIT_ACTIONS.GROUP_DELETE,
+        targetType: "GROUP",
+        targetId: groupId,
+        description: `Xóa Group "${targetGroup.group_name}" (#${groupId}) và ${targetGroupIds.length - 1} Group con trực thuộc`,
+        metadata: {
+          deleted_group_id: Number(groupId),
+          group_name: targetGroup.group_name,
+          deleted_group_ids: targetGroupIds,
+        },
+      },
+      client,
+    );
 
     await client.query("COMMIT");
     return {

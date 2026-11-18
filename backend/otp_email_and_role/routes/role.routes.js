@@ -67,4 +67,8 @@ router
   .route("/manage/roles")
   .get(userManagementController.getRoleOptions);
 
+router
+  .route("/audit-logs")
+  .post(roleController.createAuditLog);
+
 module.exports = router;

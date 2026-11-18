@@ -11,6 +11,7 @@ const {
 } = require("../config/roles.config");
 const { hashPassword, verifyPassword } = require("../utils/password.util");
 const roleService = require("./role.service");
+const { AUDIT_ACTIONS, logAudit } = require("./audit.service");
 
 let cachedSupersetUserTable = null;
 
@@ -654,6 +655,26 @@ async function assignUserToGroup({
       );
     }
 
+    await logAudit(
+      {
+        userId: actorUserId,
+        action: existingMember
+          ? AUDIT_ACTIONS.GROUP_MEMBER_UPDATE
+          : AUDIT_ACTIONS.GROUP_MEMBER_ASSIGN,
+        targetType: "GROUP_MEMBER",
+        targetId: `${groupId}:${targetUserId}`,
+        description: `${existingMember ? "Cập nhật" : "Gán"} thành viên #${targetUserId} trong Group #${groupId} với vai trò "${selectedRole.role_code}"`,
+        metadata: {
+          group_id: Number(groupId),
+          target_user_id: Number(targetUserId),
+          role_code: selectedRole.role_code,
+          dashboard_ids: validMemberDashIds,
+          is_update: Boolean(existingMember),
+        },
+      },
+      client,
+    );
+
     await client.query("COMMIT");
     return {
       groupId: Number(groupId),
@@ -730,6 +751,18 @@ async function removeUserFromGroup({ actorUserId, groupId, targetUserId }) {
     `DELETE FROM group_members WHERE group_id = $1 AND superset_user_id = $2`,
     [groupId, targetUserId],
   );
+
+  await logAudit({
+    userId: actorUserId,
+    action: AUDIT_ACTIONS.GROUP_MEMBER_REMOVE,
+    targetType: "GROUP_MEMBER",
+    targetId: `${groupId}:${targetUserId}`,
+    description: `Xóa thành viên #${targetUserId} khỏi Group #${groupId}`,
+    metadata: {
+      group_id: Number(groupId),
+      target_user_id: Number(targetUserId),
+    },
+  });
 
   return { groupId: Number(groupId), userId: Number(targetUserId) };
 }
@@ -920,6 +953,21 @@ async function updateUserProfile(userId, { first_name, last_name, email }) {
     `${updated.first_name || ""} ${updated.last_name || ""}`.trim() ||
     updated.username;
 
+  await logAudit({
+    userId: uid,
+    action: AUDIT_ACTIONS.USER_PROFILE_UPDATE,
+    targetType: "USER",
+    targetId: uid,
+    description: `Cập nhật thông tin cá nhân tài khoản "${updated.username}"`,
+    metadata: {
+      user_id: uid,
+      username: updated.username,
+      first_name: updated.first_name || "",
+      last_name: updated.last_name || "",
+      email: updated.email,
+    },
+  });
+
   return {
     id: Number(updated.id),
     username: updated.username,
@@ -1013,6 +1061,18 @@ async function changeUserPassword(
     `,
     [hashedNew, uid],
   );
+
+  await logAudit({
+    userId: uid,
+    action: AUDIT_ACTIONS.USER_PASSWORD_CHANGE,
+    targetType: "USER",
+    targetId: uid,
+    description: `Đổi mật khẩu cá nhân tài khoản "${userRes.rows[0].username}"`,
+    metadata: {
+      user_id: uid,
+      username: userRes.rows[0].username,
+    },
+  });
 
   return {
     success: true,

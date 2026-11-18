@@ -2,6 +2,7 @@ const crypto = require("crypto");
 const otpRedis = require("../config/otp.redis");
 const { createHttpError } = require("../config/roles.config");
 const emailService = require("./email.service");
+const { AUDIT_ACTIONS, logAudit } = require("./audit.service");
 
 const OTP_PREFIX = "auth_otp:";
 const OTP_TTL = Number(process.env.OTP_EXPIRES_IN || 300);
@@ -91,6 +92,19 @@ async function createOtp({ email, sessionCookie, user }) {
     throw createHttpError(500, "Không thể gửi email OTP");
   }
 
+  await logAudit({
+    userId: user?.id,
+    action: AUDIT_ACTIONS.AUTH_OTP_SEND,
+    targetType: "USER",
+    targetId: user?.id,
+    description: `Gửi mã OTP đăng nhập tới email ${maskEmail(email)}`,
+    metadata: {
+      challenge_id: challengeId,
+      username: user?.username,
+      email: maskEmail(email),
+    },
+  });
+
   return {
     challengeId,
     email: maskEmail(email),
@@ -133,6 +147,19 @@ async function resendOtp(challengeId) {
     throw createHttpError(400, "OTP không tồn tại hoặc đã hết hạn");
   }
 
+  await logAudit({
+    userId: data.user?.id,
+    action: AUDIT_ACTIONS.AUTH_OTP_RESEND,
+    targetType: "USER",
+    targetId: data.user?.id,
+    description: `Gửi lại mã OTP đăng nhập tới email ${maskEmail(data.email)}`,
+    metadata: {
+      challenge_id: challengeId,
+      username: data.user?.username,
+      email: maskEmail(data.email),
+    },
+  });
+
   return {
     challengeId,
     email: maskEmail(data.email),
@@ -163,13 +190,40 @@ async function verifyOtp(challengeId, otp) {
     throw createHttpError(400, "OTP không tồn tại hoặc đã hết hạn");
   }
   if (status === "MAX_ATTEMPTS") {
+    await logAudit({
+      action: AUDIT_ACTIONS.AUTH_OTP_VERIFY_FAILED,
+      targetType: "OTP_CHALLENGE",
+      targetId: challengeId,
+      description: "Nhập sai OTP vượt quá số lần cho phép",
+      metadata: { challenge_id: challengeId, reason: "MAX_ATTEMPTS" },
+    });
     throw createHttpError(400, "Bạn đã nhập sai OTP quá số lần cho phép");
   }
   if (status === "INVALID") {
+    await logAudit({
+      action: AUDIT_ACTIONS.AUTH_OTP_VERIFY_FAILED,
+      targetType: "OTP_CHALLENGE",
+      targetId: challengeId,
+      description: "Nhập mã OTP không chính xác",
+      metadata: { challenge_id: challengeId, reason: "INVALID_OTP" },
+    });
     throw createHttpError(400, "OTP không chính xác");
   }
 
   const data = JSON.parse(result[1]);
+
+  await logAudit({
+    userId: data.user?.id,
+    action: AUDIT_ACTIONS.AUTH_OTP_VERIFY_SUCCESS,
+    targetType: "USER",
+    targetId: data.user?.id,
+    description: `Tài khoản "${data.user?.username || data.user?.id}" xác thực OTP và đăng nhập thành công`,
+    metadata: {
+      challenge_id: challengeId,
+      username: data.user?.username,
+      email: maskEmail(data.email),
+    },
+  });
 
   return {
     sessionCookie: data.sessionCookie,

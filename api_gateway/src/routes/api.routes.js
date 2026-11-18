@@ -4,8 +4,6 @@ const router = express.Router();
 
 const authenticate = require("../middleware/authenticate");
 const authorize = require("../middleware/authorize");
-const forwardRequest = require("../services/proxy.service");
-const services = require("../config/services");
 const {
   ALL_ROLES,
   ADMIN_ROLES,
@@ -176,12 +174,5 @@ router.delete(
   authorize(ADMIN_ROLES),
   authController.deleteManagedUserController,
 );
-
-// -------------------------------------------------------------
-// 6. Proxy các API dữ liệu sang Backend
-// -------------------------------------------------------------
-router.use("/backend", authenticate, (req, res) => {
-  forwardRequest(req, res, services.backend);
-});
 
 module.exports = router;

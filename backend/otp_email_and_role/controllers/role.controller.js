@@ -1,5 +1,6 @@
 const roleService = require("../services/role.service");
 const userService = require("../services/user.service");
+const { logAudit } = require("../services/audit.service");
 
 function parsePositiveInt(value) {
   if (value === undefined || value === null || value === "") return null;
@@ -344,6 +345,42 @@ async function changeUserPassword(req, res, next) {
   }
 }
 
+async function createAuditLog(req, res, next) {
+  try {
+    const {
+      userId,
+      action,
+      targetType,
+      targetId,
+      description,
+      metadata,
+    } = req.body || {};
+
+    if (!action) {
+      return res.status(400).json({
+        status: "error",
+        message: "action là bắt buộc",
+      });
+    }
+
+    const logEntry = await logAudit({
+      userId: parsePositiveInt(userId),
+      action,
+      targetType,
+      targetId,
+      description,
+      metadata,
+    });
+
+    return res.status(201).json({
+      status: "success",
+      log: logEntry,
+    });
+  } catch (error) {
+    return handleControllerError(error, res, next);
+  }
+}
+
 module.exports = {
   checkRoles,
   getAccessibleDashboards,
@@ -358,4 +395,5 @@ module.exports = {
   getGroupMembers,
   assignGroupMember,
   removeGroupMember,
+  createAuditLog,
 };

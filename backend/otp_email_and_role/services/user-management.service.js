@@ -29,6 +29,7 @@ const {
   createHttpError,
 } = require("../config/roles.config");
 const { hashPassword } = require("../utils/password.util");
+const { AUDIT_ACTIONS, logAudit } = require("./audit.service");
 
 // role_id cố định trong bảng ab_role của Superset cho mọi user tạo từ hệ thống
 const SUPERSET_FIXED_ROLE_ID = 6;
@@ -222,9 +223,7 @@ async function assertCanManageTarget(actor, targetUserId) {
 async function getUsernameMap(ids) {
   const clean = Array.from(
     new Set(
-      (ids || [])
-        .map(Number)
-        .filter((n) => Number.isInteger(n) && n > 0),
+      (ids || []).map(Number).filter((n) => Number.isInteger(n) && n > 0),
     ),
   );
   const map = new Map();
@@ -350,7 +349,9 @@ function normalizePayload(raw = {}) {
     first_name: String(raw.first_name ?? raw.firstName ?? "").trim(),
     last_name: String(raw.last_name ?? raw.lastName ?? "").trim(),
     username: String(raw.username ?? raw.user_name ?? "").trim(),
-    email: String(raw.email ?? "").trim().toLowerCase(),
+    email: String(raw.email ?? "")
+      .trim()
+      .toLowerCase(),
     active: normalizeBoolean(raw.active, true),
     require_otp: normalizeBoolean(raw.require_otp, true),
     can_change_password: normalizeBoolean(raw.can_change_password, true),
@@ -506,8 +507,7 @@ async function listManagedUsers(actorUserId) {
     users,
     is_system: actor.isSystem,
     actor_id: actor.actorUserId,
-    is_admin_ami:
-      actor.isSystem || actor.roleCodes.includes(ROLES.ADMIN_AMI),
+    is_admin_ami: actor.isSystem || actor.roleCodes.includes(ROLES.ADMIN_AMI),
     total: users.length,
   };
 }
@@ -531,10 +531,7 @@ async function getManagedUserDetail(actorUserId, targetUserId) {
   const isCreator = Number(entry.assigned_by) === Number(actor.actorUserId);
 
   if (!actor.isSystem && !isSelf && !isCreator) {
-    throw createHttpError(
-      403,
-      "Bạn chỉ được xem các User do chính bạn tạo ra",
-    );
+    throw createHttpError(403, "Bạn chỉ được xem các User do chính bạn tạo ra");
   }
 
   const { rows } = await supersetPool.query(
@@ -547,7 +544,8 @@ async function getManagedUserDetail(actorUserId, targetUserId) {
     `,
     [tid],
   );
-  if (!rows[0]) throw createHttpError(404, "Không tìm thấy User trong Superset");
+  if (!rows[0])
+    throw createHttpError(404, "Không tìm thấy User trong Superset");
 
   const { rows: groupRows } = await rolePool.query(
     `
@@ -584,7 +582,7 @@ async function createManagedUser(actorUserId, rawPayload) {
 
   const data = normalizePayload(rawPayload);
   validatePayload(data, { requirePassword: true });
-  await assertRoleAllowed(actor, data.role_id);
+  const assignedRole = await assertRoleAllowed(actor, data.role_id);
 
   const hashed = await hashPassword(data.password);
 
@@ -647,6 +645,29 @@ async function createManagedUser(actorUserId, rawPayload) {
       ],
     );
 
+    await logAudit(
+      {
+        userId: actor.actorUserId,
+        action: AUDIT_ACTIONS.USER_CREATE,
+        targetType: "USER",
+        targetId: newUserId,
+        description: `Tạo tài khoản mới "${data.username}" (#${newUserId}) với vai trò "${assignedRole.role_code}"`,
+        metadata: {
+          target_user_id: newUserId,
+          username: data.username,
+          email: data.email,
+          first_name: data.first_name,
+          last_name: data.last_name,
+          role_id: data.role_id,
+          role_code: assignedRole.role_code,
+          active: data.active,
+          require_otp: data.require_otp,
+          can_change_password: data.can_change_password,
+        },
+      },
+      rcClient,
+    );
+
     await ssClient.query("COMMIT");
     supersetCommitted = true;
     await rcClient.query("COMMIT");
@@ -695,7 +716,7 @@ async function updateManagedUser(actorUserId, targetUserId, rawPayload) {
 
   const data = normalizePayload(rawPayload);
   validatePayload(data, { requirePassword: false });
-  await assertRoleAllowed(actor, data.role_id);
+  const assignedRole = await assertRoleAllowed(actor, data.role_id);
 
   const ssClient = await acquireClientWithRetry(
     supersetPool,
@@ -769,6 +790,29 @@ async function updateManagedUser(actorUserId, targetUserId, rawPayload) {
       ],
     );
 
+    await logAudit(
+      {
+        userId: actor.actorUserId,
+        action: AUDIT_ACTIONS.USER_UPDATE,
+        targetType: "USER",
+        targetId: tid,
+        description: `Cập nhật tài khoản "${data.username}" (#${tid}) với vai trò "${assignedRole.role_code}"`,
+        metadata: {
+          target_user_id: tid,
+          username: data.username,
+          email: data.email,
+          first_name: data.first_name,
+          last_name: data.last_name,
+          role_id: data.role_id,
+          role_code: assignedRole.role_code,
+          active: data.active,
+          require_otp: data.require_otp,
+          can_change_password: data.can_change_password,
+        },
+      },
+      rcClient,
+    );
+
     await rcClient.query("COMMIT");
     try {
       await ssClient.query("COMMIT");
@@ -822,7 +866,7 @@ async function deleteManagedUser(actorUserId, targetUserId) {
     throw createHttpError(400, "targetUserId không hợp lệ");
   }
 
-  await assertCanManageTarget(actor, tid);
+  const targetEntry = await assertCanManageTarget(actor, tid);
 
   const ssClient = await acquireClientWithRetry(
     supersetPool,
@@ -847,17 +891,34 @@ async function deleteManagedUser(actorUserId, targetUserId) {
       [tid],
     );
 
-    await ssClient.query(
-      `DELETE FROM public.ab_user_role WHERE user_id = $1`,
-      [tid],
-    );
+    await ssClient.query(`DELETE FROM public.ab_user_role WHERE user_id = $1`, [
+      tid,
+    ]);
     const del = await ssClient.query(
-      `DELETE FROM public.ab_user WHERE id = $1`,
+      `DELETE FROM public.ab_user WHERE id = $1 RETURNING username, email`,
       [tid],
     );
     if (del.rowCount === 0) {
       throw createHttpError(404, "Không tìm thấy User trong Superset");
     }
+
+    const deletedInfo = del.rows[0] || {};
+    await logAudit(
+      {
+        userId: actor.actorUserId,
+        action: AUDIT_ACTIONS.USER_DELETE,
+        targetType: "USER",
+        targetId: tid,
+        description: `Xóa tài khoản "${deletedInfo.username || `#${tid}`}" (#${tid})`,
+        metadata: {
+          deleted_user_id: tid,
+          username: deletedInfo.username || null,
+          email: deletedInfo.email || null,
+          roles: (targetEntry?.roles || []).map((r) => r.role_code),
+        },
+      },
+      rcClient,
+    );
 
     await ssClient.query("COMMIT");
     await rcClient.query("COMMIT");

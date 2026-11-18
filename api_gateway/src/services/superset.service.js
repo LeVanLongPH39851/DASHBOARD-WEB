@@ -2,6 +2,51 @@ const axios = require("axios");
 const cheerio = require("cheerio");
 
 const SUPERSET_URL = process.env.SUPERSET_URL;
+const RETRY_ATTEMPTS = Number(process.env.RETRY_ATTEMPTS ?? 2);
+const REQUEST_TIMEOUT = Number(process.env.REQUEST_TIMEOUT || 15000);
+
+const RETRYABLE_STATUS = [502, 503, 504];
+const RETRYABLE_ERRORS = [
+  "ECONNREFUSED",
+  "ECONNRESET",
+  "ETIMEDOUT",
+  "ECONNABORTED",
+  "EHOSTUNREACH",
+  "EPIPE",
+];
+
+// Hàm gọi axios tới Superset có hỗ trợ Retry & Request Timeout
+async function requestSuperset(config, allowRetry = true) {
+  const maxAttempts = allowRetry ? Math.max(1, RETRY_ATTEMPTS + 1) : 1;
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      return await axios({
+        timeout: REQUEST_TIMEOUT,
+        ...config,
+      });
+    } catch (error) {
+      const status = error.response?.status;
+      const isTimeoutError =
+        error.code === "ECONNABORTED" ||
+        error.code === "ETIMEDOUT" ||
+        error.message?.toLowerCase().includes("timeout");
+      const isRetryableError =
+        isTimeoutError || RETRYABLE_ERRORS.includes(error.code);
+      const isRetryableStatus = RETRYABLE_STATUS.includes(status);
+
+      if ((isRetryableError || isRetryableStatus) && attempt < maxAttempts) {
+        console.warn(
+          `[Superset Retry ${attempt}/${RETRY_ATTEMPTS}] ${config.method || "GET"} ${config.url} failed (${error.code || status}), retrying...`,
+        );
+        await new Promise((resolve) => setTimeout(resolve, 200 * attempt));
+        continue;
+      }
+
+      throw error;
+    }
+  }
+}
 
 // Chuyển Set-Cookie thành Cookie và lưu theo tên cookie
 function updateCookies(cookieMap, cookies = []) {
@@ -23,9 +68,10 @@ async function login(username, password) {
     const cookieMap = new Map();
 
     // 1. GET trang login để lấy session cookie và CSRF token
-    const loginPageResponse = await axios.get(`${SUPERSET_URL}/login/`, {
+    const loginPageResponse = await requestSuperset({
+      method: "GET",
+      url: `${SUPERSET_URL}/login/`,
       maxRedirects: 5,
-      timeout: 10000,
     });
 
     // Lấy cookie ban đầu
@@ -33,7 +79,6 @@ async function login(username, password) {
 
     // Lấy CSRF token từ HTML
     const $ = cheerio.load(loginPageResponse.data);
-
     const csrfToken = $('input[name="csrf_token"]').val();
 
     if (!csrfToken) {
@@ -49,19 +94,17 @@ async function login(username, password) {
       csrf_token: csrfToken,
     });
 
-    const loginResponse = await axios.post(
-      `${SUPERSET_URL}/login/`,
-      loginData.toString(),
-      {
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          Cookie: [...cookieMap.values()].join("; "),
-        },
-        maxRedirects: 0,
-        validateStatus: (status) => status >= 200 && status < 400,
-        timeout: 10000,
+    const loginResponse = await requestSuperset({
+      method: "POST",
+      url: `${SUPERSET_URL}/login/`,
+      data: loginData.toString(),
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        Cookie: [...cookieMap.values()].join("; "),
       },
-    );
+      maxRedirects: 0,
+      validateStatus: (status) => status >= 200 && status < 400,
+    });
 
     console.log("Login status:", loginResponse.status);
     console.log("Login redirect:", loginResponse.headers.location);
@@ -91,11 +134,12 @@ async function login(username, password) {
 }
 
 async function getCurrentUser(sessionCookie) {
-  const response = await axios.get(`${SUPERSET_URL}/api/v1/me/`, {
+  const response = await requestSuperset({
+    method: "GET",
+    url: `${SUPERSET_URL}/api/v1/me/`,
     headers: {
       Cookie: sessionCookie,
     },
-    timeout: 10000,
   });
 
   const result = response.data.result;
@@ -112,31 +156,28 @@ async function getCurrentUser(sessionCookie) {
 }
 
 async function logout(sessionCookie) {
-  const response = await axios.get(`${SUPERSET_URL}/logout/`, {
+  return requestSuperset({
+    method: "GET",
+    url: `${SUPERSET_URL}/logout/`,
     headers: {
       Cookie: sessionCookie,
       Accept: "text/html,application/xhtml+xml",
     },
-    timeout: 10000,
   });
-
-  return response;
 }
 
 async function getDashboards(sessionCookie) {
   const query =
     "(order_column:changed_on_delta_humanized,order_direction:desc,page:0,page_size:1000,select_columns:!(id,dashboard_title))";
 
-  const response = await axios.get(
-    `${SUPERSET_URL}/api/v1/dashboard/?q=${encodeURIComponent(query)}`,
-    {
-      headers: {
-        Cookie: sessionCookie,
-        Accept: "application/json",
-      },
-      timeout: 15000,
+  const response = await requestSuperset({
+    method: "GET",
+    url: `${SUPERSET_URL}/api/v1/dashboard/?q=${encodeURIComponent(query)}`,
+    headers: {
+      Cookie: sessionCookie,
+      Accept: "application/json",
     },
-  );
+  });
 
   return (response.data?.result || []).map((item) => ({
     id: item.id,

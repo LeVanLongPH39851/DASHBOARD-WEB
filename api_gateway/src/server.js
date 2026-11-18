@@ -107,6 +107,20 @@ app.use(
   }),
 );
 
+// Timeout cho mỗi request đi vào API Gateway
+const REQUEST_TIMEOUT = Number(process.env.REQUEST_TIMEOUT || 15000);
+app.use((req, res, next) => {
+  res.setTimeout(REQUEST_TIMEOUT, () => {
+    if (!res.headersSent) {
+      res.status(504).json({
+        status: "error",
+        message: `Yêu cầu vượt quá thời gian xử lý (${REQUEST_TIMEOUT}ms)`,
+      });
+    }
+  });
+  next();
+});
+
 // Health Check của chính Gateway
 app.get("/health", (req, res) => {
   res.status(200).json({

@@ -23,7 +23,7 @@ export const METRICS = {
   ave_reach: {
     name: "aveReachNumber",
     metric: "ave_reach",
-    title: "Ave.Reach (000)",
+    title: "Avg.Reach (000)",
     description:
       "Số lượng khán giả (không trùng lặp) trung bình mỗi ngày tính trên dân số từ 4-80 tuổi",
     isPercent: false,
@@ -50,7 +50,7 @@ export const METRICS = {
   "reach%": {
     name: "aveReachPercentNumber",
     metric: "reach%",
-    title: "Ave.Reach (%)",
+    title: "Avg.Reach (%)",
     description:
       "Tỉ lệ khán giả (không trùng lặp) trung bình mỗi ngày tính trên dân số từ 4-80 tuổi",
     isPercent: true,

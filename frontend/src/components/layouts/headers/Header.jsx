@@ -71,8 +71,7 @@ const Header = ({ username, isEnglish = false }) => {
     location.pathname === "/role-permission" ||
     location.search.includes("tab=role-permission");
   const isUsersActive =
-    location.pathname === "/users" ||
-    location.search.includes("tab=users");
+    location.pathname === "/users" || location.search.includes("tab=users");
   const isUserInfoActive =
     location.pathname === "/user-info" ||
     location.search.includes("tab=user-info");

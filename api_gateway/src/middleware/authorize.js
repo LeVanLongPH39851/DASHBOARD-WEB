@@ -1,42 +1,34 @@
 const backendService = require("../services/backend.service");
+const {
+  hasAllowedRole,
+  getPermissionsForRoles,
+} = require("../config/roles");
 
-function authorize(requiredPermission) {
+function authorize(allowedRoles) {
   return async function (req, res, next) {
     try {
       const userId = req.user.profile.id;
-
       const user = await backendService.getUserPermissions(userId);
 
-      const permissions = user.permissions || [];
       const roles = user.roles || [];
-      const globalRoles = user.global_roles || [];
-      const globalPermissions = user.global_permissions || [];
+      const globalRoles = user.global_roles || roles;
+      const permissions =
+        user.permissions || getPermissionsForRoles(roles);
+      const globalPermissions =
+        user.global_permissions || getPermissionsForRoles(globalRoles);
 
-      // Lưu Role và Permission vào request
+      // Gắn Role và Permission cố định theo role_code vào request
       req.user.roles = roles;
       req.user.permissions = permissions;
       req.user.global_roles = globalRoles;
       req.user.global_permissions = globalPermissions;
 
-      const allTokens = [
-        ...permissions,
-        ...roles,
-        ...globalRoles,
-        ...globalPermissions,
-      ];
+      const userRoleList = [...new Set([...roles, ...globalRoles])];
 
-      // Kiểm tra quyền (nếu có system.manage, admin_ami hoặc có quyền/role yêu cầu)
-      const hasPermission = Array.isArray(requiredPermission)
-        ? requiredPermission.some((perm) => allTokens.includes(perm))
-        : allTokens.includes(requiredPermission);
-
-      if (
-        !allTokens.includes("system.manage") &&
-        !allTokens.includes("admin_ami") &&
-        !hasPermission
-      ) {
+      if (!hasAllowedRole(userRoleList, allowedRoles)) {
         return res.status(403).json({
-          message: "You do not have permission",
+          status: "error",
+          message: "Bạn không có quyền thực hiện thao tác này",
         });
       }
 
@@ -46,11 +38,13 @@ function authorize(requiredPermission) {
 
       if (error.response?.status === 403) {
         return res.status(403).json({
+          status: "error",
           message: "Permission denied",
         });
       }
 
       return res.status(503).json({
+        status: "error",
         message: "Authorization service unavailable",
       });
     }

@@ -1,17 +1,27 @@
 const roleService = require("../services/role.service");
 const userService = require("../services/user.service");
 
-async function checkRoles(req, res, next) {
-  const userId = req.body?.userId ?? req.query?.userId;
-  const userIdNumber = Number(userId);
+function parsePositiveInt(value) {
+  if (value === undefined || value === null || value === "") return null;
+  const num = Number(value);
+  return Number.isSafeInteger(num) && num > 0 ? num : null;
+}
 
-  if (
-    userId === undefined ||
-    userId === null ||
-    userId === "" ||
-    !Number.isSafeInteger(userIdNumber) ||
-    userIdNumber <= 0
-  ) {
+function handleControllerError(err, res, next) {
+  const status = err.statusCode || err.status;
+  if (status && status >= 400 && status < 600) {
+    return res.status(status).json({
+      status: "error",
+      message: err.message,
+      fieldErrors: err.fieldErrors || undefined,
+    });
+  }
+  return next(err);
+}
+
+async function checkRoles(req, res, next) {
+  const userId = parsePositiveInt(req.body?.userId ?? req.query?.userId);
+  if (!userId) {
     return res.status(400).json({
       status: "error",
       message: "userId phải là số nguyên dương",
@@ -19,28 +29,19 @@ async function checkRoles(req, res, next) {
   }
 
   try {
-    const user = await roleService.getUserRoles(userIdNumber);
-
+    const user = await roleService.getUserRoles(userId);
     return res.status(200).json({
       status: "success",
       ...user,
     });
   } catch (error) {
-    next(error);
+    return handleControllerError(error, res, next);
   }
 }
 
 async function getAccessibleDashboards(req, res, next) {
-  const userId = req.body?.userId ?? req.query?.userId;
-  const userIdNumber = Number(userId);
-
-  if (
-    userId === undefined ||
-    userId === null ||
-    userId === "" ||
-    !Number.isSafeInteger(userIdNumber) ||
-    userIdNumber <= 0
-  ) {
+  const userId = parsePositiveInt(req.body?.userId ?? req.query?.userId);
+  if (!userId) {
     return res.status(400).json({
       status: "error",
       message: "userId phải là số nguyên dương",
@@ -48,28 +49,19 @@ async function getAccessibleDashboards(req, res, next) {
   }
 
   try {
-    const result = await roleService.getUserAccessibleDashboards(userIdNumber);
-
+    const result = await roleService.getUserAccessibleDashboards(userId);
     return res.status(200).json({
       status: "success",
       ...result,
     });
   } catch (error) {
-    next(error);
+    return handleControllerError(error, res, next);
   }
 }
 
 async function getManagedGroups(req, res, next) {
-  const userId = req.body?.userId ?? req.query?.userId;
-  const userIdNumber = Number(userId);
-
-  if (
-    userId === undefined ||
-    userId === null ||
-    userId === "" ||
-    !Number.isSafeInteger(userIdNumber) ||
-    userIdNumber <= 0
-  ) {
+  const userId = parsePositiveInt(req.body?.userId ?? req.query?.userId);
+  if (!userId) {
     return res.status(400).json({
       status: "error",
       message: "userId phải là số nguyên dương",
@@ -77,28 +69,21 @@ async function getManagedGroups(req, res, next) {
   }
 
   try {
-    const result = await roleService.getManagedGroups(userIdNumber);
-
+    const result = await roleService.getManagedGroups(userId);
     return res.status(200).json({
       status: "success",
       ...result,
     });
   } catch (error) {
-    if (error.statusCode) {
-      return res.status(error.statusCode).json({
-        status: "error",
-        message: error.message,
-      });
-    }
-    next(error);
+    return handleControllerError(error, res, next);
   }
 }
 
 async function createManagedGroup(req, res, next) {
-  const { userId, groupName, description, parentGroupId } = req.body || {};
-  const userIdNumber = Number(userId);
+  const { groupName, description, parentGroupId } = req.body || {};
+  const userId = parsePositiveInt(req.body?.userId);
 
-  if (!Number.isSafeInteger(userIdNumber) || userIdNumber <= 0) {
+  if (!userId) {
     return res.status(400).json({
       status: "error",
       message: "userId không hợp lệ",
@@ -114,7 +99,7 @@ async function createManagedGroup(req, res, next) {
 
   try {
     const group = await roleService.createManagedGroup({
-      userId: userIdNumber,
+      userId,
       groupName: String(groupName),
       description,
       parentGroupId,
@@ -125,27 +110,16 @@ async function createManagedGroup(req, res, next) {
       group,
     });
   } catch (error) {
-    if (error.statusCode) {
-      return res.status(error.statusCode).json({
-        status: "error",
-        message: error.message,
-      });
-    }
-    next(error);
+    return handleControllerError(error, res, next);
   }
 }
 
 async function updateGroupDashboards(req, res, next) {
-  const { userId, groupId, dashboardIds } = req.body || {};
-  const userIdNumber = Number(userId);
-  const groupIdNumber = Number(groupId);
+  const userId = parsePositiveInt(req.body?.userId);
+  const groupId = parsePositiveInt(req.body?.groupId);
+  const { dashboardIds } = req.body || {};
 
-  if (
-    !Number.isSafeInteger(userIdNumber) ||
-    userIdNumber <= 0 ||
-    !Number.isSafeInteger(groupIdNumber) ||
-    groupIdNumber <= 0
-  ) {
+  if (!userId || !groupId) {
     return res.status(400).json({
       status: "error",
       message: "userId và groupId không hợp lệ",
@@ -154,8 +128,8 @@ async function updateGroupDashboards(req, res, next) {
 
   try {
     const result = await roleService.updateGroupDashboards({
-      userId: userIdNumber,
-      groupId: groupIdNumber,
+      userId,
+      groupId,
       dashboardIds,
     });
 
@@ -164,22 +138,37 @@ async function updateGroupDashboards(req, res, next) {
       ...result,
     });
   } catch (error) {
-    if (error.statusCode) {
-      return res.status(error.statusCode).json({
-        status: "error",
-        message: error.message,
-      });
-    }
-    next(error);
+    return handleControllerError(error, res, next);
+  }
+}
+
+async function deleteManagedGroup(req, res, next) {
+  const userId = parsePositiveInt(req.body?.userId ?? req.query?.userId);
+  const groupId = parsePositiveInt(req.body?.groupId ?? req.query?.groupId);
+
+  if (!userId || !groupId) {
+    return res.status(400).json({
+      status: "error",
+      message: "userId và groupId không hợp lệ",
+    });
+  }
+
+  try {
+    const result = await roleService.deleteManagedGroup({ userId, groupId });
+    return res.status(200).json({
+      status: "success",
+      ...result,
+    });
+  } catch (error) {
+    return handleControllerError(error, res, next);
   }
 }
 
 async function getAssignableUsers(req, res, next) {
-  const userId = Number(req.body?.userId ?? req.query?.userId);
-  const rawGroupId = req.body?.groupId ?? req.query?.groupId;
-  const groupId = rawGroupId ? Number(rawGroupId) : null;
+  const userId = parsePositiveInt(req.body?.userId ?? req.query?.userId);
+  const groupId = parsePositiveInt(req.body?.groupId ?? req.query?.groupId);
 
-  if (!Number.isSafeInteger(userId) || userId <= 0) {
+  if (!userId) {
     return res.status(400).json({
       status: "error",
       message: "userId phải là số nguyên dương",
@@ -193,14 +182,13 @@ async function getAssignableUsers(req, res, next) {
       users,
     });
   } catch (error) {
-    next(error);
+    return handleControllerError(error, res, next);
   }
 }
 
 async function getUsersInfo(req, res, next) {
-  const userId = Number(req.body?.userId ?? req.query?.userId);
-
-  if (!Number.isSafeInteger(userId) || userId <= 0) {
+  const userId = parsePositiveInt(req.body?.userId ?? req.query?.userId);
+  if (!userId) {
     return res.status(400).json({
       status: "error",
       message: "userId phải là số nguyên dương",
@@ -214,20 +202,15 @@ async function getUsersInfo(req, res, next) {
       ...result,
     });
   } catch (error) {
-    next(error);
+    return handleControllerError(error, res, next);
   }
 }
 
 async function getGroupMembers(req, res, next) {
-  const userId = Number(req.body?.userId ?? req.query?.userId);
-  const groupId = Number(req.body?.groupId ?? req.query?.groupId);
+  const userId = parsePositiveInt(req.body?.userId ?? req.query?.userId);
+  const groupId = parsePositiveInt(req.body?.groupId ?? req.query?.groupId);
 
-  if (
-    !Number.isSafeInteger(userId) ||
-    userId <= 0 ||
-    !Number.isSafeInteger(groupId) ||
-    groupId <= 0
-  ) {
+  if (!userId || !groupId) {
     return res.status(400).json({
       status: "error",
       message: "userId và groupId không hợp lệ",
@@ -241,26 +224,17 @@ async function getGroupMembers(req, res, next) {
       members,
     });
   } catch (error) {
-    next(error);
+    return handleControllerError(error, res, next);
   }
 }
 
 async function assignGroupMember(req, res, next) {
-  const { userId, groupId, targetUserId, roleCode, dashboardIds } =
-    req.body || {};
+  const actorUserId = parsePositiveInt(req.body?.userId);
+  const groupId = parsePositiveInt(req.body?.groupId);
+  const targetUserId = parsePositiveInt(req.body?.targetUserId);
+  const { roleCode, dashboardIds } = req.body || {};
 
-  const actorId = Number(userId);
-  const gId = Number(groupId);
-  const targetId = Number(targetUserId);
-
-  if (
-    !Number.isSafeInteger(actorId) ||
-    actorId <= 0 ||
-    !Number.isSafeInteger(gId) ||
-    gId <= 0 ||
-    !Number.isSafeInteger(targetId) ||
-    targetId <= 0
-  ) {
+  if (!actorUserId || !groupId || !targetUserId) {
     return res.status(400).json({
       status: "error",
       message: "Thông tin gán thành viên không hợp lệ",
@@ -269,9 +243,9 @@ async function assignGroupMember(req, res, next) {
 
   try {
     const result = await userService.assignUserToGroup({
-      actorUserId: actorId,
-      groupId: gId,
-      targetUserId: targetId,
+      actorUserId,
+      groupId,
+      targetUserId,
       roleCode,
       dashboardIds,
     });
@@ -281,31 +255,18 @@ async function assignGroupMember(req, res, next) {
       ...result,
     });
   } catch (error) {
-    if (error.statusCode) {
-      return res.status(error.statusCode).json({
-        status: "error",
-        message: error.message,
-      });
-    }
-    next(error);
+    return handleControllerError(error, res, next);
   }
 }
 
 async function removeGroupMember(req, res, next) {
-  const userId = Number(req.body?.userId ?? req.query?.userId);
-  const groupId = Number(req.body?.groupId ?? req.query?.groupId);
-  const targetUserId = Number(
+  const actorUserId = parsePositiveInt(req.body?.userId ?? req.query?.userId);
+  const groupId = parsePositiveInt(req.body?.groupId ?? req.query?.groupId);
+  const targetUserId = parsePositiveInt(
     req.body?.targetUserId ?? req.query?.targetUserId,
   );
 
-  if (
-    !Number.isSafeInteger(userId) ||
-    userId <= 0 ||
-    !Number.isSafeInteger(groupId) ||
-    groupId <= 0 ||
-    !Number.isSafeInteger(targetUserId) ||
-    targetUserId <= 0
-  ) {
+  if (!actorUserId || !groupId || !targetUserId) {
     return res.status(400).json({
       status: "error",
       message: "Thông tin xóa thành viên không hợp lệ",
@@ -314,7 +275,7 @@ async function removeGroupMember(req, res, next) {
 
   try {
     const result = await userService.removeUserFromGroup({
-      actorUserId: userId,
+      actorUserId,
       groupId,
       targetUserId,
     });
@@ -324,58 +285,15 @@ async function removeGroupMember(req, res, next) {
       ...result,
     });
   } catch (error) {
-    if (error.statusCode) {
-      return res.status(error.statusCode).json({
-        status: "error",
-        message: error.message,
-      });
-    }
-    next(error);
-  }
-}
-
-async function deleteManagedGroup(req, res, next) {
-  const userId = Number(req.body?.userId ?? req.query?.userId);
-  const groupId = Number(req.body?.groupId ?? req.query?.groupId);
-
-  if (
-    !Number.isSafeInteger(userId) ||
-    userId <= 0 ||
-    !Number.isSafeInteger(groupId) ||
-    groupId <= 0
-  ) {
-    return res.status(400).json({
-      status: "error",
-      message: "userId và groupId không hợp lệ",
-    });
-  }
-
-  try {
-    const result = await roleService.deleteManagedGroup({
-      userId,
-      groupId,
-    });
-
-    return res.status(200).json({
-      status: "success",
-      ...result,
-    });
-  } catch (error) {
-    if (error.statusCode) {
-      return res.status(error.statusCode).json({
-        status: "error",
-        message: error.message,
-      });
-    }
-    next(error);
+    return handleControllerError(error, res, next);
   }
 }
 
 async function updateUserProfile(req, res, next) {
-  const userId = Number(req.body?.userId ?? req.query?.userId);
+  const userId = parsePositiveInt(req.body?.userId ?? req.query?.userId);
   const { first_name, last_name, email } = req.body || {};
 
-  if (!Number.isSafeInteger(userId) || userId <= 0) {
+  if (!userId) {
     return res.status(400).json({
       status: "error",
       message: "userId phải là số nguyên dương",
@@ -395,21 +313,15 @@ async function updateUserProfile(req, res, next) {
       user,
     });
   } catch (error) {
-    if (error.statusCode) {
-      return res.status(error.statusCode).json({
-        status: "error",
-        message: error.message,
-      });
-    }
-    next(error);
+    return handleControllerError(error, res, next);
   }
 }
 
 async function changeUserPassword(req, res, next) {
-  const userId = Number(req.body?.userId ?? req.query?.userId);
+  const userId = parsePositiveInt(req.body?.userId ?? req.query?.userId);
   const { old_password, new_password, confirm_new_password } = req.body || {};
 
-  if (!Number.isSafeInteger(userId) || userId <= 0) {
+  if (!userId) {
     return res.status(400).json({
       status: "error",
       message: "userId phải là số nguyên dương",
@@ -428,13 +340,7 @@ async function changeUserPassword(req, res, next) {
       ...result,
     });
   } catch (error) {
-    if (error.statusCode) {
-      return res.status(error.statusCode).json({
-        status: "error",
-        message: error.message,
-      });
-    }
-    next(error);
+    return handleControllerError(error, res, next);
   }
 }
 

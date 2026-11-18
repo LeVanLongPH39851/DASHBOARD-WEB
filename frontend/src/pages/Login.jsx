@@ -136,13 +136,13 @@ const Login = () => {
     } catch (error) {
       console.error("[LOGIN ERROR]", error);
 
-      const status = error.response?.status;
+      const status = error.response?.status || error.status;
       const message =
         error.response?.data?.message ||
         error.message ||
         "Đăng nhập thất bại. Vui lòng thử lại.";
 
-      if (status === 401 || status === 403 || status === 500) {
+      if (status === 401 || status === 500) {
         setErrorLogin("Tài khoản hoặc mật khẩu không chính xác");
         setShowErrorLogin(true);
       } else {
@@ -174,8 +174,9 @@ const Login = () => {
 
       await redirectAfterLogin();
     } catch (error) {
+      const status = error.response?.status || error.status;
       setOtpError(
-        error.status == 500
+        status === 500
           ? "Mã OTP không chính xác"
           : error.response?.data?.message ||
               error.message ||
@@ -201,8 +202,9 @@ const Login = () => {
       setOtp("");
       setOtpMessage(result.message || "Mã OTP mới đã được gửi đến email.");
     } catch (error) {
+      const status = error.response?.status || error.status;
       setOtpError(
-        error.status == 500
+        status === 500
           ? "Gửi lại mã OTP thất bại"
           : error.response?.data?.message ||
               error.message ||

@@ -3,92 +3,62 @@ const express = require("express");
 const router = express.Router();
 
 const authenticate = require("../middleware/authenticate");
-
 const authorize = require("../middleware/authorize");
-
 const forwardRequest = require("../services/proxy.service");
-
 const services = require("../config/services");
-
+const {
+  ALL_ROLES,
+  ADMIN_ROLES,
+  HIGH_ADMIN_ROLES,
+} = require("../config/roles");
 const authController = require("../controllers/auth.controller");
-
 const { loginRateLimit } = require("../middleware/rate-limit");
 
+// -------------------------------------------------------------
+// 1. Xác thực & Phiên đăng nhập (Authentication & OTP)
+// -------------------------------------------------------------
 router.post("/auth/login", loginRateLimit, authController.loginController);
-
-// Gửi lại OTP
 router.post("/auth/resend-otp", authController.resendOtpController);
-
-// Xác minh OTP
 router.post("/auth/verify-otp", authController.verifyOtpController);
-
-// Lấy thông tin user
 router.get("/auth/me", authenticate, authController.meController);
-
-// Logout
 router.post("/auth/logout", authenticate, authController.logoutController);
-
 router.get("/auth/permissions", authenticate, authController.roleController);
 
-// Lấy danh sách dashboard user được phép xem
+// -------------------------------------------------------------
+// 2. Truy cập Dashboard (Dành cho tất cả các role hợp lệ)
+// -------------------------------------------------------------
 router.get(
   "/dashboards",
   authenticate,
-  authorize("dashboard.view"),
+  authorize(ALL_ROLES),
   authController.getDashboardsController,
 );
 router.get(
   "/auth/dashboards",
   authenticate,
-  authorize("dashboard.view"),
+  authorize(ALL_ROLES),
   authController.getDashboardsController,
 );
-
-// Kiểm tra quyền truy cập vào 1 dashboard cụ thể (theo slug hoặc id)
 router.get(
   "/dashboards/check-access/:target",
   authenticate,
-  authorize("dashboard.view"),
+  authorize(ALL_ROLES),
   authController.checkDashboardAccessController,
 );
 router.get(
   "/auth/dashboards/check-access/:target",
   authenticate,
-  authorize("dashboard.view"),
+  authorize(ALL_ROLES),
   authController.checkDashboardAccessController,
 );
 
-// Quản lý Group và danh sách Dashboard cấp phát cho Group (Role & Permission)
-router.get(
-  "/groups",
-  authenticate,
-  authorize("group.view"),
-  authController.getManagedGroupsController,
-);
-router.post(
-  "/groups",
-  authenticate,
-  authorize("group.create"),
-  authController.createManagedGroupController,
-);
-router.put(
-  "/groups/:groupId/dashboards",
-  authenticate,
-  authorize("group_dashboard.assign"),
-  authController.updateGroupDashboardsController,
-);
-router.delete(
-  "/groups/:groupId",
-  authenticate,
-  authorize(["group.delete", "system.manage"]),
-  authController.deleteManagedGroupController,
-);
-
-// Quản lý thành viên trong Group & thông tin User Info
+// -------------------------------------------------------------
+// 3. Thông tin cá nhân (User Info, Profile & Đổi mật khẩu)
+// -------------------------------------------------------------
 router.get(
   "/users/info",
   authenticate,
-  authorize("dashboard.view"),
+  authorize(ALL_ROLES),
   authController.getUsersInfoController,
 );
 router.put(
@@ -101,50 +71,63 @@ router.put(
   authenticate,
   authController.changeUserPasswordController,
 );
+
+// -------------------------------------------------------------
+// 4. Quản lý Group, Dashboard của Group & Thành viên (Role & Permission)
+// -------------------------------------------------------------
+router.get(
+  "/groups",
+  authenticate,
+  authorize(ADMIN_ROLES),
+  authController.getManagedGroupsController,
+);
+router.post(
+  "/groups",
+  authenticate,
+  authorize(HIGH_ADMIN_ROLES),
+  authController.createManagedGroupController,
+);
+router.put(
+  "/groups/:groupId/dashboards",
+  authenticate,
+  authorize(HIGH_ADMIN_ROLES),
+  authController.updateGroupDashboardsController,
+);
+router.delete(
+  "/groups/:groupId",
+  authenticate,
+  authorize(HIGH_ADMIN_ROLES),
+  authController.deleteManagedGroupController,
+);
+
 router.get(
   "/users/assignable",
   authenticate,
-  authorize(["member.create", "member.view", "group_admin.assign"]),
+  authorize(ADMIN_ROLES),
   authController.getAssignableUsersController,
 );
 router.get(
   "/groups/:groupId/members",
   authenticate,
-  authorize(["member.view", "group.view", "dashboard.view"]),
+  authorize(ADMIN_ROLES),
   authController.getGroupMembersController,
 );
 router.post(
   "/groups/:groupId/members",
   authenticate,
-  authorize([
-    "member.create",
-    "member.update",
-    "group_admin.assign",
-    "member_dashboard.assign",
-  ]),
+  authorize(ADMIN_ROLES),
   authController.assignGroupMemberController,
 );
 router.delete(
   "/groups/:groupId/members/:targetUserId",
   authenticate,
-  authorize([
-    "system.manage",
-    "member.delete",
-    "member.update",
-    "member.create",
-    "group_admin.assign",
-  ]),
+  authorize(ADMIN_ROLES),
   authController.removeGroupMemberController,
 );
 
-// Quản lý Users (3 admin: admin_ami, super_admin, group_admin)
-const ADMIN_ROLES = [
-  "admin_ami",
-  "super_admin",
-  "group_admin",
-  "system.manage",
-];
-
+// -------------------------------------------------------------
+// 5. Quản lý Users (Dành cho 3 Admin: admin_ami, super_admin, group_admin)
+// -------------------------------------------------------------
 router.get(
   "/manage/users",
   authenticate,
@@ -194,6 +177,9 @@ router.delete(
   authController.deleteManagedUserController,
 );
 
+// -------------------------------------------------------------
+// 6. Proxy các API dữ liệu sang Backend
+// -------------------------------------------------------------
 router.use("/backend", authenticate, (req, res) => {
   forwardRequest(req, res, services.backend);
 });

@@ -6,6 +6,11 @@ const {
   MAPPED_DASHBOARD_IDS,
   resolveDashboardTarget,
 } = require("../config/dashboards");
+const {
+  HIGH_ADMIN_ROLES,
+  hasAllowedRole,
+  getPermissionsForRoles,
+} = require("../config/roles");
 
 // Kiểm tra kết nối có an toàn (HTTPS) hay không
 function isRequestSecure(req) {
@@ -17,20 +22,19 @@ function isRequestSecure(req) {
   if (req) {
     return Boolean(
       req.secure ||
-      req.headers["x-forwarded-proto"] === "https" ||
-      req.headers["x-forwarded-protocol"] === "https"
+        req.headers["x-forwarded-proto"] === "https" ||
+        req.headers["x-forwarded-protocol"] === "https",
     );
   }
 
   return false;
 }
 
-// Hàm hỗ trợ lưu sessionCookie từ Superset vào HttpOnly Cookie trên trình duyệt
+// Lưu sessionCookie từ Superset vào HttpOnly Cookie trên trình duyệt
 function setSessionHttpOnlyCookies(res, sessionCookie, req = null) {
   if (!sessionCookie) return;
 
   const isSecure = isRequestSecure(req);
-
   const cookies = sessionCookie
     .split(";")
     .map((c) => c.trim())
@@ -53,10 +57,27 @@ function setSessionHttpOnlyCookies(res, sessionCookie, req = null) {
   });
 }
 
-// Đăng nhập và gửi OTP
+// Helper trả lỗi chuẩn hóa từ các Controller
+function sendGatewayError(res, error, fallbackMessage, defaultStatus = 500) {
+  const status =
+    error.response?.status || error.statusCode || error.status || defaultStatus;
+  const message =
+    error.response?.data?.message || error.message || fallbackMessage;
+  const fieldErrors = error.response?.data?.fieldErrors || error.fieldErrors;
+
+  return res.status(status).json({
+    status: "error",
+    message,
+    ...(fieldErrors ? { fieldErrors } : {}),
+  });
+}
+
+// -------------------------------------------------------------
+// 1. Xác thực & Phiên đăng nhập (Authentication & OTP)
+// -------------------------------------------------------------
 async function loginController(req, res, next) {
   try {
-    const { username, password } = req.body;
+    const { username, password } = req.body || {};
 
     if (!username || !password) {
       return res.status(400).json({
@@ -86,22 +107,19 @@ async function loginController(req, res, next) {
     });
   } catch (error) {
     if (error.statusCode || error.status) {
-      return res.status(error.statusCode || error.status).json({
-        status: "error",
-        message: error.message,
-      });
+      return sendGatewayError(res, error, "Đăng nhập thất bại");
     }
-    next(error);
+    return next(error);
   }
 }
 
-// Gửi lại OTP
 async function resendOtpController(req, res, next) {
   try {
-    const { challengeId } = req.body;
+    const { challengeId } = req.body || {};
 
     if (!challengeId) {
       return res.status(400).json({
+        status: "error",
         message: "Thiếu challengeId",
       });
     }
@@ -114,14 +132,13 @@ async function resendOtpController(req, res, next) {
       data: result,
     });
   } catch (error) {
-    next(error);
+    return next(error);
   }
 }
 
-// Xác minh OTP
 async function verifyOtpController(req, res, next) {
   try {
-    const { challengeId, otp } = req.body;
+    const { challengeId, otp } = req.body || {};
 
     if (!challengeId || !otp) {
       return res.status(400).json({
@@ -131,7 +148,6 @@ async function verifyOtpController(req, res, next) {
     }
 
     const result = await authService.verifyOtp(challengeId, otp);
-
     setSessionHttpOnlyCookies(res, result.sessionCookie, req);
 
     return res.status(200).json({
@@ -142,20 +158,24 @@ async function verifyOtpController(req, res, next) {
       },
     });
   } catch (error) {
-    next(error);
+    return next(error);
   }
 }
 
-// Lấy thông tin user
 async function meController(req, res) {
   try {
     const userId = req.user?.profile?.id;
     if (userId) {
       const permData = await backendService.getUserPermissions(userId);
-      req.user.roles = permData?.roles || [];
-      req.user.permissions = permData?.permissions || [];
-      req.user.global_roles = permData?.global_roles || [];
-      req.user.global_permissions = permData?.global_permissions || [];
+      const roles = permData?.roles || [];
+      const globalRoles = permData?.global_roles || roles;
+
+      req.user.roles = roles;
+      req.user.permissions =
+        permData?.permissions || getPermissionsForRoles(roles);
+      req.user.global_roles = globalRoles;
+      req.user.global_permissions =
+        permData?.global_permissions || getPermissionsForRoles(globalRoles);
     }
   } catch (err) {
     console.warn("[Me Controller Role Lookup Warning]", err.message);
@@ -167,8 +187,7 @@ async function meController(req, res) {
   });
 }
 
-// Logout
-async function logoutController(req, res, next) {
+async function logoutController(req, res) {
   try {
     const sessionCookie = req.headers.cookie;
 
@@ -194,7 +213,6 @@ async function logoutController(req, res, next) {
     });
   } catch (error) {
     console.error("[Logout Error]", error.message);
-
     return res.status(500).json({
       status: "error",
       message: "Đăng xuất thất bại",
@@ -202,17 +220,19 @@ async function logoutController(req, res, next) {
   }
 }
 
-// Lấy thông tin user và quyền
 async function roleController(req, res) {
   try {
     const userId = req.user.profile.id;
-
-    // Lấy Role và Permission từ Backend Custom
     const user = await backendService.getUserPermissions(userId);
+    const roles = user.roles || [];
+    const globalRoles = user.global_roles || roles;
 
-    // Lưu vào request
-    req.user.roles = user.roles || [];
-    req.user.permissions = user.permissions || [];
+    req.user.roles = roles;
+    req.user.permissions =
+      user.permissions || getPermissionsForRoles(roles);
+    req.user.global_roles = globalRoles;
+    req.user.global_permissions =
+      user.global_permissions || getPermissionsForRoles(globalRoles);
 
     return res.json({
       status: "success",
@@ -220,33 +240,33 @@ async function roleController(req, res) {
     });
   } catch (error) {
     console.error("[Role Controller Error]", error.message);
-
-    return res.status(error.response?.status || 503).json({
-      status: "error",
-      message: "Unable to retrieve user permissions",
-    });
+    return sendGatewayError(
+      res,
+      error,
+      "Unable to retrieve user permissions",
+      503,
+    );
   }
 }
 
-// Lấy danh sách dashboard mà user được phép xem (chỉ trong danh sách map)
+// -------------------------------------------------------------
+// 2. Truy cập Dashboard
+// -------------------------------------------------------------
 async function getDashboardsController(req, res) {
   try {
     const userId = req.user.profile.id;
     const sessionCookie = req.sessionCookie || req.headers.cookie;
 
-    // 1. Kiểm tra danh sách dashboard được phép xem từ Custom Backend
     const accessInfo = await backendService.getUserDashboards(userId);
     const canViewAll = Boolean(accessInfo?.canViewAll);
     const dbIds = Array.isArray(accessInfo?.dashboardIds)
-      ? accessInfo.dashboardIds.map((id) => Number(id))
+      ? accessInfo.dashboardIds.map(Number)
       : [];
 
-    // Chỉ giữ các dashboard nằm trong danh sách map (58, 67, 64, 62, 80, 75)
     const allowedIds = canViewAll
       ? MAPPED_DASHBOARD_IDS
       : dbIds.filter((id) => Boolean(DASHBOARD_ROUTES[id]));
 
-    // Nếu không có dashboard nào được phép xem -> không cần gọi Superset
     if (allowedIds.length === 0) {
       return res.status(200).json({
         status: "success",
@@ -255,11 +275,9 @@ async function getDashboardsController(req, res) {
       });
     }
 
-    // 2. Gọi API Superset lấy danh sách dashboard
     const supersetDashboards =
       await supersetService.getDashboards(sessionCookie);
 
-    // 3. Chỉ lọc các dashboard nằm trong allowedIds và gắn path tương ứng
     const allowedSet = new Set(allowedIds);
     const dashboards = supersetDashboards
       .filter((item) => allowedSet.has(Number(item.id)))
@@ -280,15 +298,15 @@ async function getDashboardsController(req, res) {
     });
   } catch (error) {
     console.error("[Get Dashboards Error]", error.message);
-
-    return res.status(error.response?.status || 503).json({
-      status: "error",
-      message: "Không thể lấy danh sách dashboard",
-    });
+    return sendGatewayError(
+      res,
+      error,
+      "Không thể lấy danh sách dashboard",
+      503,
+    );
   }
 }
 
-// Kiểm tra quyền truy cập vào 1 dashboard cụ thể theo slug (/dashboard/spot) hoặc id (/dashboard/62)
 async function checkDashboardAccessController(req, res) {
   try {
     const { target } = req.params;
@@ -306,7 +324,7 @@ async function checkDashboardAccessController(req, res) {
     const accessInfo = await backendService.getUserDashboards(userId);
     const canViewAll = Boolean(accessInfo?.canViewAll);
     const allowedIds = Array.isArray(accessInfo?.dashboardIds)
-      ? accessInfo.dashboardIds.map((id) => Number(id))
+      ? accessInfo.dashboardIds.map(Number)
       : [];
 
     const isAllowed = canViewAll || allowedIds.includes(dashboardInfo.id);
@@ -326,7 +344,6 @@ async function checkDashboardAccessController(req, res) {
     });
   } catch (error) {
     console.error("[Check Dashboard Access Error]", error.message);
-
     return res.status(error.response?.status || 503).json({
       status: "error",
       allowed: false,
@@ -335,7 +352,9 @@ async function checkDashboardAccessController(req, res) {
   }
 }
 
-// Bổ sung tên Dashboard và đường dẫn cho từng Group và các Group con (đệ quy)
+// -------------------------------------------------------------
+// 3. Quản lý Group & Thành viên trong Group (Role & Permission)
+// -------------------------------------------------------------
 function enrichGroupTreeWithDashboards(groups, titleMap) {
   return (Array.isArray(groups) ? groups : []).map((group) => {
     const enrichedDashboards = (group.dashboards || [])
@@ -361,7 +380,6 @@ function enrichGroupTreeWithDashboards(groups, titleMap) {
   });
 }
 
-// Lấy danh sách Group quản lý (cho tab Role & Permission)
 async function getManagedGroupsController(req, res) {
   try {
     const userId = req.user.profile.id;
@@ -370,17 +388,16 @@ async function getManagedGroupsController(req, res) {
     const groupData = await backendService.getManagedGroups(userId);
     const rawGroups = groupData?.groups || [];
     const roles = groupData?.roles || [];
-    const permissions = groupData?.permissions || [];
-    const globalRoles = groupData?.global_roles || [];
-    const globalPermissions = groupData?.global_permissions || [];
+    const globalRoles = groupData?.global_roles || roles;
+    const permissions =
+      groupData?.permissions || getPermissionsForRoles(roles);
+    const globalPermissions =
+      groupData?.global_permissions || getPermissionsForRoles(globalRoles);
 
     const titleMap = new Map();
     let availableDashboards = [];
 
-    const canAssignOrCreate =
-      permissions.includes("system.manage") ||
-      permissions.includes("group_dashboard.assign") ||
-      permissions.includes("group.create");
+    const canAssignOrCreate = hasAllowedRole(globalRoles, HIGH_ADMIN_ROLES);
 
     if (rawGroups.length > 0 || canAssignOrCreate) {
       try {
@@ -415,17 +432,15 @@ async function getManagedGroupsController(req, res) {
     });
   } catch (error) {
     console.error("[Get Managed Groups Error]", error.message);
-
-    return res.status(error.response?.status || 503).json({
-      status: "error",
-      message:
-        error.response?.data?.message ||
-        "Không thể lấy danh sách Group quản lý",
-    });
+    return sendGatewayError(
+      res,
+      error,
+      "Không thể lấy danh sách Group quản lý",
+      503,
+    );
   }
 }
 
-// Tạo Group mới
 async function createManagedGroupController(req, res) {
   try {
     const userId = req.user.profile.id;
@@ -441,15 +456,10 @@ async function createManagedGroupController(req, res) {
     return res.status(201).json(result);
   } catch (error) {
     console.error("[Create Group Error]", error.message);
-
-    return res.status(error.response?.status || 500).json({
-      status: "error",
-      message: error.response?.data?.message || "Không thể tạo Group mới",
-    });
+    return sendGatewayError(res, error, "Không thể tạo Group mới");
   }
 }
 
-// Cập nhật danh sách Dashboard cấp phát cho Group
 async function updateGroupDashboardsController(req, res) {
   try {
     const userId = req.user.profile.id;
@@ -465,17 +475,31 @@ async function updateGroupDashboardsController(req, res) {
     return res.status(200).json(result);
   } catch (error) {
     console.error("[Update Group Dashboards Error]", error.message);
-
-    return res.status(error.response?.status || 500).json({
-      status: "error",
-      message:
-        error.response?.data?.message ||
-        "Không thể cập nhật danh sách Dashboard cho Group",
-    });
+    return sendGatewayError(
+      res,
+      error,
+      "Không thể cập nhật danh sách Dashboard cho Group",
+    );
   }
 }
 
-// Lấy danh sách user có thể gán vào Group (từ bảng user_global_roles + Superset DB)
+async function deleteManagedGroupController(req, res) {
+  try {
+    const userId = req.user.profile.id;
+    const groupId = Number(req.params.groupId);
+
+    const result = await backendService.deleteManagedGroup({
+      userId,
+      groupId,
+    });
+
+    return res.status(200).json(result);
+  } catch (error) {
+    console.error("[Delete Group Error]", error.message);
+    return sendGatewayError(res, error, "Không thể xóa Group");
+  }
+}
+
 async function getAssignableUsersController(req, res) {
   try {
     const userId = req.user.profile.id;
@@ -484,16 +508,77 @@ async function getAssignableUsersController(req, res) {
     return res.status(200).json(result);
   } catch (error) {
     console.error("[Get Assignable Users Error]", error.message);
-    return res.status(error.response?.status || 500).json({
-      status: "error",
-      message:
-        error.response?.data?.message ||
-        "Không thể lấy danh sách user có thể gán",
-    });
+    return sendGatewayError(
+      res,
+      error,
+      "Không thể lấy danh sách user có thể gán",
+    );
   }
 }
 
-// Lấy thông tin chi tiết cho trang User Info (của chính user đang đăng nhập)
+async function getGroupMembersController(req, res) {
+  try {
+    const userId = req.user.profile.id;
+    const groupId = Number(req.params.groupId);
+    const result = await backendService.getGroupMembers(userId, groupId);
+    return res.status(200).json(result);
+  } catch (error) {
+    console.error("[Get Group Members Error]", error.message);
+    return sendGatewayError(
+      res,
+      error,
+      "Không thể lấy danh sách thành viên của Group",
+    );
+  }
+}
+
+async function assignGroupMemberController(req, res) {
+  try {
+    const userId = req.user.profile.id;
+    const groupId = Number(req.params.groupId);
+    const { targetUserId, roleCode, dashboardIds } = req.body || {};
+
+    const result = await backendService.assignGroupMember({
+      userId,
+      groupId,
+      targetUserId,
+      roleCode,
+      dashboardIds,
+    });
+
+    return res.status(200).json(result);
+  } catch (error) {
+    console.error("[Assign Group Member Error]", error.message);
+    return sendGatewayError(res, error, "Không thể gán thành viên vào Group");
+  }
+}
+
+async function removeGroupMemberController(req, res) {
+  try {
+    const userId = req.user.profile.id;
+    const groupId = Number(req.params.groupId);
+    const targetUserId = Number(req.params.targetUserId);
+
+    const result = await backendService.removeGroupMember({
+      userId,
+      groupId,
+      targetUserId,
+    });
+
+    return res.status(200).json(result);
+  } catch (error) {
+    console.error("[Remove Group Member Error]", error.message);
+    return sendGatewayError(
+      res,
+      error,
+      "Không thể xóa thành viên khỏi Group",
+    );
+  }
+}
+
+// -------------------------------------------------------------
+// 4. Thông tin cá nhân (User Info, Profile & Đổi mật khẩu)
+// -------------------------------------------------------------
 async function getUsersInfoController(req, res) {
   try {
     const userId = req.user.profile.id;
@@ -537,26 +622,19 @@ async function getUsersInfoController(req, res) {
       };
     });
 
-    const enrichedUser = {
-      ...rawUser,
-      dashboards,
-    };
-
     return res.status(200).json({
       status: "success",
-      user: enrichedUser,
+      user: {
+        ...rawUser,
+        dashboards,
+      },
     });
   } catch (error) {
     console.error("[Get Users Info Error]", error.message);
-    return res.status(error.response?.status || 500).json({
-      status: "error",
-      message:
-        error.response?.data?.message || "Không thể lấy thông tin User Info",
-    });
+    return sendGatewayError(res, error, "Không thể lấy thông tin User Info");
   }
 }
 
-// Cập nhật thông tin cá nhân (first_name, last_name, email) của chính user
 async function updateUserProfileController(req, res) {
   try {
     const userId = req.user.profile.id;
@@ -569,15 +647,14 @@ async function updateUserProfileController(req, res) {
     return res.status(200).json(result);
   } catch (error) {
     console.error("[Update User Profile Error]", error.message);
-    return res.status(error.response?.status || 500).json({
-      status: "error",
-      message:
-        error.response?.data?.message || "Không thể cập nhật thông tin cá nhân",
-    });
+    return sendGatewayError(
+      res,
+      error,
+      "Không thể cập nhật thông tin cá nhân",
+    );
   }
 }
 
-// Đổi mật khẩu của chính user (old_password, new_password, confirm_new_password)
 async function changeUserPasswordController(req, res) {
   try {
     const userId = req.user.profile.id;
@@ -590,105 +667,12 @@ async function changeUserPasswordController(req, res) {
     return res.status(200).json(result);
   } catch (error) {
     console.error("[Change User Password Error]", error.message);
-    return res.status(error.response?.status || 500).json({
-      status: "error",
-      message: error.response?.data?.message || "Không thể thay đổi mật khẩu",
-    });
-  }
-}
-
-// Lấy danh sách thành viên trong 1 Group
-async function getGroupMembersController(req, res) {
-  try {
-    const userId = req.user.profile.id;
-    const groupId = Number(req.params.groupId);
-    const result = await backendService.getGroupMembers(userId, groupId);
-    return res.status(200).json(result);
-  } catch (error) {
-    console.error("[Get Group Members Error]", error.message);
-    return res.status(error.response?.status || 500).json({
-      status: "error",
-      message:
-        error.response?.data?.message ||
-        "Không thể lấy danh sách thành viên của Group",
-    });
-  }
-}
-
-// Gán user làm Quản trị hoặc Thành viên của Group kèm Dashboard
-async function assignGroupMemberController(req, res) {
-  try {
-    const userId = req.user.profile.id;
-    const groupId = Number(req.params.groupId);
-    const { targetUserId, roleCode, dashboardIds } = req.body || {};
-
-    const result = await backendService.assignGroupMember({
-      userId,
-      groupId,
-      targetUserId,
-      roleCode,
-      dashboardIds,
-    });
-
-    return res.status(200).json(result);
-  } catch (error) {
-    console.error("[Assign Group Member Error]", error.message);
-    return res.status(error.response?.status || 500).json({
-      status: "error",
-      message:
-        error.response?.data?.message || "Không thể gán thành viên vào Group",
-    });
-  }
-}
-
-// Xóa thành viên khỏi Group
-async function removeGroupMemberController(req, res) {
-  try {
-    const userId = req.user.profile.id;
-    const groupId = Number(req.params.groupId);
-    const targetUserId = Number(req.params.targetUserId);
-
-    const result = await backendService.removeGroupMember({
-      userId,
-      groupId,
-      targetUserId,
-    });
-
-    return res.status(200).json(result);
-  } catch (error) {
-    console.error("[Remove Group Member Error]", error.message);
-    return res.status(error.response?.status || 500).json({
-      status: "error",
-      message:
-        error.response?.data?.message || "Không thể xóa thành viên khỏi Group",
-    });
-  }
-}
-
-// Xóa Group và toàn bộ dữ liệu liên quan
-async function deleteManagedGroupController(req, res) {
-  try {
-    const userId = req.user.profile.id;
-    const groupId = Number(req.params.groupId);
-
-    const result = await backendService.deleteManagedGroup({
-      userId,
-      groupId,
-    });
-
-    return res.status(200).json(result);
-  } catch (error) {
-    console.error("[Delete Group Error]", error.message);
-
-    return res.status(error.response?.status || 500).json({
-      status: "error",
-      message: error.response?.data?.message || "Không thể xóa Group",
-    });
+    return sendGatewayError(res, error, "Không thể thay đổi mật khẩu");
   }
 }
 
 // -------------------------------------------------------------
-// Users Management Controllers
+// 5. Quản lý Users (Dành cho 3 Admin: admin_ami, super_admin, group_admin)
 // -------------------------------------------------------------
 async function getManagedUsersController(req, res) {
   try {
@@ -697,12 +681,7 @@ async function getManagedUsersController(req, res) {
     return res.status(200).json(result);
   } catch (error) {
     console.error("[Get Managed Users Error]", error.message);
-    return res.status(error.response?.status || 500).json({
-      status: "error",
-      message:
-        error.response?.data?.message || "Không thể lấy danh sách người dùng",
-      fieldErrors: error.response?.data?.fieldErrors,
-    });
+    return sendGatewayError(res, error, "Không thể lấy danh sách người dùng");
   }
 }
 
@@ -713,10 +692,7 @@ async function getRoleOptionsController(req, res) {
     return res.status(200).json(result);
   } catch (error) {
     console.error("[Get Role Options Error]", error.message);
-    return res.status(error.response?.status || 500).json({
-      status: "error",
-      message: error.response?.data?.message || "Không thể lấy danh sách role",
-    });
+    return sendGatewayError(res, error, "Không thể lấy danh sách role");
   }
 }
 
@@ -731,11 +707,7 @@ async function getManagedUserDetailController(req, res) {
     return res.status(200).json(result);
   } catch (error) {
     console.error("[Get Managed User Detail Error]", error.message);
-    return res.status(error.response?.status || 500).json({
-      status: "error",
-      message:
-        error.response?.data?.message || "Không thể lấy chi tiết người dùng",
-    });
+    return sendGatewayError(res, error, "Không thể lấy chi tiết người dùng");
   }
 }
 
@@ -749,11 +721,7 @@ async function createManagedUserController(req, res) {
     return res.status(201).json(result);
   } catch (error) {
     console.error("[Create Managed User Error]", error.message);
-    return res.status(error.response?.status || 500).json({
-      status: "error",
-      message: error.response?.data?.message || "Không thể tạo người dùng mới",
-      fieldErrors: error.response?.data?.fieldErrors,
-    });
+    return sendGatewayError(res, error, "Không thể tạo người dùng mới");
   }
 }
 
@@ -770,11 +738,7 @@ async function updateManagedUserController(req, res) {
     return res.status(200).json(result);
   } catch (error) {
     console.error("[Update Managed User Error]", error.message);
-    return res.status(error.response?.status || 500).json({
-      status: "error",
-      message: error.response?.data?.message || "Không thể cập nhật người dùng",
-      fieldErrors: error.response?.data?.fieldErrors,
-    });
+    return sendGatewayError(res, error, "Không thể cập nhật người dùng");
   }
 }
 
@@ -790,10 +754,7 @@ async function deleteManagedUserController(req, res) {
     return res.status(200).json(result);
   } catch (error) {
     console.error("[Delete Managed User Error]", error.message);
-    return res.status(error.response?.status || 500).json({
-      status: "error",
-      message: error.response?.data?.message || "Không thể xóa người dùng",
-    });
+    return sendGatewayError(res, error, "Không thể xóa người dùng");
   }
 }
 

@@ -1,294 +1,146 @@
 const axios = require("axios");
 
-const BACKEND_URL = process.env.BACKEND_URL;
+const roleClient = axios.create({
+  baseURL: `${process.env.BACKEND_URL}/internal/auth/role`,
+  timeout: 15000,
+  headers: {
+    "x-internal-api-key": process.env.API_GATEWAY_INTERNAL_KEY,
+  },
+});
 
+// -------------------------------------------------------------
+// 1. Phân quyền & Dashboard
+// -------------------------------------------------------------
 async function getUserPermissions(userId) {
-  const response = await axios.get(
-    `${BACKEND_URL}/internal/auth/role/check-roles`,
-    {
-      params: {
-        userId: userId,
-      },
-      headers: {
-        "x-internal-api-key": process.env.API_GATEWAY_INTERNAL_KEY,
-      },
-      timeout: 50000,
-    },
-  );
-
-  return response.data;
+  const { data } = await roleClient.get("/check-roles", {
+    params: { userId },
+  });
+  return data;
 }
 
 async function getUserDashboards(userId) {
-  const response = await axios.get(
-    `${BACKEND_URL}/internal/auth/role/dashboards`,
-    {
-      params: {
-        userId: userId,
-      },
-      headers: {
-        "x-internal-api-key": process.env.API_GATEWAY_INTERNAL_KEY,
-      },
-      timeout: 50000,
-    },
-  );
-
-  return response.data;
+  const { data } = await roleClient.get("/dashboards", {
+    params: { userId },
+  });
+  return data;
 }
 
+// -------------------------------------------------------------
+// 2. Quản lý Group & Thành viên trong Group
+// -------------------------------------------------------------
 async function getManagedGroups(userId) {
-  const response = await axios.get(`${BACKEND_URL}/internal/auth/role/groups`, {
-    params: {
-      userId,
-    },
-    headers: {
-      "x-internal-api-key": process.env.API_GATEWAY_INTERNAL_KEY,
-    },
-    timeout: 50000,
+  const { data } = await roleClient.get("/groups", {
+    params: { userId },
   });
-
-  return response.data;
+  return data;
 }
 
 async function createManagedGroup(payload) {
-  const response = await axios.post(
-    `${BACKEND_URL}/internal/auth/role/groups`,
-    payload,
-    {
-      headers: {
-        "x-internal-api-key": process.env.API_GATEWAY_INTERNAL_KEY,
-      },
-      timeout: 50000,
-    },
-  );
-
-  return response.data;
+  const { data } = await roleClient.post("/groups", payload);
+  return data;
 }
 
 async function updateGroupDashboards(payload) {
-  const response = await axios.put(
-    `${BACKEND_URL}/internal/auth/role/groups/dashboards`,
-    payload,
-    {
-      headers: {
-        "x-internal-api-key": process.env.API_GATEWAY_INTERNAL_KEY,
-      },
-      timeout: 50000,
-    },
-  );
-
-  return response.data;
-}
-
-async function getAssignableUsers(userId, groupId = null) {
-  const response = await axios.get(
-    `${BACKEND_URL}/internal/auth/role/users/assignable`,
-    {
-      params: { userId, ...(groupId ? { groupId } : {}) },
-      headers: {
-        "x-internal-api-key": process.env.API_GATEWAY_INTERNAL_KEY,
-      },
-      timeout: 8000,
-    },
-  );
-
-  return response.data;
-}
-
-async function getUsersInfo(userId) {
-  const response = await axios.get(
-    `${BACKEND_URL}/internal/auth/role/users/info`,
-    {
-      params: { userId },
-      headers: {
-        "x-internal-api-key": process.env.API_GATEWAY_INTERNAL_KEY,
-      },
-      timeout: 10000,
-    },
-  );
-
-  return response.data;
-}
-
-async function getGroupMembers(userId, groupId) {
-  const response = await axios.get(
-    `${BACKEND_URL}/internal/auth/role/groups/members`,
-    {
-      params: { userId, groupId },
-      headers: {
-        "x-internal-api-key": process.env.API_GATEWAY_INTERNAL_KEY,
-      },
-      timeout: 8000,
-    },
-  );
-
-  return response.data;
-}
-
-async function assignGroupMember(payload) {
-  const response = await axios.post(
-    `${BACKEND_URL}/internal/auth/role/groups/members`,
-    payload,
-    {
-      headers: {
-        "x-internal-api-key": process.env.API_GATEWAY_INTERNAL_KEY,
-      },
-      timeout: 8000,
-    },
-  );
-
-  return response.data;
-}
-
-async function removeGroupMember(payload) {
-  const response = await axios.delete(
-    `${BACKEND_URL}/internal/auth/role/groups/members`,
-    {
-      data: payload,
-      headers: {
-        "x-internal-api-key": process.env.API_GATEWAY_INTERNAL_KEY,
-      },
-      timeout: 8000,
-    },
-  );
-
-  return response.data;
+  const { data } = await roleClient.put("/groups/dashboards", payload);
+  return data;
 }
 
 async function deleteManagedGroup(payload) {
-  const response = await axios.delete(
-    `${BACKEND_URL}/internal/auth/role/groups`,
-    {
-      data: payload,
-      headers: {
-        "x-internal-api-key": process.env.API_GATEWAY_INTERNAL_KEY,
-      },
-      timeout: 8000,
-    },
-  );
+  const { data } = await roleClient.delete("/groups", { data: payload });
+  return data;
+}
 
-  return response.data;
+async function getAssignableUsers(userId, groupId = null) {
+  const { data } = await roleClient.get("/users/assignable", {
+    params: { userId, ...(groupId ? { groupId } : {}) },
+  });
+  return data;
+}
+
+async function getGroupMembers(userId, groupId) {
+  const { data } = await roleClient.get("/groups/members", {
+    params: { userId, groupId },
+  });
+  return data;
+}
+
+async function assignGroupMember(payload) {
+  const { data } = await roleClient.post("/groups/members", payload);
+  return data;
+}
+
+async function removeGroupMember(payload) {
+  const { data } = await roleClient.delete("/groups/members", {
+    data: payload,
+  });
+  return data;
 }
 
 // -------------------------------------------------------------
-// Users Management APIs (Dành cho 3 Admin)
+// 3. Thông tin cá nhân (User Info, Profile & Đổi mật khẩu)
+// -------------------------------------------------------------
+async function getUsersInfo(userId) {
+  const { data } = await roleClient.get("/users/info", {
+    params: { userId },
+  });
+  return data;
+}
+
+async function updateUserProfile(userId, payload) {
+  const { data } = await roleClient.put("/users/profile", {
+    userId,
+    ...payload,
+  });
+  return data;
+}
+
+async function changeUserPassword(userId, payload) {
+  const { data } = await roleClient.put("/users/change-password", {
+    userId,
+    ...payload,
+  });
+  return data;
+}
+
+// -------------------------------------------------------------
+// 4. Quản lý Users (Dành cho 3 Admin: admin_ami, super_admin, group_admin)
 // -------------------------------------------------------------
 async function getManagedUsers(userId) {
-  const response = await axios.get(
-    `${BACKEND_URL}/internal/auth/role/manage/users`,
-    {
-      params: { userId },
-      headers: {
-        "x-internal-api-key": process.env.API_GATEWAY_INTERNAL_KEY,
-      },
-      timeout: 10000,
-    },
-  );
-  return response.data;
+  const { data } = await roleClient.get("/manage/users", {
+    params: { userId },
+  });
+  return data;
 }
 
 async function getRoleOptions(userId) {
-  const response = await axios.get(
-    `${BACKEND_URL}/internal/auth/role/manage/roles`,
-    {
-      params: { userId },
-      headers: {
-        "x-internal-api-key": process.env.API_GATEWAY_INTERNAL_KEY,
-      },
-      timeout: 8000,
-    },
-  );
-  return response.data;
+  const { data } = await roleClient.get("/manage/roles", {
+    params: { userId },
+  });
+  return data;
 }
 
 async function getManagedUserDetail(userId, targetUserId) {
-  const response = await axios.get(
-    `${BACKEND_URL}/internal/auth/role/manage/users/detail`,
-    {
-      params: { userId, targetUserId },
-      headers: {
-        "x-internal-api-key": process.env.API_GATEWAY_INTERNAL_KEY,
-      },
-      timeout: 10000,
-    },
-  );
-  return response.data;
+  const { data } = await roleClient.get("/manage/users/detail", {
+    params: { userId, targetUserId },
+  });
+  return data;
 }
 
 async function createManagedUser(payload) {
-  const response = await axios.post(
-    `${BACKEND_URL}/internal/auth/role/manage/users`,
-    payload,
-    {
-      headers: {
-        "x-internal-api-key": process.env.API_GATEWAY_INTERNAL_KEY,
-      },
-      timeout: 12000,
-    },
-  );
-  return response.data;
+  const { data } = await roleClient.post("/manage/users", payload);
+  return data;
 }
 
 async function updateManagedUser(payload) {
-  const response = await axios.put(
-    `${BACKEND_URL}/internal/auth/role/manage/users`,
-    payload,
-    {
-      headers: {
-        "x-internal-api-key": process.env.API_GATEWAY_INTERNAL_KEY,
-      },
-      timeout: 12000,
-    },
-  );
-  return response.data;
+  const { data } = await roleClient.put("/manage/users", payload);
+  return data;
 }
 
 async function deleteManagedUser(payload) {
-  const response = await axios.delete(
-    `${BACKEND_URL}/internal/auth/role/manage/users`,
-    {
-      data: payload,
-      headers: {
-        "x-internal-api-key": process.env.API_GATEWAY_INTERNAL_KEY,
-      },
-      timeout: 12000,
-    },
-  );
-  return response.data;
-}
-
-async function updateUserProfile(userId, data) {
-  const response = await axios.put(
-    `${BACKEND_URL}/internal/auth/role/users/profile`,
-    {
-      userId,
-      ...data,
-    },
-    {
-      headers: {
-        "x-internal-api-key": process.env.API_GATEWAY_INTERNAL_KEY,
-      },
-      timeout: 10000,
-    },
-  );
-  return response.data;
-}
-
-async function changeUserPassword(userId, data) {
-  const response = await axios.put(
-    `${BACKEND_URL}/internal/auth/role/users/change-password`,
-    {
-      userId,
-      ...data,
-    },
-    {
-      headers: {
-        "x-internal-api-key": process.env.API_GATEWAY_INTERNAL_KEY,
-      },
-      timeout: 10000,
-    },
-  );
-  return response.data;
+  const { data } = await roleClient.delete("/manage/users", {
+    data: payload,
+  });
+  return data;
 }
 
 module.exports = {

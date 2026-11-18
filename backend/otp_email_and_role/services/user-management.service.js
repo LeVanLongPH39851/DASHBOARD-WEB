@@ -8,116 +8,33 @@
  *  - Custom Role DB:
  *      + user_global_roles (lưu role_id người dùng chọn trên UI, assigned_by = người tạo)
  *
- * Phân quyền:
+ * Phân quyền theo role_code:
  *  - Chỉ 3 admin (admin_ami, super_admin, group_admin) mới được truy cập.
- *  - Admin system (admin_ami hoặc có quyền system.manage): quản lý toàn bộ User.
- *  - Admin thường: chỉ quản lý User do chính mình tạo (user_global_roles.assigned_by = actorUserId).
- *  - Khi gán role: chỉ được chọn role có cấp bậc thấp hơn role của mình (admin system chọn được hết).
+ *  - Admin system (admin_ami): quản lý toàn bộ User (trừ các admin_ami khác và chính mình).
+ *  - Admin thường (super_admin, group_admin): chỉ quản lý User do chính mình tạo có cấp bậc thấp hơn.
  */
-const crypto = require("crypto");
-const { rolePool, supersetPool } = require("./user.service");
+
+const {
+  rolePool,
+  supersetPool,
+  acquireClientWithRetry,
+  rollbackQuietly,
+} = require("../config/db");
+const {
+  ROLES,
+  ADMIN_ROLE_CODES,
+  getRoleRank,
+  isSystemRole,
+  hasAnyRole,
+  createHttpError,
+} = require("../config/roles.config");
+const { hashPassword } = require("../utils/password.util");
 
 // role_id cố định trong bảng ab_role của Superset cho mọi user tạo từ hệ thống
 const SUPERSET_FIXED_ROLE_ID = 6;
 
-// Tham số scrypt tương thích Werkzeug (Python generate_password_hash)
-const SCRYPT_N = 32768;
-const SCRYPT_R = 8;
-const SCRYPT_P = 1;
-const SCRYPT_KEYLEN = 64;
-const SALT_CHARS =
-  "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-
-const ROLE_RANK = {
-  group_member: 1,
-  group_admin: 2,
-  super_admin: 3,
-  admin_ami: 4,
-};
-const ADMIN_ROLE_CODES = ["admin_ami", "super_admin", "group_admin"];
-
 const USERNAME_REGEX = /^[A-Za-z0-9._@-]{3,64}$/;
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-
-function getRoleRank(roleCode) {
-  return ROLE_RANK[String(roleCode || "").toLowerCase()] || 1;
-}
-
-function httpError(status, message, fieldErrors) {
-  const err = new Error(message);
-  err.status = status;
-  if (fieldErrors) err.fieldErrors = fieldErrors;
-  return err;
-}
-
-// Kết nối pool có retry và thông báo lỗi rõ ràng khi timeout
-async function acquireClientWithRetry(pool, name = "database", maxRetries = 2) {
-  let lastError = null;
-  for (let attempt = 1; attempt <= maxRetries; attempt += 1) {
-    try {
-      return await pool.connect();
-    } catch (err) {
-      lastError = err;
-      console.warn(
-        `[User Management] Kết nối ${name} thất bại (lần thử ${attempt}/${maxRetries}):`,
-        err.message,
-      );
-      if (attempt < maxRetries) {
-        await new Promise((resolve) => setTimeout(resolve, 800));
-      }
-    }
-  }
-  const isTimeout =
-    lastError?.message?.includes("timeout") ||
-    lastError?.cause?.message?.includes("timeout") ||
-    lastError?.code === "ETIMEDOUT";
-  if (isTimeout) {
-    throw httpError(
-      504,
-      `Không thể kết nối đến cơ sở dữ liệu ${name} do quá thời gian chờ (timeout). Vui lòng thử lại.`,
-    );
-  }
-  throw lastError;
-}
-
-// ------------------------------------------------------------------
-// Mã hóa mật khẩu chuẩn Werkzeug scrypt:32768:8:1$<salt>$<hex_hash>
-// ------------------------------------------------------------------
-function generateSalt(length = 16) {
-  const bytes = crypto.randomBytes(length);
-  let salt = "";
-  for (let i = 0; i < length; i += 1) {
-    salt += SALT_CHARS[bytes[i] % SALT_CHARS.length];
-  }
-  return salt;
-}
-
-function hashPassword(password) {
-  const salt = generateSalt(16);
-  return new Promise((resolve, reject) => {
-    crypto.scrypt(
-      password,
-      salt,
-      SCRYPT_KEYLEN,
-      {
-        N: SCRYPT_N,
-        r: SCRYPT_R,
-        p: SCRYPT_P,
-        maxmem: 132 * SCRYPT_N * SCRYPT_R * SCRYPT_P,
-      },
-      (err, derivedKey) => {
-        if (err) return reject(err);
-        return resolve(
-          `scrypt:${SCRYPT_N}:${SCRYPT_R}:${SCRYPT_P}$${salt}$${derivedKey.toString("hex")}`,
-        );
-      },
-    );
-  });
-}
-
-// ------------------------------------------------------------------
-// Helpers DB
-// ------------------------------------------------------------------
 
 // Lấy id tiếp theo cho bảng Superset (ưu tiên sequence, fallback MAX(id)+1)
 async function nextSupersetId(client, tableName) {
@@ -144,18 +61,11 @@ async function nextSupersetId(client, tableName) {
   return Number(res.rows[0].id);
 }
 
-// Thông tin quyền và cấp bậc của người đang thao tác
+// Thông tin vai trò và cấp bậc của người đang thao tác dựa theo role_code
 async function getActorContext(actorUserId) {
   const { rows } = await rolePool.query(
     `
-      SELECT
-        r.role_code,
-        EXISTS (
-          SELECT 1
-          FROM role_permissions rp
-          JOIN permissions p ON p.id = rp.permission_id
-          WHERE rp.role_id = r.id AND p.permission_code = 'system.manage'
-        ) AS is_system_role
+      SELECT r.role_code
       FROM user_global_roles ugr
       JOIN roles r ON r.id = ugr.role_id
       WHERE ugr.superset_user_id = $1
@@ -164,28 +74,25 @@ async function getActorContext(actorUserId) {
   );
 
   const roleCodes = rows.map((r) => String(r.role_code || "").toLowerCase());
-  const isSystem = rows.some(
-    (r) => Boolean(r.is_system_role) || r.role_code === "admin_ami",
-  );
+  const isSystem = roleCodes.some(isSystemRole);
   const maxRank = roleCodes.length
-    ? Math.max(...roleCodes.map((c) => getRoleRank(c)))
+    ? Math.max(...roleCodes.map(getRoleRank))
     : 0;
-  const isAdmin =
-    isSystem || roleCodes.some((c) => ADMIN_ROLE_CODES.includes(c));
+  const isAdmin = isSystem || hasAnyRole(roleCodes, ADMIN_ROLE_CODES);
 
   return { actorUserId, isSystem, maxRank, isAdmin, roleCodes };
 }
 
 function ensureAdmin(actor) {
   if (!actor.isAdmin) {
-    throw httpError(
+    throw createHttpError(
       403,
       "Chỉ admin_ami, super_admin hoặc group_admin mới được quyền truy cập quản lý User",
     );
   }
 }
 
-// Danh sách role mà actor được phép gán (chỉ role có rank < actor.maxRank, trừ system admin)
+// Danh sách role mà actor được phép gán (chỉ role có rank < actor.maxRank, hoặc toàn bộ nếu là admin_ami)
 async function getAssignableRolesForActor(actor) {
   const { rows } = await rolePool.query(
     `SELECT id, role_code, role_name, scope, description FROM roles ORDER BY id ASC`,
@@ -203,22 +110,22 @@ async function getAssignableRolesForActor(actor) {
     .sort((a, b) => b.rank - a.rank);
 }
 
-// Lấy global roles của danh sách user từ Custom Role DB
+// Lấy global roles của danh sách user từ Custom Role DB dựa theo role_code
 async function getGlobalRolesMap(userIds) {
   const map = new Map();
   if (!userIds || userIds.length === 0) return map;
 
   const { rows } = await rolePool.query(
     `
-      SELECT ugr.superset_user_id, ugr.assigned_by, ugr.assigned_at,
-             ugr.require_otp, ugr.can_change_password,
-             r.id AS role_id, r.role_code, r.role_name,
-             EXISTS (
-               SELECT 1
-               FROM role_permissions rp
-               JOIN permissions p ON p.id = rp.permission_id
-               WHERE rp.role_id = r.id AND p.permission_code = 'system.manage'
-             ) AS is_system_role
+      SELECT
+        ugr.superset_user_id,
+        ugr.assigned_by,
+        ugr.assigned_at,
+        ugr.require_otp,
+        ugr.can_change_password,
+        r.id AS role_id,
+        r.role_code,
+        r.role_name
       FROM user_global_roles ugr
       JOIN roles r ON r.id = ugr.role_id
       WHERE ugr.superset_user_id = ANY($1::bigint[])
@@ -244,7 +151,7 @@ async function getGlobalRolesMap(userIds) {
       role_code: r.role_code,
       role_name: r.role_name,
       rank: getRoleRank(r.role_code),
-      is_system_role: Boolean(r.is_system_role),
+      is_system_role: isSystemRole(r.role_code),
     });
     if (r.assigned_by && !entry.assigned_by) {
       entry.assigned_by = Number(r.assigned_by);
@@ -261,10 +168,10 @@ async function getGlobalRolesMap(userIds) {
   return map;
 }
 
-// Kiểm tra quyền quản lý đối tượng targetUserId (chỉ quản lý những user có trong user_global_roles)
+// Kiểm tra quyền quản lý đối tượng targetUserId
 async function assertCanManageTarget(actor, targetUserId) {
   if (Number(targetUserId) === Number(actor.actorUserId)) {
-    throw httpError(
+    throw createHttpError(
       400,
       "Không thể tự sửa hoặc xóa tài khoản của chính mình tại trang quản lý này",
     );
@@ -274,26 +181,18 @@ async function assertCanManageTarget(actor, targetUserId) {
   const entry = roleMap.get(Number(targetUserId)) || null;
 
   if (!entry || !entry.roles || entry.roles.length === 0) {
-    throw httpError(
+    throw createHttpError(
       404,
       "Chỉ được quản lý những người dùng có trong bảng user_global_roles",
     );
   }
 
-  const targetIsAdminAmi = entry.roles.some(
-    (r) =>
-      r.role_code === "admin_ami" ||
-      r.rank >= 4 ||
-      Boolean(r.is_system_role),
-  );
+  const targetIsAdminAmi = entry.roles.some((r) => isSystemRole(r.role_code));
   const actorIsAdminAmi =
-    actor.isSystem ||
-    actor.maxRank >= 4 ||
-    actor.roleCodes?.includes("admin_ami");
+    actor.isSystem || actor.roleCodes.includes(ROLES.ADMIN_AMI);
 
-  // Ràng buộc nghiệp vụ: Các Admin AMI không thể quản trị (chỉnh sửa hoặc xóa) lẫn nhau
   if (actorIsAdminAmi && targetIsAdminAmi) {
-    throw httpError(
+    throw createHttpError(
       403,
       "Các Admin AMI không thể quản trị (chỉnh sửa hoặc xóa) lẫn nhau",
     );
@@ -302,7 +201,7 @@ async function assertCanManageTarget(actor, targetUserId) {
   if (actor.isSystem) return entry;
 
   if (Number(entry.assigned_by) !== Number(actor.actorUserId)) {
-    throw httpError(
+    throw createHttpError(
       403,
       "Bạn chỉ được quyền quản lý các User do chính bạn tạo ra",
     );
@@ -310,7 +209,7 @@ async function assertCanManageTarget(actor, targetUserId) {
 
   const targetMaxRank = Math.max(...entry.roles.map((r) => r.rank), 0);
   if (targetMaxRank >= actor.maxRank) {
-    throw httpError(
+    throw createHttpError(
       403,
       "Không thể quản lý User có cấp bậc bằng hoặc cao hơn bạn",
     );
@@ -354,24 +253,13 @@ function mapSupersetRow(row, roleEntry, creatorMap, actor, includeAll = false) {
   const topRole = roles.slice().sort((a, b) => b.rank - a.rank)[0] || null;
   const assignedBy = roleEntry?.assigned_by ?? null;
   const targetMaxRank = topRole ? topRole.rank : 0;
-  const isTargetAdminAmi =
-    targetMaxRank >= 4 ||
-    roles.some(
-      (r) =>
-        r.role_code === "admin_ami" ||
-        r.rank >= 4 ||
-        Boolean(r.is_system_role),
-    );
+  const isTargetAdminAmi = roles.some((r) => isSystemRole(r.role_code));
   const isActorAdminAmi =
-    actor.isSystem ||
-    actor.maxRank >= 4 ||
-    actor.roleCodes?.includes("admin_ami");
+    actor.isSystem || actor.roleCodes.includes(ROLES.ADMIN_AMI);
 
   const isSelf = Number(row.id) === Number(actor.actorUserId);
   const isBothAdminAmi = isActorAdminAmi && isTargetAdminAmi;
 
-  // Các Admin AMI không thể quản trị được nhau (sửa, xóa)
-  // Và không thể quản trị chính mình trên trang quản lý này
   const canManage =
     !isSelf &&
     !isBothAdminAmi &&
@@ -411,7 +299,8 @@ function mapSupersetRow(row, roleEntry, creatorMap, actor, includeAll = false) {
     roles,
     created_on: row.created_on,
     assigned_by: assignedBy,
-    assigned_by_username: creatorObj?.username || (assignedBy ? `#${assignedBy}` : null),
+    assigned_by_username:
+      creatorObj?.username || (assignedBy ? `#${assignedBy}` : null),
     created_by_name: creatorObj?.full_name || creatorObj?.username || null,
     can_manage: canManage,
     cannot_manage_reason: cannotManageReason,
@@ -442,38 +331,29 @@ function mapSupersetRow(row, roleEntry, creatorMap, actor, includeAll = false) {
     created_by_fk: row.created_by_fk ? Number(row.created_by_fk) : null,
     changed_by_fk: row.changed_by_fk ? Number(row.changed_by_fk) : null,
     created_by_username:
-      createdByObj?.username || (row.created_by_fk ? `#${row.created_by_fk}` : null),
+      createdByObj?.username ||
+      (row.created_by_fk ? `#${row.created_by_fk}` : null),
     changed_by_username:
-      changedByObj?.username || (row.changed_by_fk ? `#${row.changed_by_fk}` : null),
+      changedByObj?.username ||
+      (row.changed_by_fk ? `#${row.changed_by_fk}` : null),
     assigned_at: roleEntry?.assigned_at || null,
   };
 }
 
-// ------------------------------------------------------------------
-// Validate dữ liệu Form
-// ------------------------------------------------------------------
+function normalizeBoolean(value, defaultValue = true) {
+  if (value === undefined || value === null) return defaultValue;
+  return value === true || value === "true" || value === 1;
+}
+
 function normalizePayload(raw = {}) {
   return {
     first_name: String(raw.first_name ?? raw.firstName ?? "").trim(),
     last_name: String(raw.last_name ?? raw.lastName ?? "").trim(),
     username: String(raw.username ?? raw.user_name ?? "").trim(),
     email: String(raw.email ?? "").trim().toLowerCase(),
-    active:
-      raw.active === undefined || raw.active === null
-        ? true
-        : raw.active === true || raw.active === "true" || raw.active === 1,
-    require_otp:
-      raw.require_otp === undefined || raw.require_otp === null
-        ? true
-        : raw.require_otp === true ||
-          raw.require_otp === "true" ||
-          raw.require_otp === 1,
-    can_change_password:
-      raw.can_change_password === undefined || raw.can_change_password === null
-        ? true
-        : raw.can_change_password === true ||
-          raw.can_change_password === "true" ||
-          raw.can_change_password === 1,
+    active: normalizeBoolean(raw.active, true),
+    require_otp: normalizeBoolean(raw.require_otp, true),
+    can_change_password: normalizeBoolean(raw.can_change_password, true),
     role_id: Number(raw.role_id ?? raw.roleId),
     password: raw.password === undefined ? undefined : String(raw.password),
     confirm_password:
@@ -501,7 +381,8 @@ function validatePayload(data, { requirePassword }) {
 
   if (!data.email) errors.email = "Email không được để trống";
   else if (data.email.length > 320) errors.email = "Email tối đa 320 ký tự";
-  else if (!EMAIL_REGEX.test(data.email)) errors.email = "Email không đúng định dạng";
+  else if (!EMAIL_REGEX.test(data.email))
+    errors.email = "Email không đúng định dạng";
 
   if (!Number.isSafeInteger(data.role_id) || data.role_id <= 0)
     errors.role_id = "Vui lòng chọn Role cho User";
@@ -522,7 +403,7 @@ function validatePayload(data, { requirePassword }) {
   }
 
   if (Object.keys(errors).length > 0) {
-    throw httpError(400, "Dữ liệu nhập không hợp lệ", errors);
+    throw createHttpError(400, "Dữ liệu nhập không hợp lệ", errors);
   }
 }
 
@@ -530,7 +411,7 @@ async function assertRoleAllowed(actor, roleId) {
   const allowed = await getAssignableRolesForActor(actor);
   const role = allowed.find((r) => r.id === Number(roleId));
   if (!role) {
-    throw httpError(
+    throw createHttpError(
       400,
       "Role không hợp lệ hoặc bạn không có quyền gán Role này",
       {
@@ -542,7 +423,11 @@ async function assertRoleAllowed(actor, roleId) {
 }
 
 // Kiểm tra trùng email và username trong database Superset
-async function assertUniqueInSuperset(client, { email, username }, excludeId = null) {
+async function assertUniqueInSuperset(
+  client,
+  { email, username },
+  excludeId = null,
+) {
   const { rows } = await client.query(
     `
       SELECT id, LOWER(email) AS email, LOWER(username) AS username
@@ -562,15 +447,7 @@ async function assertUniqueInSuperset(client, { email, username }, excludeId = n
   });
 
   if (Object.keys(errors).length > 0) {
-    throw httpError(409, "Thông tin bị trùng trong hệ thống", errors);
-  }
-}
-
-async function rollbackQuietly(client) {
-  try {
-    await client.query("ROLLBACK");
-  } catch (_) {
-    /* ignore */
+    throw createHttpError(409, "Thông tin bị trùng trong hệ thống", errors);
   }
 }
 
@@ -578,7 +455,6 @@ async function rollbackQuietly(client) {
 // Main Service Functions
 // ------------------------------------------------------------------
 
-// Lấy danh sách Role mà user hiện tại được phép gán
 async function getRoleOptions(actorUserId) {
   const actor = await getActorContext(actorUserId);
   ensureAdmin(actor);
@@ -586,35 +462,20 @@ async function getRoleOptions(actorUserId) {
   return { roles, is_system: actor.isSystem };
 }
 
-// Lấy danh sách User (chỉ thông tin cơ bản của những user có trong user_global_roles)
 async function listManagedUsers(actorUserId) {
   const actor = await getActorContext(actorUserId);
   ensureAdmin(actor);
 
-  let targetUserIds = [];
-  if (actor.isSystem) {
-    // Admin system: tất cả user có trong user_global_roles (trừ chính mình)
-    const { rows } = await rolePool.query(
-      `
-        SELECT DISTINCT superset_user_id
-        FROM user_global_roles
-        WHERE superset_user_id <> $1
-      `,
-      [actor.actorUserId],
-    );
-    targetUserIds = rows.map((r) => Number(r.superset_user_id)).filter(Boolean);
-  } else {
-    // Admin thường: chỉ các user do chính mình tạo có trong user_global_roles
-    const { rows: ownRows } = await rolePool.query(
-      `
-        SELECT DISTINCT superset_user_id
-        FROM user_global_roles
-        WHERE assigned_by = $1 AND superset_user_id <> $1
-      `,
-      [actor.actorUserId],
-    );
-    targetUserIds = ownRows.map((r) => Number(r.superset_user_id)).filter(Boolean);
-  }
+  const queryText = actor.isSystem
+    ? `SELECT DISTINCT superset_user_id FROM user_global_roles WHERE superset_user_id <> $1`
+    : `SELECT DISTINCT superset_user_id FROM user_global_roles WHERE assigned_by = $1 AND superset_user_id <> $1`;
+
+  const { rows: roleTargetRows } = await rolePool.query(queryText, [
+    actor.actorUserId,
+  ]);
+  const targetUserIds = roleTargetRows
+    .map((r) => Number(r.superset_user_id))
+    .filter(Boolean);
 
   let supersetRows = [];
   if (targetUserIds.length > 0) {
@@ -646,14 +507,11 @@ async function listManagedUsers(actorUserId) {
     is_system: actor.isSystem,
     actor_id: actor.actorUserId,
     is_admin_ami:
-      actor.isSystem ||
-      actor.maxRank >= 4 ||
-      actor.roleCodes?.includes("admin_ami"),
+      actor.isSystem || actor.roleCodes.includes(ROLES.ADMIN_AMI),
     total: users.length,
   };
 }
 
-// Lấy chi tiết toàn bộ metadata của 1 user (chỉ những user có trong user_global_roles)
 async function getManagedUserDetail(actorUserId, targetUserId) {
   const actor = await getActorContext(actorUserId);
   ensureAdmin(actor);
@@ -663,17 +521,20 @@ async function getManagedUserDetail(actorUserId, targetUserId) {
   const entry = roleMap.get(tid);
 
   if (!entry || !entry.roles || entry.roles.length === 0) {
-    throw httpError(
+    throw createHttpError(
       404,
       "Chỉ được xem thông tin những người dùng có trong bảng user_global_roles",
     );
   }
 
   const isSelf = Number(tid) === Number(actor.actorUserId);
-  const isCreator = Number(entry?.assigned_by) === Number(actor.actorUserId);
+  const isCreator = Number(entry.assigned_by) === Number(actor.actorUserId);
 
   if (!actor.isSystem && !isSelf && !isCreator) {
-    throw httpError(403, "Bạn chỉ được xem các User do chính bạn tạo ra");
+    throw createHttpError(
+      403,
+      "Bạn chỉ được xem các User do chính bạn tạo ra",
+    );
   }
 
   const { rows } = await supersetPool.query(
@@ -686,7 +547,7 @@ async function getManagedUserDetail(actorUserId, targetUserId) {
     `,
     [tid],
   );
-  if (!rows[0]) throw httpError(404, "Không tìm thấy User trong Superset");
+  if (!rows[0]) throw createHttpError(404, "Không tìm thấy User trong Superset");
 
   const { rows: groupRows } = await rolePool.query(
     `
@@ -701,7 +562,7 @@ async function getManagedUserDetail(actorUserId, targetUserId) {
   );
 
   const creatorMap = await getUsernameMap([
-    entry?.assigned_by,
+    entry.assigned_by,
     rows[0].created_by_fk,
     rows[0].changed_by_fk,
   ]);
@@ -717,7 +578,6 @@ async function getManagedUserDetail(actorUserId, targetUserId) {
   };
 }
 
-// Thêm User mới (lưu đồng bộ ab_user + ab_user_role ở Superset, user_global_roles ở Backend)
 async function createManagedUser(actorUserId, rawPayload) {
   const actor = await getActorContext(actorUserId);
   ensureAdmin(actor);
@@ -728,7 +588,10 @@ async function createManagedUser(actorUserId, rawPayload) {
 
   const hashed = await hashPassword(data.password);
 
-  const ssClient = await acquireClientWithRetry(supersetPool, "Superset Metadata DB");
+  const ssClient = await acquireClientWithRetry(
+    supersetPool,
+    "Superset Metadata DB",
+  );
   const rcClient = await acquireClientWithRetry(rolePool, "Backend Role DB");
   let supersetCommitted = false;
   let newUserId = null;
@@ -784,7 +647,6 @@ async function createManagedUser(actorUserId, rawPayload) {
       ],
     );
 
-    // Commit Superset DB trước, nếu Role DB lỗi thì rollback / bù trừ
     await ssClient.query("COMMIT");
     supersetCommitted = true;
     await rcClient.query("COMMIT");
@@ -793,7 +655,6 @@ async function createManagedUser(actorUserId, rawPayload) {
     if (!supersetCommitted) {
       await rollbackQuietly(ssClient);
     } else if (newUserId) {
-      // Bù trừ: xóa user vừa thêm trong Superset nếu lưu Backend bị lỗi
       try {
         await ssClient.query(
           `DELETE FROM public.ab_user_role WHERE user_id = $1`,
@@ -807,7 +668,10 @@ async function createManagedUser(actorUserId, rawPayload) {
       }
     }
     if (error.code === "23505") {
-      throw httpError(409, "Username hoặc Email đã tồn tại trong database Superset");
+      throw createHttpError(
+        409,
+        "Username hoặc Email đã tồn tại trong database Superset",
+      );
     }
     throw error;
   } finally {
@@ -818,14 +682,13 @@ async function createManagedUser(actorUserId, rawPayload) {
   return getManagedUserDetail(actorUserId, newUserId);
 }
 
-// Sửa thông tin User (không sửa password)
 async function updateManagedUser(actorUserId, targetUserId, rawPayload) {
   const actor = await getActorContext(actorUserId);
   ensureAdmin(actor);
 
   const tid = Number(targetUserId);
   if (!Number.isSafeInteger(tid) || tid <= 0) {
-    throw httpError(400, "targetUserId không hợp lệ");
+    throw createHttpError(400, "targetUserId không hợp lệ");
   }
 
   const currentEntry = await assertCanManageTarget(actor, tid);
@@ -834,7 +697,10 @@ async function updateManagedUser(actorUserId, targetUserId, rawPayload) {
   validatePayload(data, { requirePassword: false });
   await assertRoleAllowed(actor, data.role_id);
 
-  const ssClient = await acquireClientWithRetry(supersetPool, "Superset Metadata DB");
+  const ssClient = await acquireClientWithRetry(
+    supersetPool,
+    "Superset Metadata DB",
+  );
   const rcClient = await acquireClientWithRetry(rolePool, "Backend Role DB");
 
   try {
@@ -846,7 +712,7 @@ async function updateManagedUser(actorUserId, targetUserId, rawPayload) {
       [tid],
     );
     if (!exists.rows[0]) {
-      throw httpError(404, "Không tìm thấy User trong Superset");
+      throw createHttpError(404, "Không tìm thấy User trong Superset");
     }
 
     await assertUniqueInSuperset(ssClient, data, tid);
@@ -883,7 +749,7 @@ async function updateManagedUser(actorUserId, targetUserId, rawPayload) {
       );
     }
 
-    // 3. Cập nhật role_id, require_otp, can_change_password trong user_global_roles của Database Backend
+    // 3. Cập nhật role_id, require_otp, can_change_password trong user_global_roles
     const assignedBy = currentEntry?.assigned_by || actor.actorUserId;
     await rcClient.query(
       `DELETE FROM user_global_roles WHERE superset_user_id = $1`,
@@ -907,7 +773,6 @@ async function updateManagedUser(actorUserId, targetUserId, rawPayload) {
     try {
       await ssClient.query("COMMIT");
     } catch (ssErr) {
-      // Bù trừ khôi phục lại role cũ nếu Superset commit lỗi
       try {
         await rolePool.query(
           `DELETE FROM user_global_roles WHERE superset_user_id = $1`,
@@ -934,7 +799,10 @@ async function updateManagedUser(actorUserId, targetUserId, rawPayload) {
     await rollbackQuietly(rcClient);
     await rollbackQuietly(ssClient);
     if (error.code === "23505") {
-      throw httpError(409, "Username hoặc Email đã tồn tại trong database Superset");
+      throw createHttpError(
+        409,
+        "Username hoặc Email đã tồn tại trong database Superset",
+      );
     }
     throw error;
   } finally {
@@ -945,26 +813,27 @@ async function updateManagedUser(actorUserId, targetUserId, rawPayload) {
   return getManagedUserDetail(actorUserId, tid);
 }
 
-// Xóa User (xóa dữ liệu liên quan ở cả 2 database)
 async function deleteManagedUser(actorUserId, targetUserId) {
   const actor = await getActorContext(actorUserId);
   ensureAdmin(actor);
 
   const tid = Number(targetUserId);
   if (!Number.isSafeInteger(tid) || tid <= 0) {
-    throw httpError(400, "targetUserId không hợp lệ");
+    throw createHttpError(400, "targetUserId không hợp lệ");
   }
 
   await assertCanManageTarget(actor, tid);
 
-  const ssClient = await acquireClientWithRetry(supersetPool, "Superset Metadata DB");
+  const ssClient = await acquireClientWithRetry(
+    supersetPool,
+    "Superset Metadata DB",
+  );
   const rcClient = await acquireClientWithRetry(rolePool, "Backend Role DB");
 
   try {
     await ssClient.query("BEGIN");
     await rcClient.query("BEGIN");
 
-    // 1. Xóa toàn bộ dữ liệu phân quyền liên quan trong Database Backend
     await rcClient.query(
       `DELETE FROM member_dashboards WHERE superset_user_id = $1`,
       [tid],
@@ -978,7 +847,6 @@ async function deleteManagedUser(actorUserId, targetUserId) {
       [tid],
     );
 
-    // 2. Xóa bảng ab_user_role và ab_user trong Superset DB
     await ssClient.query(
       `DELETE FROM public.ab_user_role WHERE user_id = $1`,
       [tid],
@@ -988,7 +856,7 @@ async function deleteManagedUser(actorUserId, targetUserId) {
       [tid],
     );
     if (del.rowCount === 0) {
-      throw httpError(404, "Không tìm thấy User trong Superset");
+      throw createHttpError(404, "Không tìm thấy User trong Superset");
     }
 
     await ssClient.query("COMMIT");
@@ -997,7 +865,7 @@ async function deleteManagedUser(actorUserId, targetUserId) {
     await rollbackQuietly(ssClient);
     await rollbackQuietly(rcClient);
     if (error.code === "23503") {
-      throw httpError(
+      throw createHttpError(
         409,
         "User này đang có dữ liệu liên kết trong Superset (Dashboard, Chart, Slice, ...) nên không thể xóa trực tiếp. Vui lòng chuyển trạng thái sang Inactive.",
       );
@@ -1020,4 +888,3 @@ module.exports = {
   updateManagedUser,
   deleteManagedUser,
 };
-

@@ -333,13 +333,13 @@ const GroupDetailWorkspace = ({
 
   const canEditGroupDashboards =
     isSystemManager ||
-    groupPerms.includes("system.manage") ||
-    (actualLevel > 0 && groupPerms.includes("group_dashboard.assign"));
+    groupRoles.includes("admin_ami") ||
+    (actualLevel > 0 && groupRoles.includes("super_admin"));
 
   const canCreateChildGroup =
     (isSystemManager ||
-      groupPerms.includes("system.manage") ||
-      groupPerms.includes("group.create")) &&
+      groupRoles.includes("admin_ami") ||
+      groupRoles.includes("super_admin")) &&
     !isMaxDepthReached &&
     !isMaxChildrenReached;
 
@@ -348,16 +348,13 @@ const GroupDetailWorkspace = ({
   const canDeleteGroup =
     isSystemManager ||
     (isCreator &&
-      (groupPerms.includes("group.delete") ||
-        groupPerms.includes("system.manage")));
+      (groupRoles.includes("admin_ami") || groupRoles.includes("super_admin")));
 
   const canManageGroupMembers =
     isSystemManager ||
-    groupPerms.includes("system.manage") ||
-    groupPerms.includes("group_admin.assign") ||
-    groupPerms.includes("member.create") ||
-    groupPerms.includes("member.update") ||
-    groupPerms.includes("member_dashboard.assign");
+    groupRoles.includes("admin_ami") ||
+    groupRoles.includes("super_admin") ||
+    groupRoles.includes("group_admin");
 
   const myRoleLabelInGroup =
     isSystemManager || groupRoles.includes("admin_ami")
@@ -769,13 +766,13 @@ const GroupCardNode = ({
   // super_admin không thể sửa Edit Dashboard list ở cấp cao nhất do nó quản lý (level === 0), chỉ sửa được ở các Group con (level > 0)
   const canEditGroupDashboards =
     isSystemManager ||
-    groupPerms.includes("system.manage") ||
-    (level > 0 && groupPerms.includes("group_dashboard.assign"));
+    groupRoles.includes("admin_ami") ||
+    (level > 0 && groupRoles.includes("super_admin"));
 
   const canCreateChildGroup =
     (isSystemManager ||
-      groupPerms.includes("system.manage") ||
-      groupPerms.includes("group.create")) &&
+      groupRoles.includes("admin_ami") ||
+      groupRoles.includes("super_admin")) &&
     !isMaxDepthReached &&
     !isMaxChildrenReached;
 
@@ -784,16 +781,13 @@ const GroupCardNode = ({
   const canDeleteGroup =
     isSystemManager ||
     (isCreator &&
-      (groupPerms.includes("group.delete") ||
-        groupPerms.includes("system.manage")));
+      (groupRoles.includes("admin_ami") || groupRoles.includes("super_admin")));
 
   const canManageGroupMembers =
     isSystemManager ||
-    groupPerms.includes("system.manage") ||
-    groupPerms.includes("group_admin.assign") ||
-    groupPerms.includes("member.create") ||
-    groupPerms.includes("member.update") ||
-    groupPerms.includes("member_dashboard.assign");
+    groupRoles.includes("admin_ami") ||
+    groupRoles.includes("super_admin") ||
+    groupRoles.includes("group_admin");
 
   const myRoleLabelInGroup =
     isSystemManager || groupRoles.includes("admin_ami")
@@ -1271,7 +1265,7 @@ const RolePermissionContent = () => {
     return filterNodes(groups);
   }, [groups, groupSearchQuery]);
 
-  const isSystemManager = permissions.includes("system.manage");
+  const isSystemManager = roles.includes("admin_ami");
 
   const currentUserId = Number(
     user?.user_id ||
@@ -1280,15 +1274,15 @@ const RolePermissionContent = () => {
       sessionStorage.getItem("user_id"),
   );
 
-  // Chỉ lấy danh sách các Group mà user thực sự có quyền tạo Group con (group.create) tại chính Group đó,
+  // Chỉ lấy danh sách các Group mà user thực sự có quyền tạo Group con (super_admin / admin_ami) tại chính Group đó,
   // đồng thời chưa đạt tối đa 5 cấp (level < 4) và chưa đạt tối đa 10 group con (children < 10)
   const creatableParentGroupOptions = useMemo(
     () =>
       flatGroupOptions.filter((g) => {
         const hasPerm =
           isSystemManager ||
-          (g.my_group_permissions || []).includes("system.manage") ||
-          (g.my_group_permissions || []).includes("group.create");
+          (g.my_group_roles || []).includes("admin_ami") ||
+          (g.my_group_roles || []).includes("super_admin");
         const isMaxDepth = g.level >= 4;
         const originalNode = findGroupById(groups, g.id);
         const isMaxChildren = (originalNode?.children || []).length >= 10;
@@ -1297,19 +1291,11 @@ const RolePermissionContent = () => {
     [flatGroupOptions, isSystemManager, groups],
   );
 
-  // Nút "+ Add new group" ở đầu trang và cuối trang chỉ xuất hiện khi là admin_ami và có quyền group.create
-  const canCreateGroup =
-    roles.includes("admin_ami") && permissions.includes("group.create");
-  const isHighAdmin =
-    !isSystemManager &&
-    (permissions.includes("group.create") ||
-      permissions.includes("group_admin.assign") ||
-      permissions.includes("group_dashboard.assign"));
+  // Nút "+ Add new group" ở đầu trang và cuối trang chỉ xuất hiện khi là admin_ami
+  const canCreateGroup = roles.includes("admin_ami");
+  const isHighAdmin = !isSystemManager && roles.includes("super_admin");
   const isGroupLevelAdmin =
-    !isSystemManager &&
-    !isHighAdmin &&
-    (permissions.includes("member_dashboard.assign") ||
-      permissions.includes("member.create"));
+    !isSystemManager && !isHighAdmin && roles.includes("group_admin");
 
   const roleBadgeLabel = useMemo(() => {
     if (isSystemManager) return "Quản trị toàn hệ thống (system.manage)";
@@ -2245,32 +2231,19 @@ const RolePermissionContent = () => {
             {/* Form Gán User vào Group (chỉ hiện ở chế độ Quản lý User và khi user có quyền quản lý trong chính Group này) */}
             {memberModalMode === "manage" &&
               (isSystemManager ||
-                (memberModalGroup.my_group_permissions || []).includes(
-                  "system.manage",
+                (memberModalGroup.my_group_roles || []).includes("admin_ami") ||
+                (memberModalGroup.my_group_roles || []).includes(
+                  "super_admin",
                 ) ||
-                (memberModalGroup.my_group_permissions || []).includes(
-                  "group_admin.assign",
-                ) ||
-                (memberModalGroup.my_group_permissions || []).includes(
-                  "member.create",
-                ) ||
-                (memberModalGroup.my_group_permissions || []).includes(
-                  "member.update",
-                ) ||
-                (memberModalGroup.my_group_permissions || []).includes(
-                  "member_dashboard.assign",
+                (memberModalGroup.my_group_roles || []).includes(
+                  "group_admin",
                 )) && (
                 <form
                   onSubmit={handleAssignMember}
                   className="p-4 mb-5 rounded-xl bg-background-dashboard dark:bg-background-white-8 border border-border-black-10 dark:border-background-white-15 space-y-3.5"
                 >
                   {(() => {
-                    // Chỉ check role & permission của người đang thao tác ở trong chính Group này (ở global chỉ check có phải là system không)
-                    const modalGroupPerms = Array.isArray(
-                      memberModalGroup.my_group_permissions,
-                    )
-                      ? memberModalGroup.my_group_permissions
-                      : [];
+                    // Chỉ check role_code của người đang thao tác ở trong chính Group này (ở global chỉ check có phải là admin_ami không)
                     const modalGroupRoles = Array.isArray(
                       memberModalGroup.my_group_roles,
                     )
@@ -2279,7 +2252,8 @@ const RolePermissionContent = () => {
 
                     const canAssignModalGroupAdmin =
                       isSystemManager ||
-                      modalGroupPerms.includes("group_admin.assign");
+                      modalGroupRoles.includes("admin_ami") ||
+                      modalGroupRoles.includes("super_admin");
 
                     const actorGroupRank = isSystemManager
                       ? 4

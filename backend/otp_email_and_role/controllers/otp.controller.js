@@ -1,8 +1,19 @@
 const otpService = require("../services/otp.service");
 
+function handleOtpError(error, res, next) {
+  const status = error.statusCode || error.status;
+  if (status && status >= 400 && status < 600) {
+    return res.status(status).json({
+      status: "error",
+      message: error.message,
+    });
+  }
+  return next(error);
+}
+
 async function sendOtp(req, res, next) {
   try {
-    const { email, sessionCookie, user } = req.body;
+    const { email, sessionCookie, user } = req.body || {};
 
     const result = await otpService.createOtp({
       email,
@@ -16,13 +27,13 @@ async function sendOtp(req, res, next) {
       data: result,
     });
   } catch (error) {
-    next(error);
+    return handleOtpError(error, res, next);
   }
 }
 
-async function resendOtp(req, res) {
+async function resendOtp(req, res, next) {
   try {
-    const { challengeId } = req.body;
+    const { challengeId } = req.body || {};
 
     const result = await otpService.resendOtp(challengeId);
 
@@ -32,16 +43,13 @@ async function resendOtp(req, res) {
       data: result,
     });
   } catch (error) {
-    return res.status(400).json({
-      status: "error",
-      message: error.message,
-    });
+    return handleOtpError(error, res, next);
   }
 }
 
 async function verifyOtp(req, res, next) {
   try {
-    const { challengeId, otp } = req.body;
+    const { challengeId, otp } = req.body || {};
 
     const result = await otpService.verifyOtp(challengeId, otp);
 
@@ -51,21 +59,7 @@ async function verifyOtp(req, res, next) {
       data: result,
     });
   } catch (error) {
-    const clientErrors = [
-      "OTP không tồn tại hoặc đã hết hạn",
-      "Bạn đã nhập sai OTP quá số lần cho phép",
-      "OTP không chính xác",
-      "Challenge ID hoặc OTP không hợp lệ",
-    ];
-
-    if (clientErrors.includes(error.message)) {
-      return res.status(400).json({
-        status: "error",
-        message: error.message,
-      });
-    }
-
-    next(error);
+    return handleOtpError(error, res, next);
   }
 }
 

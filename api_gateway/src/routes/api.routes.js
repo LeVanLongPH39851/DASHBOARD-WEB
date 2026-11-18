@@ -116,7 +116,12 @@ router.get(
 router.post(
   "/groups/:groupId/members",
   authenticate,
-  authorize(["member.create", "member.update", "group_admin.assign", "member_dashboard.assign"]),
+  authorize([
+    "member.create",
+    "member.update",
+    "group_admin.assign",
+    "member_dashboard.assign",
+  ]),
   authController.assignGroupMemberController,
 );
 router.delete(
@@ -133,7 +138,12 @@ router.delete(
 );
 
 // Quản lý Users (3 admin: admin_ami, super_admin, group_admin)
-const ADMIN_ROLES = ["admin_ami", "super_admin", "group_admin", "system.manage"];
+const ADMIN_ROLES = [
+  "admin_ami",
+  "super_admin",
+  "group_admin",
+  "system.manage",
+];
 
 router.get(
   "/manage/users",

@@ -7,9 +7,29 @@ const {
   resolveDashboardTarget,
 } = require("../config/dashboards");
 
+// Kiểm tra kết nối có an toàn (HTTPS) hay không
+function isRequestSecure(req) {
+  if (process.env.COOKIE_SECURE !== undefined) {
+    return process.env.COOKIE_SECURE === "true";
+  }
+
+  // Tự động nhận diện HTTPS từ req hoặc qua header reverse proxy (Nginx, Traefik, ALB, Cloudflare...)
+  if (req) {
+    return Boolean(
+      req.secure ||
+      req.headers["x-forwarded-proto"] === "https" ||
+      req.headers["x-forwarded-protocol"] === "https"
+    );
+  }
+
+  return false;
+}
+
 // Hàm hỗ trợ lưu sessionCookie từ Superset vào HttpOnly Cookie trên trình duyệt
-function setSessionHttpOnlyCookies(res, sessionCookie) {
+function setSessionHttpOnlyCookies(res, sessionCookie, req = null) {
   if (!sessionCookie) return;
+
+  const isSecure = isRequestSecure(req);
 
   const cookies = sessionCookie
     .split(";")
@@ -25,7 +45,7 @@ function setSessionHttpOnlyCookies(res, sessionCookie) {
       res.cookie(name, value, {
         httpOnly: true,
         sameSite: "lax",
-        secure: process.env.NODE_ENV === "production",
+        secure: isSecure,
         path: "/",
         encode: (val) => val,
       });
@@ -48,7 +68,7 @@ async function loginController(req, res, next) {
     const result = await authService.login(username, password);
 
     if (result.otpRequired === false) {
-      setSessionHttpOnlyCookies(res, result.sessionCookie);
+      setSessionHttpOnlyCookies(res, result.sessionCookie, req);
 
       return res.status(200).json({
         status: "success",
@@ -112,7 +132,7 @@ async function verifyOtpController(req, res, next) {
 
     const result = await authService.verifyOtp(challengeId, otp);
 
-    setSessionHttpOnlyCookies(res, result.sessionCookie);
+    setSessionHttpOnlyCookies(res, result.sessionCookie, req);
 
     return res.status(200).json({
       status: "success",
@@ -164,7 +184,7 @@ async function logoutController(req, res, next) {
     res.clearCookie("session", {
       httpOnly: true,
       sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
+      secure: isRequestSecure(req),
       path: "/",
     });
 

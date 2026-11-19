@@ -168,7 +168,7 @@ const BreadCrumb = ({
                     src={iconIMG}
                     widthImage="w-4 max-lg:w-3.75"
                     alt="Icon Instruct"
-                    text={!isEnglish ? "Tải Ảnh" : "Export Image"}
+                    text={!isEnglish ? "Tải Ảnh" : "Image"}
                   />
                 </div>
                 <div
@@ -185,7 +185,7 @@ const BreadCrumb = ({
                     src={iconPDF}
                     widthImage="w-4 max-lg:w-3.75"
                     alt="Icon Instruct"
-                    text={!isEnglish ? "Tải PDF" : "Export PDF"}
+                    text={!isEnglish ? "Tải PDF" : "PDF"}
                   />
                 </div>
               </div>
@@ -245,7 +245,7 @@ const BreadCrumb = ({
                   src={iconIMG}
                   widthImage="w-4 max-md:w-3.5"
                   alt="Icon Instruct"
-                  text={!isEnglish ? "Tải Ảnh" : "Export Image"}
+                  text={!isEnglish ? "Tải Ảnh" : "Image"}
                 />
               </div>
             )}
@@ -263,7 +263,7 @@ const BreadCrumb = ({
                 src={iconPDF}
                 widthImage="w-4 max-md:w-3.5"
                 alt="Icon Instruct"
-                text={!isEnglish ? "Tải PDF" : "Export PDF"}
+                text={!isEnglish ? "Tải PDF" : "PDF"}
               />
             </div>
           </div>

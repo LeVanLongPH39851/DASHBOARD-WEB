@@ -1,4 +1,8 @@
-const { rolePool, supersetPool } = require("../config/db");
+const {
+  rolePool,
+  supersetPool,
+  resolveSupersetUserTable,
+} = require("../config/db");
 const {
   ROLES,
   HIGH_ADMIN_ROLE_CODES,
@@ -12,27 +16,6 @@ const {
 const { hashPassword, verifyPassword } = require("../utils/password.util");
 const roleService = require("./role.service");
 const { AUDIT_ACTIONS, logAudit } = require("./audit.service");
-
-let cachedSupersetUserTable = null;
-
-// Tự động nhận diện bảng users hoặc ab_user trong Superset DB
-async function resolveSupersetUserTable() {
-  if (cachedSupersetUserTable) return cachedSupersetUserTable;
-
-  const { rows } = await supersetPool.query(`
-    SELECT
-      to_regclass('public.users') IS NOT NULL AS has_users,
-      to_regclass('public.ab_user') IS NOT NULL AS has_ab_user
-  `);
-
-  if (rows[0]?.has_users) {
-    cachedSupersetUserTable = "public.users";
-  } else {
-    cachedSupersetUserTable = "public.ab_user";
-  }
-
-  return cachedSupersetUserTable;
-}
 
 function normalizeSupersetUser(row) {
   const id = Number(row.id);
@@ -386,7 +369,11 @@ async function getGroupMembersDetail(actorUserId, groupId) {
 /**
  * Kiểm tra quyền sở hữu / gán thành viên trong Group đối với các Admin không phải admin_ami
  */
-async function assertActorOwnsGroupMember(actorUserId, targetUserId, existingMember) {
+async function assertActorOwnsGroupMember(
+  actorUserId,
+  targetUserId,
+  existingMember,
+) {
   const [ugrRes, supersetMap] = await Promise.all([
     rolePool.query(
       `SELECT assigned_by FROM user_global_roles WHERE superset_user_id = $1`,
@@ -655,27 +642,25 @@ async function assignUserToGroup({
       );
     }
 
-    await logAudit(
-      {
-        userId: actorUserId,
-        action: existingMember
-          ? AUDIT_ACTIONS.GROUP_MEMBER_UPDATE
-          : AUDIT_ACTIONS.GROUP_MEMBER_ASSIGN,
-        targetType: "GROUP_MEMBER",
-        targetId: `${groupId}:${targetUserId}`,
-        description: `${existingMember ? "Cập nhật" : "Gán"} thành viên #${targetUserId} trong Group #${groupId} với vai trò "${selectedRole.role_code}"`,
-        metadata: {
-          group_id: Number(groupId),
-          target_user_id: Number(targetUserId),
-          role_code: selectedRole.role_code,
-          dashboard_ids: validMemberDashIds,
-          is_update: Boolean(existingMember),
-        },
-      },
-      client,
-    );
-
     await client.query("COMMIT");
+
+    await logAudit({
+      userId: actorUserId,
+      action: existingMember
+        ? AUDIT_ACTIONS.GROUP_MEMBER_UPDATE
+        : AUDIT_ACTIONS.GROUP_MEMBER_ASSIGN,
+      targetType: "GROUP_MEMBER",
+      targetId: `${groupId}:${targetUserId}`,
+      description: `${existingMember ? "Cập nhật" : "Gán"} thành viên #${targetUserId} trong Group #${groupId} với vai trò "${selectedRole.role_code}"`,
+      metadata: {
+        group_id: Number(groupId),
+        target_user_id: Number(targetUserId),
+        role_code: selectedRole.role_code,
+        dashboard_ids: validMemberDashIds,
+        is_update: Boolean(existingMember),
+      },
+    });
+
     return {
       groupId: Number(groupId),
       userId: Number(targetUserId),
@@ -683,7 +668,7 @@ async function assignUserToGroup({
       dashboardIds: validMemberDashIds,
     };
   } catch (error) {
-    await client.query("ROLLBACK");
+    await client.query("ROLLBACK").catch(() => {});
     throw error;
   } finally {
     client.release();
@@ -945,7 +930,10 @@ async function updateUserProfile(userId, { first_name, last_name, email }) {
   );
 
   if (updateRes.rows.length === 0) {
-    throw createHttpError(404, "Không tìm thấy tài khoản người dùng để cập nhật");
+    throw createHttpError(
+      404,
+      "Không tìm thấy tài khoản người dùng để cập nhật",
+    );
   }
 
   const updated = updateRes.rows[0];
@@ -1021,10 +1009,7 @@ async function changeUserPassword(
   }
 
   if (newPwd !== confirmPwd) {
-    throw createHttpError(
-      400,
-      "Mật khẩu mới và xác nhận mật khẩu không khớp",
-    );
+    throw createHttpError(400, "Mật khẩu mới và xác nhận mật khẩu không khớp");
   }
 
   if (oldPwd === newPwd) {

@@ -28,22 +28,19 @@ const AUDIT_ACTIONS = Object.freeze({
 
 /**
  * Ghi log hành động của user vào bảng audit_logs (init.sql:L248-L264).
- * Không ném lỗi ra ngoài để tránh làm gián đoạn luồng nghiệp vụ chính.
+ * Luôn sử dụng rolePool độc lập (không chạy chung transaction client của nghiệp vụ chính)
+ * để tránh làm abort transaction PostgreSQL nếu bảng audit_logs gặp sự cố.
  */
-async function logAudit(
-  {
-    userId = null,
-    action,
-    targetType = null,
-    targetId = null,
-    description = null,
-    metadata = null,
-  },
-  dbClient = null,
-) {
+async function logAudit({
+  userId = null,
+  action,
+  targetType = null,
+  targetId = null,
+  description = null,
+  metadata = null,
+}) {
   if (!action) return null;
 
-  const executor = dbClient || rolePool;
   const parsedUserId = Number(userId);
   const safeUserId =
     Number.isSafeInteger(parsedUserId) && parsedUserId > 0
@@ -51,7 +48,7 @@ async function logAudit(
       : null;
 
   try {
-    const { rows } = await executor.query(
+    const { rows } = await rolePool.query(
       `
         INSERT INTO audit_logs (
           superset_user_id,

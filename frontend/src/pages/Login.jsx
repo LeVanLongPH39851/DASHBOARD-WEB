@@ -97,9 +97,12 @@ const Login = () => {
     if (!password) {
       setErrorPass("Vui lòng nhập mật khẩu");
       setShowErrorPass(true);
+    } else if (password.length < 8) {
+      setErrorPass("Mật khẩu phải có tối thiểu 8 ký tự");
+      setShowErrorPass(true);
     }
 
-    if (!password || !username.trim()) {
+    if (!username.trim() || !password || password.length < 8) {
       return;
     }
 
@@ -142,7 +145,7 @@ const Login = () => {
         error.message ||
         "Đăng nhập thất bại. Vui lòng thử lại.";
 
-      if (status === 401 || status === 500) {
+      if (status === 401) {
         setErrorLogin("Tài khoản hoặc mật khẩu không chính xác");
         setShowErrorLogin(true);
       } else {
@@ -174,13 +177,10 @@ const Login = () => {
 
       await redirectAfterLogin();
     } catch (error) {
-      const status = error.response?.status || error.status;
       setOtpError(
-        status === 500
-          ? "Mã OTP không chính xác"
-          : error.response?.data?.message ||
-              error.message ||
-              "Xác thực OTP thất bại. Vui lòng thử lại.",
+        error.response?.data?.message ||
+          error.message ||
+          "Xác thực OTP thất bại. Vui lòng thử lại.",
       );
     } finally {
       setVerifyingOtp(false);
@@ -195,20 +195,17 @@ const Login = () => {
       setResendingOtp(true);
       const result = await resendOtp(otpChallengeId);
 
-      if (!result.success) {
+      if (!result.success && result.status !== "success") {
         throw new Error(result.message || "Không thể gửi lại mã OTP");
       }
 
       setOtp("");
       setOtpMessage(result.message || "Mã OTP mới đã được gửi đến email.");
     } catch (error) {
-      const status = error.response?.status || error.status;
       setOtpError(
-        status === 500
-          ? "Gửi lại mã OTP thất bại"
-          : error.response?.data?.message ||
-              error.message ||
-              "Gửi lại mã OTP thất bại. Vui lòng thử lại.",
+        error.response?.data?.message ||
+          error.message ||
+          "Gửi lại mã OTP thất bại. Vui lòng thử lại.",
       );
     } finally {
       setResendingOtp(false);

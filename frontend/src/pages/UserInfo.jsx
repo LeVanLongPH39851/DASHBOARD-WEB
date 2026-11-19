@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import Header from "../components/layouts/headers/Header";
 import Footer from "../components/layouts/footers/Footer";
@@ -32,12 +32,26 @@ const UserInfoContent = () => {
   const [error, setError] = useState("");
 
   const [toast, setToast] = useState(null);
-  const showToast = (message, type = "success") => {
+  const toastTimerRef = useRef(null);
+
+  const showToast = useCallback((message, type = "success") => {
+    if (toastTimerRef.current) {
+      clearTimeout(toastTimerRef.current);
+    }
     setToast({ message, type });
-    setTimeout(() => {
+    toastTimerRef.current = setTimeout(() => {
       setToast(null);
+      toastTimerRef.current = null;
     }, 4000);
-  };
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (toastTimerRef.current) {
+        clearTimeout(toastTimerRef.current);
+      }
+    };
+  }, []);
 
   // Modal Chỉnh sửa thông tin cá nhân
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
@@ -166,7 +180,9 @@ const UserInfoContent = () => {
     }
     if (!passwordForm.confirm_new_password) {
       errors.confirm_new_password = "Vui lòng xác nhận mật khẩu mới";
-    } else if (passwordForm.new_password !== passwordForm.confirm_new_password) {
+    } else if (
+      passwordForm.new_password !== passwordForm.confirm_new_password
+    ) {
       errors.confirm_new_password = "Xác nhận mật khẩu không khớp";
     }
     if (
@@ -201,9 +217,7 @@ const UserInfoContent = () => {
       });
     } catch (err) {
       const errMsg =
-        err.response?.data?.message ||
-        err.message ||
-        "Không thể đổi mật khẩu";
+        err.response?.data?.message || err.message || "Không thể đổi mật khẩu";
       setPasswordErrors({ form: errMsg });
     } finally {
       setPasswordSubmitting(false);
@@ -272,15 +286,15 @@ const UserInfoContent = () => {
         )}
 
         {loading ? (
-          <div className="p-6 bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 rounded-2xl shadow-component">
+          <div className="animate-fade-up p-6 bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 rounded-2xl shadow-component">
             <Loading height="360px" />
           </div>
         ) : error ? (
-          <div className="p-12 bg-background-light dark:bg-background-chart-dark border border-border-error rounded-2xl shadow-component text-center">
+          <div className="animate-fade-up p-12 bg-background-light dark:bg-background-chart-dark border border-border-error rounded-2xl shadow-component text-center">
             <p className="text-sm font-semibold text-color-error">{error}</p>
           </div>
         ) : !userInfo ? (
-          <div className="p-12 bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 rounded-2xl shadow-component text-center">
+          <div className="animate-fade-up p-12 bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 rounded-2xl shadow-component text-center">
             <p className="text-sm text-color-black-50 dark:text-color-white-50">
               Không tìm thấy thông tin tài khoản.
             </p>
@@ -288,13 +302,18 @@ const UserInfoContent = () => {
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
             {/* LEFT COLUMN: Identity & Security Profile Card */}
-            <section className="lg:col-span-4 rounded-2xl overflow-hidden bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 shadow-component">
+            <section className="animate-fade-up lg:col-span-4 rounded-2xl overflow-hidden bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 shadow-component">
               {/* Cover Header */}
-              <div className="relative h-28 bg-gradient-to-r from-[#0f2a51] via-[#15658a] to-[#20A7C9] dark:from-[#111725] dark:via-[#163853] dark:to-[#1d7a94] overflow-hidden">
-                <div className="pointer-events-none absolute -top-12 right-6 w-36 h-36 rounded-full bg-[#5bd6d8]/25 blur-2xl" />
+              <div className="shine-auto animate-gradient-shift relative h-28 bg-gradient-to-r from-[#0f2a51] via-[#15658a] to-[#20A7C9] dark:from-[#111725] dark:via-[#163853] dark:to-[#1d7a94] overflow-hidden">
+                <div className="pointer-events-none absolute -top-12 right-6 w-36 h-36 rounded-full bg-[#5bd6d8]/25 blur-2xl animate-float-slow" />
+                <div
+                  className="pointer-events-none absolute -bottom-14 left-6 w-40 h-40 rounded-full bg-[#7367f0]/25 blur-3xl animate-float-slow"
+                  style={{ animationDelay: "-3s" }}
+                />
                 <div className="absolute top-3.5 right-4">
                   <span
-                    className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold backdrop-blur-md border ${
+                    style={{ animationDelay: "100ms" }}
+                    className={`animate-pop-in inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold backdrop-blur-md border ${
                       userInfo.active
                         ? "bg-white/15 text-white border-white/25"
                         : "bg-color-error/25 text-white border-color-error/40"
@@ -302,7 +321,9 @@ const UserInfoContent = () => {
                   >
                     <span
                       className={`w-1.5 h-1.5 rounded-full ${
-                        userInfo.active ? "bg-[#0cb7a9]" : "bg-color-error"
+                        userInfo.active
+                          ? "bg-[#0cb7a9] animate-pulse"
+                          : "bg-color-error"
                       }`}
                     />
                     {userInfo.active ? "Đang hoạt động" : "Ngừng hoạt động"}
@@ -313,14 +334,18 @@ const UserInfoContent = () => {
               <div className="px-6 pb-6">
                 {/* Avatar & Identity */}
                 <div className="flex items-end justify-between gap-3 -mt-10 mb-5">
-                  <div className="relative w-20 h-20 rounded-2xl p-[3px] shadow-lg bg-background-light dark:bg-background-chart-dark">
-                    <div className="w-full h-full rounded-[13px] bg-gradient-to-br from-[#20A7C9] to-[#7367f0] flex items-center justify-center text-white text-xl font-extrabold">
+                  <div className="relative w-20 h-20 rounded-2xl p-[3px] shadow-lg overflow-hidden bg-background-light dark:bg-background-chart-dark group">
+                    <div className="pointer-events-none absolute -inset-1/2 bg-[conic-gradient(from_0deg,#20A7C9,#7367f0,#f2994a,#2fc4c6,#20A7C9)] animate-spin-slow opacity-90" />
+                    <div className="relative w-full h-full rounded-[13px] bg-gradient-to-br from-[#20A7C9] to-[#7367f0] flex items-center justify-center text-white text-xl font-extrabold transition-transform duration-300 group-hover:scale-105">
                       {(userInfo.username || "U").slice(0, 2).toUpperCase()}
                     </div>
                   </div>
 
                   {globalRoles.length > 0 && (
-                    <span className="px-3 py-1 rounded-full text-xs font-bold bg-background-ave-reach dark:bg-[#21b8b8]/20 text-color-ave-reach dark:text-[#5bd6d8] border border-[#21b8b8]/30">
+                    <span
+                      style={{ animationDelay: "140ms" }}
+                      className="animate-pop-in px-3 py-1 rounded-full text-xs font-bold bg-background-ave-reach dark:bg-[#21b8b8]/20 text-color-ave-reach dark:text-[#5bd6d8] border border-[#21b8b8]/30"
+                    >
                       {globalRoles.join(", ")}
                     </span>
                   )}
@@ -360,7 +385,9 @@ const UserInfoContent = () => {
                       Ngày tham gia
                     </span>
                     <span className="font-mono font-semibold text-color-black-100 dark:text-color-white-90">
-                      {formatDateDMY(userInfo.created_at || userInfo.created_on)}
+                      {formatDateDMY(
+                        userInfo.created_at || userInfo.created_on,
+                      )}
                     </span>
                   </div>
 
@@ -416,7 +443,7 @@ const UserInfoContent = () => {
                   <button
                     type="button"
                     onClick={handleOpenEditProfile}
-                    className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-[#20A7C9] to-[#2fc4c6] text-white shadow-xs hover:opacity-95 transition cursor-pointer"
+                    className="shine relative overflow-hidden inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-[#20A7C9] to-[#2fc4c6] text-white shadow-xs hover:opacity-95 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer"
                   >
                     <svg
                       className="w-3.5 h-3.5"
@@ -437,9 +464,9 @@ const UserInfoContent = () => {
                   <button
                     type="button"
                     onClick={handleOpenChangePassword}
-                    className={`inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl text-xs font-semibold border transition cursor-pointer ${
+                    className={`inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl text-xs font-semibold border transition-all duration-200 cursor-pointer ${
                       userInfo.can_change_password !== false
-                        ? "bg-background-dashboard dark:bg-background-white-8 hover:bg-[#7367f0]/15 text-[#7367f0] dark:text-[#a59ff8] border-[#7367f0]/35"
+                        ? "bg-background-dashboard dark:bg-background-white-8 hover:bg-[#7367f0]/15 hover:-translate-y-0.5 text-[#7367f0] dark:text-[#a59ff8] border-[#7367f0]/35"
                         : "bg-color-error/10 text-color-error border-color-error/30 opacity-65 cursor-not-allowed"
                     }`}
                   >
@@ -450,14 +477,7 @@ const UserInfoContent = () => {
                       strokeWidth="2"
                       viewBox="0 0 24 24"
                     >
-                      <rect
-                        width="18"
-                        height="11"
-                        x="3"
-                        y="11"
-                        rx="2"
-                        ry="2"
-                      />
+                      <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
                       <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                     </svg>
                     <span>Đổi mật khẩu</span>
@@ -469,8 +489,11 @@ const UserInfoContent = () => {
             {/* RIGHT COLUMN: Groups & Accessible Dashboards */}
             <div className="lg:col-span-8 space-y-6">
               {/* Accessible Dashboards Section */}
-              <section className="relative overflow-hidden rounded-2xl bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 p-5 sm:p-6 shadow-component">
-                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#20A7C9] to-[#2fc4c6]" />
+              <section
+                style={{ animationDelay: "90ms" }}
+                className="animate-fade-up relative overflow-hidden rounded-2xl bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 p-5 sm:p-6 shadow-component"
+              >
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#20A7C9] to-[#2fc4c6] animate-gradient-shift" />
 
                 <div className="flex items-center justify-between gap-3 mb-4">
                   <div className="flex items-center gap-3">
@@ -493,7 +516,7 @@ const UserInfoContent = () => {
                     </h2>
                   </div>
 
-                  <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-background-ave-reach dark:bg-[#21b8b8]/20 text-color-ave-reach dark:text-[#5bd6d8]">
+                  <span className="animate-pop-in px-2.5 py-1 rounded-full text-xs font-bold bg-background-ave-reach dark:bg-[#21b8b8]/20 text-color-ave-reach dark:text-[#5bd6d8]">
                     {dashboards.length}
                   </span>
                 </div>
@@ -504,14 +527,17 @@ const UserInfoContent = () => {
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {dashboards.map((d) => (
+                    {dashboards.map((d, idx) => (
                       <Link
                         key={d.id}
                         to={d.path}
-                        className="group flex items-center justify-between gap-3 p-3.5 rounded-xl bg-background-dashboard dark:bg-background-white-8 border border-border-black-10 dark:border-background-white-15 hover:border-color-neotam transition-all duration-200 hover:-translate-y-0.5"
+                        style={{
+                          animationDelay: `${Math.min(idx * 50 + 120, 420)}ms`,
+                        }}
+                        className="shine animate-fade-up group relative overflow-hidden flex items-center justify-between gap-3 p-3.5 rounded-xl bg-background-dashboard dark:bg-background-white-8 border border-border-black-10 dark:border-background-white-15 hover:border-color-neotam transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm"
                       >
                         <div className="flex items-center gap-3 min-w-0">
-                          <span className="w-8 h-8 rounded-lg bg-background-ave-reach dark:bg-[#21b8b8]/20 text-color-ave-reach dark:text-[#5bd6d8] flex items-center justify-center shrink-0">
+                          <span className="w-8 h-8 rounded-lg bg-background-ave-reach dark:bg-[#21b8b8]/20 text-color-ave-reach dark:text-[#5bd6d8] flex items-center justify-center shrink-0 transition-transform duration-200 group-hover:scale-105">
                             <svg
                               className="w-4 h-4"
                               fill="none"
@@ -540,8 +566,11 @@ const UserInfoContent = () => {
               </section>
 
               {/* Groups Section */}
-              <section className="relative overflow-hidden rounded-2xl bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 p-5 sm:p-6 shadow-component">
-                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#7367f0] to-[#9e95f5]" />
+              <section
+                style={{ animationDelay: "160ms" }}
+                className="animate-fade-up relative overflow-hidden rounded-2xl bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 p-5 sm:p-6 shadow-component"
+              >
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#7367f0] to-[#9e95f5] animate-gradient-shift" />
 
                 <div className="flex items-center justify-between gap-3 mb-4">
                   <div className="flex items-center gap-3">
@@ -565,7 +594,7 @@ const UserInfoContent = () => {
                     </h2>
                   </div>
 
-                  <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-background-rating-percent dark:bg-[#7367f0]/20 text-color-rating-percent dark:text-[#a59ff8]">
+                  <span className="animate-pop-in px-2.5 py-1 rounded-full text-xs font-bold bg-background-rating-percent dark:bg-[#7367f0]/20 text-color-rating-percent dark:text-[#a59ff8]">
                     {groups.length}
                   </span>
                 </div>
@@ -582,7 +611,10 @@ const UserInfoContent = () => {
                       return (
                         <div
                           key={`${g.group_id}-${roleCode}-${idx}`}
-                          className="flex items-center justify-between gap-3 p-3.5 rounded-xl bg-background-dashboard dark:bg-background-white-8 border border-border-black-10 dark:border-background-white-15"
+                          style={{
+                            animationDelay: `${Math.min(idx * 50 + 180, 480)}ms`,
+                          }}
+                          className="animate-fade-up flex items-center justify-between gap-3 p-3.5 rounded-xl bg-background-dashboard dark:bg-background-white-8 border border-border-black-10 dark:border-background-white-15 hover:border-[#7367f0]/50 hover:-translate-y-0.5 transition-all duration-200"
                         >
                           <div className="min-w-0">
                             <p className="text-xs sm:text-sm font-bold text-color-black-100 dark:text-color-white-90 truncate">
@@ -610,8 +642,8 @@ const UserInfoContent = () => {
         {/* Modal Chỉnh sửa thông tin cá nhân */}
         {isEditProfileOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-            <div className="relative w-full max-w-md rounded-2xl bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 shadow-2xl overflow-hidden animate-scale-in">
-              <div className="h-1 bg-gradient-to-r from-[#20A7C9] to-[#2fc4c6]" />
+            <div className="relative w-full max-w-md rounded-2xl bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 shadow-2xl overflow-hidden animate-pop-in">
+              <div className="h-1 bg-gradient-to-r from-[#20A7C9] via-[#2fc4c6] to-[#5bd6d8] animate-gradient-shift" />
 
               <div className="flex items-center justify-between px-6 py-4 border-b border-border-black-10 dark:border-background-white-15">
                 <h3 className="text-base font-bold text-color-black-100 dark:text-color-white-90">
@@ -728,8 +760,8 @@ const UserInfoContent = () => {
         {/* Modal Đổi mật khẩu */}
         {isChangePasswordOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-            <div className="relative w-full max-w-md rounded-2xl bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 shadow-2xl overflow-hidden animate-scale-in">
-              <div className="h-1 bg-gradient-to-r from-[#7367f0] to-[#9e95f5]" />
+            <div className="relative w-full max-w-md rounded-2xl bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 shadow-2xl overflow-hidden animate-pop-in">
+              <div className="h-1 bg-gradient-to-r from-[#7367f0] via-[#887ef2] to-[#9e95f5] animate-gradient-shift" />
 
               <div className="flex items-center justify-between px-6 py-4 border-b border-border-black-10 dark:border-background-white-15">
                 <h3 className="text-base font-bold text-color-black-100 dark:text-color-white-90">

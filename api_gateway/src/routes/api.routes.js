@@ -5,6 +5,7 @@ const router = express.Router();
 const authenticate = require("../middleware/authenticate");
 const authorize = require("../middleware/authorize");
 const {
+  ROLES,
   ALL_ROLES,
   ADMIN_ROLES,
   HIGH_ADMIN_ROLES,
@@ -82,44 +83,47 @@ router.get(
 router.post(
   "/groups",
   authenticate,
-  authorize(HIGH_ADMIN_ROLES),
+  authorize(HIGH_ADMIN_ROLES, {
+    checkGroup: true,
+    rootRoles: [ROLES.ADMIN_AMI],
+  }),
   authController.createManagedGroupController,
 );
 router.put(
   "/groups/:groupId/dashboards",
   authenticate,
-  authorize(HIGH_ADMIN_ROLES),
+  authorize(HIGH_ADMIN_ROLES, { checkGroup: true }),
   authController.updateGroupDashboardsController,
 );
 router.delete(
   "/groups/:groupId",
   authenticate,
-  authorize(HIGH_ADMIN_ROLES),
+  authorize(HIGH_ADMIN_ROLES, { checkGroup: true }),
   authController.deleteManagedGroupController,
 );
 
 router.get(
   "/users/assignable",
   authenticate,
-  authorize(ADMIN_ROLES),
+  authorize(ADMIN_ROLES, { checkGroup: true }),
   authController.getAssignableUsersController,
 );
 router.get(
   "/groups/:groupId/members",
   authenticate,
-  authorize(ADMIN_ROLES),
+  authorize(ADMIN_ROLES, { checkGroup: true }),
   authController.getGroupMembersController,
 );
 router.post(
   "/groups/:groupId/members",
   authenticate,
-  authorize(ADMIN_ROLES),
+  authorize(ADMIN_ROLES, { checkGroup: true }),
   authController.assignGroupMemberController,
 );
 router.delete(
   "/groups/:groupId/members/:targetUserId",
   authenticate,
-  authorize(ADMIN_ROLES),
+  authorize(ADMIN_ROLES, { checkGroup: true }),
   authController.removeGroupMemberController,
 );
 

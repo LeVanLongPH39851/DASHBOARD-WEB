@@ -1,14 +1,12 @@
 const otpService = require("../services/otp.service");
 
-function handleOtpError(error, res, next) {
-  const status = error.statusCode || error.status;
-  if (status && status >= 400 && status < 600) {
-    return res.status(status).json({
-      status: "error",
-      message: error.message,
-    });
-  }
-  return next(error);
+function handleOtpError(error, res) {
+  console.error("[OTP Controller Error]", error.message);
+  const status = error.statusCode || error.status || 500;
+  return res.status(status).json({
+    status: "error",
+    message: error.message || "Lỗi xử lý OTP tại máy chủ Backend",
+  });
 }
 
 async function sendOtp(req, res, next) {

@@ -7,15 +7,13 @@ function parseUserId(value) {
 }
 
 function handleControllerError(err, res, next, defaultMsg) {
-  const status = err.status || err.statusCode;
-  if (status && status >= 400 && status < 600) {
-    return res.status(status).json({
-      status: "error",
-      message: err.message || defaultMsg,
-      fieldErrors: err.fieldErrors || undefined,
-    });
-  }
-  return next(err);
+  console.error("[UserManagement Controller Error]", err.message);
+  const status = err.status || err.statusCode || 500;
+  return res.status(status).json({
+    status: "error",
+    message: err.message || defaultMsg || "Lỗi xử lý tại máy chủ Backend",
+    fieldErrors: err.fieldErrors || undefined,
+  });
 }
 
 async function listUsers(req, res, next) {

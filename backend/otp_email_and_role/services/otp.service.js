@@ -133,8 +133,6 @@ async function resendOtp(challengeId) {
   const otp = crypto.randomInt(100000, 1000000).toString();
   const newOtpHash = hashOtp(challengeId, otp);
 
-  await emailService.sendOtpEmail(data.email, otp);
-
   const updated = await otpRedis.eval(
     RESEND_LUA_SCRIPT,
     1,
@@ -145,6 +143,14 @@ async function resendOtp(challengeId) {
 
   if (Number(updated) !== 1) {
     throw createHttpError(400, "OTP không tồn tại hoặc đã hết hạn");
+  }
+
+  try {
+    await emailService.sendOtpEmail(data.email, otp);
+  } catch (error) {
+    await otpRedis.set(redisKey, raw, "KEEPTTL").catch(() => {});
+    console.error("[OTP Resend Email Error]", error.message);
+    throw createHttpError(500, "Không thể gửi lại email OTP");
   }
 
   await logAudit({

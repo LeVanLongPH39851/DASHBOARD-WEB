@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import Header from "../components/layouts/headers/Header";
 import Footer from "../components/layouts/footers/Footer";
 import Loading from "../components/commons/Loading";
@@ -114,12 +120,25 @@ const UsersManagementContent = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const [toast, setToast] = useState(null);
+  const toastTimerRef = useRef(null);
 
   const showToast = useCallback((message, type = "success") => {
+    if (toastTimerRef.current) {
+      clearTimeout(toastTimerRef.current);
+    }
     setToast({ type, message });
-    setTimeout(() => {
+    toastTimerRef.current = setTimeout(() => {
       setToast(null);
+      toastTimerRef.current = null;
     }, 4000);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (toastTimerRef.current) {
+        clearTimeout(toastTimerRef.current);
+      }
+    };
   }, []);
 
   const fetchData = useCallback(async (isSilent = false) => {
@@ -324,8 +343,8 @@ const UsersManagementContent = () => {
     if (!isEdit) {
       if (!formData.password) {
         errors.password = "Vui lòng nhập mật khẩu";
-      } else if (formData.password.length < 6) {
-        errors.password = "Mật khẩu tối thiểu 6 ký tự";
+      } else if (formData.password.length < 8) {
+        errors.password = "Mật khẩu phải có tối thiểu 8 ký tự";
       }
 
       if (!formData.confirm_password) {
@@ -512,39 +531,47 @@ const UsersManagementContent = () => {
       )}
 
       {/* Executive Header & KPI Bar */}
-      <section className="relative overflow-hidden rounded-2xl bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 p-5 sm:p-6 shadow-component">
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#20A7C9] via-[#7367f0] to-[#0cb7a9]" />
+      <section className="shine-auto animate-fade-up relative overflow-hidden rounded-2xl bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 p-5 sm:p-6 shadow-component">
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#20A7C9] via-[#7367f0] to-[#0cb7a9] animate-gradient-shift" />
 
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-5 mb-5 border-b border-border-black-10 dark:border-background-white-15">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#20A7C9] to-[#7367f0] text-white flex items-center justify-center shrink-0 shadow-sm">
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M17 21v-2a4 4 0 0 0-3-3.87M9 21v-2a4 4 0 0 1 3-3.87m0 0a4 4 0 1 0-4-4 4 4 0 0 0 4 4zm8-4a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"
-                />
-              </svg>
+            <div className="relative w-12 h-12 rounded-2xl p-[2px] overflow-hidden shrink-0 shadow-sm">
+              <div className="pointer-events-none absolute -inset-1/2 bg-[conic-gradient(from_0deg,#20A7C9,#7367f0,#f2994a,#2fc4c6,#20A7C9)] animate-spin-slow opacity-90" />
+              <div className="relative w-full h-full rounded-[14px] bg-gradient-to-br from-[#20A7C9] to-[#7367f0] text-white flex items-center justify-center">
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M17 21v-2a4 4 0 0 0-3-3.87M9 21v-2a4 4 0 0 1 3-3.87m0 0a4 4 0 1 0-4-4 4 4 0 0 0 4 4zm8-4a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"
+                  />
+                </svg>
+              </div>
             </div>
             <div>
               <div className="flex flex-wrap items-center gap-2">
                 <h1 className="text-xl sm:text-2xl font-bold text-color-black-100 dark:text-color-white-90 tracking-tight">
                   Quản lý Tài khoản
                 </h1>
-                <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-background-ave-reach dark:bg-[#21b8b8]/20 text-color-ave-reach dark:text-[#5bd6d8] border border-[#21b8b8]/30">
+                <span
+                  style={{ animationDelay: "100ms" }}
+                  className="animate-pop-in inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-background-ave-reach dark:bg-[#21b8b8]/20 text-color-ave-reach dark:text-[#5bd6d8] border border-[#21b8b8]/30"
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#0cb7a9] animate-pulse" />
                   {isSystemAdmin
                     ? "Quản trị hệ thống"
                     : actorRole?.role_name || "Quản trị viên"}
                 </span>
               </div>
               <p className="text-xs text-color-black-50 dark:text-color-white-50 mt-0.5">
-                Quản lý danh sách tài khoản, phân quyền vai trò và chính sách bảo mật
+                Quản lý danh sách tài khoản, phân quyền vai trò và chính sách
+                bảo mật
               </p>
             </div>
           </div>
@@ -554,10 +581,10 @@ const UsersManagementContent = () => {
               type="button"
               onClick={() => fetchData(true)}
               disabled={refreshing}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-border-black-10 dark:border-background-white-15 bg-background-dashboard dark:bg-background-white-8 hover:border-color-neotam text-color-black-70 dark:text-color-white-80 text-xs font-semibold transition cursor-pointer"
+              className="group/refresh inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-border-black-10 dark:border-background-white-15 bg-background-dashboard dark:bg-background-white-8 hover:border-color-neotam hover:-translate-y-0.5 text-color-black-70 dark:text-color-white-80 text-xs font-semibold transition-all duration-200 cursor-pointer"
             >
               <svg
-                className={`w-3.5 h-3.5 ${refreshing ? "animate-spin text-[#20A7C9]" : ""}`}
+                className={`w-3.5 h-3.5 transition-transform duration-500 group-hover/refresh:rotate-180 ${refreshing ? "animate-spin text-[#20A7C9]" : ""}`}
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="2"
@@ -575,7 +602,7 @@ const UsersManagementContent = () => {
             <button
               type="button"
               onClick={handleOpenAdd}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-[#20A7C9] to-[#2fc4c6] text-white text-xs font-bold shadow-xs hover:opacity-95 transition cursor-pointer"
+              className="shine relative overflow-hidden inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-[#20A7C9] to-[#2fc4c6] text-white text-xs font-bold shadow-xs hover:opacity-95 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer"
             >
               <svg
                 className="w-4 h-4"
@@ -597,7 +624,10 @@ const UsersManagementContent = () => {
 
         {/* 3 KPI Stat Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
-          <div className="flex items-center justify-between p-3.5 rounded-xl bg-background-dashboard dark:bg-background-white-8 border border-border-black-10 dark:border-background-white-15">
+          <div
+            style={{ animationDelay: "80ms" }}
+            className="animate-fade-up flex items-center justify-between p-3.5 rounded-xl bg-background-dashboard dark:bg-background-white-8 border border-border-black-10 dark:border-background-white-15 hover:border-[#20A7C9]/40 hover:-translate-y-1 hover:shadow-md transition-all duration-300"
+          >
             <div>
               <p className="text-[11px] font-semibold text-color-black-50 dark:text-color-white-50 uppercase tracking-wider">
                 Tổng tài khoản
@@ -623,7 +653,10 @@ const UsersManagementContent = () => {
             </div>
           </div>
 
-          <div className="flex items-center justify-between p-3.5 rounded-xl bg-background-dashboard dark:bg-background-white-8 border border-border-black-10 dark:border-background-white-15">
+          <div
+            style={{ animationDelay: "140ms" }}
+            className="animate-fade-up flex items-center justify-between p-3.5 rounded-xl bg-background-dashboard dark:bg-background-white-8 border border-border-black-10 dark:border-background-white-15 hover:border-[#0cb7a9]/40 hover:-translate-y-1 hover:shadow-md transition-all duration-300"
+          >
             <div>
               <p className="text-[11px] font-semibold text-color-black-50 dark:text-color-white-50 uppercase tracking-wider">
                 Đang hoạt động
@@ -649,7 +682,10 @@ const UsersManagementContent = () => {
             </div>
           </div>
 
-          <div className="flex items-center justify-between p-3.5 rounded-xl bg-background-dashboard dark:bg-background-white-8 border border-border-black-10 dark:border-background-white-15">
+          <div
+            style={{ animationDelay: "200ms" }}
+            className="animate-fade-up flex items-center justify-between p-3.5 rounded-xl bg-background-dashboard dark:bg-background-white-8 border border-border-black-10 dark:border-background-white-15 hover:border-[#eb5757]/40 hover:-translate-y-1 hover:shadow-md transition-all duration-300"
+          >
             <div>
               <p className="text-[11px] font-semibold text-color-black-50 dark:text-color-white-50 uppercase tracking-wider">
                 Tạm khóa
@@ -678,7 +714,10 @@ const UsersManagementContent = () => {
       </section>
 
       {/* Filter & Search Command Bar */}
-      <section className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 p-3.5 sm:p-4 rounded-2xl bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 shadow-component">
+      <section
+        style={{ animationDelay: "120ms" }}
+        className="animate-fade-up flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 p-3.5 sm:p-4 rounded-2xl bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 shadow-component"
+      >
         <div className="relative flex-1 max-w-md">
           <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-color-black-50 dark:text-color-white-50">
             <svg
@@ -803,14 +842,17 @@ const UsersManagementContent = () => {
       )}
 
       {/* Users Directory Table & Mobile Cards */}
-      <section className="rounded-2xl bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 shadow-component overflow-hidden">
+      <section
+        style={{ animationDelay: "180ms" }}
+        className="animate-fade-up rounded-2xl bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 shadow-component overflow-hidden"
+      >
         {loading ? (
           <div className="py-20 flex flex-col items-center justify-center">
             <Loading />
           </div>
         ) : filteredUsers.length === 0 ? (
-          <div className="py-16 flex flex-col items-center justify-center text-center px-4">
-            <div className="w-14 h-14 rounded-2xl bg-background-ave-reach dark:bg-[#21b8b8]/20 text-color-ave-reach dark:text-[#5bd6d8] flex items-center justify-center mb-3">
+          <div className="py-16 flex flex-col items-center justify-center text-center px-4 animate-fade-up">
+            <div className="w-14 h-14 rounded-2xl bg-background-ave-reach dark:bg-[#21b8b8]/20 text-color-ave-reach dark:text-[#5bd6d8] flex items-center justify-center mb-3 animate-float-slow">
               <svg
                 className="w-7 h-7"
                 fill="none"
@@ -881,7 +923,7 @@ const UsersManagementContent = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-border-black-10/70 dark:divide-background-white-8">
-                {filteredUsers.map((user) => {
+                {filteredUsers.map((user, idx) => {
                   const initials = getInitials(
                     user.first_name,
                     user.last_name,
@@ -898,18 +940,23 @@ const UsersManagementContent = () => {
                   return (
                     <tr
                       key={user.id}
-                      className="group/row hover:bg-background-dashboard/80 dark:hover:bg-background-white-8/50 transition-colors"
+                      style={{
+                        animationDelay: `${Math.min(idx * 35 + 220, 680)}ms`,
+                      }}
+                      className="animate-fade-up group/row hover:bg-background-dashboard/80 dark:hover:bg-background-white-8/50 transition-colors"
                     >
                       {/* Tài khoản */}
                       <td className="px-5 py-3.5">
                         <div className="flex items-center gap-3">
                           <div className="relative shrink-0">
-                            <div className="w-9 h-9 rounded-xl flex items-center justify-center font-bold text-xs bg-gradient-to-br from-[#20A7C9] to-[#7367f0] text-white">
+                            <div className="w-9 h-9 rounded-xl flex items-center justify-center font-bold text-xs bg-gradient-to-br from-[#20A7C9] to-[#7367f0] text-white transition-transform duration-200 group-hover/row:scale-105">
                               {initials}
                             </div>
                             <span
                               className={`absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-background-light dark:border-background-chart-dark ${
-                                user.active ? "bg-[#0cb7a9]" : "bg-color-error"
+                                user.active
+                                  ? "bg-[#0cb7a9] animate-pulse"
+                                  : "bg-color-error"
                               }`}
                             />
                           </div>
@@ -970,7 +1017,7 @@ const UsersManagementContent = () => {
                       <td className="px-4 py-3.5">
                         {user.active ? (
                           <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-background-succes-type-1 dark:bg-background-succes-type-1-dark text-color-succes-type-1 dark:text-color-succes-type-1-dark">
-                            <span className="w-1.5 h-1.5 rounded-full bg-[#0cb7a9]" />
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#0cb7a9] animate-pulse" />
                             Hoạt động
                           </span>
                         ) : (
@@ -1630,7 +1677,9 @@ const UsersManagementContent = () => {
                       Xác thực OTP
                     </p>
                     <p className="text-[11px] text-color-black-50 dark:text-color-white-50">
-                      {formData.require_otp ? "Bắt buộc khi đăng nhập" : "Bỏ qua OTP"}
+                      {formData.require_otp
+                        ? "Bắt buộc khi đăng nhập"
+                        : "Bỏ qua OTP"}
                     </p>
                   </div>
                   <div className="relative inline-flex items-center shrink-0">
@@ -1668,7 +1717,9 @@ const UsersManagementContent = () => {
                       Đổi mật khẩu
                     </p>
                     <p className="text-[11px] text-color-black-50 dark:text-color-white-50">
-                      {formData.can_change_password ? "Cho phép tự đổi" : "Khóa đổi mật khẩu"}
+                      {formData.can_change_password
+                        ? "Cho phép tự đổi"
+                        : "Khóa đổi mật khẩu"}
                     </p>
                   </div>
                   <div className="relative inline-flex items-center shrink-0">
@@ -1729,9 +1780,10 @@ const UsersManagementContent = () => {
           <div className="animate-scale-in relative overflow-hidden w-full max-w-md rounded-2xl bg-background-light dark:bg-background-dark border border-border-black-10 dark:border-background-white-15 p-6 shadow-2xl text-center">
             <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#eb5757] to-[#f87171]" />
 
-            <div className="w-11 h-11 rounded-2xl bg-background-rating dark:bg-[#eb5757]/20 text-color-rating dark:text-[#f87171] flex items-center justify-center mx-auto mb-3">
+            <div className="relative w-11 h-11 rounded-2xl bg-background-rating dark:bg-[#eb5757]/20 text-color-rating dark:text-[#f87171] flex items-center justify-center mx-auto mb-3">
+              <span className="animate-ping absolute inline-flex h-8 w-8 rounded-2xl bg-color-error/25" />
               <svg
-                className="w-5 h-5"
+                className="relative w-5 h-5"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -1749,7 +1801,12 @@ const UsersManagementContent = () => {
               Xóa tài khoản @{targetUser.username}?
             </h3>
             <p className="text-xs text-color-black-50 dark:text-color-white-50 mt-1.5 leading-relaxed">
-              Tài khoản <strong className="text-color-black-100 dark:text-color-white-90">{targetUser.email}</strong> cùng toàn bộ phân quyền nhóm và báo cáo liên quan sẽ bị thu hồi vĩnh viễn.
+              Tài khoản{" "}
+              <strong className="text-color-black-100 dark:text-color-white-90">
+                {targetUser.email}
+              </strong>{" "}
+              cùng toàn bộ phân quyền nhóm và báo cáo liên quan sẽ bị thu hồi
+              vĩnh viễn.
             </p>
 
             <div className="flex items-center justify-center gap-2.5 mt-5">

@@ -264,14 +264,20 @@ const DashboardListContent = () => {
 
       <main className="flex-1 w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-5">
         {/* Executive Header Banner */}
-        <section className="relative overflow-hidden rounded-2xl p-6 sm:p-7 bg-gradient-to-r from-[#0f2a51] via-[#15658a] to-[#20A7C9] dark:from-[#111725] dark:via-[#163853] dark:to-[#1d7a94] text-white shadow-lg border border-white/10">
-          <div className="pointer-events-none absolute -top-24 -right-16 w-72 h-72 rounded-full bg-[#5bd6d8]/20 blur-3xl" />
-          <div className="pointer-events-none absolute -bottom-24 left-1/3 w-64 h-64 rounded-full bg-[#7367f0]/20 blur-3xl" />
+        <section className="shine-auto animate-gradient-shift animate-fade-up relative overflow-hidden rounded-2xl p-6 sm:p-7 bg-gradient-to-r from-[#0f2a51] via-[#15658a] to-[#20A7C9] dark:from-[#111725] dark:via-[#163853] dark:to-[#1d7a94] text-white shadow-lg border border-white/10">
+          <div className="pointer-events-none absolute -top-24 -right-16 w-72 h-72 rounded-full bg-[#5bd6d8]/25 blur-3xl animate-float-slow" />
+          <div
+            className="pointer-events-none absolute -bottom-24 left-1/3 w-64 h-64 rounded-full bg-[#7367f0]/25 blur-3xl animate-float-slow"
+            style={{ animationDelay: "-3s" }}
+          />
 
           <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md text-[11px] font-semibold tracking-wide uppercase mb-2.5 border border-white/20">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#ffd04c]" />
+              <div
+                style={{ animationDelay: "80ms" }}
+                className="animate-pop-in inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md text-[11px] font-semibold tracking-wide uppercase mb-2.5 border border-white/20"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-[#ffd04c] animate-pulse" />
                 <span>VTV Ratings Analytics</span>
               </div>
               <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
@@ -282,7 +288,10 @@ const DashboardListContent = () => {
               </p>
             </div>
 
-            <div className="flex items-center gap-3.5 bg-white/12 backdrop-blur-md border border-white/20 rounded-2xl px-4 py-3 self-start sm:self-auto shrink-0">
+            <div
+              style={{ animationDelay: "140ms" }}
+              className="animate-pop-in flex items-center gap-3.5 bg-white/12 backdrop-blur-md border border-white/20 rounded-2xl px-4 py-3 self-start sm:self-auto shrink-0 hover:scale-[1.02] transition-transform duration-300"
+            >
               <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#ffd04c] to-[#f2994a] flex items-center justify-center text-[#1f2933] shadow-sm">
                 <svg
                   className="w-5 h-5"
@@ -317,7 +326,10 @@ const DashboardListContent = () => {
         </section>
 
         {/* Command Bar: Search, Sort, View Mode */}
-        <section className="p-3.5 sm:p-4 rounded-2xl bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 shadow-component flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+        <section
+          style={{ animationDelay: "70ms" }}
+          className="animate-fade-up p-3.5 sm:p-4 rounded-2xl bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 shadow-component flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 transition-all duration-300"
+        >
           {/* Search Input */}
           <div className="relative flex-1 max-w-md">
             <input
@@ -419,19 +431,19 @@ const DashboardListContent = () => {
 
         {/* Dashboard Grid / List */}
         {loading ? (
-          <div className="p-6 bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 rounded-2xl shadow-component">
+          <div className="animate-fade-up p-6 bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 rounded-2xl shadow-component">
             <Loading height="380px" />
           </div>
         ) : error ? (
-          <div className="p-12 bg-background-light dark:bg-background-chart-dark border border-border-error rounded-2xl shadow-component text-center">
-            <div className="w-11 h-11 mx-auto mb-3 rounded-xl bg-background-error text-color-error flex items-center justify-center text-lg font-bold">
+          <div className="animate-fade-up p-12 bg-background-light dark:bg-background-chart-dark border border-border-error rounded-2xl shadow-component text-center">
+            <div className="w-11 h-11 mx-auto mb-3 rounded-xl bg-background-error text-color-error flex items-center justify-center text-lg font-bold animate-pop-in">
               !
             </div>
             <p className="text-sm font-semibold text-color-error">{error}</p>
           </div>
         ) : displayedDashboards.length === 0 ? (
-          <div className="p-14 bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 rounded-2xl shadow-component text-center">
-            <div className="w-14 h-14 mx-auto mb-3 rounded-2xl bg-background-ave-reach dark:bg-[#21b8b8]/20 text-color-ave-reach dark:text-[#5bd6d8] flex items-center justify-center">
+          <div className="animate-fade-up p-14 bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 rounded-2xl shadow-component text-center">
+            <div className="w-14 h-14 mx-auto mb-3 rounded-2xl bg-background-ave-reach dark:bg-[#21b8b8]/20 text-color-ave-reach dark:text-[#5bd6d8] flex items-center justify-center animate-float-slow">
               <svg
                 className="w-7 h-7"
                 fill="none"
@@ -469,7 +481,10 @@ const DashboardListContent = () => {
                 <Link
                   key={item.id}
                   to={item.path}
-                  className={`group relative overflow-hidden rounded-2xl bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 p-5 flex flex-col justify-between gap-5 shadow-component transition-all duration-300 hover:-translate-y-1 ${theme.hoverBorder} ${theme.hoverShadow}`}
+                  style={{
+                    animationDelay: `${Math.min(index * 60, 360)}ms`,
+                  }}
+                  className={`shine animate-fade-up group relative overflow-hidden rounded-2xl bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 p-5 flex flex-col justify-between gap-5 shadow-component transition-all duration-300 hover:-translate-y-1.5 ${theme.hoverBorder} ${theme.hoverShadow}`}
                 >
                   <div
                     className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${theme.bar}`}
@@ -519,7 +534,7 @@ const DashboardListContent = () => {
             })}
           </div>
         ) : (
-          <div className="space-y-2.5">
+          <div className="space-y-2.5 animate-fade-up">
             {displayedDashboards.map((item, index) => {
               const theme = CARD_THEMES[index % CARD_THEMES.length];
               const IconComponent = CHART_ICONS[index % CHART_ICONS.length];
@@ -529,7 +544,10 @@ const DashboardListContent = () => {
                 <Link
                   key={item.id}
                   to={item.path}
-                  className={`group relative overflow-hidden rounded-2xl bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 p-4 flex items-center justify-between gap-4 shadow-component transition-all duration-200 hover:-translate-y-0.5 ${theme.hoverBorder} ${theme.hoverShadow}`}
+                  style={{
+                    animationDelay: `${Math.min(index * 45, 300)}ms`,
+                  }}
+                  className={`shine animate-fade-up group relative overflow-hidden rounded-2xl bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 p-4 flex items-center justify-between gap-4 shadow-component transition-all duration-200 hover:-translate-y-0.5 ${theme.hoverBorder} ${theme.hoverShadow}`}
                 >
                   <div
                     className={`absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b ${theme.bar}`}

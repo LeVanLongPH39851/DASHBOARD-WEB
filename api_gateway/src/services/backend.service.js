@@ -13,8 +13,11 @@ const RETRYABLE_ERRORS = [
   "ETIMEDOUT",
   "ECONNABORTED",
   "EHOSTUNREACH",
+  "ENOTFOUND",
   "EPIPE",
 ];
+const PRE_CONNECT_ERRORS = ["ECONNREFUSED", "EHOSTUNREACH", "ENOTFOUND"];
+const IDEMPOTENT_METHODS = ["GET", "HEAD", "OPTIONS", "PUT", "DELETE"];
 
 function createGatewayError(status, message) {
   const err = new Error(message);
@@ -43,7 +46,12 @@ async function requestBackend({
   const service = services.backend;
   const excludedInstances = [];
   const upperMethod = method.toUpperCase();
+  const isIdempotent = IDEMPOTENT_METHODS.includes(upperMethod);
   const maxAttempts = Math.max(1, RETRY_ATTEMPTS + 1);
+  const perAttemptTimeout =
+    maxAttempts > 1
+      ? Math.max(2500, Math.floor((timeout - 500) / maxAttempts))
+      : timeout;
 
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     let instance = getNextInstance(service, excludedInstances);
@@ -67,7 +75,7 @@ async function requestBackend({
         url: targetUrl,
         params,
         data,
-        timeout,
+        timeout: perAttemptTimeout,
         headers: {
           "x-internal-api-key": process.env.API_GATEWAY_INTERNAL_KEY,
         },
@@ -84,6 +92,8 @@ async function requestBackend({
       const isRetryableError =
         isTimeoutError || RETRYABLE_ERRORS.includes(error.code);
       const isRetryableStatus = RETRYABLE_STATUS.includes(status);
+      const canRetryMethod =
+        isIdempotent || PRE_CONNECT_ERRORS.includes(error.code);
 
       if (isRetryableError) {
         instance.failures = (instance.failures || 0) + 1;
@@ -101,7 +111,11 @@ async function requestBackend({
         }
       }
 
-      if ((isRetryableError || isRetryableStatus) && attempt < maxAttempts) {
+      if (
+        canRetryMethod &&
+        (isRetryableError || isRetryableStatus) &&
+        attempt < maxAttempts
+      ) {
         console.warn(
           `[Backend Retry ${attempt}/${RETRY_ATTEMPTS}] ${upperMethod} ${targetUrl} failed (${error.code || status}), retrying...`,
         );
@@ -112,7 +126,7 @@ async function requestBackend({
       if (isTimeoutError) {
         throw createGatewayError(
           504,
-          `Yêu cầu tới Backend quá thời gian chờ (${timeout}ms)`,
+          `Yêu cầu tới Backend quá thời gian chờ (${perAttemptTimeout}ms)`,
         );
       }
 
@@ -167,11 +181,11 @@ async function verifyOtp(payload) {
 // -------------------------------------------------------------
 // 2. Phân quyền & Dashboard (/internal/auth/role/*)
 // -------------------------------------------------------------
-async function getUserPermissions(userId) {
+async function getUserPermissions(userId, groupId = null) {
   return requestRoleApi({
     method: "GET",
     path: "/check-roles",
-    params: { userId },
+    params: { userId, ...(groupId ? { groupId } : {}) },
   });
 }
 

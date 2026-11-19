@@ -406,7 +406,7 @@ const Header = ({ username, isEnglish = false }) => {
           </figure>
         </div>
         <div className="w-px h-6 max-md:h-5 rounded-full bg-background-line-gray mx-2"></div>
-        <div className="relative z-500">
+        <div className="relative z-40">
           <div
             ref={buttonRef}
             className="flex items-center gap-2 cursor-pointer"

@@ -196,6 +196,9 @@ async function getUserAccessibleDashboards(userId) {
         SELECT md.dashboard_id
         FROM member_dashboards md
         JOIN groups g ON g.id = md.group_id
+        JOIN group_dashboards gd
+          ON gd.group_id = md.group_id
+         AND gd.dashboard_id = md.dashboard_id
         WHERE md.superset_user_id = $1
           AND g.is_active = TRUE
       )
@@ -489,6 +492,18 @@ async function createManagedGroup({
       }
     }
 
+    const cleanGroupName = String(groupName || "").trim();
+    const dupRes = await client.query(
+      `SELECT id FROM groups WHERE LOWER(group_name) = LOWER($1) LIMIT 1`,
+      [cleanGroupName],
+    );
+    if (dupRes.rows[0]) {
+      throw createHttpError(
+        409,
+        `Tên nhóm "${cleanGroupName}" đã tồn tại trong hệ thống. Vui lòng chọn tên khác.`,
+      );
+    }
+
     const { rows } = await client.query(
       `
         INSERT INTO groups (group_name, description, parent_group_id, created_by)
@@ -496,7 +511,7 @@ async function createManagedGroup({
         RETURNING id, group_name, description, parent_group_id, created_by, created_at, updated_at
       `,
       [
-        groupName.trim(),
+        cleanGroupName,
         description ? description.trim() : null,
         parentGroupId ? Number(parentGroupId) : null,
         userId,
@@ -504,30 +519,33 @@ async function createManagedGroup({
     );
 
     const newGroup = rows[0];
-
-    await logAudit(
-      {
-        userId,
-        action: AUDIT_ACTIONS.GROUP_CREATE,
-        targetType: "GROUP",
-        targetId: newGroup.id,
-        description: `Tạo Group "${newGroup.group_name}"${newGroup.parent_group_id ? ` (thuộc Group cha #${newGroup.parent_group_id})` : " (Group gốc)"}`,
-        metadata: {
-          group_id: Number(newGroup.id),
-          group_name: newGroup.group_name,
-          description: newGroup.description,
-          parent_group_id: newGroup.parent_group_id
-            ? Number(newGroup.parent_group_id)
-            : null,
-        },
-      },
-      client,
-    );
-
     await client.query("COMMIT");
+
+    await logAudit({
+      userId,
+      action: AUDIT_ACTIONS.GROUP_CREATE,
+      targetType: "GROUP",
+      targetId: newGroup.id,
+      description: `Tạo Group "${newGroup.group_name}"${newGroup.parent_group_id ? ` (thuộc Group cha #${newGroup.parent_group_id})` : " (Group gốc)"}`,
+      metadata: {
+        group_id: Number(newGroup.id),
+        group_name: newGroup.group_name,
+        description: newGroup.description,
+        parent_group_id: newGroup.parent_group_id
+          ? Number(newGroup.parent_group_id)
+          : null,
+      },
+    });
+
     return newGroup;
   } catch (error) {
-    await client.query("ROLLBACK");
+    await client.query("ROLLBACK").catch(() => {});
+    if (error.code === "23505") {
+      throw createHttpError(
+        409,
+        `Tên nhóm "${String(groupName || "").trim()}" đã tồn tại trong hệ thống. Vui lòng chọn tên khác.`,
+      );
+    }
     throw error;
   } finally {
     client.release();
@@ -613,12 +631,39 @@ async function updateGroupDashboards({ userId, groupId, dashboardIds }) {
             UNION
             SELECT g.id FROM groups g JOIN sub_groups sg ON g.parent_group_id = sg.id
           )
+          DELETE FROM member_dashboards
+          WHERE group_id IN (SELECT id FROM sub_groups)
+        `,
+        [groupId],
+      );
+
+      await client.query(
+        `
+          WITH RECURSIVE sub_groups AS (
+            SELECT id FROM groups WHERE id = $1
+            UNION
+            SELECT g.id FROM groups g JOIN sub_groups sg ON g.parent_group_id = sg.id
+          )
           DELETE FROM group_dashboards
           WHERE group_id IN (SELECT id FROM sub_groups)
         `,
         [groupId],
       );
     } else {
+      await client.query(
+        `
+          WITH RECURSIVE sub_groups AS (
+            SELECT id FROM groups WHERE id = $1
+            UNION
+            SELECT g.id FROM groups g JOIN sub_groups sg ON g.parent_group_id = sg.id
+          )
+          DELETE FROM member_dashboards
+          WHERE group_id IN (SELECT id FROM sub_groups)
+            AND NOT (dashboard_id = ANY($2::bigint[]))
+        `,
+        [groupId, cleanIds],
+      );
+
       await client.query(
         `
           WITH RECURSIVE sub_groups AS (
@@ -645,26 +690,24 @@ async function updateGroupDashboards({ userId, groupId, dashboardIds }) {
       }
     }
 
-    await logAudit(
-      {
-        userId,
-        action: AUDIT_ACTIONS.GROUP_DASHBOARDS_UPDATE,
-        targetType: "GROUP",
-        targetId: groupId,
-        description: `Cập nhật danh sách Dashboard cho Group "${targetGroup.group_name}" (#${groupId})`,
-        metadata: {
-          group_id: Number(groupId),
-          group_name: targetGroup.group_name,
-          dashboard_ids: cleanIds,
-        },
-      },
-      client,
-    );
-
     await client.query("COMMIT");
+
+    await logAudit({
+      userId,
+      action: AUDIT_ACTIONS.GROUP_DASHBOARDS_UPDATE,
+      targetType: "GROUP",
+      targetId: groupId,
+      description: `Cập nhật danh sách Dashboard cho Group "${targetGroup.group_name}" (#${groupId})`,
+      metadata: {
+        group_id: Number(groupId),
+        group_name: targetGroup.group_name,
+        dashboard_ids: cleanIds,
+      },
+    });
+
     return { groupId: Number(groupId), dashboardIds: cleanIds };
   } catch (error) {
-    await client.query("ROLLBACK");
+    await client.query("ROLLBACK").catch(() => {});
     throw error;
   } finally {
     client.release();
@@ -741,29 +784,27 @@ async function deleteManagedGroup({ userId, groupId }) {
       targetGroupIds,
     ]);
 
-    await logAudit(
-      {
-        userId,
-        action: AUDIT_ACTIONS.GROUP_DELETE,
-        targetType: "GROUP",
-        targetId: groupId,
-        description: `Xóa Group "${targetGroup.group_name}" (#${groupId}) và ${targetGroupIds.length - 1} Group con trực thuộc`,
-        metadata: {
-          deleted_group_id: Number(groupId),
-          group_name: targetGroup.group_name,
-          deleted_group_ids: targetGroupIds,
-        },
-      },
-      client,
-    );
-
     await client.query("COMMIT");
+
+    await logAudit({
+      userId,
+      action: AUDIT_ACTIONS.GROUP_DELETE,
+      targetType: "GROUP",
+      targetId: groupId,
+      description: `Xóa Group "${targetGroup.group_name}" (#${groupId}) và ${targetGroupIds.length - 1} Group con trực thuộc`,
+      metadata: {
+        deleted_group_id: Number(groupId),
+        group_name: targetGroup.group_name,
+        deleted_group_ids: targetGroupIds,
+      },
+    });
+
     return {
       deletedGroupId: Number(groupId),
       deletedGroupIds: targetGroupIds,
     };
   } catch (error) {
-    await client.query("ROLLBACK");
+    await client.query("ROLLBACK").catch(() => {});
     throw error;
   } finally {
     client.release();

@@ -77,9 +77,31 @@ async function rollbackQuietly(client) {
   }
 }
 
+let cachedSupersetUserTable = null;
+
+// Tự động nhận diện bảng users hoặc ab_user trong Superset DB
+async function resolveSupersetUserTable() {
+  if (cachedSupersetUserTable) return cachedSupersetUserTable;
+
+  const { rows } = await supersetPool.query(`
+    SELECT
+      to_regclass('public.users') IS NOT NULL AS has_users,
+      to_regclass('public.ab_user') IS NOT NULL AS has_ab_user
+  `);
+
+  if (rows[0]?.has_users) {
+    cachedSupersetUserTable = "public.users";
+  } else {
+    cachedSupersetUserTable = "public.ab_user";
+  }
+
+  return cachedSupersetUserTable;
+}
+
 module.exports = {
   rolePool,
   supersetPool,
   acquireClientWithRetry,
   rollbackQuietly,
+  resolveSupersetUserTable,
 };

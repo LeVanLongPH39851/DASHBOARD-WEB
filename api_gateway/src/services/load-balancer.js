@@ -10,7 +10,7 @@ function getNextInstance(service, excluded = []) {
   // Round Robin
   const index = service.current % healthyInstances.length;
 
-  service.current++;
+  service.current = (service.current + 1) % healthyInstances.length;
 
   return healthyInstances[index];
 }

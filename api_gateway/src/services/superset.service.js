@@ -12,17 +12,26 @@ const RETRYABLE_ERRORS = [
   "ETIMEDOUT",
   "ECONNABORTED",
   "EHOSTUNREACH",
+  "ENOTFOUND",
   "EPIPE",
 ];
+const PRE_CONNECT_ERRORS = ["ECONNREFUSED", "EHOSTUNREACH", "ENOTFOUND"];
+const IDEMPOTENT_METHODS = ["GET", "HEAD", "OPTIONS", "PUT", "DELETE"];
 
 // Hàm gọi axios tới Superset có hỗ trợ Retry & Request Timeout
 async function requestSuperset(config, allowRetry = true) {
+  const upperMethod = String(config.method || "GET").toUpperCase();
+  const isIdempotent = IDEMPOTENT_METHODS.includes(upperMethod);
   const maxAttempts = allowRetry ? Math.max(1, RETRY_ATTEMPTS + 1) : 1;
+  const perAttemptTimeout =
+    maxAttempts > 1
+      ? Math.max(2500, Math.floor((REQUEST_TIMEOUT - 500) / maxAttempts))
+      : REQUEST_TIMEOUT;
 
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     try {
       return await axios({
-        timeout: REQUEST_TIMEOUT,
+        timeout: perAttemptTimeout,
         ...config,
       });
     } catch (error) {
@@ -34,10 +43,16 @@ async function requestSuperset(config, allowRetry = true) {
       const isRetryableError =
         isTimeoutError || RETRYABLE_ERRORS.includes(error.code);
       const isRetryableStatus = RETRYABLE_STATUS.includes(status);
+      const canRetryMethod =
+        isIdempotent || PRE_CONNECT_ERRORS.includes(error.code);
 
-      if ((isRetryableError || isRetryableStatus) && attempt < maxAttempts) {
+      if (
+        canRetryMethod &&
+        (isRetryableError || isRetryableStatus) &&
+        attempt < maxAttempts
+      ) {
         console.warn(
-          `[Superset Retry ${attempt}/${RETRY_ATTEMPTS}] ${config.method || "GET"} ${config.url} failed (${error.code || status}), retrying...`,
+          `[Superset Retry ${attempt}/${RETRY_ATTEMPTS}] ${upperMethod} ${config.url} failed (${error.code || status}), retrying...`,
         );
         await new Promise((resolve) => setTimeout(resolve, 200 * attempt));
         continue;
@@ -115,7 +130,23 @@ async function login(username, password) {
     const sessionCookie = [...cookieMap.values()].join("; ");
 
     // 4. Kiểm tra session thực sự đã đăng nhập chưa
-    const user = await getCurrentUser(sessionCookie);
+    let user;
+    try {
+      user = await getCurrentUser(sessionCookie);
+    } catch (verifyErr) {
+      const verifyStatus = verifyErr.response?.status;
+      if (
+        verifyStatus === 401 ||
+        verifyStatus === 403 ||
+        verifyErr.message === "Không xác định được Superset user"
+      ) {
+        const authErr = new Error("Tài khoản hoặc mật khẩu không chính xác");
+        authErr.status = 401;
+        authErr.statusCode = 401;
+        throw authErr;
+      }
+      throw verifyErr;
+    }
 
     console.log("✓ Đăng nhập Superset thành công:", user.username);
 

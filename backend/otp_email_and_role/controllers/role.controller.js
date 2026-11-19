@@ -8,20 +8,28 @@ function parsePositiveInt(value) {
   return Number.isSafeInteger(num) && num > 0 ? num : null;
 }
 
-function handleControllerError(err, res, next) {
-  const status = err.statusCode || err.status;
-  if (status && status >= 400 && status < 600) {
-    return res.status(status).json({
+function handleControllerError(err, res) {
+  console.error("[Role Controller Error]", err.message);
+
+  if (err.code === "23505") {
+    return res.status(409).json({
       status: "error",
-      message: err.message,
-      fieldErrors: err.fieldErrors || undefined,
+      message: "Dữ liệu đã tồn tại trong hệ thống (trùng lặp thông tin)",
     });
   }
-  return next(err);
+
+  const status = err.statusCode || err.status || 500;
+  return res.status(status).json({
+    status: "error",
+    message: err.message || "Lỗi xử lý tại máy chủ Backend",
+    fieldErrors: err.fieldErrors || undefined,
+  });
 }
 
 async function checkRoles(req, res, next) {
   const userId = parsePositiveInt(req.body?.userId ?? req.query?.userId);
+  const groupId = parsePositiveInt(req.body?.groupId ?? req.query?.groupId);
+
   if (!userId) {
     return res.status(400).json({
       status: "error",
@@ -30,6 +38,24 @@ async function checkRoles(req, res, next) {
   }
 
   try {
+    if (groupId) {
+      const [globalInfo, groupInfo] = await Promise.all([
+        roleService.getUserRoles(userId),
+        roleService.getUserGroupRoleAndPermissions(userId, groupId),
+      ]);
+
+      return res.status(200).json({
+        status: "success",
+        ...globalInfo,
+        is_system: groupInfo.isSystem,
+        distance: groupInfo.distance,
+        group_roles: groupInfo.roles,
+        group_permissions: groupInfo.permissions,
+        roles: groupInfo.roles,
+        permissions: groupInfo.permissions,
+      });
+    }
+
     const user = await roleService.getUserRoles(userId);
     return res.status(200).json({
       status: "success",

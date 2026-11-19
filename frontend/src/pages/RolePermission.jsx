@@ -354,10 +354,10 @@ const GroupDetailWorkspace = ({
   const breadcrumbs = getGroupBreadcrumb(groups, group.id);
 
   return (
-    <div className="space-y-5">
+    <div key={group.id} className="space-y-5 animate-fade-up">
       {/* Group Header Card */}
       <div className="relative overflow-hidden rounded-2xl bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 p-5 sm:p-6 shadow-component">
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#20A7C9] via-[#7367f0] to-[#f2994a]" />
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#20A7C9] via-[#7367f0] to-[#f2994a] animate-gradient-shift" />
 
         {/* Breadcrumb */}
         {breadcrumbs.length > 1 && (
@@ -546,11 +546,14 @@ const GroupDetailWorkspace = ({
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {dashboards.map((dash) => (
+            {dashboards.map((dash, idx) => (
               <Link
                 key={dash.id}
                 to={dash.path}
-                className="group/d flex items-center justify-between p-3.5 rounded-xl border border-border-black-10 dark:border-background-white-15 bg-background-dashboard/60 dark:bg-background-white-8/40 hover:border-[#20A7C9] dark:hover:border-[#5bd6d8] transition-all duration-200"
+                style={{
+                  animationDelay: `${Math.min(idx * 45 + 60, 360)}ms`,
+                }}
+                className="shine animate-fade-up group/d relative overflow-hidden flex items-center justify-between p-3.5 rounded-xl border border-border-black-10 dark:border-background-white-15 bg-background-dashboard/60 dark:bg-background-white-8/40 hover:border-[#20A7C9] dark:hover:border-[#5bd6d8] hover:-translate-y-0.5 transition-all duration-200"
               >
                 <div className="flex items-center gap-3 min-w-0">
                   <div className="w-8 h-8 rounded-lg bg-background-ave-reach dark:bg-[#21b8b8]/20 text-color-ave-reach dark:text-[#5bd6d8] flex items-center justify-center shrink-0">
@@ -594,11 +597,14 @@ const GroupDetailWorkspace = ({
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {children.map((child) => (
+            {children.map((child, idx) => (
               <div
                 key={child.id}
                 onClick={() => onSelectGroup(child.id)}
-                className="group/child flex items-center justify-between p-3.5 rounded-xl border border-border-black-10 dark:border-background-white-15 bg-background-dashboard/60 dark:bg-background-white-8/40 hover:border-[#7367f0] cursor-pointer transition-all duration-200"
+                style={{
+                  animationDelay: `${Math.min(idx * 45 + 90, 360)}ms`,
+                }}
+                className="shine animate-fade-up group/child relative overflow-hidden flex items-center justify-between p-3.5 rounded-xl border border-border-black-10 dark:border-background-white-15 bg-background-dashboard/60 dark:bg-background-white-8/40 hover:border-[#7367f0] hover:-translate-y-0.5 cursor-pointer transition-all duration-200"
               >
                 <div className="flex items-center gap-3 min-w-0">
                   <div className="w-8 h-8 rounded-lg bg-background-rating-percent dark:bg-[#7367f0]/20 text-color-rating-percent dark:text-[#a59ff8] flex items-center justify-center shrink-0">
@@ -699,14 +705,15 @@ const GroupCardNode = ({
 
   return (
     <div
-      className={
+      style={{ animationDelay: `${Math.min((index + level) * 60, 360)}ms` }}
+      className={`animate-fade-up ${
         level > 0
           ? "mt-3.5 pl-4 sm:pl-5 border-l-2 border-dashed border-[#20A7C9]/40 dark:border-[#5bd6d8]/30 relative"
           : ""
-      }
+      }`}
     >
       <div
-        className={`relative overflow-hidden rounded-2xl bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 p-5 shadow-component transition-all duration-200 ${accent.hoverBorder}`}
+        className={`shine relative overflow-hidden rounded-2xl bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 p-5 shadow-component transition-all duration-300 hover:-translate-y-0.5 ${accent.hoverBorder} ${accent.hoverShadow}`}
       >
         <div
           className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${accent.bar}`}
@@ -963,11 +970,6 @@ const RolePermissionContent = () => {
 
   const flatGroupOptions = useMemo(() => flattenGroups(groups), [groups]);
 
-  const selectedGroup = useMemo(() => {
-    if (!selectedGroupId) return groups[0] || null;
-    return findGroupById(groups, selectedGroupId) || groups[0] || null;
-  }, [groups, selectedGroupId]);
-
   const filteredGroupsForExplorer = useMemo(() => {
     const q = groupSearchQuery.trim().toLowerCase();
     if (!q) return groups;
@@ -990,6 +992,17 @@ const RolePermissionContent = () => {
     }
     return filterNodes(groups);
   }, [groups, groupSearchQuery]);
+
+  const selectedGroup = useMemo(() => {
+    const sourceGroups = groupSearchQuery.trim()
+      ? filteredGroupsForExplorer
+      : groups;
+    if (sourceGroups.length === 0) return null;
+    if (!selectedGroupId) return sourceGroups[0] || null;
+    return (
+      findGroupById(sourceGroups, selectedGroupId) || sourceGroups[0] || null
+    );
+  }, [groups, filteredGroupsForExplorer, groupSearchQuery, selectedGroupId]);
 
   const isSystemManager = roles.includes("admin_ami");
 
@@ -1086,9 +1099,7 @@ const RolePermissionContent = () => {
         return;
       }
       if (pChildrenCount >= 10) {
-        alert(
-          "Mỗi nhóm cha chỉ được phép có tối đa 10 nhóm con.",
-        );
+        alert("Mỗi nhóm cha chỉ được phép có tối đa 10 nhóm con.");
         return;
       }
     }
@@ -1323,9 +1334,7 @@ const RolePermissionContent = () => {
       }
     } catch (err) {
       setConfirmDeleteError(
-        err.response?.data?.message ||
-          err.message ||
-          "Thao tác xóa thất bại",
+        err.response?.data?.message || err.message || "Thao tác xóa thất bại",
       );
     } finally {
       setDeletingConfirm(false);
@@ -1338,25 +1347,36 @@ const RolePermissionContent = () => {
 
       <main className="flex-1 w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-5">
         {/* Executive Header */}
-        <section className="relative overflow-hidden rounded-2xl p-6 bg-gradient-to-r from-[#1f1c47] via-[#4338ca] to-[#7367f0] dark:from-[#111725] dark:via-[#28245c] dark:to-[#5346d6] text-white shadow-lg border border-white/10">
-          <div className="pointer-events-none absolute -top-24 -right-16 w-72 h-72 rounded-full bg-[#5bd6d8]/20 blur-3xl" />
+        <section className="shine-auto animate-gradient-shift animate-fade-up relative overflow-hidden rounded-2xl p-6 bg-gradient-to-r from-[#1f1c47] via-[#4338ca] to-[#7367f0] dark:from-[#111725] dark:via-[#28245c] dark:to-[#5346d6] text-white shadow-lg border border-white/10">
+          <div className="pointer-events-none absolute -top-24 -right-16 w-72 h-72 rounded-full bg-[#5bd6d8]/25 blur-3xl animate-float-slow" />
+          <div
+            className="pointer-events-none absolute -bottom-24 left-1/3 w-64 h-64 rounded-full bg-[#f2994a]/25 blur-3xl animate-float-slow"
+            style={{ animationDelay: "-3s" }}
+          />
 
           <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md text-[11px] font-semibold mb-2.5 border border-white/20">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#ffd04c]" />
+              <div
+                style={{ animationDelay: "80ms" }}
+                className="animate-pop-in inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md text-[11px] font-semibold mb-2.5 border border-white/20"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-[#ffd04c] animate-pulse" />
                 <span>{roleBadgeLabel}</span>
               </div>
               <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight">
                 Phân quyền Nhóm & Báo cáo
               </h1>
               <p className="text-xs sm:text-sm text-white/80 mt-1">
-                Quản lý cấu trúc cây đơn vị, thành viên và danh mục báo cáo được cấp phát
+                Quản lý cấu trúc cây đơn vị, thành viên và danh mục báo cáo được
+                cấp phát
               </p>
             </div>
 
             <div className="flex flex-wrap items-center gap-3 self-start lg:self-auto">
-              <div className="flex items-center gap-3 bg-white/12 backdrop-blur-md border border-white/20 rounded-2xl px-4 py-2.5">
+              <div
+                style={{ animationDelay: "140ms" }}
+                className="animate-pop-in flex items-center gap-3 bg-white/12 backdrop-blur-md border border-white/20 rounded-2xl px-4 py-2.5"
+              >
                 <div className="text-center px-2">
                   <p className="text-[10px] text-white/75 uppercase tracking-wider">
                     Tổng nhóm
@@ -1389,7 +1409,7 @@ const RolePermissionContent = () => {
                 <button
                   type="button"
                   onClick={() => handleOpenCreateModal(null)}
-                  className="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-white text-[#312e81] hover:bg-[#ffd04c] hover:text-[#1f2933] transition cursor-pointer shadow-sm flex items-center gap-1.5"
+                  className="shine relative overflow-hidden px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-white text-[#312e81] hover:bg-[#ffd04c] hover:text-[#1f2933] hover:-translate-y-0.5 transition-all duration-200 cursor-pointer shadow-sm flex items-center gap-1.5"
                 >
                   <svg
                     className="w-4 h-4"
@@ -1410,7 +1430,10 @@ const RolePermissionContent = () => {
 
         {/* Command Bar */}
         {!loading && !error && groups.length > 0 && (
-          <section className="p-3.5 sm:p-4 rounded-2xl bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 shadow-component flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+          <section
+            style={{ animationDelay: "70ms" }}
+            className="animate-fade-up p-3.5 sm:p-4 rounded-2xl bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 shadow-component flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3"
+          >
             <div className="relative flex-1 max-w-md">
               <input
                 type="text"
@@ -1494,15 +1517,15 @@ const RolePermissionContent = () => {
 
         {/* Main Content */}
         {loading ? (
-          <div className="p-6 bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 rounded-2xl shadow-component">
+          <div className="animate-fade-up p-6 bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 rounded-2xl shadow-component">
             <Loading height="380px" />
           </div>
         ) : error ? (
-          <div className="p-12 bg-background-light dark:bg-background-chart-dark border border-border-error rounded-2xl shadow-component text-center">
+          <div className="animate-fade-up p-12 bg-background-light dark:bg-background-chart-dark border border-border-error rounded-2xl shadow-component text-center">
             <p className="text-sm font-semibold text-color-error">{error}</p>
           </div>
         ) : groups.length === 0 ? (
-          <div className="p-14 bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 rounded-2xl shadow-component text-center">
+          <div className="animate-fade-up p-14 bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 rounded-2xl shadow-component text-center">
             <p className="text-sm font-bold text-color-black-100 dark:text-color-white-90">
               Chưa có nhóm nào trong phạm vi quản lý
             </p>
@@ -1517,13 +1540,19 @@ const RolePermissionContent = () => {
             )}
           </div>
         ) : layoutMode === "split" ? (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          <div
+            style={{ animationDelay: "120ms" }}
+            className="animate-fade-up grid grid-cols-1 lg:grid-cols-12 gap-6 items-start"
+          >
             {/* Left Sidebar: Tree Explorer */}
             <div className="lg:col-span-4 rounded-2xl bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 p-4 shadow-component space-y-3 lg:sticky lg:top-4 max-h-[calc(100vh-120px)] overflow-y-auto">
               <div className="flex items-center justify-between gap-2 pb-2.5 border-b border-border-black-10 dark:border-background-white-15">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-color-black-100 dark:text-color-white-90">
-                  Cây đơn vị
-                </h3>
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-[#20A7C9] animate-pulse" />
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-color-black-100 dark:text-color-white-90">
+                    Cây đơn vị
+                  </h3>
+                </div>
                 <span className="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-background-dashboard dark:bg-background-white-8 text-color-black-70 dark:text-color-white-70">
                   {filteredGroupsForExplorer.length} nhánh
                 </span>
@@ -2267,9 +2296,10 @@ const RolePermissionContent = () => {
           <div className="animate-scale-in relative overflow-hidden w-full max-w-md rounded-2xl bg-background-light dark:bg-background-dark border border-border-black-10 dark:border-background-white-15 p-6 shadow-2xl text-center">
             <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#eb5757] to-[#f87171]" />
 
-            <div className="w-11 h-11 rounded-2xl bg-color-error/15 text-color-error flex items-center justify-center mx-auto mb-3 border border-color-error/30">
+            <div className="relative w-11 h-11 rounded-2xl bg-color-error/15 text-color-error flex items-center justify-center mx-auto mb-3 border border-color-error/30">
+              <span className="animate-ping absolute inline-flex h-8 w-8 rounded-2xl bg-color-error/25" />
               <svg
-                className="w-5 h-5"
+                className="relative w-5 h-5"
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="2.2"

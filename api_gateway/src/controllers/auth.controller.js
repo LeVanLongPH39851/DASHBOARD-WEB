@@ -7,8 +7,6 @@ const {
   resolveDashboardTarget,
 } = require("../config/dashboards");
 const {
-  HIGH_ADMIN_ROLES,
-  hasAllowedRole,
   getPermissionsForRoles,
 } = require("../config/roles");
 
@@ -61,8 +59,17 @@ function setSessionHttpOnlyCookies(res, sessionCookie, req = null) {
 function sendGatewayError(res, error, fallbackMessage, defaultStatus = 500) {
   const status =
     error.response?.status || error.statusCode || error.status || defaultStatus;
+  const backendMessage =
+    typeof error.response?.data === "object"
+      ? error.response?.data?.message || error.response?.data?.error
+      : null;
+  const isGenericAxiosMessage = /^Request failed with status code \d+$/i.test(
+    error.message || "",
+  );
   const message =
-    error.response?.data?.message || error.message || fallbackMessage;
+    backendMessage ||
+    (!isGenericAxiosMessage ? error.message : null) ||
+    fallbackMessage;
   const fieldErrors = error.response?.data?.fieldErrors || error.fieldErrors;
 
   return res.status(status).json({
@@ -86,6 +93,13 @@ async function loginController(req, res, next) {
       });
     }
 
+    if (String(password).length < 8) {
+      return res.status(400).json({
+        status: "error",
+        message: "Mật khẩu phải có tối thiểu 8 ký tự",
+      });
+    }
+
     const result = await authService.login(username, password);
 
     if (result.otpRequired === false) {
@@ -106,7 +120,7 @@ async function loginController(req, res, next) {
       data: result,
     });
   } catch (error) {
-    if (error.statusCode || error.status) {
+    if (error.response?.status || error.statusCode || error.status) {
       return sendGatewayError(res, error, "Đăng nhập thất bại");
     }
     return next(error);
@@ -127,11 +141,15 @@ async function resendOtpController(req, res, next) {
     const result = await authService.resendOtp(challengeId);
 
     return res.status(200).json({
+      status: "success",
       success: true,
       message: "Gửi lại OTP thành công",
       data: result,
     });
   } catch (error) {
+    if (error.response?.status || error.statusCode || error.status) {
+      return sendGatewayError(res, error, "Gửi lại mã OTP thất bại");
+    }
     return next(error);
   }
 }
@@ -158,6 +176,9 @@ async function verifyOtpController(req, res, next) {
       },
     });
   } catch (error) {
+    if (error.response?.status || error.statusCode || error.status) {
+      return sendGatewayError(res, error, "Xác thực OTP thất bại");
+    }
     return next(error);
   }
 }
@@ -419,9 +440,7 @@ async function getManagedGroupsController(req, res) {
     const titleMap = new Map();
     let availableDashboards = [];
 
-    const canAssignOrCreate = hasAllowedRole(globalRoles, HIGH_ADMIN_ROLES);
-
-    if (rawGroups.length > 0 || canAssignOrCreate) {
+    if (rawGroups.length > 0) {
       try {
         const supersetDashboards =
           await supersetService.getDashboards(sessionCookie);

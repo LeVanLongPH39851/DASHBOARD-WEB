@@ -65,9 +65,9 @@ const Login = () => {
         return;
       }
     } catch {
-      // Nếu lỗi thì chuyển về trang danh sách /dashboard
+      // Nếu lỗi thì chuyển về trang danh sách /dashboards
     }
-    navigate("/dashboard", { replace: true });
+    navigate("/dashboards", { replace: true });
   };
 
   useEffect(() => {

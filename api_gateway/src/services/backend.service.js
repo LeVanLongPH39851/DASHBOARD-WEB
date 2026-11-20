@@ -49,9 +49,11 @@ async function requestBackend({
   const isIdempotent = IDEMPOTENT_METHODS.includes(upperMethod);
   const maxAttempts = Math.max(1, RETRY_ATTEMPTS + 1);
   const perAttemptTimeout =
-    maxAttempts > 1
-      ? Math.max(2500, Math.floor((timeout - 500) / maxAttempts))
-      : timeout;
+    !isIdempotent
+      ? timeout
+      : maxAttempts > 1
+        ? Math.max(2500, Math.floor((timeout - 500) / maxAttempts))
+        : timeout;
 
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     let instance = getNextInstance(service, excludedInstances);
@@ -159,6 +161,7 @@ async function sendOtp(payload) {
     method: "POST",
     path: "/send",
     data: payload,
+    timeout: 30000,
   });
 }
 
@@ -167,6 +170,7 @@ async function resendOtp(payload) {
     method: "POST",
     path: "/resend",
     data: payload,
+    timeout: 30000,
   });
 }
 

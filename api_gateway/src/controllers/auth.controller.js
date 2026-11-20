@@ -1,5 +1,6 @@
 const authService = require("../services/auth.service");
 const supersetService = require("../services/superset.service");
+const cacheService = require("../services/cache.service");
 const backendService = require("../services/backend.service");
 const {
   DASHBOARD_ROUTES,
@@ -255,6 +256,12 @@ async function logoutController(req, res) {
 async function roleController(req, res) {
   try {
     const userId = req.user.profile.id;
+    const cacheKey = cacheService.buildKey("permissions", userId);
+    const cached = await cacheService.getCache(cacheKey);
+    if (cached) {
+      return res.json(cached);
+    }
+
     const user = await backendService.getUserPermissions(userId);
     const roles = user.roles || [];
     const globalRoles = user.global_roles || roles;
@@ -265,10 +272,13 @@ async function roleController(req, res) {
     req.user.global_permissions =
       user.global_permissions || getPermissionsForRoles(globalRoles);
 
-    return res.json({
+    const responseData = {
       status: "success",
       user: req.user,
-    });
+    };
+    await cacheService.setCache(cacheKey, responseData);
+
+    return res.json(responseData);
   } catch (error) {
     console.error("[Role Controller Error]", error.message);
     return sendGatewayError(
@@ -288,6 +298,12 @@ async function getDashboardsController(req, res) {
     const userId = req.user.profile.id;
     const sessionCookie = req.sessionCookie || req.headers.cookie;
 
+    const cacheKey = cacheService.buildKey("dashboards", userId);
+    const cached = await cacheService.getCache(cacheKey);
+    if (cached) {
+      return res.status(200).json(cached);
+    }
+
     const accessInfo = await backendService.getUserDashboards(userId);
     const canViewAll = Boolean(accessInfo?.canViewAll);
     const dbIds = Array.isArray(accessInfo?.dashboardIds)
@@ -299,11 +315,13 @@ async function getDashboardsController(req, res) {
       : dbIds.filter((id) => Boolean(DASHBOARD_ROUTES[id]));
 
     if (allowedIds.length === 0) {
-      return res.status(200).json({
+      const emptyRes = {
         status: "success",
         count: 0,
         dashboards: [],
-      });
+      };
+      await cacheService.setCache(cacheKey, emptyRes);
+      return res.status(200).json(emptyRes);
     }
 
     const supersetDashboards =
@@ -322,11 +340,14 @@ async function getDashboardsController(req, res) {
         };
       });
 
-    return res.status(200).json({
+    const responseData = {
       status: "success",
       count: dashboards.length,
       dashboards,
-    });
+    };
+    await cacheService.setCache(cacheKey, responseData);
+
+    return res.status(200).json(responseData);
   } catch (error) {
     console.error("[Get Dashboards Error]", error.message);
     return sendGatewayError(
@@ -352,6 +373,12 @@ async function checkDashboardAccessController(req, res) {
     }
 
     const userId = req.user.profile.id;
+    const cacheKey = cacheService.buildKey("dashboard_access", userId, dashboardInfo.id);
+    const cached = await cacheService.getCache(cacheKey);
+    if (cached) {
+      return res.status(200).json(cached);
+    }
+
     const accessInfo = await backendService.getUserDashboards(userId);
     const canViewAll = Boolean(accessInfo?.canViewAll);
     const allowedIds = Array.isArray(accessInfo?.dashboardIds)
@@ -381,11 +408,14 @@ async function checkDashboardAccessController(req, res) {
       },
     });
 
-    return res.status(200).json({
+    const responseData = {
       status: "success",
       allowed: true,
       dashboard: dashboardInfo,
-    });
+    };
+    await cacheService.setCache(cacheKey, responseData);
+
+    return res.status(200).json(responseData);
   } catch (error) {
     console.error("[Check Dashboard Access Error]", error.message);
     return res.status(error.response?.status || 503).json({
@@ -429,6 +459,12 @@ async function getManagedGroupsController(req, res) {
     const userId = req.user.profile.id;
     const sessionCookie = req.sessionCookie || req.headers.cookie;
 
+    const cacheKey = cacheService.buildKey("groups", userId);
+    const cached = await cacheService.getCache(cacheKey);
+    if (cached) {
+      return res.status(200).json(cached);
+    }
+
     const groupData = await backendService.getManagedGroups(userId);
     const rawGroups = groupData?.groups || [];
     const roles = groupData?.roles || [];
@@ -462,7 +498,7 @@ async function getManagedGroupsController(req, res) {
 
     const groups = enrichGroupTreeWithDashboards(rawGroups, titleMap);
 
-    return res.status(200).json({
+    const responseData = {
       status: "success",
       roles,
       permissions,
@@ -470,7 +506,10 @@ async function getManagedGroupsController(req, res) {
       global_permissions: globalPermissions,
       groups,
       availableDashboards,
-    });
+    };
+    await cacheService.setCache(cacheKey, responseData);
+
+    return res.status(200).json(responseData);
   } catch (error) {
     console.error("[Get Managed Groups Error]", error.message);
     return sendGatewayError(
@@ -494,6 +533,8 @@ async function createManagedGroupController(req, res) {
       parentGroupId,
     });
 
+    await cacheService.invalidateActions(["groups", "user_info"]);
+
     return res.status(201).json(result);
   } catch (error) {
     console.error("[Create Group Error]", error.message);
@@ -512,6 +553,13 @@ async function updateGroupDashboardsController(req, res) {
       groupId,
       dashboardIds,
     });
+
+    await cacheService.invalidateActions([
+      "dashboards",
+      "dashboard_access",
+      "groups",
+      "user_info",
+    ]);
 
     return res.status(200).json(result);
   } catch (error) {
@@ -534,6 +582,16 @@ async function deleteManagedGroupController(req, res) {
       groupId,
     });
 
+    await cacheService.invalidateActions([
+      "dashboards",
+      "dashboard_access",
+      "groups",
+      "group_members",
+      "user_info",
+      "assignable_users",
+      "permissions",
+    ]);
+
     return res.status(200).json(result);
   } catch (error) {
     console.error("[Delete Group Error]", error.message);
@@ -545,7 +603,16 @@ async function getAssignableUsersController(req, res) {
   try {
     const userId = req.user.profile.id;
     const groupId = req.query?.groupId ? Number(req.query.groupId) : null;
+
+    const cacheKey = cacheService.buildKey("assignable_users", userId, groupId || "all");
+    const cached = await cacheService.getCache(cacheKey);
+    if (cached) {
+      return res.status(200).json(cached);
+    }
+
     const result = await backendService.getAssignableUsers(userId, groupId);
+    await cacheService.setCache(cacheKey, result);
+
     return res.status(200).json(result);
   } catch (error) {
     console.error("[Get Assignable Users Error]", error.message);
@@ -561,7 +628,16 @@ async function getGroupMembersController(req, res) {
   try {
     const userId = req.user.profile.id;
     const groupId = Number(req.params.groupId);
+
+    const cacheKey = cacheService.buildKey("group_members", userId, groupId);
+    const cached = await cacheService.getCache(cacheKey);
+    if (cached) {
+      return res.status(200).json(cached);
+    }
+
     const result = await backendService.getGroupMembers(userId, groupId);
+    await cacheService.setCache(cacheKey, result);
+
     return res.status(200).json(result);
   } catch (error) {
     console.error("[Get Group Members Error]", error.message);
@@ -587,6 +663,16 @@ async function assignGroupMemberController(req, res) {
       dashboardIds,
     });
 
+    await cacheService.invalidateActions([
+      "dashboards",
+      "dashboard_access",
+      "groups",
+      "group_members",
+      "user_info",
+      "permissions",
+      "assignable_users",
+    ]);
+
     return res.status(200).json(result);
   } catch (error) {
     console.error("[Assign Group Member Error]", error.message);
@@ -606,6 +692,16 @@ async function removeGroupMemberController(req, res) {
       targetUserId,
     });
 
+    await cacheService.invalidateActions([
+      "dashboards",
+      "dashboard_access",
+      "groups",
+      "group_members",
+      "user_info",
+      "permissions",
+      "assignable_users",
+    ]);
+
     return res.status(200).json(result);
   } catch (error) {
     console.error("[Remove Group Member Error]", error.message);
@@ -620,6 +716,12 @@ async function getUsersInfoController(req, res) {
   try {
     const userId = req.user.profile.id;
     const sessionCookie = req.sessionCookie || req.headers.cookie;
+
+    const cacheKey = cacheService.buildKey("user_info", userId);
+    const cached = await cacheService.getCache(cacheKey);
+    if (cached) {
+      return res.status(200).json(cached);
+    }
 
     const infoData = await backendService.getUsersInfo(userId);
     const rawUser =
@@ -659,13 +761,16 @@ async function getUsersInfoController(req, res) {
       };
     });
 
-    return res.status(200).json({
+    const responseData = {
       status: "success",
       user: {
         ...rawUser,
         dashboards,
       },
-    });
+    };
+    await cacheService.setCache(cacheKey, responseData);
+
+    return res.status(200).json(responseData);
   } catch (error) {
     console.error("[Get Users Info Error]", error.message);
     return sendGatewayError(res, error, "Không thể lấy thông tin User Info");
@@ -681,6 +786,10 @@ async function updateUserProfileController(req, res) {
       last_name,
       email,
     });
+
+    await cacheService.deleteCache(cacheService.buildKey("user_info", userId));
+    await cacheService.invalidateActions(["manage_users"]);
+
     return res.status(200).json(result);
   } catch (error) {
     console.error("[Update User Profile Error]", error.message);
@@ -697,6 +806,9 @@ async function changeUserPasswordController(req, res) {
       new_password,
       confirm_new_password,
     });
+
+    await cacheService.deleteCache(cacheService.buildKey("user_info", userId));
+
     return res.status(200).json(result);
   } catch (error) {
     console.error("[Change User Password Error]", error.message);
@@ -710,7 +822,16 @@ async function changeUserPasswordController(req, res) {
 async function getManagedUsersController(req, res) {
   try {
     const userId = req.user.profile.id;
+    const queryStr = req.query ? JSON.stringify(req.query) : "all";
+    const cacheKey = cacheService.buildKey("manage_users", userId, Buffer.from(queryStr).toString("base64url"));
+    const cached = await cacheService.getCache(cacheKey);
+    if (cached) {
+      return res.status(200).json(cached);
+    }
+
     const result = await backendService.getManagedUsers(userId);
+    await cacheService.setCache(cacheKey, result);
+
     return res.status(200).json(result);
   } catch (error) {
     console.error("[Get Managed Users Error]", error.message);
@@ -721,7 +842,15 @@ async function getManagedUsersController(req, res) {
 async function getRoleOptionsController(req, res) {
   try {
     const userId = req.user.profile.id;
+    const cacheKey = cacheService.buildKey("role_options", userId);
+    const cached = await cacheService.getCache(cacheKey);
+    if (cached) {
+      return res.status(200).json(cached);
+    }
+
     const result = await backendService.getRoleOptions(userId);
+    await cacheService.setCache(cacheKey, result);
+
     return res.status(200).json(result);
   } catch (error) {
     console.error("[Get Role Options Error]", error.message);
@@ -733,10 +862,19 @@ async function getManagedUserDetailController(req, res) {
   try {
     const userId = req.user.profile.id;
     const targetUserId = req.query?.targetUserId || req.params?.id;
+
+    const cacheKey = cacheService.buildKey("user_detail", userId, targetUserId || "me");
+    const cached = await cacheService.getCache(cacheKey);
+    if (cached) {
+      return res.status(200).json(cached);
+    }
+
     const result = await backendService.getManagedUserDetail(
       userId,
       targetUserId,
     );
+    await cacheService.setCache(cacheKey, result);
+
     return res.status(200).json(result);
   } catch (error) {
     console.error("[Get Managed User Detail Error]", error.message);
@@ -751,6 +889,9 @@ async function createManagedUserController(req, res) {
       ...req.body,
       userId,
     });
+
+    await cacheService.invalidateActions(["manage_users", "assignable_users"]);
+
     return res.status(201).json(result);
   } catch (error) {
     console.error("[Create Managed User Error]", error.message);
@@ -768,6 +909,19 @@ async function updateManagedUserController(req, res) {
       userId,
       targetUserId,
     });
+
+    await cacheService.invalidateActions([
+      "manage_users",
+      "user_detail",
+      "user_info",
+      "permissions",
+      "dashboards",
+      "dashboard_access",
+      "groups",
+      "group_members",
+      "assignable_users",
+    ]);
+
     return res.status(200).json(result);
   } catch (error) {
     console.error("[Update Managed User Error]", error.message);
@@ -784,6 +938,19 @@ async function deleteManagedUserController(req, res) {
       userId,
       targetUserId,
     });
+
+    await cacheService.invalidateActions([
+      "manage_users",
+      "user_detail",
+      "assignable_users",
+      "group_members",
+      "user_info",
+      "dashboards",
+      "dashboard_access",
+      "groups",
+      "permissions",
+    ]);
+
     return res.status(200).json(result);
   } catch (error) {
     console.error("[Delete Managed User Error]", error.message);

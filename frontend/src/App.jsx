@@ -66,7 +66,7 @@ const ProtectedRoute = ({ children }) => {
   return isAuthenticated ? children : <Navigate to="/" replace />;
 };
 
-// Chỉ 3 Admin ở Global (admin_ami, super_admin, group_admin trong user_global_roles) mới được vào /role-permission
+// Chỉ 3 Admin ở Global (admin_ami, super_admin, group_admin trong user_global_roles) mới được vào /groups (và /role-permission)
 const ProtectedAdminRoute = ({ children }) => {
   const [authState, setAuthState] = useState({
     loading: true,
@@ -117,7 +117,7 @@ const ProtectedAdminRoute = ({ children }) => {
   }
 
   if (!authState.isGlobalAdmin) {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to="/dashboards" replace />;
   }
 
   return children;
@@ -190,7 +190,7 @@ const ProtectedDashboardRoute = ({ fixedTarget }) => {
   }
 
   if (!state.allowed || !state.dashboard) {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to="/dashboards" replace />;
   }
 
   // Nếu người dùng gõ /dashboard/62 (hoặc /spot) thì chuẩn hóa URL về /dashboard/spot
@@ -199,14 +199,14 @@ const ProtectedDashboardRoute = ({ fixedTarget }) => {
   }
 
   const Component = DASHBOARD_COMPONENT_BY_SLUG[state.dashboard.slug];
-  return Component ? <Component /> : <Navigate to="/dashboard" replace />;
+  return Component ? <Component /> : <Navigate to="/dashboards" replace />;
 };
 
 const PublicRoute = ({ children }) => {
   const [authState, setAuthState] = useState({
     loading: true,
     isAuthenticated: false,
-    redirectPath: "/dashboard",
+    redirectPath: "/dashboards",
   });
 
   useEffect(() => {
@@ -218,7 +218,7 @@ const PublicRoute = ({ children }) => {
         if (!isMounted) return;
 
         if (res?.status === "success" && res?.user) {
-          let targetPath = "/dashboard";
+          let targetPath = "/dashboards";
           try {
             const dashRes = await getDashboards();
             const mapped = dashRes?.dashboards || [];
@@ -226,7 +226,7 @@ const PublicRoute = ({ children }) => {
               targetPath = mapped[0].path;
             }
           } catch {
-            // fallback về /dashboard
+            // fallback về /dashboards
           }
 
           if (isMounted) {
@@ -240,7 +240,7 @@ const PublicRoute = ({ children }) => {
           setAuthState({
             loading: false,
             isAuthenticated: false,
-            redirectPath: "/dashboard",
+            redirectPath: "/dashboards",
           });
         }
       } catch {
@@ -248,7 +248,7 @@ const PublicRoute = ({ children }) => {
           setAuthState({
             loading: false,
             isAuthenticated: false,
-            redirectPath: "/dashboard",
+            redirectPath: "/dashboards",
           });
         }
       }
@@ -285,20 +285,30 @@ function App() {
           }
         />
         <Route
-          path="/dashboard"
+          path="/dashboards"
           element={
             <ProtectedRoute>
               <DashboardList />
             </ProtectedRoute>
           }
         />
+        {/* Chuyển hướng tương thích từ /dashboard về /dashboards */}
         <Route
-          path="/role-permission"
+          path="/dashboard"
+          element={<Navigate to="/dashboards" replace />}
+        />
+        <Route
+          path="/groups"
           element={
             <ProtectedAdminRoute>
               <RolePermission />
             </ProtectedAdminRoute>
           }
+        />
+        {/* Chuyển hướng tương thích từ /role-permission về /groups */}
+        <Route
+          path="/role-permission"
+          element={<Navigate to="/groups" replace />}
         />
         <Route
           path="/users"

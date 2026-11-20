@@ -67,8 +67,10 @@ const Header = ({ username, isEnglish = false }) => {
     };
   }, []);
 
-  const isRolePermissionActive =
+  const isGroupsActive =
+    location.pathname === "/groups" ||
     location.pathname === "/role-permission" ||
+    location.search.includes("tab=groups") ||
     location.search.includes("tab=role-permission");
   const isUsersActive =
     location.pathname === "/users" || location.search.includes("tab=users");
@@ -76,15 +78,15 @@ const Header = ({ username, isEnglish = false }) => {
     location.pathname === "/user-info" ||
     location.search.includes("tab=user-info");
   const isDashboardActive =
-    !isRolePermissionActive && !isUsersActive && !isUserInfoActive;
+    !isGroupsActive && !isUsersActive && !isUserInfoActive;
 
   // Cấu hình các nút điều hướng trên Header (màu theo bảng màu theme VTV Ratings)
   const navItems = useMemo(
     () => [
       {
-        key: "dashboard",
-        to: "/dashboard?view=list",
-        label: "Dashboard",
+        key: "dashboards",
+        to: "/dashboards",
+        label: "Dashboards",
         visible: true,
         gradient: "from-[#20A7C9] via-[#26b7c7] to-[#2fc4c6]",
         glow: "shadow-[0_6px_18px_-4px_rgba(32,167,201,0.55)]",
@@ -108,9 +110,9 @@ const Header = ({ username, isEnglish = false }) => {
         ),
       },
       {
-        key: "role-permission",
-        to: "/role-permission",
-        label: "Role and Permission",
+        key: "groups",
+        to: "/groups",
+        label: "Groups",
         visible: canAccessRolePermission,
         gradient: "from-[#7367f0] via-[#887ef3] to-[#9e95f5]",
         glow: "shadow-[0_6px_18px_-4px_rgba(115,103,240,0.55)]",
@@ -126,15 +128,13 @@ const Header = ({ username, isEnglish = false }) => {
             strokeWidth="2.2"
             viewBox="0 0 24 24"
           >
+            <rect width="6" height="6" x="9" y="2" rx="1" />
+            <rect width="6" height="6" x="2" y="16" rx="1" />
+            <rect width="6" height="6" x="16" y="16" rx="1" />
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
-              d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"
-            />
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="m9 12 2 2 4-4"
+              d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3M12 12V8"
             />
           </svg>
         ),
@@ -199,14 +199,14 @@ const Header = ({ username, isEnglish = false }) => {
   );
 
   const visibleNavItems = navItems.filter((item) => item.visible);
-  const activeKey = isRolePermissionActive
-    ? "role-permission"
+  const activeKey = isGroupsActive
+    ? "groups"
     : isUsersActive
       ? "users"
       : isUserInfoActive
         ? "user-info"
         : isDashboardActive
-          ? "dashboard"
+          ? "dashboards"
           : "";
   const activeNav = visibleNavItems.find((item) => item.key === activeKey);
 
@@ -322,7 +322,7 @@ const Header = ({ username, isEnglish = false }) => {
     <header className="h-15 max-lg:h-13 max-md:h-10 bg-background-light dark:bg-background-dark transition-all duration-300 px-6 max-lg:px-5 max-md:px-4 py-px flex justify-between items-center border-b border-border-black-10 dark:border-background-white-15">
       <div className="flex items-center gap-6 max-md:gap-3">
         <Link
-          to="/dashboard?view=list"
+          to="/dashboards"
           className="group flex items-center transition-transform duration-300 hover:scale-[1.02]"
         >
           <figure>

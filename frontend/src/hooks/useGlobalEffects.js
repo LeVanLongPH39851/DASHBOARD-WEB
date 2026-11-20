@@ -1,6 +1,17 @@
 import { useEffect } from "react";
-import { useDarkMode, useScreenLg, useScreenMd, useIsOpen } from "../context/DashboardFilterContext";
+import {
+  useDarkMode,
+  useScreenLg,
+  useScreenMd,
+  useIsOpen,
+} from "../context/DashboardFilterContext";
 import { generateRandomId } from "../helpers/helper";
+
+// Kiểm tra URL hiện tại có chứa /dashboard/{target} hay không
+const isDashboardTargetUrl = () => {
+  const pathname = window.location.pathname || "";
+  return /\/dashboard\/[^/?#]+/.test(pathname);
+};
 
 export default function useGlobalEffects() {
   const { value: darkMode, setValue: setDarkMode } = useDarkMode();
@@ -24,8 +35,8 @@ export default function useGlobalEffects() {
     const newUserId = generateRandomId(6);
     sessionStorage.setItem("user_id", newUserId);
 
-    // Gọi endpoint Doris với session cũ trước khi reset session mới
-    if (existingUserId) {
+    // Gọi endpoint Doris với session cũ trước khi reset session mới (chỉ khi đang ở /dashboard/{target})
+    if (existingUserId && isDashboardTargetUrl()) {
       fetch(`${import.meta.env.VITE_API_BASE_URL}/api/doris/processlist`, {
         method: "POST",
         headers: {
@@ -67,11 +78,11 @@ export default function useGlobalEffects() {
     return () => controller.abort();
   }, []);
 
-  // ✅ Thêm event listener khi tắt trình duyệt/tab để kill các request
+  // ✅ Thêm event listener khi tắt trình duyệt/tab để kill các request (chỉ khi đang ở /dashboard/{target})
   useEffect(() => {
     const handleUnload = () => {
       const userId = sessionStorage.getItem("user_id");
-      if (userId) {
+      if (userId && isDashboardTargetUrl()) {
         // Kill Doris
         fetch(`${import.meta.env.VITE_API_BASE_URL}/api/doris/processlist`, {
           method: "POST",

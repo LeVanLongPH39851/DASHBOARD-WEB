@@ -521,12 +521,13 @@ const DashboardListContent = () => {
                     </span>
 
                     <span
-                      className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold border border-border-black-10 dark:border-background-white-15 text-color-black-100 dark:text-color-white-90 transition-all duration-300 ${theme.btnHover}`}
+                      title="Mở báo cáo"
+                      aria-label="Mở báo cáo"
+                      className={`w-7 h-7 rounded-lg inline-flex items-center justify-center border border-border-black-10 dark:border-background-white-15 text-color-black-100 dark:text-color-white-90 transition-all duration-300 ${theme.btnHover}`}
                     >
-                      <span>Truy cập</span>
-                      <span className="transition-transform duration-300 group-hover:translate-x-0.5 font-bold">
-                        →
-                      </span>
+                      <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20">
+                        <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
+                      </svg>
                     </span>
                   </div>
                 </Link>
@@ -573,12 +574,13 @@ const DashboardListContent = () => {
                   </div>
 
                   <span
-                    className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold border border-border-black-10 dark:border-background-white-15 text-color-black-100 dark:text-color-white-90 transition-all duration-200 shrink-0 ${theme.btnHover}`}
+                    title="Mở báo cáo"
+                    aria-label="Mở báo cáo"
+                    className={`w-7 h-7 rounded-lg inline-flex items-center justify-center border border-border-black-10 dark:border-background-white-15 text-color-black-100 dark:text-color-white-90 transition-all duration-200 shrink-0 ${theme.btnHover}`}
                   >
-                    <span>Truy cập</span>
-                    <span className="transition-transform duration-200 group-hover:translate-x-0.5 font-bold">
-                      →
-                    </span>
+                    <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20">
+                      <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
+                    </svg>
                   </span>
                 </Link>
               );

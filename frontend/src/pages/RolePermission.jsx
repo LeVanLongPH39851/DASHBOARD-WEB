@@ -575,8 +575,14 @@ const GroupDetailWorkspace = ({
                   </span>
                 </div>
 
-                <span className="text-xs font-semibold text-color-neotam dark:text-[#5bd6d8] shrink-0">
-                  Mở →
+                <span
+                  title="Mở báo cáo"
+                  aria-label="Mở báo cáo"
+                  className="w-7 h-7 rounded-lg inline-flex items-center justify-center bg-[#20A7C9]/10 text-color-neotam dark:text-[#5bd6d8] group-hover/d:bg-[#20A7C9] group-hover/d:text-white transition-all shrink-0"
+                >
+                  <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20">
+                    <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
+                  </svg>
                 </span>
               </Link>
             ))}
@@ -1484,7 +1490,7 @@ const RolePermissionContent = () => {
                     <rect width="18" height="18" x="3" y="3" rx="2" />
                     <line x1="9" x2="9" y1="3" y2="21" />
                   </svg>
-                  <span>Explorer</span>
+                  <span>Cây đơn vị</span>
                 </button>
 
                 <button
@@ -1549,11 +1555,11 @@ const RolePermissionContent = () => {
               <div className="flex items-center justify-between gap-2 pb-2.5 border-b border-border-black-10 dark:border-background-white-15">
                 <div className="flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-[#20A7C9] animate-pulse" />
-                  <h3 className="text-xs font-bold uppercase tracking-wider text-color-black-100 dark:text-color-white-90">
-                    Cây đơn vị
+                  <h3 className="text-xs font-bold tracking-wider text-color-black-100 dark:text-color-white-90">
+                    Cây Đơn Vị
                   </h3>
                 </div>
-                <span className="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-background-dashboard dark:bg-background-white-8 text-color-black-70 dark:text-color-white-70">
+                <span className="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-background-dashboard dark:bg-background-white-8 text-color-black-70 dark:text-color-white-90">
                   {filteredGroupsForExplorer.length} nhánh
                 </span>
               </div>
@@ -2260,18 +2266,46 @@ const RolePermissionContent = () => {
                                         onClick={() =>
                                           handleSelectExistingMemberForEdit(m)
                                         }
-                                        className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-[#20A7C9]/10 text-color-neotam dark:text-[#5bd6d8] hover:bg-[#20A7C9] hover:text-white transition cursor-pointer"
+                                        title="Sửa thành viên"
+                                        aria-label="Sửa thành viên"
+                                        className="w-7 h-7 rounded-lg inline-flex items-center justify-center bg-[#20A7C9]/10 text-color-neotam dark:text-[#5bd6d8] hover:bg-[#20A7C9] hover:text-white transition cursor-pointer"
                                       >
-                                        Sửa
+                                        <svg
+                                          className="w-3.5 h-3.5"
+                                          fill="none"
+                                          stroke="currentColor"
+                                          strokeWidth="2"
+                                          viewBox="0 0 24 24"
+                                        >
+                                          <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                                          />
+                                        </svg>
                                       </button>
                                       <button
                                         type="button"
                                         onClick={() =>
                                           handleRequestRemoveMember(m)
                                         }
-                                        className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-color-error/10 text-color-error hover:bg-color-error hover:text-white transition cursor-pointer"
+                                        title="Xóa thành viên"
+                                        aria-label="Xóa thành viên"
+                                        className="w-7 h-7 rounded-lg inline-flex items-center justify-center bg-color-error/10 text-color-error hover:bg-color-error hover:text-white transition cursor-pointer"
                                       >
-                                        Xóa
+                                        <svg
+                                          className="w-3.5 h-3.5"
+                                          fill="none"
+                                          stroke="currentColor"
+                                          strokeWidth="2"
+                                          viewBox="0 0 24 24"
+                                        >
+                                          <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                                          />
+                                        </svg>
                                       </button>
                                     </>
                                   )}

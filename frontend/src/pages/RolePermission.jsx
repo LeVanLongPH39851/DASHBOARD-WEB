@@ -1480,7 +1480,7 @@ const RolePermissionContent = () => {
             style={{ animationDelay: "-3s" }}
           />
 
-          <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <div
                 style={{ animationDelay: "80ms" }}
@@ -1498,7 +1498,7 @@ const RolePermissionContent = () => {
               </p>
             </div>
 
-            <div className="flex flex-wrap items-center gap-3 self-start lg:self-auto">
+            <div className="flex flex-wrap items-center gap-3 self-start sm:self-auto">
               <div
                 style={{ animationDelay: "140ms" }}
                 className="animate-pop-in flex items-center gap-3 bg-white/12 backdrop-blur-md border border-white/20 rounded-2xl px-4 py-2.5"
@@ -1668,10 +1668,10 @@ const RolePermissionContent = () => {
         ) : layoutMode === "split" ? (
           <div
             style={{ animationDelay: "120ms" }}
-            className="animate-fade-up grid grid-cols-1 lg:grid-cols-12 gap-6 items-start"
+            className="animate-fade-up grid grid-cols-1 md:grid-cols-12 gap-6 items-start"
           >
             {/* Left Sidebar: Tree Explorer */}
-            <div className="lg:col-span-4 rounded-2xl bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 p-4 shadow-component space-y-3 lg:sticky lg:top-4 max-h-[calc(100vh-120px)] overflow-y-auto">
+            <div className="md:col-span-4 rounded-2xl bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 p-4 shadow-component space-y-3 md:sticky md:top-4 max-h-[calc(100vh-120px)] overflow-y-auto">
               <div className="flex items-center justify-between gap-2 pb-2.5 border-b border-border-black-10 dark:border-background-white-15">
                 <div className="flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-[#20A7C9] animate-pulse" />
@@ -1705,7 +1705,7 @@ const RolePermissionContent = () => {
             </div>
 
             {/* Right Pane: Group Detail Workspace */}
-            <div className="lg:col-span-8">
+            <div className="md:col-span-8">
               {selectedGroup ? (
                 <GroupDetailWorkspace
                   group={selectedGroup}
@@ -1726,7 +1726,7 @@ const RolePermissionContent = () => {
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {filteredGroupsForExplorer.map((group, idx) => (
               <GroupCardNode
                 key={group.id}

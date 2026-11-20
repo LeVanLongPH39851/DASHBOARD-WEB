@@ -20,19 +20,22 @@ const IDEMPOTENT_METHODS = ["GET", "HEAD", "OPTIONS", "PUT", "DELETE"];
 
 // Hàm gọi axios tới Superset có hỗ trợ Retry & Request Timeout
 async function requestSuperset(config, allowRetry = true) {
+  const timeout = Number(config.timeout || REQUEST_TIMEOUT);
   const upperMethod = String(config.method || "GET").toUpperCase();
   const isIdempotent = IDEMPOTENT_METHODS.includes(upperMethod);
   const maxAttempts = allowRetry ? Math.max(1, RETRY_ATTEMPTS + 1) : 1;
   const perAttemptTimeout =
-    maxAttempts > 1
-      ? Math.max(2500, Math.floor((REQUEST_TIMEOUT - 500) / maxAttempts))
-      : REQUEST_TIMEOUT;
+    !isIdempotent
+      ? timeout
+      : maxAttempts > 1
+        ? Math.max(2500, Math.floor((timeout - 500) / maxAttempts))
+        : timeout;
 
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     try {
       return await axios({
-        timeout: perAttemptTimeout,
         ...config,
+        timeout: perAttemptTimeout,
       });
     } catch (error) {
       const status = error.response?.status;

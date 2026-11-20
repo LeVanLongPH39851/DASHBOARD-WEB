@@ -1845,7 +1845,7 @@ const Users = () => {
         <main className="flex-1 w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <UsersManagementContent />
         </main>
-        <div className="px-4 sm:px-6 lg:px-8 pb-6 bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300">
+        <div className="mt-auto w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 pb-6 bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300">
           <Footer color="text-color-black-100 dark:text-color-white-90" />
         </div>
       </div>

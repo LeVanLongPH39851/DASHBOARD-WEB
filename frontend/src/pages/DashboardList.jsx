@@ -170,7 +170,9 @@ function getSlugLabel(item) {
   if (item.slug) return String(item.slug).replace(/-/g, " ").toUpperCase();
   if (item.path) {
     const parts = String(item.path).split("/").filter(Boolean);
-    return (parts[parts.length - 1] || "REPORT").replace(/-/g, " ").toUpperCase();
+    return (parts[parts.length - 1] || "REPORT")
+      .replace(/-/g, " ")
+      .toUpperCase();
   }
   return "ANALYTICS";
 }
@@ -302,7 +304,8 @@ const DashboardListContent = () => {
                 Xin chào, {displayName}
               </h1>
               <p className="text-xs sm:text-sm text-white/80 mt-1">
-                Trung tâm báo cáo và phân tích dữ liệu đo lường khán giả truyền hình
+                Trung tâm báo cáo và phân tích dữ liệu đo lường khán giả truyền
+                hình
               </p>
             </div>
 
@@ -543,7 +546,10 @@ const DashboardListContent = () => {
                       aria-label="Mở báo cáo"
                       className={`w-7 h-7 rounded-lg inline-flex items-center justify-center border border-border-black-10 dark:border-background-white-15 text-color-black-100 dark:text-color-white-90 transition-all duration-300 ${theme.btnHover}`}
                     >
-                      <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20">
+                      <svg
+                        className="w-3.5 h-3.5 fill-current"
+                        viewBox="0 0 20 20"
+                      >
                         <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
                       </svg>
                     </span>
@@ -596,7 +602,10 @@ const DashboardListContent = () => {
                     aria-label="Mở báo cáo"
                     className={`w-7 h-7 rounded-lg inline-flex items-center justify-center border border-border-black-10 dark:border-background-white-15 text-color-black-100 dark:text-color-white-90 transition-all duration-200 shrink-0 ${theme.btnHover}`}
                   >
-                    <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20">
+                    <svg
+                      className="w-3.5 h-3.5 fill-current"
+                      viewBox="0 0 20 20"
+                    >
                       <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
                     </svg>
                   </span>
@@ -607,7 +616,7 @@ const DashboardListContent = () => {
         )}
       </main>
 
-      <div className="px-4 sm:px-6 lg:px-8 pb-6 bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300">
+      <div className="mt-auto w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 pb-6 bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300">
         <Footer color="text-color-black-100 dark:text-color-white-90" />
       </div>
     </div>

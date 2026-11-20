@@ -561,7 +561,10 @@ const UserInfoContent = () => {
                           aria-label="Mở báo cáo"
                           className="w-7 h-7 rounded-lg inline-flex items-center justify-center bg-[#20A7C9]/10 text-color-neotam dark:text-[#5bd6d8] group-hover:bg-[#20A7C9] group-hover:text-white transition-all shrink-0"
                         >
-                          <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20">
+                          <svg
+                            className="w-3.5 h-3.5 fill-current"
+                            viewBox="0 0 20 20"
+                          >
                             <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
                           </svg>
                         </span>
@@ -907,7 +910,7 @@ const UserInfoContent = () => {
         )}
       </main>
 
-      <div className="px-4 sm:px-6 lg:px-8 pb-6 bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300">
+      <div className="mt-auto w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 pb-6 bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300">
         <Footer color="text-color-black-100 dark:text-color-white-90" />
       </div>
     </div>

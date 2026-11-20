@@ -799,65 +799,167 @@ const GroupCardNode = ({
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-1.5">
+          <div className="flex flex-wrap items-center gap-2">
             {canManageGroupMembers && (
               <button
                 type="button"
                 onClick={() => onOpenMembersModal(group, "manage")}
-                className="px-3 py-1.5 rounded-xl text-xs font-semibold border border-[#7367f0]/40 bg-[#7367f0]/10 text-[#7367f0] dark:text-[#a59ff8] hover:bg-[#7367f0] hover:text-white transition cursor-pointer"
+                className="px-3.5 py-1.5 rounded-xl text-xs font-semibold border border-[#7367f0]/40 bg-[#7367f0]/10 text-[#7367f0] dark:text-[#a59ff8] hover:bg-[#7367f0] hover:text-white transition cursor-pointer flex items-center gap-1.5"
               >
-                Thành viên
+                <svg
+                  className="w-3.5 h-3.5"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"
+                  />
+                  <circle cx="8.5" cy="7" r="4" />
+                  <line x1="20" x2="20" y1="8" y2="14" />
+                  <line x1="23" x2="17" y1="11" y2="11" />
+                </svg>
+                <span>Thành viên</span>
               </button>
             )}
 
-            {canCreateChildGroup && (
+            {canCreateChildGroup ? (
               <button
                 type="button"
                 onClick={() => onOpenCreateChildModal(group)}
-                className="px-3 py-1.5 rounded-xl text-xs font-semibold border border-border-black-10 dark:border-background-white-15 bg-background-search dark:bg-background-white-8 text-color-black-70 dark:text-color-white-80 hover:border-[#20A7C9] hover:text-color-neotam transition cursor-pointer"
+                className="px-3.5 py-1.5 rounded-xl text-xs font-semibold border border-border-black-10 dark:border-background-white-15 bg-background-search dark:bg-background-white-8 text-color-black-70 dark:text-color-white-80 hover:border-[#20A7C9] hover:text-color-neotam dark:hover:text-[#5bd6d8] transition cursor-pointer flex items-center gap-1.5"
               >
-                + Nhóm con
+                <span>+ Nhóm con</span>
               </button>
-            )}
-
-            {canEditGroupDashboards && (
-              <button
-                type="button"
-                onClick={() => onOpenEditModal(group)}
-                className="px-3 py-1.5 rounded-xl text-xs font-semibold border border-[#20A7C9]/40 bg-background-search dark:bg-background-white-8 text-color-neotam dark:text-[#5bd6d8] hover:bg-[#20A7C9] hover:text-white transition cursor-pointer"
-              >
-                Báo cáo
-              </button>
-            )}
+            ) : isSystemManager || groupRoles.includes("super_admin") ? (
+              <span className="px-3 py-1.5 rounded-xl text-xs font-medium border border-border-black-10 dark:border-background-white-15 bg-background-search dark:bg-background-white-8 text-color-black-40 dark:text-color-white-40 select-none">
+                {isMaxDepthReached ? "Tối đa 5 cấp" : "Đủ 10 nhóm con"}
+              </span>
+            ) : null}
 
             {canDeleteGroup && (
               <button
                 type="button"
                 onClick={() => onRequestDeleteGroup(group)}
-                className="px-3 py-1.5 rounded-xl text-xs font-semibold border border-color-error/40 bg-color-error/10 text-color-error hover:bg-color-error hover:text-white transition cursor-pointer"
+                className="px-3.5 py-1.5 rounded-xl text-xs font-semibold border border-color-error/40 bg-color-error/10 text-color-error hover:bg-color-error hover:text-white transition cursor-pointer flex items-center gap-1.5"
               >
-                Xóa
+                <svg
+                  className="w-3.5 h-3.5"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                >
+                  <polyline points="3 6 5 6 21 6" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+                  />
+                </svg>
+                <span>Xóa</span>
               </button>
             )}
           </div>
         </div>
 
         {/* Dashboards list inside card */}
-        <div className="rounded-xl border border-border-black-10/70 dark:border-background-white-15/70 bg-background-dashboard/50 dark:bg-background-white-8/30 p-3">
+        <div className="rounded-xl border border-border-black-10/70 dark:border-background-white-15/70 bg-background-dashboard/50 dark:bg-background-white-8/30 p-3.5">
+          <div className="flex flex-wrap items-center justify-between gap-2.5 mb-3 pb-2.5 border-b border-border-black-10/70 dark:border-background-white-15/70">
+            <div className="flex items-center gap-2">
+              <h3 className="text-xs font-bold text-color-black-100 dark:text-color-white-90 uppercase tracking-wider">
+                Báo cáo được cấp phát
+              </h3>
+              <span className="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-background-ave-reach dark:bg-[#21b8b8]/20 text-color-ave-reach dark:text-[#5bd6d8]">
+                {dashboards.length}
+              </span>
+            </div>
+
+            {canEditGroupDashboards && (
+              <button
+                type="button"
+                onClick={() => onOpenEditModal(group)}
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold border border-[#20A7C9]/40 bg-background-search dark:bg-background-white-8 text-color-neotam dark:text-[#5bd6d8] hover:bg-gradient-to-r hover:from-[#20A7C9] hover:to-[#2fc4c6] hover:text-white hover:border-transparent transition cursor-pointer"
+              >
+                <svg
+                  className="w-3.5 h-3.5"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+                  />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
+                  />
+                </svg>
+                <span>Cập nhật báo cáo</span>
+              </button>
+            )}
+          </div>
+
           {dashboards.length === 0 ? (
-            <div className="py-3 text-xs text-color-black-50 dark:text-color-white-50 text-center">
-              Chưa có báo cáo được cấp phát
+            <div className="py-4 px-3 rounded-xl border border-dashed border-border-black-10 dark:border-background-white-15 text-center text-xs text-color-black-50 dark:text-color-white-50 flex flex-col items-center justify-center gap-1">
+              <span>Chưa có báo cáo nào được cấp phát.</span>
+              {canEditGroupDashboards && (
+                <button
+                  type="button"
+                  onClick={() => onOpenEditModal(group)}
+                  className="text-color-neotam dark:text-[#5bd6d8] hover:underline font-semibold mt-0.5 cursor-pointer"
+                >
+                  + Cấp phát báo cáo
+                </button>
+              )}
             </div>
           ) : (
-            <div className="flex flex-wrap gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
               {dashboards.map((dash) => (
                 <Link
                   key={dash.id}
                   to={dash.path}
-                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-background-light dark:bg-background-dark border border-border-black-10 dark:border-background-white-15 text-xs font-semibold text-color-black-100 dark:text-color-white-90 hover:border-color-neotam hover:text-color-neotam dark:hover:text-[#5bd6d8] transition"
+                  className="group/d flex items-center justify-between p-2.5 rounded-xl border border-border-black-10 dark:border-background-white-15 bg-background-dashboard/60 dark:bg-background-white-8/40 hover:border-[#20A7C9] dark:hover:border-[#5bd6d8] hover:-translate-y-0.5 transition-all duration-200"
                 >
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#20A7C9]" />
-                  <span>{dash.dashboard_title}</span>
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <div className="w-7 h-7 rounded-lg bg-background-ave-reach dark:bg-[#21b8b8]/20 text-color-ave-reach dark:text-[#5bd6d8] flex items-center justify-center shrink-0">
+                      <svg
+                        className="w-3.5 h-3.5"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
+                      >
+                        <rect width="7" height="9" x="3" y="3" rx="1" />
+                        <rect width="7" height="5" x="14" y="3" rx="1" />
+                        <rect width="7" height="9" x="14" y="12" rx="1" />
+                        <rect width="7" height="5" x="3" y="16" rx="1" />
+                      </svg>
+                    </div>
+                    <span className="text-xs font-bold text-color-black-100 dark:text-color-white-90 group-hover/d:text-color-neotam dark:group-hover/d:text-[#5bd6d8] transition-colors truncate">
+                      {dash.dashboard_title}
+                    </span>
+                  </div>
+
+                  <span
+                    title="Mở báo cáo"
+                    aria-label="Mở báo cáo"
+                    className="w-7 h-7 rounded-lg inline-flex items-center justify-center bg-[#20A7C9]/10 text-color-neotam dark:text-[#5bd6d8] group-hover/d:bg-[#20A7C9] group-hover/d:text-white transition-all shrink-0"
+                  >
+                    <svg
+                      className="w-3.5 h-3.5 fill-current"
+                      viewBox="0 0 20 20"
+                    >
+                      <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
+                    </svg>
+                  </span>
                 </Link>
               ))}
             </div>
@@ -897,7 +999,25 @@ const RolePermissionContent = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const [layoutMode, setLayoutMode] = useState("split");
+  const [layoutMode, setLayoutModeState] = useState(() => {
+    try {
+      const saved =
+        localStorage.getItem("groups_layout_mode") ||
+        localStorage.getItem("role_permission_layout_mode");
+      return saved === "grid" || saved === "split" ? saved : "split";
+    } catch {
+      return "split";
+    }
+  });
+
+  const setLayoutMode = (mode) => {
+    setLayoutModeState(mode);
+    try {
+      localStorage.setItem("groups_layout_mode", mode);
+    } catch {
+      // ignore
+    }
+  };
   const [selectedGroupId, setSelectedGroupId] = useState(null);
   const [groupSearchQuery, setGroupSearchQuery] = useState("");
 

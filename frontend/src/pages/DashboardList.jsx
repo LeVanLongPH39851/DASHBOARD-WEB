@@ -185,7 +185,25 @@ const DashboardListContent = () => {
 
   const [searchName, setSearchName] = useState("");
   const [sortOrder, setSortOrder] = useState("default"); // "default" | "asc" | "desc"
-  const [viewMode, setViewMode] = useState("grid"); // "grid" | "list"
+  const [viewMode, setViewModeState] = useState(() => {
+    try {
+      const saved =
+        localStorage.getItem("dashboards_view_mode") ||
+        localStorage.getItem("dashboard_list_view_mode");
+      return saved === "list" || saved === "grid" ? saved : "grid";
+    } catch {
+      return "grid";
+    }
+  });
+
+  const setViewMode = (mode) => {
+    setViewModeState(mode);
+    try {
+      localStorage.setItem("dashboards_view_mode", mode);
+    } catch {
+      // ignore
+    }
+  };
 
   useEffect(() => {
     let isMounted = true;

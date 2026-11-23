@@ -112,7 +112,7 @@ const Header = ({ username, isEnglish = false }) => {
       {
         key: "groups",
         to: "/groups",
-        label: "Groups",
+        label: "Quản trị nhóm",
         visible: canAccessRolePermission,
         gradient: "from-[#7367f0] via-[#887ef3] to-[#9e95f5]",
         glow: "shadow-[0_6px_18px_-4px_rgba(115,103,240,0.55)]",
@@ -142,7 +142,7 @@ const Header = ({ username, isEnglish = false }) => {
       {
         key: "users",
         to: "/users",
-        label: "Users",
+        label: "Quản trị thành viên",
         visible: canAccessRolePermission,
         gradient: "from-[#059669] via-[#10b981] to-[#34d399]",
         glow: "shadow-[0_6px_18px_-4px_rgba(16,185,129,0.55)]",
@@ -169,7 +169,7 @@ const Header = ({ username, isEnglish = false }) => {
       {
         key: "user-info",
         to: "/user-info",
-        label: "User Info",
+        label: "Thông tin tài khoản",
         visible: true,
         gradient: "from-[#f2994a] via-[#f5a83d] to-[#f7b731]",
         glow: "shadow-[0_6px_18px_-4px_rgba(242,153,74,0.55)]",

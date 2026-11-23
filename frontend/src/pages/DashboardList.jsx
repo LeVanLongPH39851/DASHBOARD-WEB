@@ -282,28 +282,28 @@ const DashboardListContent = () => {
     <div className="min-h-screen flex flex-col font-family-be-vietnam-pro bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300">
       <Header username={user?.username} />
 
-      <main className="flex-1 w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-5">
+      <main className="flex-1 w-full max-w-[1600px] mx-auto px-8 max-lg:px-6 max-md:px-4 py-6 max-lg:py-4.5 max-md:py-3 space-y-5 max-lg:space-y-4 max-md:space-y-3">
         {/* Executive Header Banner */}
-        <section className="shine-auto animate-gradient-shift animate-fade-up relative overflow-hidden rounded-2xl p-6 sm:p-7 bg-gradient-to-r from-[#0f2a51] via-[#15658a] to-[#20A7C9] dark:from-[#111725] dark:via-[#163853] dark:to-[#1d7a94] text-white shadow-lg border border-white/10">
+        <section className="shine-auto animate-gradient-shift animate-fade-up relative overflow-hidden rounded-2xl p-7 max-lg:p-5 max-md:p-4 bg-gradient-to-r from-[#0f2a51] via-[#15658a] to-[#20A7C9] dark:from-[#111725] dark:via-[#163853] dark:to-[#1d7a94] text-white shadow-lg border border-white/10">
           <div className="pointer-events-none absolute -top-24 -right-16 w-72 h-72 rounded-full bg-[#5bd6d8]/25 blur-3xl animate-float-slow" />
           <div
             className="pointer-events-none absolute -bottom-24 left-1/3 w-64 h-64 rounded-full bg-[#7367f0]/25 blur-3xl animate-float-slow"
             style={{ animationDelay: "-3s" }}
           />
 
-          <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="relative z-10 flex flex-row max-md:flex-col items-center max-md:items-start justify-between gap-4 max-lg:gap-3 max-md:gap-2.5">
             <div>
               <div
                 style={{ animationDelay: "80ms" }}
-                className="animate-pop-in inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md text-[11px] font-semibold tracking-wide uppercase mb-2.5 border border-white/20"
+                className="animate-pop-in inline-flex items-center gap-2 px-3 max-lg:px-2.5 py-1 max-lg:py-0.5 rounded-full bg-white/15 backdrop-blur-md text-[11px] max-lg:text-[10px] font-semibold tracking-wide uppercase mb-2.5 max-lg:mb-2 border border-white/20"
               >
                 <span className="w-1.5 h-1.5 rounded-full bg-[#ffd04c] animate-pulse" />
                 <span>VTV Ratings Analytics</span>
               </div>
-              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
+              <h1 className="text-3xl max-lg:text-2xl max-md:text-xl font-extrabold tracking-tight">
                 Xin chào, {displayName}
               </h1>
-              <p className="text-xs sm:text-sm text-white/80 mt-1">
+              <p className="text-sm max-lg:text-xs max-md:text-[11px] text-white/80 mt-1">
                 Trung tâm báo cáo và phân tích dữ liệu đo lường khán giả truyền
                 hình
               </p>
@@ -311,11 +311,11 @@ const DashboardListContent = () => {
 
             <div
               style={{ animationDelay: "140ms" }}
-              className="animate-pop-in flex items-center gap-3.5 bg-white/12 backdrop-blur-md border border-white/20 rounded-2xl px-4 py-3 self-start sm:self-auto shrink-0 hover:scale-[1.02] transition-transform duration-300"
+              className="animate-pop-in flex items-center gap-3.5 max-lg:gap-2.5 max-md:gap-2 bg-white/12 backdrop-blur-md border border-white/20 rounded-2xl px-4 max-lg:px-3 max-md:px-2.5 py-3 max-lg:py-2.5 max-md:py-2 self-auto max-md:self-start shrink-0 hover:scale-[1.02] transition-transform duration-300"
             >
-              <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#ffd04c] to-[#f2994a] flex items-center justify-center text-[#1f2933] shadow-sm">
+              <div className="w-11 h-11 max-lg:w-9.5 max-lg:h-9.5 max-md:w-8.5 max-md:h-8.5 rounded-xl bg-gradient-to-br from-[#ffd04c] to-[#f2994a] flex items-center justify-center text-[#1f2933] shadow-sm">
                 <svg
-                  className="w-5 h-5"
+                  className="w-5 h-5 max-lg:w-4 max-lg:h-4"
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="2.2"
@@ -329,13 +329,13 @@ const DashboardListContent = () => {
                 </svg>
               </div>
               <div className="pr-1">
-                <p className="text-[11px] text-white/75 font-medium uppercase tracking-wider">
-                  Báo cáo khả dụng
+                <p className="text-[11px] max-lg:text-[10px] text-white/75 font-medium uppercase tracking-wider">
+                  Dashboard khả dụng
                 </p>
-                <p className="text-2xl font-black leading-none mt-1">
+                <p className="text-2xl max-lg:text-xl max-md:text-lg font-black leading-none mt-1">
                   {loading ? "—" : displayedDashboards.length}
                   {!loading && searchName && (
-                    <span className="text-xs font-normal text-white/70">
+                    <span className="text-xs max-lg:text-[11px] font-normal text-white/70">
                       {" "}
                       / {dashboards.length}
                     </span>
@@ -349,27 +349,27 @@ const DashboardListContent = () => {
         {/* Command Bar: Search, Sort, View Mode */}
         <section
           style={{ animationDelay: "70ms" }}
-          className="animate-fade-up p-3.5 sm:p-4 rounded-2xl bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 shadow-component flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 transition-all duration-300"
+          className="animate-fade-up p-4 max-lg:p-3 max-md:p-2.5 rounded-2xl bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 shadow-component flex flex-row max-md:flex-col items-center max-md:items-stretch justify-between gap-3 max-lg:gap-2.5 max-md:gap-2 transition-all duration-300"
         >
           {/* Search Input */}
-          <div className="relative flex-1 max-w-md">
+          <div className="relative flex-1 max-w-md max-md:max-w-none">
             <input
               type="text"
               value={searchName}
               onChange={(e) => setSearchName(e.target.value)}
-              placeholder="Tìm kiếm báo cáo..."
-              className="w-full pl-9 pr-8 py-2 rounded-xl border border-border-black-10 dark:border-background-white-15 outline-none bg-background-search dark:bg-background-white-8 text-xs sm:text-sm text-color-black-100 placeholder-color-black-50 dark:text-color-white-90 dark:placeholder-color-white-50 focus:border-color-neotam transition"
+              placeholder="Tìm kiếm Dashboard..."
+              className="w-full pl-9 max-lg:pl-8 max-md:pl-7 pr-8 max-lg:pr-7 max-md:pr-6 py-2 max-lg:py-1.5 max-md:py-1 rounded-xl border border-border-black-10 dark:border-background-white-15 outline-none bg-background-search dark:bg-background-white-8 text-sm max-lg:text-xs max-md:text-[11px] text-color-black-100 placeholder-color-black-50 dark:text-color-white-90 dark:placeholder-color-white-50 focus:border-color-neotam transition"
             />
             <img
               src={!darkMode ? iconSearch : iconSearchDark}
               alt="Search"
-              className="w-4 h-4 opacity-60 absolute top-1/2 -translate-y-1/2 left-3 pointer-events-none"
+              className="w-4 h-4 max-lg:w-3.5 max-lg:h-3.5 max-md:w-3 max-md:h-3 opacity-60 absolute top-1/2 -translate-y-1/2 left-3 max-lg:left-2.5 max-md:left-2 pointer-events-none"
             />
             {searchName && (
               <button
                 type="button"
                 onClick={() => setSearchName("")}
-                className="absolute top-1/2 -translate-y-1/2 right-2.5 w-5 h-5 flex items-center justify-center rounded-full text-xs text-color-black-50 hover:text-color-error cursor-pointer transition"
+                className="absolute top-1/2 -translate-y-1/2 right-2.5 max-lg:right-2 w-5 h-5 max-lg:w-4 max-lg:h-4 flex items-center justify-center rounded-full text-xs max-lg:text-[11px] max-md:text-[10px] text-color-black-50 hover:text-color-error cursor-pointer transition"
                 title="Xóa tìm kiếm"
               >
                 ✕
@@ -378,8 +378,8 @@ const DashboardListContent = () => {
           </div>
 
           {/* Sort & View Switcher */}
-          <div className="flex flex-wrap items-center justify-between sm:justify-end gap-2.5">
-            <div className="flex items-center p-1 rounded-xl bg-background-search dark:bg-background-white-8 border border-border-black-10 dark:border-background-white-15">
+          <div className="flex flex-wrap items-center justify-end max-md:justify-between gap-2.5 max-lg:gap-2 max-md:gap-1.5">
+            <div className="flex items-center p-1 max-lg:p-0.5 rounded-xl bg-background-search dark:bg-background-white-8 border border-border-black-10 dark:border-background-white-15">
               {[
                 { id: "default", label: "Mặc định" },
                 { id: "asc", label: "A → Z" },
@@ -389,7 +389,7 @@ const DashboardListContent = () => {
                   key={item.id}
                   type="button"
                   onClick={() => setSortOrder(item.id)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${
+                  className={`px-3 max-lg:px-2.5 max-md:px-2 py-1.5 max-lg:py-1 max-md:py-0.5 rounded-lg text-xs max-lg:text-[11px] max-md:text-[10px] font-semibold transition cursor-pointer ${
                     sortOrder === item.id
                       ? "bg-background-light dark:bg-background-chart-dark text-color-neotam dark:text-[#5bd6d8] shadow-xs"
                       : "text-color-black-50 dark:text-color-white-50 hover:text-color-black-100 dark:hover:text-color-white-90"
@@ -400,19 +400,19 @@ const DashboardListContent = () => {
               ))}
             </div>
 
-            <div className="flex items-center rounded-xl p-1 bg-background-search dark:bg-background-white-8 border border-border-black-10 dark:border-background-white-15">
+            <div className="flex items-center rounded-xl p-1 max-lg:p-0.5 bg-background-search dark:bg-background-white-8 border border-border-black-10 dark:border-background-white-15">
               <button
                 type="button"
                 onClick={() => setViewMode("grid")}
                 title="Dạng lưới"
-                className={`p-1.5 rounded-lg transition cursor-pointer ${
+                className={`p-1.5 max-lg:p-1 max-md:p-0.5 rounded-lg transition cursor-pointer ${
                   viewMode === "grid"
                     ? "bg-gradient-to-r from-[#20A7C9] to-[#2fc4c6] text-white shadow-xs"
                     : "text-color-black-50 dark:text-color-white-50 hover:text-color-black-100 dark:hover:text-color-white-90"
                 }`}
               >
                 <svg
-                  className="w-4 h-4"
+                  className="w-4 h-4 max-lg:w-3.5 max-lg:h-3.5 max-md:w-3 max-md:h-3"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -428,14 +428,14 @@ const DashboardListContent = () => {
                 type="button"
                 onClick={() => setViewMode("list")}
                 title="Dạng danh sách"
-                className={`p-1.5 rounded-lg transition cursor-pointer ${
+                className={`p-1.5 max-lg:p-1 max-md:p-0.5 rounded-lg transition cursor-pointer ${
                   viewMode === "list"
                     ? "bg-gradient-to-r from-[#20A7C9] to-[#2fc4c6] text-white shadow-xs"
                     : "text-color-black-50 dark:text-color-white-50 hover:text-color-black-100 dark:hover:text-color-white-90"
                 }`}
               >
                 <svg
-                  className="w-4 h-4"
+                  className="w-4 h-4 max-lg:w-3.5 max-lg:h-3.5 max-md:w-3 max-md:h-3"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -452,21 +452,23 @@ const DashboardListContent = () => {
 
         {/* Dashboard Grid / List */}
         {loading ? (
-          <div className="animate-fade-up p-6 bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 rounded-2xl shadow-component">
+          <div className="animate-fade-up p-6 max-lg:p-4 bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 rounded-2xl shadow-component">
             <Loading height="380px" />
           </div>
         ) : error ? (
-          <div className="animate-fade-up p-12 bg-background-light dark:bg-background-chart-dark border border-border-error rounded-2xl shadow-component text-center">
-            <div className="w-11 h-11 mx-auto mb-3 rounded-xl bg-background-error text-color-error flex items-center justify-center text-lg font-bold animate-pop-in">
+          <div className="animate-fade-up p-12 max-lg:p-8 bg-background-light dark:bg-background-chart-dark border border-border-error rounded-2xl shadow-component text-center">
+            <div className="w-11 h-11 max-lg:w-9.5 max-lg:h-9.5 mx-auto mb-3 rounded-xl bg-background-error text-color-error flex items-center justify-center text-lg font-bold animate-pop-in">
               !
             </div>
-            <p className="text-sm font-semibold text-color-error">{error}</p>
+            <p className="text-sm max-lg:text-xs font-semibold text-color-error">
+              {error}
+            </p>
           </div>
         ) : displayedDashboards.length === 0 ? (
-          <div className="animate-fade-up p-14 bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 rounded-2xl shadow-component text-center">
-            <div className="w-14 h-14 mx-auto mb-3 rounded-2xl bg-background-ave-reach dark:bg-[#21b8b8]/20 text-color-ave-reach dark:text-[#5bd6d8] flex items-center justify-center animate-float-slow">
+          <div className="animate-fade-up p-14 max-lg:p-10 bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 rounded-2xl shadow-component text-center">
+            <div className="w-14 h-14 max-lg:w-11 max-lg:h-11 mx-auto mb-3 rounded-2xl bg-background-ave-reach dark:bg-[#21b8b8]/20 text-color-ave-reach dark:text-[#5bd6d8] flex items-center justify-center animate-float-slow">
               <svg
-                className="w-7 h-7"
+                className="w-7 h-7 max-lg:w-5.5 max-lg:h-5.5"
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="1.8"
@@ -476,23 +478,23 @@ const DashboardListContent = () => {
                 <path d="m21 21-4.3-4.3" />
               </svg>
             </div>
-            <p className="text-sm font-bold text-color-black-100 dark:text-color-white-90">
+            <p className="text-sm max-lg:text-xs font-bold text-color-black-100 dark:text-color-white-90">
               {dashboards.length === 0
-                ? "Chưa có báo cáo nào được cấp quyền"
-                : "Không tìm thấy báo cáo phù hợp"}
+                ? "Chưa có Dashboard nào được cấp quyền"
+                : "Không tìm thấy Dashboard phù hợp"}
             </p>
             {searchName && (
               <button
                 type="button"
                 onClick={() => setSearchName("")}
-                className="mt-3.5 px-4 py-2 rounded-xl text-xs font-semibold bg-gradient-to-r from-[#20A7C9] to-[#2fc4c6] text-white hover:opacity-95 transition cursor-pointer"
+                className="mt-3.5 px-4 max-lg:px-3 py-2 max-lg:py-1.5 rounded-xl text-xs max-lg:text-[11px] font-semibold bg-gradient-to-r from-[#20A7C9] to-[#2fc4c6] text-white hover:opacity-95 transition cursor-pointer"
               >
                 Xóa bộ lọc
               </button>
             )}
           </div>
         ) : viewMode === "grid" ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-3 max-md:grid-cols-1 gap-5 max-lg:gap-3.5 max-md:gap-2.5">
             {displayedDashboards.map((item, index) => {
               const theme = CARD_THEMES[index % CARD_THEMES.length];
               const IconComponent = CHART_ICONS[index % CHART_ICONS.length];
@@ -502,10 +504,11 @@ const DashboardListContent = () => {
                 <Link
                   key={item.id}
                   to={item.path}
+                  title={item.dashboard_title || `Dashboard #${item.id}`}
                   style={{
                     animationDelay: `${Math.min(index * 60, 360)}ms`,
                   }}
-                  className={`shine animate-fade-up group relative overflow-hidden rounded-2xl bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 p-5 flex flex-col justify-between gap-5 shadow-component transition-all duration-300 hover:-translate-y-1.5 ${theme.hoverBorder} ${theme.hoverShadow}`}
+                  className={`shine animate-fade-up group relative overflow-hidden rounded-2xl max-lg:rounded-xl max-md:rounded-lg bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 p-5 max-lg:p-3.5 max-md:p-3 flex flex-col justify-between gap-5 max-lg:gap-3.5 max-md:gap-2.5 shadow-component transition-all duration-300 hover:-translate-y-1.5 ${theme.hoverBorder} ${theme.hoverShadow}`}
                 >
                   <div
                     className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${theme.bar}`}
@@ -514,40 +517,43 @@ const DashboardListContent = () => {
                     className={`pointer-events-none absolute -top-12 -right-12 w-32 h-32 rounded-full bg-gradient-to-bl ${theme.glow} blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
                   />
 
-                  <div className="flex items-start gap-4 pt-1">
+                  <div className="flex items-start gap-4 max-lg:gap-3 max-md:gap-2.5 pt-1">
                     <div
-                      className={`w-12 h-12 rounded-2xl ${theme.iconBg} ${theme.iconText} flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-105`}
+                      className={`w-12 h-12 max-lg:w-10 max-lg:h-10 max-md:w-8.5 max-md:h-8.5 rounded-2xl max-lg:rounded-xl max-md:rounded-lg ${theme.iconBg} ${theme.iconText} flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-105`}
                     >
-                      <IconComponent className="w-6 h-6" />
+                      <IconComponent className="w-6 h-6 max-lg:w-5 max-lg:h-5 max-md:w-4 max-md:h-4" />
                     </div>
 
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1.5">
+                      <div className="flex items-center gap-2 mb-1.5 max-lg:mb-1">
                         <span
-                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase border ${theme.badge}`}
+                          className={`inline-flex items-center px-2.5 max-lg:px-2 max-md:px-1.5 py-0.5 rounded-full text-[10px] max-lg:text-[9px] max-md:text-[8px] font-bold tracking-wider uppercase border ${theme.badge}`}
                         >
                           {categoryLabel}
                         </span>
                       </div>
 
-                      <h2 className="text-base font-bold text-color-black-100 dark:text-color-white-90 group-hover:text-color-neotam dark:group-hover:text-[#5bd6d8] transition-colors line-clamp-2 leading-snug">
+                      <h2
+                        title={item.dashboard_title || `Dashboard #${item.id}`}
+                        className="text-base max-lg:text-sm max-md:text-xs font-bold text-color-black-100 dark:text-color-white-90 group-hover:text-color-neotam dark:group-hover:text-[#5bd6d8] transition-colors truncate"
+                      >
                         {item.dashboard_title || `Dashboard #${item.id}`}
                       </h2>
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between pt-3.5 border-t border-border-black-10 dark:border-background-white-15">
-                    <span className="text-xs font-medium text-color-black-50 dark:text-color-white-50">
-                      Báo cáo trực tuyến
+                  <div className="flex items-center justify-between pt-3.5 max-lg:pt-2.5 max-md:pt-2 border-t border-border-black-10 dark:border-background-white-15">
+                    <span className="text-xs max-lg:text-[11px] max-md:text-[10px] font-medium text-color-black-50 dark:text-color-white-50">
+                      Dashboard trực tuyến
                     </span>
 
                     <span
-                      title="Mở báo cáo"
-                      aria-label="Mở báo cáo"
-                      className={`w-7 h-7 rounded-lg inline-flex items-center justify-center border border-border-black-10 dark:border-background-white-15 text-color-black-100 dark:text-color-white-90 transition-all duration-300 ${theme.btnHover}`}
+                      title="Mở Dashboard"
+                      aria-label="Mở Dashboard"
+                      className={`w-7 h-7 max-lg:w-6 max-lg:h-6 max-md:w-5.5 max-md:h-5.5 rounded-lg max-lg:rounded-md max-md:rounded inline-flex items-center justify-center border border-border-black-10 dark:border-background-white-15 text-color-black-100 dark:text-color-white-90 transition-all duration-300 ${theme.btnHover}`}
                     >
                       <svg
-                        className="w-3.5 h-3.5 fill-current"
+                        className="w-3.5 h-3.5 max-lg:w-3 max-lg:h-3 max-md:w-2.5 max-md:h-2.5 fill-current"
                         viewBox="0 0 20 20"
                       >
                         <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
@@ -559,7 +565,7 @@ const DashboardListContent = () => {
             })}
           </div>
         ) : (
-          <div className="space-y-2.5 animate-fade-up">
+          <div className="space-y-2.5 max-lg:space-y-2 animate-fade-up">
             {displayedDashboards.map((item, index) => {
               const theme = CARD_THEMES[index % CARD_THEMES.length];
               const IconComponent = CHART_ICONS[index % CHART_ICONS.length];
@@ -569,28 +575,32 @@ const DashboardListContent = () => {
                 <Link
                   key={item.id}
                   to={item.path}
+                  title={item.dashboard_title || `Dashboard #${item.id}`}
                   style={{
                     animationDelay: `${Math.min(index * 45, 300)}ms`,
                   }}
-                  className={`shine animate-fade-up group relative overflow-hidden rounded-2xl bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 p-4 flex items-center justify-between gap-4 shadow-component transition-all duration-200 hover:-translate-y-0.5 ${theme.hoverBorder} ${theme.hoverShadow}`}
+                  className={`shine animate-fade-up group relative overflow-hidden rounded-2xl max-lg:rounded-xl max-md:rounded-lg bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 p-4 max-lg:p-3 max-md:p-2.5 flex items-center justify-between gap-4 max-lg:gap-3 max-md:gap-2 shadow-component transition-all duration-200 hover:-translate-y-0.5 ${theme.hoverBorder} ${theme.hoverShadow}`}
                 >
                   <div
                     className={`absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b ${theme.bar}`}
                   />
 
-                  <div className="flex items-center gap-3.5 pl-2 min-w-0">
+                  <div className="flex items-center gap-3.5 max-lg:gap-2.5 max-md:gap-2 pl-2 min-w-0">
                     <div
-                      className={`w-10 h-10 rounded-xl ${theme.iconBg} ${theme.iconText} flex items-center justify-center shrink-0 transition-transform duration-200 group-hover:scale-105`}
+                      className={`w-10 h-10 max-lg:w-8.5 max-lg:h-8.5 max-md:w-7.5 max-md:h-7.5 rounded-xl max-lg:rounded-lg max-md:rounded-md ${theme.iconBg} ${theme.iconText} flex items-center justify-center shrink-0 transition-transform duration-200 group-hover:scale-105`}
                     >
-                      <IconComponent className="w-5 h-5" />
+                      <IconComponent className="w-5 h-5 max-lg:w-4.5 max-lg:h-4 max-md:w-3.5 max-md:h-3.5" />
                     </div>
 
                     <div className="min-w-0">
-                      <h2 className="text-sm sm:text-base font-bold text-color-black-100 dark:text-color-white-90 group-hover:text-color-neotam dark:group-hover:text-[#5bd6d8] transition-colors truncate">
+                      <h2
+                        title={item.dashboard_title || `Dashboard #${item.id}`}
+                        className="text-base max-lg:text-sm max-md:text-xs font-bold text-color-black-100 dark:text-color-white-90 group-hover:text-color-neotam dark:group-hover:text-[#5bd6d8] transition-colors truncate"
+                      >
                         {item.dashboard_title || `Dashboard #${item.id}`}
                       </h2>
                       <span
-                        className={`inline-flex items-center px-2 py-0.5 mt-1 rounded-full text-[10px] font-bold tracking-wider uppercase border ${theme.badge}`}
+                        className={`inline-flex items-center px-2 max-lg:px-1.5 max-md:px-1 py-0.5 mt-1 rounded-full text-[10px] max-lg:text-[9px] max-md:text-[8px] font-bold tracking-wider uppercase border ${theme.badge}`}
                       >
                         {categoryLabel}
                       </span>
@@ -598,12 +608,12 @@ const DashboardListContent = () => {
                   </div>
 
                   <span
-                    title="Mở báo cáo"
-                    aria-label="Mở báo cáo"
-                    className={`w-7 h-7 rounded-lg inline-flex items-center justify-center border border-border-black-10 dark:border-background-white-15 text-color-black-100 dark:text-color-white-90 transition-all duration-200 shrink-0 ${theme.btnHover}`}
+                    title="Mở Dashboard"
+                    aria-label="Mở Dashboard"
+                    className={`w-7 h-7 max-lg:w-6 max-lg:h-6 max-md:w-5.5 max-md:h-5.5 rounded-lg max-lg:rounded-md max-md:rounded inline-flex items-center justify-center border border-border-black-10 dark:border-background-white-15 text-color-black-100 dark:text-color-white-90 transition-all duration-200 shrink-0 ${theme.btnHover}`}
                   >
                     <svg
-                      className="w-3.5 h-3.5 fill-current"
+                      className="w-3.5 h-3.5 max-lg:w-3 max-lg:h-3 max-md:w-2.5 max-md:h-2.5 fill-current"
                       viewBox="0 0 20 20"
                     >
                       <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
@@ -616,7 +626,7 @@ const DashboardListContent = () => {
         )}
       </main>
 
-      <div className="mt-auto w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 pb-6 bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300">
+      <div className="mt-auto w-full max-w-[1600px] mx-auto px-8 max-lg:px-6 max-md:px-4 pb-6 max-lg:pb-4.5 max-md:pb-3 bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300">
         <Footer color="text-color-black-100 dark:text-color-white-90" />
       </div>
     </div>

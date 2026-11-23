@@ -240,7 +240,7 @@ const UserInfoContent = () => {
     <div className="min-h-screen flex flex-col font-family-be-vietnam-pro bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300">
       <Header username={userInfo?.username} />
 
-      <main className="flex-1 w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <main className="flex-1 w-full max-w-[1600px] mx-auto px-8 max-lg:px-6 max-md:px-4 py-6 max-lg:py-4.5 max-md:py-3">
         {/* Toast Notification */}
         {toast && (
           <div className="fixed top-20 right-6 z-50 animate-pop-in duration-300">
@@ -286,34 +286,36 @@ const UserInfoContent = () => {
         )}
 
         {loading ? (
-          <div className="animate-fade-up p-6 bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 rounded-2xl shadow-component">
+          <div className="animate-fade-up p-6 max-lg:p-4 bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 rounded-2xl shadow-component">
             <Loading height="360px" />
           </div>
         ) : error ? (
-          <div className="animate-fade-up p-12 bg-background-light dark:bg-background-chart-dark border border-border-error rounded-2xl shadow-component text-center">
-            <p className="text-sm font-semibold text-color-error">{error}</p>
+          <div className="animate-fade-up p-12 max-lg:p-8 bg-background-light dark:bg-background-chart-dark border border-border-error rounded-2xl shadow-component text-center">
+            <p className="text-sm max-lg:text-xs font-semibold text-color-error">
+              {error}
+            </p>
           </div>
         ) : !userInfo ? (
-          <div className="animate-fade-up p-12 bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 rounded-2xl shadow-component text-center">
-            <p className="text-sm text-color-black-50 dark:text-color-white-50">
+          <div className="animate-fade-up p-12 max-lg:p-8 bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 rounded-2xl shadow-component text-center">
+            <p className="text-sm max-lg:text-xs text-color-black-50 dark:text-color-white-50">
               Không tìm thấy thông tin tài khoản.
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          <div className="grid grid-cols-12 max-md:grid-cols-1 gap-6 max-lg:gap-4.5 max-md:gap-4 items-start">
             {/* LEFT COLUMN: Identity & Security Profile Card */}
-            <section className="animate-fade-up lg:col-span-4 rounded-2xl overflow-hidden bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 shadow-component">
+            <section className="animate-fade-up col-span-4 max-md:col-span-1 rounded-2xl max-lg:rounded-xl max-md:rounded-lg overflow-hidden bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 shadow-component">
               {/* Cover Header */}
-              <div className="shine-auto animate-gradient-shift relative h-28 bg-gradient-to-r from-[#0f2a51] via-[#15658a] to-[#20A7C9] dark:from-[#111725] dark:via-[#163853] dark:to-[#1d7a94] overflow-hidden">
+              <div className="shine-auto animate-gradient-shift relative h-28 max-lg:h-24 max-md:h-20 bg-gradient-to-r from-[#0f2a51] via-[#15658a] to-[#20A7C9] dark:from-[#111725] dark:via-[#163853] dark:to-[#1d7a94] overflow-hidden">
                 <div className="pointer-events-none absolute -top-12 right-6 w-36 h-36 rounded-full bg-[#5bd6d8]/25 blur-2xl animate-float-slow" />
                 <div
                   className="pointer-events-none absolute -bottom-14 left-6 w-40 h-40 rounded-full bg-[#7367f0]/25 blur-3xl animate-float-slow"
                   style={{ animationDelay: "-3s" }}
                 />
-                <div className="absolute top-3.5 right-4">
+                <div className="absolute top-3.5 max-lg:top-3 max-md:top-2.5 right-4 max-lg:right-3 max-md:right-2.5">
                   <span
                     style={{ animationDelay: "100ms" }}
-                    className={`animate-pop-in inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold backdrop-blur-md border ${
+                    className={`animate-pop-in inline-flex items-center gap-1.5 px-3 max-lg:px-2.5 max-md:px-2 py-1 max-lg:py-0.5 max-md:py-0.5 rounded-full text-[11px] max-lg:text-[10px] max-md:text-[9px] font-semibold backdrop-blur-md border ${
                       userInfo.active
                         ? "bg-white/15 text-white border-white/25"
                         : "bg-color-error/25 text-white border-color-error/40"
@@ -331,12 +333,12 @@ const UserInfoContent = () => {
                 </div>
               </div>
 
-              <div className="px-6 pb-6">
+              <div className="px-6 max-lg:px-4 max-md:px-3 pb-6 max-lg:pb-4 max-md:pb-3">
                 {/* Avatar & Identity */}
-                <div className="flex items-end justify-between gap-3 -mt-10 mb-5">
-                  <div className="relative w-20 h-20 rounded-2xl p-[3px] shadow-lg overflow-hidden bg-background-light dark:bg-background-chart-dark group">
+                <div className="flex items-end justify-between gap-3 -mt-10 max-lg:-mt-8 max-md:-mt-7 mb-5 max-lg:mb-3.5 max-md:mb-3">
+                  <div className="relative w-20 h-20 max-lg:w-16 max-lg:h-16 max-md:w-14 max-md:h-14 rounded-2xl max-lg:rounded-xl max-md:rounded-lg p-[3px] shadow-lg overflow-hidden bg-background-light dark:bg-background-chart-dark group">
                     <div className="pointer-events-none absolute -inset-1/2 bg-[conic-gradient(from_0deg,#20A7C9,#7367f0,#f2994a,#2fc4c6,#20A7C9)] animate-spin-slow opacity-90" />
-                    <div className="relative w-full h-full rounded-[13px] bg-gradient-to-br from-[#20A7C9] to-[#7367f0] flex items-center justify-center text-white text-xl font-extrabold transition-transform duration-300 group-hover:scale-105">
+                    <div className="relative w-full h-full rounded-[13px] max-lg:rounded-[9px] max-md:rounded-[7px] bg-gradient-to-br from-[#20A7C9] to-[#7367f0] flex items-center justify-center text-white text-xl max-lg:text-lg max-md:text-base font-extrabold transition-transform duration-300 group-hover:scale-105">
                       {(userInfo.username || "U").slice(0, 2).toUpperCase()}
                     </div>
                   </div>
@@ -344,25 +346,25 @@ const UserInfoContent = () => {
                   {globalRoles.length > 0 && (
                     <span
                       style={{ animationDelay: "140ms" }}
-                      className="animate-pop-in px-3 py-1 rounded-full text-xs font-bold bg-background-ave-reach dark:bg-[#21b8b8]/20 text-color-ave-reach dark:text-[#5bd6d8] border border-[#21b8b8]/30"
+                      className="animate-pop-in px-3 max-lg:px-2.5 max-md:px-2 py-1 max-lg:py-0.5 max-md:py-0.5 rounded-full text-xs max-lg:text-[11px] max-md:text-[10px] font-bold bg-background-ave-reach dark:bg-[#21b8b8]/20 text-color-ave-reach dark:text-[#5bd6d8] border border-[#21b8b8]/30"
                     >
                       {globalRoles.join(", ")}
                     </span>
                   )}
                 </div>
 
-                <div className="mb-5 pb-5 border-b border-border-black-10 dark:border-background-white-15">
-                  <h1 className="text-xl font-bold text-color-black-100 dark:text-color-white-90 leading-snug">
+                <div className="mb-5 max-lg:mb-3.5 max-md:mb-3 pb-5 max-lg:pb-3.5 max-md:pb-3 border-b border-border-black-10 dark:border-background-white-15">
+                  <h1 className="text-xl max-lg:text-lg max-md:text-base font-bold text-color-black-100 dark:text-color-white-90 leading-snug">
                     {displayName}
                   </h1>
-                  <p className="text-xs font-mono text-color-black-50 dark:text-color-white-50 mt-0.5">
+                  <p className="text-xs max-lg:text-[11px] max-md:text-[10px] font-mono text-color-black-50 dark:text-color-white-50 mt-0.5">
                     @{userInfo.username}
                   </p>
                 </div>
 
                 {/* Details List */}
-                <div className="space-y-3.5 text-xs mb-6">
-                  <div className="flex items-center justify-between gap-3 py-2 px-3 rounded-xl bg-background-dashboard dark:bg-background-white-8">
+                <div className="space-y-3.5 max-lg:space-y-2.5 max-md:space-y-2 text-xs max-lg:text-[11px] max-md:text-[10px] mb-6 max-lg:mb-4 max-md:mb-3">
+                  <div className="flex items-center justify-between gap-3 py-2 max-lg:py-1.5 max-md:py-1 px-3 max-lg:px-2.5 max-md:px-2 rounded-xl max-lg:rounded-lg max-md:rounded bg-background-dashboard dark:bg-background-white-8">
                     <span className="text-color-black-50 dark:text-color-white-50 font-medium">
                       Họ và tên
                     </span>
@@ -371,7 +373,7 @@ const UserInfoContent = () => {
                     </span>
                   </div>
 
-                  <div className="flex items-center justify-between gap-3 py-2 px-3 rounded-xl bg-background-dashboard dark:bg-background-white-8">
+                  <div className="flex items-center justify-between gap-3 py-2 max-lg:py-1.5 max-md:py-1 px-3 max-lg:px-2.5 max-md:px-2 rounded-xl max-lg:rounded-lg max-md:rounded bg-background-dashboard dark:bg-background-white-8">
                     <span className="text-color-black-50 dark:text-color-white-50 font-medium shrink-0">
                       Email
                     </span>
@@ -380,7 +382,7 @@ const UserInfoContent = () => {
                     </span>
                   </div>
 
-                  <div className="flex items-center justify-between gap-3 py-2 px-3 rounded-xl bg-background-dashboard dark:bg-background-white-8">
+                  <div className="flex items-center justify-between gap-3 py-2 max-lg:py-1.5 max-md:py-1 px-3 max-lg:px-2.5 max-md:px-2 rounded-xl max-lg:rounded-lg max-md:rounded bg-background-dashboard dark:bg-background-white-8">
                     <span className="text-color-black-50 dark:text-color-white-50 font-medium">
                       Ngày tham gia
                     </span>
@@ -391,12 +393,12 @@ const UserInfoContent = () => {
                     </span>
                   </div>
 
-                  <div className="flex items-center justify-between gap-3 py-2 px-3 rounded-xl bg-background-dashboard dark:bg-background-white-8">
+                  <div className="flex items-center justify-between gap-3 py-2 max-lg:py-1.5 max-md:py-1 px-3 max-lg:px-2.5 max-md:px-2 rounded-xl max-lg:rounded-lg max-md:rounded bg-background-dashboard dark:bg-background-white-8">
                     <span className="text-color-black-50 dark:text-color-white-50 font-medium">
                       Xác thực OTP
                     </span>
                     <span
-                      className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold ${
+                      className={`inline-flex items-center gap-1.5 px-2.5 max-lg:px-2 max-md:px-1.5 py-0.5 rounded-full text-[11px] max-lg:text-[10px] max-md:text-[9px] font-semibold ${
                         userInfo.require_otp !== false
                           ? "bg-[#20A7C9]/15 text-[#20A7C9] dark:text-[#5bd6d8]"
                           : "bg-background-black-4 dark:bg-white/10 text-color-black-50 dark:text-color-white-50"
@@ -413,12 +415,12 @@ const UserInfoContent = () => {
                     </span>
                   </div>
 
-                  <div className="flex items-center justify-between gap-3 py-2 px-3 rounded-xl bg-background-dashboard dark:bg-background-white-8">
+                  <div className="flex items-center justify-between gap-3 py-2 max-lg:py-1.5 max-md:py-1 px-3 max-lg:px-2.5 max-md:px-2 rounded-xl max-lg:rounded-lg max-md:rounded bg-background-dashboard dark:bg-background-white-8">
                     <span className="text-color-black-50 dark:text-color-white-50 font-medium">
                       Đổi mật khẩu
                     </span>
                     <span
-                      className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold ${
+                      className={`inline-flex items-center gap-1.5 px-2.5 max-lg:px-2 max-md:px-1.5 py-0.5 rounded-full text-[11px] max-lg:text-[10px] max-md:text-[9px] font-semibold ${
                         userInfo.can_change_password !== false
                           ? "bg-[#7367f0]/15 text-[#7367f0] dark:text-[#a59ff8]"
                           : "bg-color-error/15 text-color-error"
@@ -439,14 +441,14 @@ const UserInfoContent = () => {
                 </div>
 
                 {/* Action Buttons */}
-                <div className="grid grid-cols-2 gap-2.5">
+                <div className="grid grid-cols-2 gap-2.5 max-lg:gap-2 max-md:gap-1.5">
                   <button
                     type="button"
                     onClick={handleOpenEditProfile}
-                    className="shine relative overflow-hidden inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-[#20A7C9] to-[#2fc4c6] text-white shadow-xs hover:opacity-95 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer"
+                    className="shine relative overflow-hidden inline-flex items-center justify-center gap-1.5 px-3.5 max-lg:px-2.5 max-md:px-2 py-2.5 max-lg:py-2 max-md:py-1.5 rounded-xl max-lg:rounded-lg max-md:rounded text-xs max-lg:text-[11px] max-md:text-[10px] font-semibold bg-gradient-to-r from-[#20A7C9] to-[#2fc4c6] text-white shadow-xs hover:opacity-95 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer"
                   >
                     <svg
-                      className="w-3.5 h-3.5"
+                      className="w-3.5 h-3.5 max-lg:w-3 max-lg:h-3 max-md:w-2.5 max-md:h-2.5"
                       fill="none"
                       stroke="currentColor"
                       strokeWidth="2"
@@ -464,14 +466,14 @@ const UserInfoContent = () => {
                   <button
                     type="button"
                     onClick={handleOpenChangePassword}
-                    className={`inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl text-xs font-semibold border transition-all duration-200 cursor-pointer ${
+                    className={`inline-flex items-center justify-center gap-1.5 px-3.5 max-lg:px-2.5 py-2.5 max-lg:py-2 rounded-xl text-xs max-lg:text-[11px] font-semibold border transition-all duration-200 cursor-pointer ${
                       userInfo.can_change_password !== false
                         ? "bg-background-dashboard dark:bg-background-white-8 hover:bg-[#7367f0]/15 hover:-translate-y-0.5 text-[#7367f0] dark:text-[#a59ff8] border-[#7367f0]/35"
                         : "bg-color-error/10 text-color-error border-color-error/30 opacity-65 cursor-not-allowed"
                     }`}
                   >
                     <svg
-                      className="w-3.5 h-3.5"
+                      className="w-3.5 h-3.5 max-lg:w-3 max-lg:h-3"
                       fill="none"
                       stroke="currentColor"
                       strokeWidth="2"
@@ -487,19 +489,19 @@ const UserInfoContent = () => {
             </section>
 
             {/* RIGHT COLUMN: Groups & Accessible Dashboards */}
-            <div className="lg:col-span-8 space-y-6">
+            <div className="col-span-8 max-md:col-span-1 space-y-6 max-lg:space-y-4.5 max-md:space-y-4">
               {/* Accessible Dashboards Section */}
               <section
                 style={{ animationDelay: "90ms" }}
-                className="animate-fade-up relative overflow-hidden rounded-2xl bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 p-5 sm:p-6 shadow-component"
+                className="animate-fade-up relative overflow-hidden rounded-2xl max-lg:rounded-xl max-md:rounded-lg bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 p-6 max-lg:p-4.5 max-md:p-3.5 shadow-component"
               >
                 <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#20A7C9] to-[#2fc4c6] animate-gradient-shift" />
 
-                <div className="flex items-center justify-between gap-3 mb-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-xl bg-background-ave-reach dark:bg-[#21b8b8]/20 text-color-ave-reach dark:text-[#5bd6d8] flex items-center justify-center">
+                <div className="flex items-center justify-between gap-3 mb-4 max-lg:mb-3 max-md:mb-2.5">
+                  <div className="flex items-center gap-3 max-lg:gap-2">
+                    <div className="w-9 h-9 max-lg:w-8 max-lg:h-8 max-md:w-7 max-md:h-7 rounded-xl max-lg:rounded-lg max-md:rounded bg-background-ave-reach dark:bg-[#21b8b8]/20 text-color-ave-reach dark:text-[#5bd6d8] flex items-center justify-center">
                       <svg
-                        className="w-4.5 h-4.5"
+                        className="w-4.5 h-4.5 max-lg:w-4 max-lg:h-4 max-md:w-3.5 max-md:h-3.5"
                         fill="none"
                         stroke="currentColor"
                         strokeWidth="2"
@@ -511,22 +513,22 @@ const UserInfoContent = () => {
                         <rect width="7" height="5" x="3" y="16" rx="1" />
                       </svg>
                     </div>
-                    <h2 className="text-base font-bold text-color-black-100 dark:text-color-white-90">
-                      Báo cáo được cấp quyền
+                    <h2 className="text-base max-lg:text-sm max-md:text-xs font-bold text-color-black-100 dark:text-color-white-90">
+                      Dashboard được cấp quyền
                     </h2>
                   </div>
 
-                  <span className="animate-pop-in px-2.5 py-1 rounded-full text-xs font-bold bg-background-ave-reach dark:bg-[#21b8b8]/20 text-color-ave-reach dark:text-[#5bd6d8]">
+                  <span className="animate-pop-in px-2.5 max-lg:px-2 max-md:px-1.5 py-1 max-lg:py-0.5 max-md:py-0.5 rounded-full text-xs max-lg:text-[11px] max-md:text-[10px] font-bold bg-background-ave-reach dark:bg-[#21b8b8]/20 text-color-ave-reach dark:text-[#5bd6d8]">
                     {dashboards.length}
                   </span>
                 </div>
 
                 {dashboards.length === 0 ? (
-                  <div className="p-8 rounded-xl bg-background-dashboard dark:bg-background-white-8 border border-dashed border-border-black-10 dark:border-background-white-15 text-xs text-color-black-50 dark:text-color-white-50 text-center">
-                    Chưa có báo cáo nào được cấp quyền.
+                  <div className="p-8 max-lg:p-6 max-md:p-4 rounded-xl max-lg:rounded-lg max-md:rounded bg-background-dashboard dark:bg-background-white-8 border border-dashed border-border-black-10 dark:border-background-white-15 text-xs max-lg:text-[11px] max-md:text-[10px] text-color-black-50 dark:text-color-white-50 text-center">
+                    Chưa có Dashboard nào được cấp quyền.
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 max-md:grid-cols-1 gap-3 max-lg:gap-2.5 max-md:gap-2">
                     {dashboards.map((d, idx) => (
                       <Link
                         key={d.id}
@@ -534,12 +536,12 @@ const UserInfoContent = () => {
                         style={{
                           animationDelay: `${Math.min(idx * 50 + 120, 420)}ms`,
                         }}
-                        className="shine animate-fade-up group relative overflow-hidden flex items-center justify-between gap-3 p-3.5 rounded-xl bg-background-dashboard dark:bg-background-white-8 border border-border-black-10 dark:border-background-white-15 hover:border-color-neotam transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm"
+                        className="shine animate-fade-up group relative overflow-hidden flex items-center justify-between gap-3 max-lg:gap-2 p-3.5 max-lg:p-2.5 max-md:p-2 rounded-xl max-lg:rounded-lg max-md:rounded bg-background-dashboard dark:bg-background-white-8 border border-border-black-10 dark:border-background-white-15 hover:border-color-neotam transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm"
                       >
-                        <div className="flex items-center gap-3 min-w-0">
-                          <span className="w-8 h-8 rounded-lg bg-background-ave-reach dark:bg-[#21b8b8]/20 text-color-ave-reach dark:text-[#5bd6d8] flex items-center justify-center shrink-0 transition-transform duration-200 group-hover:scale-105">
+                        <div className="flex items-center gap-3 max-lg:gap-2 min-w-0">
+                          <span className="w-8 h-8 max-lg:w-7 max-lg:h-7 max-md:w-6 max-md:h-6 rounded-lg max-lg:rounded-md max-md:rounded bg-background-ave-reach dark:bg-[#21b8b8]/20 text-color-ave-reach dark:text-[#5bd6d8] flex items-center justify-center shrink-0 transition-transform duration-200 group-hover:scale-105">
                             <svg
-                              className="w-4 h-4"
+                              className="w-4 h-4 max-lg:w-3.5 max-lg:h-3 max-md:w-3 max-md:h-3"
                               fill="none"
                               stroke="currentColor"
                               strokeWidth="2"
@@ -552,17 +554,17 @@ const UserInfoContent = () => {
                               />
                             </svg>
                           </span>
-                          <span className="text-xs sm:text-sm font-bold text-color-black-100 dark:text-color-white-90 truncate group-hover:text-color-neotam dark:group-hover:text-[#5bd6d8] transition-colors">
+                          <span className="text-sm max-lg:text-xs max-md:text-[11px] font-bold text-color-black-100 dark:text-color-white-90 truncate group-hover:text-color-neotam dark:group-hover:text-[#5bd6d8] transition-colors">
                             {d.dashboard_title}
                           </span>
                         </div>
                         <span
-                          title="Mở báo cáo"
-                          aria-label="Mở báo cáo"
-                          className="w-7 h-7 rounded-lg inline-flex items-center justify-center bg-[#20A7C9]/10 text-color-neotam dark:text-[#5bd6d8] group-hover:bg-[#20A7C9] group-hover:text-white transition-all shrink-0"
+                          title="Mở Dashboard"
+                          aria-label="Mở Dashboard"
+                          className="w-7 h-7 max-lg:w-6 max-lg:h-6 max-md:w-5.5 max-md:h-5.5 rounded-lg max-lg:rounded-md max-md:rounded inline-flex items-center justify-center bg-[#20A7C9]/10 text-color-neotam dark:text-[#5bd6d8] group-hover:bg-[#20A7C9] group-hover:text-white transition-all shrink-0"
                         >
                           <svg
-                            className="w-3.5 h-3.5 fill-current"
+                            className="w-3.5 h-3.5 max-lg:w-3 max-lg:h-3 max-md:w-2.5 max-md:h-2.5 fill-current"
                             viewBox="0 0 20 20"
                           >
                             <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
@@ -577,15 +579,15 @@ const UserInfoContent = () => {
               {/* Groups Section */}
               <section
                 style={{ animationDelay: "160ms" }}
-                className="animate-fade-up relative overflow-hidden rounded-2xl bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 p-5 sm:p-6 shadow-component"
+                className="animate-fade-up relative overflow-hidden rounded-2xl max-lg:rounded-xl max-md:rounded-lg bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 p-6 max-lg:p-4.5 max-md:p-3.5 shadow-component"
               >
                 <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#7367f0] to-[#9e95f5] animate-gradient-shift" />
 
-                <div className="flex items-center justify-between gap-3 mb-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-xl bg-background-rating-percent dark:bg-[#7367f0]/20 text-color-rating-percent dark:text-[#a59ff8] flex items-center justify-center">
+                <div className="flex items-center justify-between gap-3 mb-4 max-lg:mb-3 max-md:mb-2.5">
+                  <div className="flex items-center gap-3 max-lg:gap-2">
+                    <div className="w-9 h-9 max-lg:w-8 max-lg:h-8 max-md:w-7 max-md:h-7 rounded-xl max-lg:rounded-lg max-md:rounded bg-background-rating-percent dark:bg-[#7367f0]/20 text-color-rating-percent dark:text-[#a59ff8] flex items-center justify-center">
                       <svg
-                        className="w-4.5 h-4.5"
+                        className="w-4.5 h-4.5 max-lg:w-4 max-lg:h-4 max-md:w-3.5 max-md:h-3.5"
                         fill="none"
                         stroke="currentColor"
                         strokeWidth="2"
@@ -598,22 +600,22 @@ const UserInfoContent = () => {
                         />
                       </svg>
                     </div>
-                    <h2 className="text-base font-bold text-color-black-100 dark:text-color-white-90">
-                      Nhóm trực thuộc
+                    <h2 className="text-base max-lg:text-sm max-md:text-xs font-bold text-color-black-100 dark:text-color-white-90">
+                      Nhóm tham gia
                     </h2>
                   </div>
 
-                  <span className="animate-pop-in px-2.5 py-1 rounded-full text-xs font-bold bg-background-rating-percent dark:bg-[#7367f0]/20 text-color-rating-percent dark:text-[#a59ff8]">
+                  <span className="animate-pop-in px-2.5 max-lg:px-2 max-md:px-1.5 py-1 max-lg:py-0.5 max-md:py-0.5 rounded-full text-xs max-lg:text-[11px] max-md:text-[10px] font-bold bg-background-rating-percent dark:bg-[#7367f0]/20 text-color-rating-percent dark:text-[#a59ff8]">
                     {groups.length}
                   </span>
                 </div>
 
                 {groups.length === 0 ? (
-                  <div className="p-8 rounded-xl bg-background-dashboard dark:bg-background-white-8 border border-dashed border-border-black-10 dark:border-background-white-15 text-xs text-color-black-50 dark:text-color-white-50 text-center">
+                  <div className="p-8 max-lg:p-6 max-md:p-4 rounded-xl max-lg:rounded-lg max-md:rounded bg-background-dashboard dark:bg-background-white-8 border border-dashed border-border-black-10 dark:border-background-white-15 text-xs max-lg:text-[11px] max-md:text-[10px] text-color-black-50 dark:text-color-white-50 text-center">
                     Chưa tham gia nhóm nào.
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 max-md:grid-cols-1 gap-3 max-lg:gap-2.5 max-md:gap-2">
                     {groups.map((g, idx) => {
                       const roleCode = g.role_code || g.role_in_group || "";
                       const roleName = g.role_name || g.role_label || roleCode;
@@ -623,19 +625,19 @@ const UserInfoContent = () => {
                           style={{
                             animationDelay: `${Math.min(idx * 50 + 180, 480)}ms`,
                           }}
-                          className="animate-fade-up flex items-center justify-between gap-3 p-3.5 rounded-xl bg-background-dashboard dark:bg-background-white-8 border border-border-black-10 dark:border-background-white-15 hover:border-[#7367f0]/50 hover:-translate-y-0.5 transition-all duration-200"
+                          className="animate-fade-up flex items-center justify-between gap-3 max-lg:gap-2 p-3.5 max-lg:p-2.5 max-md:p-2 rounded-xl max-lg:rounded-lg max-md:rounded bg-background-dashboard dark:bg-background-white-8 border border-border-black-10 dark:border-background-white-15 hover:border-[#7367f0]/50 hover:-translate-y-0.5 transition-all duration-200"
                         >
                           <div className="min-w-0">
-                            <p className="text-xs sm:text-sm font-bold text-color-black-100 dark:text-color-white-90 truncate">
+                            <p className="text-sm max-lg:text-xs max-md:text-[11px] font-bold text-color-black-100 dark:text-color-white-90 truncate">
                               {g.group_name}
                             </p>
                             {g.joined_at && (
-                              <p className="text-[11px] text-color-black-50 dark:text-color-white-50 mt-0.5">
+                              <p className="text-[11px] max-lg:text-[10px] max-md:text-[9px] text-color-black-50 dark:text-color-white-50 mt-0.5">
                                 {formatDateDMY(g.joined_at)}
                               </p>
                             )}
                           </div>
-                          <span className="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-[#7367f0]/15 text-[#7367f0] dark:text-[#a59ff8] border border-[#7367f0]/25 shrink-0">
+                          <span className="px-2.5 max-lg:px-2 max-md:px-1.5 py-1 max-lg:py-0.5 max-md:py-0.5 rounded-full text-[11px] max-lg:text-[10px] max-md:text-[9px] font-semibold bg-[#7367f0]/15 text-[#7367f0] dark:text-[#a59ff8] border border-[#7367f0]/25 shrink-0">
                             {roleName}
                           </span>
                         </div>
@@ -654,8 +656,8 @@ const UserInfoContent = () => {
             <div className="relative w-full max-w-md rounded-2xl bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 shadow-2xl overflow-hidden animate-pop-in">
               <div className="h-1 bg-gradient-to-r from-[#20A7C9] via-[#2fc4c6] to-[#5bd6d8] animate-gradient-shift" />
 
-              <div className="flex items-center justify-between px-6 py-4 border-b border-border-black-10 dark:border-background-white-15">
-                <h3 className="text-base font-bold text-color-black-100 dark:text-color-white-90">
+              <div className="flex items-center justify-between px-6 max-lg:px-4.5 max-md:px-3.5 py-4 max-lg:py-3 max-md:py-2.5 border-b border-border-black-10 dark:border-background-white-15">
+                <h3 className="text-base max-lg:text-sm max-md:text-xs font-bold text-color-black-100 dark:text-color-white-90">
                   Cập nhật hồ sơ
                 </h3>
                 <button
@@ -663,22 +665,25 @@ const UserInfoContent = () => {
                   onClick={() => {
                     if (!profileSubmitting) setIsEditProfileOpen(false);
                   }}
-                  className="w-7 h-7 rounded-lg flex items-center justify-center text-color-black-50 dark:text-color-white-50 hover:bg-black/5 dark:hover:bg-white/10 transition cursor-pointer"
+                  className="w-7 h-7 max-lg:w-6 max-lg:h-6 rounded-lg flex items-center justify-center text-color-black-50 dark:text-color-white-50 hover:bg-black/5 dark:hover:bg-white/10 transition cursor-pointer"
                 >
                   ✕
                 </button>
               </div>
 
-              <form onSubmit={handleUpdateProfile} className="p-6 space-y-4">
+              <form
+                onSubmit={handleUpdateProfile}
+                className="p-6 max-lg:p-4.5 max-md:p-3.5 space-y-4 max-lg:space-y-3 max-md:space-y-2.5"
+              >
                 {profileErrors.form && (
-                  <div className="p-3 rounded-xl bg-color-error/10 border border-color-error/25 text-color-error text-xs">
+                  <div className="p-3 max-lg:p-2.5 max-md:p-2 rounded-xl bg-color-error/10 border border-color-error/25 text-color-error text-xs max-lg:text-[11px] max-md:text-[10px]">
                     {profileErrors.form}
                   </div>
                 )}
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                <div className="grid grid-cols-2 max-md:grid-cols-1 gap-3.5 max-lg:gap-2.5 max-md:gap-2">
                   <div>
-                    <label className="block text-xs font-semibold text-color-black-70 dark:text-color-white-80 mb-1.5">
+                    <label className="block text-xs max-lg:text-[11px] max-md:text-[10px] font-semibold text-color-black-70 dark:text-color-white-80 mb-1.5 max-lg:mb-1">
                       Họ và tên đệm
                     </label>
                     <input
@@ -691,12 +696,12 @@ const UserInfoContent = () => {
                         })
                       }
                       placeholder="Nguyễn Văn"
-                      className="w-full px-3.5 py-2 rounded-xl bg-background-search dark:bg-background-white-8 border border-border-black-10 dark:border-background-white-15 text-color-black-100 dark:text-color-white-90 text-xs sm:text-sm focus:outline-none focus:border-[#20A7C9] transition"
+                      className="w-full px-3.5 max-lg:px-3 max-md:px-2.5 py-2 max-lg:py-1.5 max-md:py-1 rounded-xl bg-background-search dark:bg-background-white-8 border border-border-black-10 dark:border-background-white-15 text-color-black-100 dark:text-color-white-90 text-sm max-lg:text-xs max-md:text-[11px] focus:outline-none focus:border-[#20A7C9] transition"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-color-black-70 dark:text-color-white-80 mb-1.5">
+                    <label className="block text-xs max-lg:text-[11px] max-md:text-[10px] font-semibold text-color-black-70 dark:text-color-white-80 mb-1.5 max-lg:mb-1">
                       Tên
                     </label>
                     <input
@@ -709,13 +714,13 @@ const UserInfoContent = () => {
                         })
                       }
                       placeholder="An"
-                      className="w-full px-3.5 py-2 rounded-xl bg-background-search dark:bg-background-white-8 border border-border-black-10 dark:border-background-white-15 text-color-black-100 dark:text-color-white-90 text-xs sm:text-sm focus:outline-none focus:border-[#20A7C9] transition"
+                      className="w-full px-3.5 max-lg:px-3 max-md:px-2.5 py-2 max-lg:py-1.5 max-md:py-1 rounded-xl bg-background-search dark:bg-background-white-8 border border-border-black-10 dark:border-background-white-15 text-color-black-100 dark:text-color-white-90 text-sm max-lg:text-xs max-md:text-[11px] focus:outline-none focus:border-[#20A7C9] transition"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-color-black-70 dark:text-color-white-80 mb-1.5">
+                  <label className="block text-xs max-lg:text-[11px] max-md:text-[10px] font-semibold text-color-black-70 dark:text-color-white-80 mb-1.5 max-lg:mb-1">
                     Email <span className="text-color-rating">*</span>
                   </label>
                   <input
@@ -731,7 +736,7 @@ const UserInfoContent = () => {
                       }
                     }}
                     placeholder="name@vtv.vn"
-                    className={`w-full px-3.5 py-2 rounded-xl bg-background-search dark:bg-background-white-8 border text-color-black-100 dark:text-color-white-90 text-xs sm:text-sm focus:outline-none transition ${
+                    className={`w-full px-3.5 max-lg:px-3 max-md:px-2.5 py-2 max-lg:py-1.5 max-md:py-1 rounded-xl bg-background-search dark:bg-background-white-8 border text-color-black-100 dark:text-color-white-90 text-sm max-lg:text-xs max-md:text-[11px] focus:outline-none transition ${
                       profileErrors.email
                         ? "border-color-rating"
                         : "border-border-black-10 dark:border-background-white-15 focus:border-[#20A7C9]"
@@ -772,8 +777,8 @@ const UserInfoContent = () => {
             <div className="relative w-full max-w-md rounded-2xl bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 shadow-2xl overflow-hidden animate-pop-in">
               <div className="h-1 bg-gradient-to-r from-[#7367f0] via-[#887ef2] to-[#9e95f5] animate-gradient-shift" />
 
-              <div className="flex items-center justify-between px-6 py-4 border-b border-border-black-10 dark:border-background-white-15">
-                <h3 className="text-base font-bold text-color-black-100 dark:text-color-white-90">
+              <div className="flex items-center justify-between px-6 max-lg:px-4.5 max-md:px-3.5 py-4 max-lg:py-3 max-md:py-2.5 border-b border-border-black-10 dark:border-background-white-15">
+                <h3 className="text-base max-lg:text-sm max-md:text-xs font-bold text-color-black-100 dark:text-color-white-90">
                   Đổi mật khẩu
                 </h3>
                 <button
@@ -781,15 +786,18 @@ const UserInfoContent = () => {
                   onClick={() => {
                     if (!passwordSubmitting) setIsChangePasswordOpen(false);
                   }}
-                  className="w-7 h-7 rounded-lg flex items-center justify-center text-color-black-50 dark:text-color-white-50 hover:bg-black/5 dark:hover:bg-white/10 transition cursor-pointer"
+                  className="w-7 h-7 max-lg:w-6 max-lg:h-6 rounded-lg flex items-center justify-center text-color-black-50 dark:text-color-white-50 hover:bg-black/5 dark:hover:bg-white/10 transition cursor-pointer"
                 >
                   ✕
                 </button>
               </div>
 
-              <form onSubmit={handleChangePassword} className="p-6 space-y-4">
+              <form
+                onSubmit={handleChangePassword}
+                className="p-6 max-lg:p-4.5 max-md:p-3.5 space-y-4 max-lg:space-y-3 max-md:space-y-2.5"
+              >
                 {passwordErrors.form && (
-                  <div className="p-3 rounded-xl bg-color-error/10 border border-color-error/25 text-color-error text-xs">
+                  <div className="p-3 max-lg:p-2.5 max-md:p-2 rounded-xl bg-color-error/10 border border-color-error/25 text-color-error text-xs max-lg:text-[11px] max-md:text-[10px]">
                     {passwordErrors.form}
                   </div>
                 )}
@@ -818,7 +826,7 @@ const UserInfoContent = () => {
                   },
                 ].map((field) => (
                   <div key={field.key}>
-                    <label className="block text-xs font-semibold text-color-black-70 dark:text-color-white-80 mb-1.5">
+                    <label className="block text-xs max-lg:text-[11px] max-md:text-[10px] font-semibold text-color-black-70 dark:text-color-white-80 mb-1.5 max-lg:mb-1">
                       {field.label} <span className="text-color-rating">*</span>
                     </label>
                     <div className="relative">
@@ -838,7 +846,7 @@ const UserInfoContent = () => {
                           }
                         }}
                         placeholder={field.placeholder}
-                        className={`w-full pl-3.5 pr-10 py-2 rounded-xl bg-background-search dark:bg-background-white-8 border text-color-black-100 dark:text-color-white-90 text-xs sm:text-sm focus:outline-none transition ${
+                        className={`w-full pl-3.5 max-lg:pl-3 max-md:pl-2.5 pr-10 max-lg:pr-9 max-md:pr-8 py-2 max-lg:py-1.5 max-md:py-1 rounded-xl bg-background-search dark:bg-background-white-8 border text-color-black-100 dark:text-color-white-90 text-sm max-lg:text-xs max-md:text-[11px] focus:outline-none transition ${
                           passwordErrors[field.key]
                             ? "border-color-rating"
                             : "border-border-black-10 dark:border-background-white-15 focus:border-[#7367f0]"
@@ -847,7 +855,7 @@ const UserInfoContent = () => {
                       <button
                         type="button"
                         onClick={field.toggle}
-                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-color-black-50 dark:text-color-white-50 hover:text-color-black-100 dark:hover:text-white cursor-pointer"
+                        className="absolute inset-y-0 right-0 pr-3 max-lg:pr-2.5 max-md:pr-2 flex items-center text-color-black-50 dark:text-color-white-50 hover:text-color-black-100 dark:hover:text-white cursor-pointer"
                       >
                         <svg
                           className="w-4 h-4"
@@ -910,7 +918,7 @@ const UserInfoContent = () => {
         )}
       </main>
 
-      <div className="mt-auto w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 pb-6 bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300">
+      <div className="mt-auto w-full max-w-[1600px] mx-auto px-8 max-lg:px-6 max-md:px-4 pb-6 max-lg:pb-4.5 max-md:pb-3 bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300">
         <Footer color="text-color-black-100 dark:text-color-white-90" />
       </div>
     </div>

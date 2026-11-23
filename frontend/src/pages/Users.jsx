@@ -531,16 +531,16 @@ const UsersManagementContent = () => {
       )}
 
       {/* Executive Header & KPI Bar */}
-      <section className="shine-auto animate-fade-up relative overflow-hidden rounded-2xl bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 p-5 sm:p-6 shadow-component">
+      <section className="shine-auto animate-fade-up relative overflow-hidden rounded-2xl bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 p-6 max-lg:p-4.5 max-md:p-3.5 shadow-component">
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#20A7C9] via-[#7367f0] to-[#0cb7a9] animate-gradient-shift" />
 
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-5 mb-5 border-b border-border-black-10 dark:border-background-white-15">
-          <div className="flex items-center gap-4">
-            <div className="relative w-12 h-12 rounded-2xl p-[2px] overflow-hidden shrink-0 shadow-sm">
+        <div className="flex flex-row max-md:flex-col items-center max-md:items-start justify-between gap-4 max-lg:gap-3 max-md:gap-2.5 pb-5 max-lg:pb-3.5 mb-5 max-lg:mb-3.5 border-b border-border-black-10 dark:border-background-white-15">
+          <div className="flex items-center gap-4 max-lg:gap-3">
+            <div className="relative w-12 h-12 max-lg:w-10 max-lg:h-10 rounded-2xl p-[2px] overflow-hidden shrink-0 shadow-sm">
               <div className="pointer-events-none absolute -inset-1/2 bg-[conic-gradient(from_0deg,#20A7C9,#7367f0,#f2994a,#2fc4c6,#20A7C9)] animate-spin-slow opacity-90" />
               <div className="relative w-full h-full rounded-[14px] bg-gradient-to-br from-[#20A7C9] to-[#7367f0] text-white flex items-center justify-center">
                 <svg
-                  className="w-6 h-6"
+                  className="w-6 h-6 max-lg:w-5 max-lg:h-5"
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="2"
@@ -555,13 +555,13 @@ const UsersManagementContent = () => {
               </div>
             </div>
             <div>
-              <div className="flex flex-wrap items-center gap-2">
-                <h1 className="text-xl sm:text-2xl font-bold text-color-black-100 dark:text-color-white-90 tracking-tight">
+              <div className="flex flex-wrap items-center gap-2 max-lg:gap-1.5">
+                <h1 className="text-2xl max-lg:text-xl max-md:text-lg font-bold text-color-black-100 dark:text-color-white-90 tracking-tight">
                   Quản lý Tài khoản
                 </h1>
                 <span
                   style={{ animationDelay: "100ms" }}
-                  className="animate-pop-in inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-background-ave-reach dark:bg-[#21b8b8]/20 text-color-ave-reach dark:text-[#5bd6d8] border border-[#21b8b8]/30"
+                  className="animate-pop-in inline-flex items-center gap-1.5 px-2.5 max-lg:px-2 py-0.5 rounded-full text-[11px] max-lg:text-[10px] font-semibold bg-background-ave-reach dark:bg-[#21b8b8]/20 text-color-ave-reach dark:text-[#5bd6d8] border border-[#21b8b8]/30"
                 >
                   <span className="w-1.5 h-1.5 rounded-full bg-[#0cb7a9] animate-pulse" />
                   {isSystemAdmin
@@ -569,19 +569,19 @@ const UsersManagementContent = () => {
                     : actorRole?.role_name || "Quản trị viên"}
                 </span>
               </div>
-              <p className="text-xs text-color-black-50 dark:text-color-white-50 mt-0.5">
+              <p className="text-xs max-lg:text-[11px] text-color-black-50 dark:text-color-white-50 mt-0.5">
                 Quản lý danh sách tài khoản, phân quyền vai trò và chính sách
                 bảo mật
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2.5 self-start lg:self-auto">
+          <div className="flex items-center gap-2.5 max-lg:gap-2 self-auto max-md:self-start">
             <button
               type="button"
               onClick={() => fetchData(true)}
               disabled={refreshing}
-              className="group/refresh inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-border-black-10 dark:border-background-white-15 bg-background-dashboard dark:bg-background-white-8 hover:border-color-neotam hover:-translate-y-0.5 text-color-black-70 dark:text-color-white-80 text-xs font-semibold transition-all duration-200 cursor-pointer"
+              className="group/refresh inline-flex items-center gap-1.5 px-3.5 max-lg:px-2.5 py-2 max-lg:py-1.5 rounded-xl border border-border-black-10 dark:border-background-white-15 bg-background-dashboard dark:bg-background-white-8 hover:border-color-neotam hover:-translate-y-0.5 text-color-black-70 dark:text-color-white-80 text-xs max-lg:text-[11px] font-semibold transition-all duration-200 cursor-pointer"
             >
               <svg
                 className={`w-3.5 h-3.5 transition-transform duration-500 group-hover/refresh:rotate-180 ${refreshing ? "animate-spin text-[#20A7C9]" : ""}`}
@@ -602,10 +602,10 @@ const UsersManagementContent = () => {
             <button
               type="button"
               onClick={handleOpenAdd}
-              className="shine relative overflow-hidden inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-[#20A7C9] to-[#2fc4c6] text-white text-xs font-bold shadow-xs hover:opacity-95 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer"
+              className="shine relative overflow-hidden inline-flex items-center gap-1.5 px-4 max-lg:px-3 py-2 max-lg:py-1.5 rounded-xl bg-gradient-to-r from-[#20A7C9] to-[#2fc4c6] text-white text-xs max-lg:text-[11px] font-bold shadow-xs hover:opacity-95 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer"
             >
               <svg
-                className="w-4 h-4"
+                className="w-4 h-4 max-lg:w-3.5 max-lg:h-3.5"
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="2.5"
@@ -623,22 +623,22 @@ const UsersManagementContent = () => {
         </div>
 
         {/* 3 KPI Stat Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+        <div className="grid grid-cols-3 max-md:grid-cols-1 gap-3.5 max-lg:gap-2.5 max-md:gap-2">
           <div
             style={{ animationDelay: "80ms" }}
-            className="animate-fade-up flex items-center justify-between p-3.5 rounded-xl bg-background-dashboard dark:bg-background-white-8 border border-border-black-10 dark:border-background-white-15 hover:border-[#20A7C9]/40 hover:-translate-y-1 hover:shadow-md transition-all duration-300"
+            className="animate-fade-up flex items-center justify-between p-3.5 max-lg:p-2.5 max-md:p-2 rounded-xl max-lg:rounded-lg max-md:rounded-md bg-background-dashboard dark:bg-background-white-8 border border-border-black-10 dark:border-background-white-15 hover:border-[#20A7C9]/40 hover:-translate-y-1 hover:shadow-md transition-all duration-300"
           >
             <div>
-              <p className="text-[11px] font-semibold text-color-black-50 dark:text-color-white-50 uppercase tracking-wider">
+              <p className="text-[11px] max-lg:text-[10px] max-md:text-[9px] font-semibold text-color-black-50 dark:text-color-white-50 uppercase tracking-wider">
                 Tổng tài khoản
               </p>
-              <p className="text-xl font-extrabold text-color-black-100 dark:text-color-white-90 mt-0.5">
+              <p className="text-xl max-lg:text-lg max-md:text-base font-extrabold text-color-black-100 dark:text-color-white-90 mt-0.5">
                 {stats.total}
               </p>
             </div>
-            <div className="w-9 h-9 rounded-xl bg-background-ave-reach dark:bg-[#21b8b8]/20 text-color-ave-reach dark:text-[#5bd6d8] flex items-center justify-center">
+            <div className="w-9 h-9 max-lg:w-8 max-lg:h-8 max-md:w-7 max-md:h-7 rounded-xl max-lg:rounded-lg max-md:rounded bg-background-ave-reach dark:bg-[#21b8b8]/20 text-color-ave-reach dark:text-[#5bd6d8] flex items-center justify-center">
               <svg
-                className="w-4.5 h-4.5"
+                className="w-4.5 h-4.5 max-lg:w-4 max-lg:h-4 max-md:w-3.5 max-md:h-3.5"
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="2"
@@ -655,19 +655,19 @@ const UsersManagementContent = () => {
 
           <div
             style={{ animationDelay: "140ms" }}
-            className="animate-fade-up flex items-center justify-between p-3.5 rounded-xl bg-background-dashboard dark:bg-background-white-8 border border-border-black-10 dark:border-background-white-15 hover:border-[#0cb7a9]/40 hover:-translate-y-1 hover:shadow-md transition-all duration-300"
+            className="animate-fade-up flex items-center justify-between p-3.5 max-lg:p-2.5 max-md:p-2 rounded-xl max-lg:rounded-lg max-md:rounded-md bg-background-dashboard dark:bg-background-white-8 border border-border-black-10 dark:border-background-white-15 hover:border-[#0cb7a9]/40 hover:-translate-y-1 hover:shadow-md transition-all duration-300"
           >
             <div>
-              <p className="text-[11px] font-semibold text-color-black-50 dark:text-color-white-50 uppercase tracking-wider">
+              <p className="text-[11px] max-lg:text-[10px] max-md:text-[9px] font-semibold text-color-black-50 dark:text-color-white-50 uppercase tracking-wider">
                 Đang hoạt động
               </p>
-              <p className="text-xl font-extrabold text-color-neotam dark:text-[#5bd6d8] mt-0.5">
+              <p className="text-xl max-lg:text-lg max-md:text-base font-extrabold text-color-neotam dark:text-[#5bd6d8] mt-0.5">
                 {stats.active}
               </p>
             </div>
-            <div className="w-9 h-9 rounded-xl bg-background-succes-type-1 dark:bg-background-succes-type-1-dark text-color-succes-type-1 dark:text-color-succes-type-1-dark flex items-center justify-center">
+            <div className="w-9 h-9 max-lg:w-8 max-lg:h-8 max-md:w-7 max-md:h-7 rounded-xl max-lg:rounded-lg max-md:rounded bg-background-succes-type-1 dark:bg-background-succes-type-1-dark text-color-succes-type-1 dark:text-color-succes-type-1-dark flex items-center justify-center">
               <svg
-                className="w-4.5 h-4.5"
+                className="w-4.5 h-4.5 max-lg:w-4 max-lg:h-4 max-md:w-3.5 max-md:h-3.5"
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="2"
@@ -684,19 +684,19 @@ const UsersManagementContent = () => {
 
           <div
             style={{ animationDelay: "200ms" }}
-            className="animate-fade-up flex items-center justify-between p-3.5 rounded-xl bg-background-dashboard dark:bg-background-white-8 border border-border-black-10 dark:border-background-white-15 hover:border-[#eb5757]/40 hover:-translate-y-1 hover:shadow-md transition-all duration-300"
+            className="animate-fade-up flex items-center justify-between p-3.5 max-lg:p-2.5 max-md:p-2 rounded-xl max-lg:rounded-lg max-md:rounded-md bg-background-dashboard dark:bg-background-white-8 border border-border-black-10 dark:border-background-white-15 hover:border-[#eb5757]/40 hover:-translate-y-1 hover:shadow-md transition-all duration-300"
           >
             <div>
-              <p className="text-[11px] font-semibold text-color-black-50 dark:text-color-white-50 uppercase tracking-wider">
+              <p className="text-[11px] max-lg:text-[10px] max-md:text-[9px] font-semibold text-color-black-50 dark:text-color-white-50 uppercase tracking-wider">
                 Tạm khóa
               </p>
-              <p className="text-xl font-extrabold text-color-rating dark:text-[#f87171] mt-0.5">
+              <p className="text-xl max-lg:text-lg max-md:text-base font-extrabold text-color-rating dark:text-[#f87171] mt-0.5">
                 {stats.inactive}
               </p>
             </div>
-            <div className="w-9 h-9 rounded-xl bg-background-rating dark:bg-[#eb5757]/20 text-color-rating dark:text-[#f87171] flex items-center justify-center">
+            <div className="w-9 h-9 max-lg:w-8 max-lg:h-8 max-md:w-7 max-md:h-7 rounded-xl max-lg:rounded-lg max-md:rounded bg-background-rating dark:bg-[#eb5757]/20 text-color-rating dark:text-[#f87171] flex items-center justify-center">
               <svg
-                className="w-4.5 h-4.5"
+                className="w-4.5 h-4.5 max-lg:w-4 max-lg:h-4 max-md:w-3.5 max-md:h-3.5"
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="2"
@@ -716,12 +716,12 @@ const UsersManagementContent = () => {
       {/* Filter & Search Command Bar */}
       <section
         style={{ animationDelay: "120ms" }}
-        className="animate-fade-up flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 p-3.5 sm:p-4 rounded-2xl bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 shadow-component"
+        className="animate-fade-up flex flex-row max-md:flex-col items-center max-md:items-stretch justify-between gap-3 max-lg:gap-2.5 max-md:gap-2 p-4 max-lg:p-3 max-md:p-2.5 rounded-2xl bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 shadow-component"
       >
-        <div className="relative flex-1 max-w-md">
-          <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-color-black-50 dark:text-color-white-50">
+        <div className="relative flex-1 max-w-md max-md:max-w-none">
+          <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 max-lg:pl-3 max-md:pl-2.5 pointer-events-none text-color-black-50 dark:text-color-white-50">
             <svg
-              className="w-4 h-4"
+              className="w-4 h-4 max-lg:w-3.5 max-lg:h-3 max-md:w-3 max-md:h-3"
               fill="none"
               stroke="currentColor"
               strokeWidth="2"
@@ -739,21 +739,21 @@ const UsersManagementContent = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Tìm theo tên, username, email..."
-            className="w-full pl-9 pr-8 py-2 rounded-xl text-xs sm:text-sm bg-background-search dark:bg-background-white-8 border border-border-black-10 dark:border-background-white-15 text-color-black-100 dark:text-color-white-90 placeholder:text-color-black-50 dark:placeholder:text-color-white-50 focus:outline-none focus:border-color-neotam transition"
+            className="w-full pl-9 max-lg:pl-8 max-md:pl-7 pr-8 max-lg:pr-7 max-md:pr-6 py-2 max-lg:py-1.5 max-md:py-1 rounded-xl text-sm max-lg:text-xs max-md:text-[11px] bg-background-search dark:bg-background-white-8 border border-border-black-10 dark:border-background-white-15 text-color-black-100 dark:text-color-white-90 placeholder:text-color-black-50 dark:placeholder:text-color-white-50 focus:outline-none focus:border-color-neotam transition"
           />
           {searchTerm && (
             <button
               type="button"
               onClick={() => setSearchTerm("")}
-              className="absolute inset-y-0 right-0 flex items-center pr-3 text-color-black-50 hover:text-color-error cursor-pointer"
+              className="absolute inset-y-0 right-0 flex items-center pr-3 max-lg:pr-2.5 max-md:pr-2 text-xs max-lg:text-[11px] max-md:text-[10px] text-color-black-50 hover:text-color-error cursor-pointer"
             >
               ✕
             </button>
           )}
         </div>
 
-        <div className="flex flex-wrap items-center gap-2.5">
-          <div className="flex items-center p-1 rounded-xl bg-background-search dark:bg-background-white-8 border border-border-black-10 dark:border-background-white-15">
+        <div className="flex flex-wrap items-center gap-2.5 max-lg:gap-2 max-md:gap-1.5 justify-end max-md:justify-between">
+          <div className="flex items-center p-1 max-lg:p-0.5 rounded-xl bg-background-search dark:bg-background-white-8 border border-border-black-10 dark:border-background-white-15">
             {[
               { id: "all", label: "Tất cả" },
               { id: "active", label: "Hoạt động" },
@@ -763,7 +763,7 @@ const UsersManagementContent = () => {
                 key={st.id}
                 type="button"
                 onClick={() => setStatusFilter(st.id)}
-                className={`px-3 py-1 rounded-lg text-xs font-semibold transition cursor-pointer ${
+                className={`px-3 max-lg:px-2.5 max-md:px-2 py-1 max-lg:py-0.5 max-md:py-0.5 rounded-lg text-xs max-lg:text-[11px] max-md:text-[10px] font-semibold transition cursor-pointer ${
                   statusFilter === st.id
                     ? "bg-background-light dark:bg-background-chart-dark text-color-neotam dark:text-[#5bd6d8] shadow-xs"
                     : "text-color-black-50 dark:text-color-white-50 hover:text-color-black-100 dark:hover:text-color-white-90"
@@ -777,7 +777,7 @@ const UsersManagementContent = () => {
           <select
             value={roleFilter}
             onChange={(e) => setRoleFilter(e.target.value)}
-            className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-background-search dark:bg-background-white-8 border border-border-black-10 dark:border-background-white-15 text-color-black-70 dark:text-color-white-80 focus:outline-none focus:border-color-neotam cursor-pointer"
+            className="px-3 max-lg:px-2.5 max-md:px-2 py-1.5 max-lg:py-1 max-md:py-0.5 rounded-xl text-xs max-lg:text-[11px] max-md:text-[10px] font-semibold bg-background-search dark:bg-background-white-8 border border-border-black-10 dark:border-background-white-15 text-color-black-70 dark:text-color-white-80 focus:outline-none focus:border-color-neotam cursor-pointer"
           >
             <option
               value="all"
@@ -819,7 +819,7 @@ const UsersManagementContent = () => {
                 setStatusFilter("all");
                 setRoleFilter("all");
               }}
-              className="px-3 py-1.5 rounded-xl text-xs font-semibold text-color-error hover:bg-color-error/10 transition cursor-pointer"
+              className="px-3 max-lg:px-2.5 max-md:px-2 py-1.5 max-lg:py-1 max-md:py-0.5 rounded-xl text-xs max-lg:text-[11px] max-md:text-[10px] font-semibold text-color-error hover:bg-color-error/10 transition cursor-pointer"
             >
               Đặt lại
             </button>
@@ -896,28 +896,49 @@ const UsersManagementContent = () => {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
+            <table className="w-full text-left text-xs max-lg:text-[11px] max-md:text-[10px] text-nowrap">
               <thead className="bg-background-dashboard dark:bg-background-white-8/50 text-color-black-50 dark:text-color-white-50 uppercase tracking-wider border-b border-border-black-10 dark:border-background-white-15">
                 <tr>
-                  <th scope="col" className="px-5 py-3.5 font-bold">
+                  <th
+                    scope="col"
+                    className="px-5 max-lg:px-3.5 max-md:px-2.5 py-3.5 max-lg:py-2.5 max-md:py-2 font-bold"
+                  >
                     Tài khoản
                   </th>
-                  <th scope="col" className="px-4 py-3.5 font-bold">
+                  <th
+                    scope="col"
+                    className="px-4 max-lg:px-3 max-md:px-2 py-3.5 max-lg:py-2.5 max-md:py-2 font-bold"
+                  >
                     Email
                   </th>
-                  <th scope="col" className="px-4 py-3.5 font-bold">
+                  <th
+                    scope="col"
+                    className="px-4 max-lg:px-3 max-md:px-2 py-3.5 max-lg:py-2.5 max-md:py-2 font-bold"
+                  >
                     Vai trò
                   </th>
-                  <th scope="col" className="px-4 py-3.5 font-bold">
+                  <th
+                    scope="col"
+                    className="px-4 max-lg:px-3 max-md:px-2 py-3.5 max-lg:py-2.5 max-md:py-2 font-bold"
+                  >
                     Bảo mật
                   </th>
-                  <th scope="col" className="px-4 py-3.5 font-bold">
+                  <th
+                    scope="col"
+                    className="px-4 max-lg:px-3 max-md:px-2 py-3.5 max-lg:py-2.5 max-md:py-2 font-bold"
+                  >
                     Trạng thái
                   </th>
-                  <th scope="col" className="px-4 py-3.5 font-bold">
+                  <th
+                    scope="col"
+                    className="px-4 max-lg:px-3 max-md:px-2 py-3.5 max-lg:py-2.5 max-md:py-2 font-bold"
+                  >
                     Khởi tạo
                   </th>
-                  <th scope="col" className="px-5 py-3.5 font-bold text-right">
+                  <th
+                    scope="col"
+                    className="px-5 max-lg:px-3.5 max-md:px-2.5 py-3.5 max-lg:py-2.5 max-md:py-2 font-bold text-right"
+                  >
                     Thao tác
                   </th>
                 </tr>
@@ -946,14 +967,14 @@ const UsersManagementContent = () => {
                       className="animate-fade-up group/row hover:bg-background-dashboard/80 dark:hover:bg-background-white-8/50 transition-colors"
                     >
                       {/* Tài khoản */}
-                      <td className="px-5 py-3.5">
-                        <div className="flex items-center gap-3">
+                      <td className="px-5 max-lg:px-3.5 max-md:px-2.5 py-3.5 max-lg:py-2.5 max-md:py-2">
+                        <div className="flex items-center gap-3 max-lg:gap-2.5 max-md:gap-2">
                           <div className="relative shrink-0">
-                            <div className="w-9 h-9 rounded-xl flex items-center justify-center font-bold text-xs bg-gradient-to-br from-[#20A7C9] to-[#7367f0] text-white transition-transform duration-200 group-hover/row:scale-105">
+                            <div className="w-9 h-9 max-lg:w-8 max-lg:h-8 max-md:w-7 max-md:h-7 rounded-xl max-lg:rounded-lg max-md:rounded flex items-center justify-center font-bold text-xs max-lg:text-[11px] max-md:text-[10px] bg-gradient-to-br from-[#20A7C9] to-[#7367f0] text-white transition-transform duration-200 group-hover/row:scale-105">
                               {initials}
                             </div>
                             <span
-                              className={`absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-background-light dark:border-background-chart-dark ${
+                              className={`absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 max-lg:w-2 max-lg:h-2 rounded-full border-2 border-background-light dark:border-background-chart-dark ${
                                 user.active
                                   ? "bg-[#0cb7a9] animate-pulse"
                                   : "bg-color-error"
@@ -961,10 +982,10 @@ const UsersManagementContent = () => {
                             />
                           </div>
                           <div className="min-w-0">
-                            <div className="font-bold text-color-black-100 dark:text-color-white-90 text-xs sm:text-sm truncate">
+                            <div className="font-bold text-color-black-100 dark:text-color-white-90 text-sm max-lg:text-xs max-md:text-[11px] truncate">
                               {fullName}
                             </div>
-                            <p className="text-[11px] text-color-black-50 dark:text-color-white-50 font-mono">
+                            <p className="text-[11px] max-lg:text-[10px] max-md:text-[9px] text-color-black-50 dark:text-color-white-50 font-mono">
                               @{user.username}
                             </p>
                           </div>
@@ -972,14 +993,14 @@ const UsersManagementContent = () => {
                       </td>
 
                       {/* Email */}
-                      <td className="px-4 py-3.5 font-mono text-color-black-70 dark:text-color-white-80">
+                      <td className="px-4 max-lg:px-3 max-md:px-2 py-3.5 max-lg:py-2.5 max-md:py-2 font-mono text-color-black-70 dark:text-color-white-80">
                         {user.email || "—"}
                       </td>
 
                       {/* Vai trò */}
-                      <td className="px-4 py-3.5">
+                      <td className="px-4 max-lg:px-3 max-md:px-2 py-3.5 max-lg:py-2.5 max-md:py-2">
                         <span
-                          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold border ${roleBadge.classes}`}
+                          className={`inline-flex items-center gap-1.5 px-2.5 max-lg:px-2 max-md:px-1.5 py-1 max-lg:py-0.5 max-md:py-0.5 rounded-full text-[11px] max-lg:text-[10px] max-md:text-[9px] font-semibold border ${roleBadge.classes}`}
                         >
                           <span
                             className={`w-1.5 h-1.5 rounded-full ${roleBadge.dot}`}
@@ -989,10 +1010,10 @@ const UsersManagementContent = () => {
                       </td>
 
                       {/* Bảo mật */}
-                      <td className="px-4 py-3.5">
-                        <div className="flex items-center gap-1.5 flex-wrap">
+                      <td className="px-4 max-lg:px-3 max-md:px-2 py-3.5 max-lg:py-2.5 max-md:py-2">
+                        <div className="flex items-center gap-1.5 max-lg:gap-1 flex-wrap">
                           <span
-                            className={`inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-semibold ${
+                            className={`inline-flex items-center px-2 max-lg:px-1.5 max-md:px-1 py-0.5 rounded-md text-[10px] max-lg:text-[9px] max-md:text-[8px] font-semibold ${
                               user.require_otp !== false
                                 ? "bg-[#20A7C9]/15 text-[#20A7C9] dark:text-[#5bd6d8]"
                                 : "bg-background-black-4 dark:bg-white/10 text-color-black-50 dark:text-color-white-50"
@@ -1001,7 +1022,7 @@ const UsersManagementContent = () => {
                             OTP: {user.require_otp !== false ? "Bật" : "Tắt"}
                           </span>
                           <span
-                            className={`inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-semibold ${
+                            className={`inline-flex items-center px-2 max-lg:px-1.5 max-md:px-1 py-0.5 rounded-md text-[10px] max-lg:text-[9px] max-md:text-[8px] font-semibold ${
                               user.can_change_password !== false
                                 ? "bg-[#7367f0]/15 text-[#7367f0] dark:text-[#a59ff8]"
                                 : "bg-color-error/15 text-color-error"
@@ -1014,14 +1035,14 @@ const UsersManagementContent = () => {
                       </td>
 
                       {/* Trạng thái */}
-                      <td className="px-4 py-3.5">
+                      <td className="px-4 max-lg:px-3 max-md:px-2 py-3.5 max-lg:py-2.5 max-md:py-2">
                         {user.active ? (
-                          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-background-succes-type-1 dark:bg-background-succes-type-1-dark text-color-succes-type-1 dark:text-color-succes-type-1-dark">
+                          <span className="inline-flex items-center gap-1.5 px-2.5 max-lg:px-2 max-md:px-1.5 py-0.5 rounded-full text-[11px] max-lg:text-[10px] max-md:text-[9px] font-semibold bg-background-succes-type-1 dark:bg-background-succes-type-1-dark text-color-succes-type-1 dark:text-color-succes-type-1-dark">
                             <span className="w-1.5 h-1.5 rounded-full bg-[#0cb7a9] animate-pulse" />
                             Hoạt động
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-background-rating dark:bg-[#eb5757]/15 text-color-rating dark:text-[#f87171]">
+                          <span className="inline-flex items-center gap-1.5 px-2.5 max-lg:px-2 max-md:px-1.5 py-0.5 rounded-full text-[11px] max-lg:text-[10px] max-md:text-[9px] font-semibold bg-background-rating dark:bg-[#eb5757]/15 text-color-rating dark:text-[#f87171]">
                             <span className="w-1.5 h-1.5 rounded-full bg-color-rating" />
                             Tạm khóa
                           </span>
@@ -1029,28 +1050,28 @@ const UsersManagementContent = () => {
                       </td>
 
                       {/* Khởi tạo */}
-                      <td className="px-4 py-3.5">
-                        <div className="text-color-black-100 dark:text-color-white-90 font-semibold">
+                      <td className="px-4 max-lg:px-3 max-md:px-2 py-3.5 max-lg:py-2.5 max-md:py-2">
+                        <div className="text-color-black-100 dark:text-color-white-90 font-semibold text-xs max-lg:text-[11px] max-md:text-[10px]">
                           {user.created_by_name ||
                             user.assigned_by_username ||
                             "Hệ thống"}
                         </div>
-                        <div className="text-[11px] text-color-black-50 dark:text-color-white-50 font-mono">
+                        <div className="text-[11px] max-lg:text-[10px] max-md:text-[9px] text-color-black-50 dark:text-color-white-50 font-mono">
                           {formatDateDMY(user.created_on)}
                         </div>
                       </td>
 
                       {/* Thao tác */}
-                      <td className="px-5 py-3.5 text-right">
-                        <div className="inline-flex items-center gap-1.5">
+                      <td className="px-5 max-lg:px-3.5 max-md:px-2.5 py-3.5 max-lg:py-2.5 max-md:py-2 text-right">
+                        <div className="inline-flex items-center gap-1.5 max-lg:gap-1">
                           <button
                             type="button"
                             onClick={() => handleOpenDetail(user)}
-                            className="w-7 h-7 rounded-lg flex items-center justify-center text-color-ave-reach dark:text-[#5bd6d8] hover:bg-background-ave-reach dark:hover:bg-[#21b8b8]/20 transition cursor-pointer"
+                            className="w-7 h-7 max-lg:w-6.5 max-lg:h-6.5 max-md:w-6 max-md:h-6 rounded-lg flex items-center justify-center text-color-ave-reach dark:text-[#5bd6d8] hover:bg-background-ave-reach dark:hover:bg-[#21b8b8]/20 transition cursor-pointer"
                             title="Chi tiết"
                           >
                             <svg
-                              className="w-4 h-4"
+                              className="w-4 h-4 max-lg:w-3.5 max-lg:h-3.5 max-md:w-3 max-md:h-3"
                               fill="none"
                               stroke="currentColor"
                               strokeWidth="2"
@@ -1074,11 +1095,11 @@ const UsersManagementContent = () => {
                               <button
                                 type="button"
                                 onClick={() => handleOpenEdit(user)}
-                                className="w-7 h-7 rounded-lg flex items-center justify-center text-color-rating-percent dark:text-[#a59ff8] hover:bg-background-rating-percent dark:hover:bg-[#7367f0]/20 transition cursor-pointer"
+                                className="w-7 h-7 max-lg:w-6.5 max-lg:h-6.5 max-md:w-6 max-md:h-6 rounded-lg flex items-center justify-center text-color-rating-percent dark:text-[#a59ff8] hover:bg-background-rating-percent dark:hover:bg-[#7367f0]/20 transition cursor-pointer"
                                 title="Chỉnh sửa"
                               >
                                 <svg
-                                  className="w-4 h-4"
+                                  className="w-4 h-4 max-lg:w-3.5 max-lg:h-3.5 max-md:w-3 max-md:h-3"
                                   fill="none"
                                   stroke="currentColor"
                                   strokeWidth="2"
@@ -1095,11 +1116,11 @@ const UsersManagementContent = () => {
                               <button
                                 type="button"
                                 onClick={() => handleOpenDelete(user)}
-                                className="w-7 h-7 rounded-lg flex items-center justify-center text-color-rating dark:text-[#f87171] hover:bg-background-rating dark:hover:bg-[#eb5757]/20 transition cursor-pointer"
+                                className="w-7 h-7 max-lg:w-6.5 max-lg:h-6.5 max-md:w-6 max-md:h-6 rounded-lg flex items-center justify-center text-color-rating dark:text-[#f87171] hover:bg-background-rating dark:hover:bg-[#eb5757]/20 transition cursor-pointer"
                                 title="Xóa"
                               >
                                 <svg
-                                  className="w-4 h-4"
+                                  className="w-4 h-4 max-lg:w-3.5 max-lg:h-3.5 max-md:w-3 max-md:h-3"
                                   fill="none"
                                   stroke="currentColor"
                                   strokeWidth="2"
@@ -1114,7 +1135,7 @@ const UsersManagementContent = () => {
                               </button>
                             </>
                           ) : (
-                            <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-medium bg-background-black-4 dark:bg-background-white-8 text-color-black-50 dark:text-color-white-50 border border-border-black-10 dark:border-background-white-15 select-none">
+                            <span className="inline-flex items-center px-2 max-lg:px-1.5 max-md:px-1 py-0.5 rounded-md text-[10px] max-lg:text-[9px] max-md:text-[8px] font-medium bg-background-black-4 dark:bg-background-white-8 text-color-black-50 dark:text-color-white-50 border border-border-black-10 dark:border-background-white-15 select-none">
                               {user.cannot_manage_reason === "self"
                                 ? "Bạn"
                                 : user.cannot_manage_reason ===
@@ -1134,7 +1155,7 @@ const UsersManagementContent = () => {
         )}
 
         {/* Table Footer */}
-        <div className="px-5 py-3 bg-background-dashboard/70 dark:bg-background-chart-dark/70 border-t border-border-black-10 dark:border-background-white-15 flex items-center justify-between text-xs text-color-black-50 dark:text-color-white-50">
+        <div className="px-5 max-lg:px-3.5 max-md:px-2.5 py-3 max-lg:py-2.5 max-md:py-2 bg-background-dashboard/70 dark:bg-background-chart-dark/70 border-t border-border-black-10 dark:border-background-white-15 flex items-center justify-between text-xs max-lg:text-[11px] max-md:text-[10px] text-color-black-50 dark:text-color-white-50">
           <span>
             Hiển thị <strong>{filteredUsers.length}</strong> /{" "}
             <strong>{users.length}</strong> tài khoản
@@ -1147,13 +1168,13 @@ const UsersManagementContent = () => {
       {/* MODAL 1: CHI TIẾT TÀI KHOẢN                                 */}
       {/* ============================================================ */}
       {showDetailModal && detailUser && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4">
-          <div className="animate-scale-in relative overflow-hidden w-full max-w-lg rounded-2xl bg-background-light dark:bg-background-dark border border-border-black-10 dark:border-background-white-15 shadow-2xl max-h-[90vh] flex flex-col">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 max-lg:p-3 max-md:p-2">
+          <div className="animate-scale-in relative overflow-hidden w-full max-w-lg rounded-2xl max-lg:rounded-xl max-md:rounded-lg bg-background-light dark:bg-background-dark border border-border-black-10 dark:border-background-white-15 shadow-2xl max-h-[90vh] flex flex-col">
             <div className="h-1 bg-gradient-to-r from-[#20A7C9] via-[#7367f0] to-[#0cb7a9]" />
 
-            <div className="flex items-center justify-between gap-3 px-6 py-4 border-b border-border-black-10 dark:border-background-white-15">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center font-bold text-xs bg-gradient-to-br from-[#20A7C9] to-[#7367f0] text-white">
+            <div className="flex items-center justify-between gap-3 px-6 max-lg:px-4.5 max-md:px-3.5 py-4 max-lg:py-3 max-md:py-2.5 border-b border-border-black-10 dark:border-background-white-15">
+              <div className="flex items-center gap-3 max-lg:gap-2.5 max-md:gap-2">
+                <div className="w-10 h-10 max-lg:w-8.5 max-lg:h-8.5 max-md:w-7.5 max-md:h-7.5 rounded-xl max-lg:rounded-lg flex items-center justify-center font-bold text-xs max-lg:text-[11px] max-md:text-[10px] bg-gradient-to-br from-[#20A7C9] to-[#7367f0] text-white shrink-0">
                   {getInitials(
                     detailUser.first_name,
                     detailUser.last_name,
@@ -1161,11 +1182,11 @@ const UsersManagementContent = () => {
                   )}
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-color-black-100 dark:text-color-white-90">
+                  <h3 className="text-base max-lg:text-sm max-md:text-xs font-bold text-color-black-100 dark:text-color-white-90">
                     {`${detailUser.first_name || ""} ${detailUser.last_name || ""}`.trim() ||
                       detailUser.username}
                   </h3>
-                  <p className="text-xs font-mono text-color-neotam dark:text-[#5bd6d8]">
+                  <p className="text-xs max-lg:text-[11px] max-md:text-[10px] font-mono text-color-neotam dark:text-[#5bd6d8]">
                     @{detailUser.username}
                   </p>
                 </div>
@@ -1173,94 +1194,94 @@ const UsersManagementContent = () => {
               <button
                 type="button"
                 onClick={() => setShowDetailModal(false)}
-                className="w-7 h-7 rounded-lg flex items-center justify-center text-color-black-50 hover:text-color-black-100 dark:text-color-white-50 dark:hover:text-color-white-90 hover:bg-background-black-4 dark:hover:bg-background-white-8 transition cursor-pointer"
+                className="w-7 h-7 max-lg:w-6 max-lg:h-6 rounded-lg flex items-center justify-center text-color-black-50 hover:text-color-black-100 dark:text-color-white-50 dark:hover:text-color-white-90 hover:bg-background-black-4 dark:hover:bg-background-white-8 transition cursor-pointer text-xs max-lg:text-[11px] max-md:text-[10px]"
               >
                 ✕
               </button>
             </div>
 
-            <div className="overflow-y-auto p-6 space-y-4 flex-1 text-xs">
+            <div className="overflow-y-auto p-6 max-lg:p-4.5 max-md:p-3.5 space-y-4 max-lg:space-y-3 max-md:space-y-2.5 flex-1 text-xs max-lg:text-[11px] max-md:text-[10px]">
               {detailLoading && (
-                <div className="text-[11px] text-color-neotam animate-pulse">
+                <div className="text-[11px] max-lg:text-[10px] max-md:text-[9px] text-color-neotam animate-pulse">
                   Đang đồng bộ dữ liệu chi tiết...
                 </div>
               )}
 
-              <div className="p-4 rounded-xl bg-background-dashboard dark:bg-background-white-8 border border-border-black-10 dark:border-background-white-15 grid grid-cols-2 gap-3.5">
+              <div className="p-4 max-lg:p-3 max-md:p-2.5 rounded-xl max-lg:rounded-lg bg-background-dashboard dark:bg-background-white-8 border border-border-black-10 dark:border-background-white-15 grid grid-cols-2 max-md:grid-cols-1 gap-3.5 max-lg:gap-2.5 max-md:gap-2">
                 <div>
-                  <span className="text-color-black-50 dark:text-color-white-50">
+                  <span className="text-color-black-50 dark:text-color-white-50 text-[11px] max-lg:text-[10px] max-md:text-[9px]">
                     Họ và tên
                   </span>
-                  <p className="font-bold text-color-black-100 dark:text-color-white-90 mt-0.5">
+                  <p className="font-bold text-color-black-100 dark:text-color-white-90 mt-0.5 text-xs max-lg:text-[11px] max-md:text-[10px]">
                     {`${detailUser.first_name || ""} ${detailUser.last_name || ""}`.trim() ||
                       "—"}
                   </p>
                 </div>
                 <div>
-                  <span className="text-color-black-50 dark:text-color-white-50">
+                  <span className="text-color-black-50 dark:text-color-white-50 text-[11px] max-lg:text-[10px] max-md:text-[9px]">
                     Vai trò hệ thống
                   </span>
-                  <p className="font-bold text-color-neotam dark:text-[#5bd6d8] mt-0.5">
+                  <p className="font-bold text-color-neotam dark:text-[#5bd6d8] mt-0.5 text-xs max-lg:text-[11px] max-md:text-[10px]">
                     {detailUser.role_name || detailUser.role_code || "—"}
                   </p>
                 </div>
-                <div className="col-span-2">
-                  <span className="text-color-black-50 dark:text-color-white-50">
+                <div className="col-span-2 max-md:col-span-1">
+                  <span className="text-color-black-50 dark:text-color-white-50 text-[11px] max-lg:text-[10px] max-md:text-[9px]">
                     Email
                   </span>
-                  <p className="font-mono font-semibold text-color-black-100 dark:text-color-white-90 mt-0.5 break-all">
+                  <p className="font-mono font-semibold text-color-black-100 dark:text-color-white-90 mt-0.5 text-xs max-lg:text-[11px] max-md:text-[10px] break-all">
                     {detailUser.email || "—"}
                   </p>
                 </div>
                 <div>
-                  <span className="text-color-black-50 dark:text-color-white-50">
+                  <span className="text-color-black-50 dark:text-color-white-50 text-[11px] max-lg:text-[10px] max-md:text-[9px]">
                     Trạng thái
                   </span>
-                  <p className="font-semibold text-color-black-100 dark:text-color-white-90 mt-0.5">
+                  <p className="font-semibold text-color-black-100 dark:text-color-white-90 mt-0.5 text-xs max-lg:text-[11px] max-md:text-[10px]">
                     {detailUser.active ? "Đang hoạt động" : "Tạm khóa"}
                   </p>
                 </div>
                 <div>
-                  <span className="text-color-black-50 dark:text-color-white-50">
+                  <span className="text-color-black-50 dark:text-color-white-50 text-[11px] max-lg:text-[10px] max-md:text-[9px]">
                     Xác thực OTP
                   </span>
-                  <p className="font-semibold text-color-black-100 dark:text-color-white-90 mt-0.5">
+                  <p className="font-semibold text-color-black-100 dark:text-color-white-90 mt-0.5 text-xs max-lg:text-[11px] max-md:text-[10px]">
                     {detailUser.require_otp !== false ? "Bắt buộc" : "Tắt"}
                   </p>
                 </div>
                 <div>
-                  <span className="text-color-black-50 dark:text-color-white-50">
+                  <span className="text-color-black-50 dark:text-color-white-50 text-[11px] max-lg:text-[10px] max-md:text-[9px]">
                     Đổi mật khẩu
                   </span>
-                  <p className="font-semibold text-color-black-100 dark:text-color-white-90 mt-0.5">
+                  <p className="font-semibold text-color-black-100 dark:text-color-white-90 mt-0.5 text-xs max-lg:text-[11px] max-md:text-[10px]">
                     {detailUser.can_change_password !== false
                       ? "Được phép"
                       : "Đã khóa"}
                   </p>
                 </div>
                 <div>
-                  <span className="text-color-black-50 dark:text-color-white-50">
+                  <span className="text-color-black-50 dark:text-color-white-50 text-[11px] max-lg:text-[10px] max-md:text-[9px]">
                     Người tạo
                   </span>
-                  <p className="font-semibold text-color-black-100 dark:text-color-white-90 mt-0.5">
+                  <p className="font-semibold text-color-black-100 dark:text-color-white-90 mt-0.5 text-xs max-lg:text-[11px] max-md:text-[10px]">
                     {detailUser.created_by_name ||
                       detailUser.assigned_by_username ||
                       "Hệ thống"}
                   </p>
                 </div>
                 <div>
-                  <span className="text-color-black-50 dark:text-color-white-50">
+                  <span className="text-color-black-50 dark:text-color-white-50 text-[11px] max-lg:text-[10px] max-md:text-[9px]">
                     Ngày tạo
                   </span>
-                  <p className="font-mono text-color-black-100 dark:text-color-white-90 mt-0.5">
+                  <p className="font-mono text-color-black-100 dark:text-color-white-90 mt-0.5 text-xs max-lg:text-[11px] max-md:text-[10px]">
                     {formatDateDMY(detailUser.created_on)}
                   </p>
                 </div>
                 <div>
-                  <span className="text-color-black-50 dark:text-color-white-50">
+                  <span className="text-color-black-50 dark:text-color-white-50 text-[11px] max-lg:text-[10px] max-md:text-[9px]">
                     Đăng nhập gần nhất
                   </span>
-                  <p className="font-mono text-color-black-100 dark:text-color-white-90 mt-0.5">
+                  <p className="font-mono text-color-black-100 dark:text-color-white-90 mt-0.5 text-xs max-lg:text-[11px] max-md:text-[10px]">
                     {formatDateDMY(detailUser.last_login)}
                   </p>
                 </div>
@@ -1268,20 +1289,20 @@ const UsersManagementContent = () => {
 
               {Array.isArray(detailUser.groups) &&
                 detailUser.groups.length > 0 && (
-                  <div className="p-4 rounded-xl bg-background-dashboard dark:bg-background-white-8 border border-border-black-10 dark:border-background-white-15 space-y-2.5">
-                    <h4 className="text-[11px] font-bold text-color-black-50 dark:text-color-white-50 uppercase tracking-wider">
+                  <div className="p-4 max-lg:p-3 max-md:p-2.5 rounded-xl max-lg:rounded-lg bg-background-dashboard dark:bg-background-white-8 border border-border-black-10 dark:border-background-white-15 space-y-2.5 max-lg:space-y-2 max-md:space-y-1.5">
+                    <h4 className="text-[11px] max-lg:text-[10px] max-md:text-[9px] font-bold text-color-black-50 dark:text-color-white-50 uppercase tracking-wider">
                       Nhóm tham gia ({detailUser.groups.length})
                     </h4>
-                    <div className="space-y-2">
+                    <div className="space-y-2 max-lg:space-y-1.5 max-md:space-y-1">
                       {detailUser.groups.map((g, idx) => (
                         <div
                           key={g.group_id || g.id || idx}
-                          className="flex items-center justify-between p-2.5 rounded-lg bg-background-light dark:bg-background-dark border border-border-black-10 dark:border-background-white-15"
+                          className="flex items-center justify-between p-2.5 max-lg:p-2 max-md:p-1.5 rounded-lg max-lg:rounded-md bg-background-light dark:bg-background-dark border border-border-black-10 dark:border-background-white-15"
                         >
-                          <span className="font-bold text-color-black-100 dark:text-color-white-90">
+                          <span className="font-bold text-color-black-100 dark:text-color-white-90 text-xs max-lg:text-[11px] max-md:text-[10px]">
                             {g.group_name}
                           </span>
-                          <span className="px-2 py-0.5 rounded-md font-semibold text-[11px] bg-background-dashboard dark:bg-background-white-8 text-color-neotam dark:text-[#5bd6d8]">
+                          <span className="px-2 max-lg:px-1.5 py-0.5 rounded-md font-semibold text-[11px] max-lg:text-[10px] max-md:text-[9px] bg-background-dashboard dark:bg-background-white-8 text-color-neotam dark:text-[#5bd6d8]">
                             {g.role_name || g.role_code || "Thành viên"}
                           </span>
                         </div>
@@ -1291,11 +1312,11 @@ const UsersManagementContent = () => {
                 )}
             </div>
 
-            <div className="px-6 py-3.5 border-t border-border-black-10 dark:border-background-white-15 flex justify-end">
+            <div className="px-6 max-lg:px-4.5 max-md:px-3.5 py-3.5 max-lg:py-2.5 max-md:py-2 border-t border-border-black-10 dark:border-background-white-15 flex justify-end">
               <button
                 type="button"
                 onClick={() => setShowDetailModal(false)}
-                className="px-4 py-2 rounded-xl border border-border-black-10 dark:border-background-white-15 text-color-black-70 dark:text-color-white-80 hover:bg-background-black-4 dark:hover:bg-background-white-8 text-xs font-semibold transition cursor-pointer"
+                className="px-4 max-lg:px-3 max-md:px-2.5 py-2 max-lg:py-1.5 max-md:py-1 rounded-xl max-lg:rounded-lg border border-border-black-10 dark:border-background-white-15 text-color-black-70 dark:text-color-white-80 hover:bg-background-black-4 dark:hover:bg-background-white-8 text-xs max-lg:text-[11px] max-md:text-[10px] font-semibold transition cursor-pointer"
               >
                 Đóng
               </button>
@@ -1318,8 +1339,8 @@ const UsersManagementContent = () => {
               }`}
             />
 
-            <div className="flex items-center justify-between px-6 py-4 border-b border-border-black-10 dark:border-background-white-15">
-              <h3 className="text-base font-bold text-color-black-100 dark:text-color-white-90">
+            <div className="flex items-center justify-between px-6 max-lg:px-4.5 max-md:px-3.5 py-4 max-lg:py-3 max-md:py-2.5 border-b border-border-black-10 dark:border-background-white-15">
+              <h3 className="text-base max-lg:text-sm max-md:text-xs font-bold text-color-black-100 dark:text-color-white-90">
                 {showAddModal
                   ? "Tạo tài khoản mới"
                   : `Chỉnh sửa tài khoản @${targetUser?.username}`}
@@ -1330,7 +1351,7 @@ const UsersManagementContent = () => {
                   setShowAddModal(false);
                   setShowEditModal(false);
                 }}
-                className="w-7 h-7 rounded-lg flex items-center justify-center text-color-black-50 hover:text-color-black-100 dark:text-color-white-50 dark:hover:text-color-white-90 hover:bg-background-black-4 dark:hover:bg-background-white-8 transition cursor-pointer"
+                className="w-7 h-7 max-lg:w-6 max-lg:h-6 rounded-lg flex items-center justify-center text-color-black-50 hover:text-color-black-100 dark:text-color-white-50 dark:hover:text-color-white-90 hover:bg-background-black-4 dark:hover:bg-background-white-8 transition cursor-pointer"
               >
                 ✕
               </button>
@@ -1338,9 +1359,9 @@ const UsersManagementContent = () => {
 
             <form
               onSubmit={showAddModal ? handleSubmitAdd : handleSubmitEdit}
-              className="overflow-y-auto p-6 space-y-4 flex-1 text-xs"
+              className="overflow-y-auto p-6 max-lg:p-4.5 max-md:p-3.5 space-y-4 max-lg:space-y-3 max-md:space-y-2.5 flex-1 text-xs max-lg:text-[11px] max-md:text-[10px]"
             >
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+              <div className="grid grid-cols-2 max-md:grid-cols-1 gap-3.5 max-lg:gap-2.5 max-md:gap-2">
                 <div>
                   <label className="block font-semibold text-color-black-70 dark:text-color-white-80 mb-1">
                     Họ và tên đệm <span className="text-color-rating">*</span>
@@ -1394,7 +1415,7 @@ const UsersManagementContent = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+              <div className="grid grid-cols-2 max-md:grid-cols-1 gap-3.5 max-lg:gap-2.5 max-md:gap-2">
                 <div>
                   <label className="block font-semibold text-color-black-70 dark:text-color-white-80 mb-1">
                     Username <span className="text-color-rating">*</span>
@@ -1453,7 +1474,7 @@ const UsersManagementContent = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+              <div className="grid grid-cols-2 max-md:grid-cols-1 gap-3.5 max-lg:gap-2.5 max-md:gap-2">
                 <div>
                   <label className="block font-semibold text-color-black-70 dark:text-color-white-80 mb-1">
                     Vai trò <span className="text-color-rating">*</span>
@@ -1518,7 +1539,7 @@ const UsersManagementContent = () => {
               </div>
 
               {showAddModal && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-2 border-t border-border-black-10 dark:border-background-white-15">
+                <div className="grid grid-cols-2 max-md:grid-cols-1 gap-3.5 max-lg:gap-2.5 max-md:gap-2 pt-2 border-t border-border-black-10 dark:border-background-white-15">
                   <div>
                     <label className="block font-semibold text-color-black-70 dark:text-color-white-80 mb-1">
                       Mật khẩu <span className="text-color-rating">*</span>
@@ -1658,7 +1679,7 @@ const UsersManagementContent = () => {
               )}
 
               {/* Security Toggles */}
-              <div className="pt-2 border-t border-border-black-10 dark:border-background-white-15 grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="pt-2 border-t border-border-black-10 dark:border-background-white-15 grid grid-cols-2 max-md:grid-cols-1 gap-3 max-lg:gap-2 max-md:gap-1.5">
                 <div
                   onClick={() =>
                     setFormData({
@@ -1842,10 +1863,10 @@ const Users = () => {
     <DashboardFilterProvider>
       <div className="min-h-screen flex flex-col font-family-be-vietnam-pro bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300">
         <Header />
-        <main className="flex-1 w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <main className="flex-1 w-full max-w-[1600px] mx-auto px-8 max-lg:px-6 max-md:px-4 py-6 max-lg:py-4.5 max-md:py-3">
           <UsersManagementContent />
         </main>
-        <div className="mt-auto w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 pb-6 bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300">
+        <div className="mt-auto w-full max-w-[1600px] mx-auto px-8 max-lg:px-6 max-md:px-4 pb-6 max-lg:pb-4.5 max-md:pb-3 bg-background-dashboard dark:bg-background-dashboard-dark transition-all duration-300">
           <Footer color="text-color-black-100 dark:text-color-white-90" />
         </div>
       </div>

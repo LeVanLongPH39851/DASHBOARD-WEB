@@ -380,15 +380,76 @@ const PivotTableChart = ({
   });
 
   const getPivotChartData = useCallback(() => {
+    if (
+      isMultiValue &&
+      Array.isArray(resolvedValueFields) &&
+      resolvedValueFields.length > 0
+    ) {
+      const multiColKeys = [];
+      const colFieldMappings = [];
+
+      resolvedValueFields.forEach((vf) => {
+        const vfLabel = labelTables[vf] || vf;
+        colKeys.forEach((c) => {
+          const cellKey = `${vf}__${c}`;
+          const displayHeader =
+            colKeys.length > 1 ? `${vfLabel} - ${c}` : vfLabel;
+          multiColKeys.push(displayHeader);
+          colFieldMappings.push({
+            cellKey,
+            displayHeader,
+            vf,
+            vfLabel,
+            colKey: c,
+          });
+        });
+      });
+
+      const multiPivotRows = pivotRows.map((r) => {
+        const rowObj = { ...r };
+        colFieldMappings.forEach(({ cellKey, displayHeader }) => {
+          const val = r[cellKey];
+          rowObj[displayHeader] =
+            typeof val === "number" ? val : (val ?? 0);
+        });
+        return rowObj;
+      });
+
+      return {
+        pivotRows: multiPivotRows,
+        colKeys: multiColKeys,
+        rawColKeys: colKeys,
+        rowField,
+        valueField,
+        valueFields: resolvedValueFields,
+        isMultiValue: true,
+        labelTables,
+        aggType,
+        nameChart,
+      };
+    }
+
     return {
       pivotRows,
       colKeys,
       rowField,
       valueField,
+      isMultiValue: false,
+      labelTables,
       aggType,
       nameChart,
     };
-  }, [pivotRows, colKeys, rowField, valueField, aggType, nameChart]);
+  }, [
+    pivotRows,
+    colKeys,
+    rowField,
+    valueField,
+    aggType,
+    nameChart,
+    isMultiValue,
+    resolvedValueFields,
+    labelTables,
+  ]);
 
   const [activeTable, setActiveTable] = React.useState("");
   const [inActiveTable, setInActiveTable] = React.useState(false);

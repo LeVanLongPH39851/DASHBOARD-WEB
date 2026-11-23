@@ -255,6 +255,7 @@ const NameChart = ({
       ]);
 
       worksheet.mergeCells(1, 1, 1, totalCols);
+      worksheet.mergeCells(2, 1, 2, totalCols);
       timeRow.getCell(1).font = { italic: true, color: { argb: "AFF383C" } };
       timeRow.getCell(1).alignment = { horizontal: "left", vertical: "middle" };
       inforFilter.getCell(1).font = {
@@ -368,17 +369,22 @@ const NameChart = ({
       const colWidths = [];
 
       worksheet.eachRow((row, rowNumber) => {
-        if (rowNumber === 1) return; // ✅ Bỏ qua dòng timeStr
+        if (rowNumber <= 2) return; // ✅ Bỏ qua timeStr và inforFilter
 
         row.eachCell({ includeEmpty: true }, (cell, colNumber) => {
           const len = cell.value ? cell.value.toString().length : 0;
-          colWidths[colNumber] = Math.max(colWidths[colNumber] || 8, len);
+          colWidths[colNumber] = Math.max(
+            colWidths[colNumber] || (colNumber === 1 ? 4 : 8),
+            len,
+          );
         });
       });
 
       colWidths.forEach((width, colNumber) => {
-        if (colNumber > 0) {
-          worksheet.getColumn(colNumber).width = Math.min(width + 2, 40); // +4 padding, max 40
+        if (colNumber === 1) {
+          worksheet.getColumn(1).width = Math.max(width + 2, 6);
+        } else if (colNumber > 1) {
+          worksheet.getColumn(colNumber).width = Math.min(width + 2, 40); // +2 padding, max 40
         }
       });
 
@@ -450,6 +456,7 @@ const NameChart = ({
       ]);
 
       worksheet.mergeCells(1, 1, 1, totalCols);
+      worksheet.mergeCells(2, 1, 2, totalCols);
       timeRow.getCell(1).font = { italic: true, color: { argb: "AFF383C" } };
       timeRow.getCell(1).alignment = { horizontal: "left", vertical: "middle" };
       inforFilter.getCell(1).font = {
@@ -521,16 +528,21 @@ const NameChart = ({
       // ✅ Auto width cột
       const colWidths = [];
       worksheet.eachRow((row, rowNumber) => {
-        if (rowNumber === 1) return; // Bỏ qua dòng timeStr
+        if (rowNumber <= 2) return; // Bỏ qua timeStr và inforFilter
 
         row.eachCell({ includeEmpty: true }, (cell, colNumber) => {
           const len = cell.value ? cell.value.toString().length : 0;
-          colWidths[colNumber] = Math.max(colWidths[colNumber] || 8, len);
+          colWidths[colNumber] = Math.max(
+            colWidths[colNumber] || (colNumber === 1 ? 4 : 8),
+            len,
+          );
         });
       });
 
       colWidths.forEach((width, colNumber) => {
-        if (colNumber > 0) {
+        if (colNumber === 1) {
+          worksheet.getColumn(1).width = Math.max(width + 2, 6);
+        } else if (colNumber > 1) {
           worksheet.getColumn(colNumber).width = Math.min(width + 2, 40);
         }
       });
@@ -565,6 +577,15 @@ const NameChart = ({
       const pivotRows = chartData.pivotRows || [];
       const colKeys = chartData.colKeys || [];
       const rowField = chartData.rowField || "Label";
+      const isMultiValue = Boolean(
+        chartData.isMultiValue &&
+          Array.isArray(chartData.valueFields) &&
+          chartData.valueFields.length > 0,
+      );
+      const valueFields = chartData.valueFields || [];
+      const rawColKeys = chartData.rawColKeys || [];
+      const labelTables = chartData.labelTables || {};
+      const rowFieldLabel = labelTables[rowField] || rowField;
 
       if (!pivotRows.length || !colKeys.length) return;
 
@@ -576,7 +597,9 @@ const NameChart = ({
       const now = new Date();
       const timeStr = `Thời gian export: ${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}:${String(now.getSeconds()).padStart(2, "0")} ${String(now.getDate()).padStart(2, "0")}/${String(now.getMonth() + 1).padStart(2, "0")}/${now.getFullYear()}`;
 
-      const totalCols = 2 + colKeys.length + (colKeys.length > 1 ? 1 : 0);
+      const totalCols = isMultiValue
+        ? 2 + valueFields.length * rawColKeys.length
+        : 2 + colKeys.length + (colKeys.length > 1 ? 1 : 0);
       const timeRow = worksheet.addRow([timeStr]);
 
       const resultFilter = Object.entries(appliedFilters || {})
@@ -593,7 +616,8 @@ const NameChart = ({
         `Ngày: ${formatDate(appliedFilters?.startDate || getYesterday())} - ${formatDate(appliedFilters?.endDate || getYesterday())} ${finalResultFilter}`,
       ]);
 
-      worksheet.mergeCells(1, 1, 1, totalCols);
+      worksheet.mergeCells(1, 1, 1, Math.max(totalCols, 2));
+      worksheet.mergeCells(2, 1, 2, Math.max(totalCols, 2));
       timeRow.getCell(1).font = { italic: true, color: { argb: "AFF383C" } };
       timeRow.getCell(1).alignment = { horizontal: "left", vertical: "middle" };
       inforFilter.getCell(1).font = {
@@ -605,125 +629,251 @@ const NameChart = ({
         vertical: "middle",
       };
 
-      const headerRow = worksheet.addRow([
-        "STT",
-        rowField,
-        ...colKeys,
-        ...(colKeys.length > 1 ? ["Tổng"] : []),
-      ]);
+      if (isMultiValue) {
+        // Multi-value 2-level header
+        const headerRow1Values = ["STT", rowFieldLabel];
+        valueFields.forEach((vf) => {
+          const vfLabel = labelTables[vf] || vf;
+          headerRow1Values.push(vfLabel);
+          for (let k = 1; k < rawColKeys.length; k++) {
+            headerRow1Values.push("");
+          }
+        });
+        const headerRow1 = worksheet.addRow(headerRow1Values);
 
-      headerRow.eachCell((cell) => {
-        cell.font = { bold: true, color: { argb: "FFFFFFFF" } };
-        cell.fill = {
-          type: "pattern",
-          pattern: "solid",
-          fgColor: { argb: "FF1E3A5F" },
-        };
-        cell.alignment = { horizontal: "center", vertical: "middle" };
-        cell.border = {
-          top: { style: "thin" },
-          left: { style: "thin" },
-          bottom: { style: "thin" },
-          right: { style: "thin" },
-        };
-      });
+        const headerRow2Values = ["", ""];
+        valueFields.forEach(() => {
+          rawColKeys.forEach((c) => {
+            headerRow2Values.push(c);
+          });
+        });
+        const headerRow2 = worksheet.addRow(headerRow2Values);
 
-      pivotRows.forEach((row, i) => {
-        let rowTotal = 0;
+        const row1Idx = headerRow1.number;
+        const row2Idx = headerRow2.number;
 
-        const valueCells = colKeys.map((key) => {
-          const val =
-            typeof row[key] === "number"
-              ? Math.round((row[key] + Number.EPSILON) * 100) / 100
-              : (row[key] ?? 0);
-          rowTotal += val;
-          return val;
+        worksheet.mergeCells(row1Idx, 1, row2Idx, 1);
+        worksheet.mergeCells(row1Idx, 2, row2Idx, 2);
+
+        let curCol = 3;
+        valueFields.forEach(() => {
+          const endCol = curCol + rawColKeys.length - 1;
+          if (endCol > curCol) {
+            worksheet.mergeCells(row1Idx, curCol, row1Idx, endCol);
+          }
+          curCol = endCol + 1;
         });
 
-        rowTotal = Math.round((rowTotal + Number.EPSILON) * 100) / 100;
+        [headerRow1, headerRow2].forEach((hRow) => {
+          hRow.eachCell({ includeEmpty: true }, (cell) => {
+            cell.font = { bold: true, color: { argb: "FFFFFFFF" } };
+            cell.fill = {
+              type: "pattern",
+              pattern: "solid",
+              fgColor: { argb: "FF1E3A5F" },
+            };
+            cell.alignment = { horizontal: "center", vertical: "middle" };
+            cell.border = {
+              top: { style: "thin" },
+              left: { style: "thin" },
+              bottom: { style: "thin" },
+              right: { style: "thin" },
+            };
+          });
+        });
 
-        const rowValues = [
-          i + 1,
-          row[rowField] ?? "",
-          ...valueCells,
-          ...(colKeys.length > 1 ? [rowTotal] : []),
-        ];
+        pivotRows.forEach((row, i) => {
+          const rowValues = [i + 1, row[rowField] ?? ""];
 
-        const dataRow = worksheet.addRow(rowValues);
+          valueFields.forEach((vf) => {
+            rawColKeys.forEach((c) => {
+              const cellKey = `${vf}__${c}`;
+              const val =
+                typeof row[cellKey] === "number"
+                  ? Math.round((row[cellKey] + Number.EPSILON) * 100) / 100
+                  : (row[cellKey] ?? 0);
+              rowValues.push(val);
+            });
+          });
 
-        dataRow.eachCell((cell, colNumber) => {
+          const dataRow = worksheet.addRow(rowValues);
+
+          dataRow.eachCell((cell, colNumber) => {
+            cell.alignment = {
+              horizontal: colNumber <= 2 ? "left" : "right",
+              vertical: "middle",
+            };
+            cell.border = {
+              top: { style: "thin", color: { argb: "FFE0E0E0" } },
+              left: { style: "thin", color: { argb: "FFE0E0E0" } },
+              bottom: { style: "thin", color: { argb: "FFE0E0E0" } },
+              right: { style: "thin", color: { argb: "FFE0E0E0" } },
+            };
+
+            if (colNumber === 1) {
+              cell.font = { bold: true };
+            }
+          });
+        });
+
+        const totalValues = ["", "TỔNG"];
+        valueFields.forEach((vf) => {
+          rawColKeys.forEach((c) => {
+            const cellKey = `${vf}__${c}`;
+            let total = pivotRows.reduce(
+              (sum, row) => sum + (Number(row[cellKey]) || 0),
+              0,
+            );
+            total = Math.round((total + Number.EPSILON) * 100) / 100;
+            totalValues.push(total);
+          });
+        });
+
+        const totalRow = worksheet.addRow(totalValues);
+        totalRow.eachCell((cell, colNumber) => {
+          cell.font = { bold: true };
+          cell.fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: { argb: "FFF0F4FF" },
+          };
           cell.alignment = {
             horizontal: colNumber <= 2 ? "left" : "right",
             vertical: "middle",
           };
           cell.border = {
-            top: { style: "thin", color: { argb: "FFE0E0E0" } },
+            top: { style: "medium" },
             left: { style: "thin", color: { argb: "FFE0E0E0" } },
-            bottom: { style: "thin", color: { argb: "FFE0E0E0" } },
+            bottom: { style: "medium" },
             right: { style: "thin", color: { argb: "FFE0E0E0" } },
           };
-
-          if (colNumber === 1) {
-            cell.font = { bold: true };
-          }
         });
-      });
+      } else {
+        const headerRow = worksheet.addRow([
+          "STT",
+          rowFieldLabel,
+          ...colKeys,
+          ...(colKeys.length > 1 ? ["Tổng"] : []),
+        ]);
 
-      const totalValues = ["", "TỔNG"];
-      let grandTotal = 0;
+        headerRow.eachCell((cell) => {
+          cell.font = { bold: true, color: { argb: "FFFFFFFF" } };
+          cell.fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: { argb: "FF1E3A5F" },
+          };
+          cell.alignment = { horizontal: "center", vertical: "middle" };
+          cell.border = {
+            top: { style: "thin" },
+            left: { style: "thin" },
+            bottom: { style: "thin" },
+            right: { style: "thin" },
+          };
+        });
 
-      colKeys.forEach((key) => {
-        let total = pivotRows.reduce(
-          (sum, row) => sum + (Number(row[key]) || 0),
-          0,
-        );
-        total = Math.round((total + Number.EPSILON) * 100) / 100;
-        totalValues.push(total);
-        grandTotal += total;
-      });
+        pivotRows.forEach((row, i) => {
+          let rowTotal = 0;
 
-      grandTotal = Math.round((grandTotal + Number.EPSILON) * 100) / 100;
+          const valueCells = colKeys.map((key) => {
+            const val =
+              typeof row[key] === "number"
+                ? Math.round((row[key] + Number.EPSILON) * 100) / 100
+                : (row[key] ?? 0);
+            rowTotal += val;
+            return val;
+          });
 
-      if (colKeys.length > 1) totalValues.push(grandTotal);
+          rowTotal = Math.round((rowTotal + Number.EPSILON) * 100) / 100;
 
-      const totalRow = worksheet.addRow(totalValues);
-      totalRow.eachCell((cell, colNumber) => {
-        cell.font = { bold: true };
-        cell.fill = {
-          type: "pattern",
-          pattern: "solid",
-          fgColor: { argb: "FFF0F4FF" },
-        };
-        cell.alignment = {
-          horizontal: colNumber <= 2 ? "left" : "right",
-          vertical: "middle",
-        };
-        cell.border = {
-          top: { style: "medium" },
-          left: { style: "thin", color: { argb: "FFE0E0E0" } },
-          bottom: { style: "medium" },
-          right: { style: "thin", color: { argb: "FFE0E0E0" } },
-        };
-      });
+          const rowValues = [
+            i + 1,
+            row[rowField] ?? "",
+            ...valueCells,
+            ...(colKeys.length > 1 ? [rowTotal] : []),
+          ];
+
+          const dataRow = worksheet.addRow(rowValues);
+
+          dataRow.eachCell((cell, colNumber) => {
+            cell.alignment = {
+              horizontal: colNumber <= 2 ? "left" : "right",
+              vertical: "middle",
+            };
+            cell.border = {
+              top: { style: "thin", color: { argb: "FFE0E0E0" } },
+              left: { style: "thin", color: { argb: "FFE0E0E0" } },
+              bottom: { style: "thin", color: { argb: "FFE0E0E0" } },
+              right: { style: "thin", color: { argb: "FFE0E0E0" } },
+            };
+
+            if (colNumber === 1) {
+              cell.font = { bold: true };
+            }
+          });
+        });
+
+        const totalValues = ["", "TỔNG"];
+        let grandTotal = 0;
+
+        colKeys.forEach((key) => {
+          let total = pivotRows.reduce(
+            (sum, row) => sum + (Number(row[key]) || 0),
+            0,
+          );
+          total = Math.round((total + Number.EPSILON) * 100) / 100;
+          totalValues.push(total);
+          grandTotal += total;
+        });
+
+        grandTotal = Math.round((grandTotal + Number.EPSILON) * 100) / 100;
+
+        if (colKeys.length > 1) totalValues.push(grandTotal);
+
+        const totalRow = worksheet.addRow(totalValues);
+        totalRow.eachCell((cell, colNumber) => {
+          cell.font = { bold: true };
+          cell.fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: { argb: "FFF0F4FF" },
+          };
+          cell.alignment = {
+            horizontal: colNumber <= 2 ? "left" : "right",
+            vertical: "middle",
+          };
+          cell.border = {
+            top: { style: "medium" },
+            left: { style: "thin", color: { argb: "FFE0E0E0" } },
+            bottom: { style: "medium" },
+            right: { style: "thin", color: { argb: "FFE0E0E0" } },
+          };
+        });
+      }
 
       const colWidths = [];
 
       worksheet.eachRow((row, rowNumber) => {
-        if (rowNumber === 1) return;
+        if (rowNumber <= 2) return; // Bỏ qua timeStr và inforFilter
 
         row.eachCell({ includeEmpty: true }, (cell, colNumber) => {
           const len = cell.value ? cell.value.toString().length : 0;
-          colWidths[colNumber] = Math.max(colWidths[colNumber] || 8, len);
+          colWidths[colNumber] = Math.max(
+            colWidths[colNumber] || (colNumber === 1 ? 4 : 8),
+            len,
+          );
         });
       });
 
       colWidths.forEach((width, colNumber) => {
-        if (colNumber > 0) {
+        if (colNumber === 1) {
+          worksheet.getColumn(1).width = Math.max(width + 2, 6);
+        } else if (colNumber > 1) {
           worksheet.getColumn(colNumber).width = Math.min(width + 2, 40);
         }
       });
 
-      if (colKeys.length > 1) {
+      if (!isMultiValue && colKeys.length > 1) {
         const lastColNum = 2 + colKeys.length + 1;
 
         worksheet.eachRow((row, rowNumber) => {

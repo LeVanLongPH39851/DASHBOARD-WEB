@@ -92,7 +92,7 @@ export const METRIC_VIETNAMTODAYS = {
   "reach%": {
     name: "aveReachPercentNumber",
     metric: "total_time_viewing",
-    title: "Total Watch",
+    title: "Total Watch Time (m)",
     description: "Tổng thời gian thực tế người dùng xem (Live TV + VOD).",
     isPercent: false,
     icon: iconEye,
@@ -105,7 +105,7 @@ export const METRIC_VIETNAMTODAYS = {
   "rating%": {
     name: "ratingPercentNumber",
     metric: "VOD Consumption",
-    title: "VOD Watch",
+    title: "VOD Watch Time (m)",
     description: "Tổng thời gian thực tế người dùng xem VOD.",
     isPercent: false,
     icon: iconEye,
@@ -118,7 +118,7 @@ export const METRIC_VIETNAMTODAYS = {
   "ratingTrend%": {
     name: "ratingPercentTrendNumber",
     metric: "Live/TSV Consumption",
-    title: "Live Watch",
+    title: "LiveTV Watch Time (m)",
     description: "Tổng thời gian thực tế người dùng xem Live TV.",
     isPercent: false,
     icon: iconEye,

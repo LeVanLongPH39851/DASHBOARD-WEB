@@ -15,6 +15,7 @@ const NumberCard = ({
   widthIcon = "",
   suffix = "",
   refetch = undefined,
+  showIcon = true,
 }) => {
   // console.log("NumberCard");
 
@@ -33,6 +34,7 @@ const NumberCard = ({
           width={widthIcon}
           backgound={background}
           refetch={refetch}
+          showIcon={showIcon}
         />
         {window.location.pathname.includes("/world-cup-2026") ? (
           <LoadingNumberWC height={"50px"} />
@@ -54,6 +56,7 @@ const NumberCard = ({
           width={widthIcon}
           backgound={background}
           refetch={refetch}
+          showIcon={showIcon}
         />
         <NoData />
       </div>
@@ -87,6 +90,7 @@ const NumberCard = ({
         backgound={background}
         getChartData={getEChartsData}
         refetch={refetch}
+        showIcon={showIcon}
       />
       <div className="flex items-center gap-2">
         <div

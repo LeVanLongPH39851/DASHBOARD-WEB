@@ -88,7 +88,7 @@ const FilterVietNamToDay = ({ filters, horizontalFixed = false }) => {
   );
 
   const ALL_KEY_COUNTRIES = useMemo(
-    () => [{ value: "9_key_markets", label: "9 Key Martkets" }],
+    () => [{ value: "9_key_markets", label: "9 Key Markets" }],
     [],
   );
 

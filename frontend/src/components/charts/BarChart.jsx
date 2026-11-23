@@ -127,35 +127,106 @@ const BarChart = ({
     return !isNaN(num);
   });
 
+  // Sắp xếp series: khi có stack thì sort theo tổng số bên trong stack giảm dần
+  const orderedSeries = React.useMemo(() => {
+    if (!stack || !Array.isArray(series) || series.length <= 1) {
+      return series;
+    }
+
+    return [...series].sort((a, b) => {
+      const totalA = (a.data || []).reduce(
+        (sum, v) => sum + (Number(v) || 0),
+        0,
+      );
+      const totalB = (b.data || []).reduce(
+        (sum, v) => sum + (Number(v) || 0),
+        0,
+      );
+      return totalB - totalA;
+    });
+  }, [series, stack]);
+
   const sorted = React.useMemo(() => {
-    if (hasDates || hasTimebands || hasNumericLabels) {
-      // Sort theo ngày tăng dần
+    // Khi có stack: sort labels theo tổng số bên trong stack giảm dần (trừ trường hợp labels là ngày dd/mm/yyyy)
+    if (stack) {
+      if (hasDates) {
+        return labels
+          .map((label, index) => {
+            const total = series.reduce(
+              (sum, s) => sum + (Number(s.data?.[index]) || 0),
+              0,
+            );
+            return { label, index, total, date: parseDate(label) };
+          })
+          .sort((a, b) => a.date - b.date);
+      }
+
       return labels
         .map((label, index) => {
           const total = series.reduce(
-            (sum, s) => sum + (s.data?.[index] || 0),
-            0,
-          );
-          return { label, index, total, date: parseDate(label) };
-        })
-        .sort((a, b) => a.date - b.date); // ✅ Ngày tăng dần
-    } else {
-      // Sort by total như cũ
-      return labels
-        .map((label, index) => {
-          const total = series.reduce(
-            (sum, s) => sum + (s.data?.[index] || 0),
+            (sum, s) => sum + (Number(s.data?.[index]) || 0),
             0,
           );
           return { label, index, total };
         })
         .sort((a, b) => b.total - a.total);
     }
-  }, [labels, series]);
+
+    if (hasDates) {
+      // Sort theo ngày tăng dần
+      return labels
+        .map((label, index) => {
+          const total = series.reduce(
+            (sum, s) => sum + (Number(s.data?.[index]) || 0),
+            0,
+          );
+          return { label, index, total, date: parseDate(label) };
+        })
+        .sort((a, b) => a.date - b.date);
+    }
+
+    if (hasTimebands) {
+      return labels
+        .map((label, index) => {
+          const match = label.match(/^(\d{2})-(\d{2})$/);
+          const start = match ? Number(match[1]) : 0;
+          const total = series.reduce(
+            (sum, s) => sum + (Number(s.data?.[index]) || 0),
+            0,
+          );
+          return { label, index, total, start };
+        })
+        .sort((a, b) => a.start - b.start);
+    }
+
+    if (hasNumericLabels) {
+      return labels
+        .map((label, index) => {
+          const num = parseNumericLabel(label);
+          const total = series.reduce(
+            (sum, s) => sum + (Number(s.data?.[index]) || 0),
+            0,
+          );
+          return { label, index, total, num: isNaN(num) ? 0 : num };
+        })
+        .sort((a, b) => a.num - b.num);
+    }
+
+    // Default: Sort by total giảm dần
+    return labels
+      .map((label, index) => {
+        const total = series.reduce(
+          (sum, s) => sum + (Number(s.data?.[index]) || 0),
+          0,
+        );
+        return { label, index, total };
+      })
+      .sort((a, b) => b.total - a.total);
+  }, [labels, series, stack, hasDates, hasTimebands, hasNumericLabels]);
 
   const sortedLabels = sorted.map((i) => i.label);
   const sortedSeries = React.useMemo(() => {
-    const baseSeries = series.map((s) => ({
+    const baseSeries = orderedSeries.map((s) => ({
       ...s,
       data: sorted.map((i) => s.data?.[i.index] || 0),
     }));
@@ -173,7 +244,7 @@ const BarChart = ({
         return total > 0 ? Number(((value / total) * 100).toFixed(2)) : 0;
       }),
     }));
-  }, [series, sorted, showPercent]);
+  }, [orderedSeries, sorted, showPercent]);
 
   const topSeriesIndex = sortedSeries.length - 1;
 

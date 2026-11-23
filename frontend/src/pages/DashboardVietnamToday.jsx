@@ -166,33 +166,40 @@ const DashboardContent = () => {
                         isEnglish={true}
                       />
                       <div className="px-6 max-lg:px-5 max-md:px-4 pt-6 max-lg:pt-5 max-md:pt-4">
-                        <div className="w-full grid grid-cols-5 max-lg:grid-cols-3 max-md:grid-cols-2 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4">
-                          {Object.values(METRIC_VIETNAMTODAYS).map((card) => (
-                            <NumberCard
-                              key={card.name}
-                              title={card.title}
-                              description={card.description}
-                              value={useMemo(
-                                () =>
-                                  scopeNumberData?.[card.name]
-                                    ? formatNumber(
-                                        scopeNumberData?.[card.name]?.[
-                                          card.metric
-                                        ],
-                                        { isPercent: card.isPercent },
-                                      )
-                                    : "isLoading",
-                                [scopeNumberData?.[card.name]],
-                              )}
-                              icon={card.icon}
-                              background={card.background}
-                              widthIcon={card.widthIcon}
-                              refetch={useCallback(
-                                () => dashboard.refetch(card.id),
-                                [scopeNumberData?.[card.name]],
-                              )}
-                            />
-                          ))}
+                        <div className="w-full grid grid-cols-5 max-lg:grid-cols-12 max-md:grid-cols-2 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4">
+                          {Object.values(METRIC_VIETNAMTODAYS).map(
+                            (card, idx) => (
+                              <div
+                                className={`${[0, 1, 2].includes(idx) ? "max-lg:col-span-4 max-md:col-span-1" : [3, 4].includes(idx) ? `max-lg:col-span-6 ${idx === 3 ? "max-md:col-span-1" : "max-md:col-span-2"}` : ""}`}
+                              >
+                                <NumberCard
+                                  key={card.name}
+                                  title={card.title}
+                                  description={card.description}
+                                  value={useMemo(
+                                    () =>
+                                      scopeNumberData?.[card.name]
+                                        ? formatNumber(
+                                            scopeNumberData?.[card.name]?.[
+                                              card.metric
+                                            ],
+                                            { isPercent: card.isPercent },
+                                          )
+                                        : "isLoading",
+                                    [scopeNumberData?.[card.name]],
+                                  )}
+                                  icon={card.icon}
+                                  background={card.background}
+                                  widthIcon={card.widthIcon}
+                                  refetch={useCallback(
+                                    () => dashboard.refetch(card.id),
+                                    [scopeNumberData?.[card.name]],
+                                  )}
+                                  showIcon={false}
+                                />
+                              </div>
+                            ),
+                          )}
                         </div>
                         <div className="w-full pb-6 max-lg:pb-5 max-md:pb-4">
                           <LineChart
@@ -290,7 +297,7 @@ const DashboardContent = () => {
                             fontFamily={CUSTOM_CHART.allChart.fontFamily}
                             fontWeight={CUSTOM_CHART.mixedChart.fontWeight}
                             nameChart={
-                              "Daily Active User vs. Daily Watch Time per User"
+                              "[VIETNAM TODAY] Daily Active User vs. Daily Time on Site per User"
                             }
                             maxVisibleItems={
                               CUSTOM_CHART.mixedChart.mixedChartDate
@@ -301,9 +308,7 @@ const DashboardContent = () => {
                             lineSeriesKeys={"time_user_per_day"}
                             colors={useMemo(() => {
                               return {
-                                daily_active_user:
-                                  CUSTOM_CHART.mixedChart.mixedChartDate.colors
-                                    .ave_reach,
+                                daily_active_user: "#2f4553",
                                 time_user_per_day:
                                   CUSTOM_CHART.mixedChart.mixedChartDate.colors
                                     .rating,
@@ -312,10 +317,6 @@ const DashboardContent = () => {
                             barMaxWidth={CUSTOM_CHART.mixedChart.barMaxWidth}
                             barWidthPercent={
                               CUSTOM_CHART.mixedChart.barWidthPercent
-                            }
-                            lastDataIndexActive={
-                              CUSTOM_CHART.mixedChart.mixedChartDate
-                                .lastDataIndexActive
                             }
                             refetch={useCallback(
                               () => dashboard.refetch("chart1124Data"),
@@ -425,7 +426,7 @@ const DashboardContent = () => {
                                   : "isLoading",
                               [dashboard.isLoading.chart1078Data],
                             )}
-                            nameChart="Performance breakdown by Content Category"
+                            nameChart="Performance Breakdown by Content Category"
                             description={false}
                             rowField="category_name"
                             columnField="event_category_name"
@@ -458,7 +459,7 @@ const DashboardContent = () => {
                                   : "isLoading",
                               [dashboard.isLoading.chart1210Data],
                             )}
-                            nameChart="Performance breakdown by Country (International)"
+                            nameChart="Performance Breakdown by Country (International)"
                             description={false}
                             rowField="country"
                             columnField="event_category_name"
@@ -493,7 +494,7 @@ const DashboardContent = () => {
                                   : "isLoading",
                               [dashboard.isLoading.chart1209Data],
                             )}
-                            nameChart="Performance breakdown by Province (Viet Nam)"
+                            nameChart="Performance Breakdown by Province (Viet Nam)"
                             description={false}
                             rowField="province_name"
                             columnField="event_category_name"
@@ -585,9 +586,7 @@ const DashboardContent = () => {
                                           .lineChartPercentTimebandChannel
                                           .showTopNSeries
                                       }
-                                      xAxisTitle={
-                                        CUSTOM_CHART.lineChart.xAxisTitle
-                                      }
+                                      xAxisTitle={"Time Slot"}
                                       refetch={useCallback(
                                         () =>
                                           dashboard.refetch("chart1077Data"),
@@ -649,9 +648,7 @@ const DashboardContent = () => {
                                           .lineChartPercentTimebandChannel
                                           .showTopNSeries
                                       }
-                                      xAxisTitle={
-                                        CUSTOM_CHART.lineChart.xAxisTitle
-                                      }
+                                      xAxisTitle={"Time Slot"}
                                       refetch={useCallback(
                                         () =>
                                           dashboard.refetch("chart1080Data"),
@@ -713,9 +710,7 @@ const DashboardContent = () => {
                                           .lineChartPercentTimebandChannel
                                           .showTopNSeries
                                       }
-                                      xAxisTitle={
-                                        CUSTOM_CHART.lineChart.xAxisTitle
-                                      }
+                                      xAxisTitle={"Time Slot"}
                                       refetch={useCallback(
                                         () =>
                                           dashboard.refetch("chart1081Data"),
@@ -790,6 +785,7 @@ const DashboardContent = () => {
                               () => dashboard.refetch("chart1027Data"),
                               [dashboard.isLoading.chart1027Data],
                             )}
+                            showIcon={false}
                           />
                           <NumberCard
                             title={"Total Views"}
@@ -816,9 +812,10 @@ const DashboardContent = () => {
                               () => dashboard.refetch("chart1065Data"),
                               [dashboard.isLoading.chart1065Data],
                             )}
+                            showIcon={false}
                           />
                           <NumberCard
-                            title={"Total Watch Time"}
+                            title={"Total Watch Time (m)"}
                             description={
                               "Tổng thời gian thực tế người dùng theo dõi nội dung trong kỳ (Chỉ áp dụng Live TV)."
                             }
@@ -842,6 +839,7 @@ const DashboardContent = () => {
                               () => dashboard.refetch("chart1066Data"),
                               [dashboard.isLoading.chart1066Data],
                             )}
+                            showIcon={false}
                           />
                           <NumberCard
                             title={"Minute/Viewer/Day"}
@@ -868,6 +866,7 @@ const DashboardContent = () => {
                               () => dashboard.refetch("chart1042Data"),
                               [dashboard.isLoading.chart1042Data],
                             )}
+                            showIcon={false}
                           />
                         </div>
                         <div className="w-full pb-6 max-lg:pb-5 max-md:pb-4">
@@ -1853,140 +1852,166 @@ const DashboardContent = () => {
                         isEnglish={true}
                       />
                       <div className="px-6 max-lg:px-5 max-md:px-4">
-                        <div className="w-full grid grid-cols-5 max-lg:grid-cols-4 max-md:grid-cols-2 gap-6 max-lg:gap-5 max-md:gap-4 py-6 max-lg:py-5 max-md:py-4">
-                          <NumberCard
-                            title={"Uni Viewers"}
-                            description={
-                              "Tổng số khán giả thực tế đã xem VOD trong kỳ (đã loại bỏ trùng lặp)."
-                            }
-                            value={useMemo(
-                              () =>
-                                !dashboard.isLoading.chart1052Data
-                                  ? dashboard.chart1052Data?.data
-                                    ? formatNumber(
-                                        dashboard.chart1052Data?.data[0]?.[
-                                          "Unique users"
-                                        ],
-                                        { isPercent: false },
-                                      )
-                                    : "-"
-                                  : "isLoading",
-                              [dashboard.isLoading.chart1052Data],
-                            )}
-                            icon={METRIC_VIETNAMTODAYS.ave_reach.icon}
-                            background={
-                              METRIC_VIETNAMTODAYS.ave_reach.background
-                            }
-                            widthIcon={METRIC_VIETNAMTODAYS.ave_reach.widthIcon}
-                            refetch={useCallback(
-                              () => dashboard.refetch("chart1052Data"),
-                              [dashboard.isLoading.chart1052Data],
-                            )}
-                          />
-                          <NumberCard
-                            title={"Total Views"}
-                            description={
-                              "Tổng số lượt xem VOD hợp lệ trong kỳ (Chỉ áp dụng VOD).\n(Quy định lượt xem hợp lệ: VOD >= 15 giây)"
-                            }
-                            value={useMemo(
-                              () =>
-                                !dashboard.isLoading.chart1051Data
-                                  ? dashboard.chart1051Data?.data
-                                    ? formatNumber(
-                                        dashboard.chart1051Data?.data[0].Views,
-                                        { isPercent: false },
-                                      )
-                                    : "-"
-                                  : "isLoading",
-                              [dashboard.isLoading.chart1051Data],
-                            )}
-                            icon={METRIC_VIETNAMTODAYS.rating.icon}
-                            background={METRIC_VIETNAMTODAYS.rating.background}
-                            widthIcon={METRIC_VIETNAMTODAYS.rating.widthIcon}
-                            refetch={useCallback(
-                              () => dashboard.refetch("chart1051Data"),
-                              [dashboard.isLoading.chart1051Data],
-                            )}
-                          />
-                          <NumberCard
-                            title={"View/VOD"}
-                            description={
-                              "Số lượt xem trung bình đạt được trên mỗi video VOD."
-                            }
-                            value={useMemo(
-                              () =>
-                                !dashboard.isLoading.chart1050Data
-                                  ? dashboard.chart1050Data?.data
-                                    ? dashboard.chart1050Data?.data[0]?.[
-                                        "Avg Views/VOD"
-                                      ]?.toLocaleString(undefined, {
-                                        maximumFractionDigits: 2,
-                                      })
-                                    : "-"
-                                  : "isLoading",
-                              [dashboard.isLoading.chart1050Data],
-                            )}
-                            icon={METRIC_VIETNAMTODAYS.rating.icon}
-                            background={METRIC_VIETNAMTODAYS.rating.background}
-                            widthIcon={METRIC_VIETNAMTODAYS.rating.widthIcon}
-                            refetch={useCallback(
-                              () => dashboard.refetch("chart1050Data"),
-                              [dashboard.isLoading.chart1050Data],
-                            )}
-                          />
-                          <NumberCard
-                            title={"Time/View"}
-                            description={
-                              "Thời lượng xem trung bình trên mỗi lượt xem VOD."
-                            }
-                            value={useMemo(
-                              () =>
-                                !dashboard.isLoading.chart1054Data
-                                  ? dashboard.chart1054Data?.data
-                                    ? dashboard.chart1054Data?.data[0]?.[
-                                        "Avg Watch (Viewers)"
-                                      ]?.toLocaleString(undefined, {
-                                        maximumFractionDigits: 2,
-                                      })
-                                    : "-"
-                                  : "isLoading",
-                              [dashboard.isLoading.chart1054Data],
-                            )}
-                            icon={METRIC_VIETNAMTODAYS.rating.icon}
-                            background={METRIC_VIETNAMTODAYS.rating.background}
-                            widthIcon={METRIC_VIETNAMTODAYS.rating.widthIcon}
-                            refetch={useCallback(
-                              () => dashboard.refetch("chart1054Data"),
-                              [dashboard.isLoading.chart1054Data],
-                            )}
-                          />
-                          <NumberCard
-                            title={"View Duration"}
-                            description={
-                              "Tỷ lệ phần trăm thời lượng xem trung bình so với tổng độ dài của video VOD."
-                            }
-                            value={useMemo(
-                              () =>
-                                !dashboard.isLoading.chart1053Data
-                                  ? dashboard.chart1053Data?.data
-                                    ? formatNumber(
-                                        dashboard.chart1053Data?.data[0]?.[
-                                          "Avg View Duration (%)"
-                                        ],
-                                        { isPercent: true },
-                                      )
-                                    : "-"
-                                  : "isLoading",
-                              [dashboard.isLoading.chart1053Data],
-                            )}
-                            icon={METRIC_VIETNAMTODAYS.rating.icon}
-                            background={METRIC_VIETNAMTODAYS.rating.background}
-                            widthIcon={METRIC_VIETNAMTODAYS.rating.widthIcon}
-                            refetch={useCallback(
-                              () => dashboard.refetch("chart1053Data"),
-                              [dashboard.isLoading.chart1053Data],
-                            )}
-                          />
+                        <div className="w-full grid grid-cols-5 max-lg:grid-cols-12 max-md:grid-cols-2 gap-6 max-lg:gap-5 max-md:gap-4 py-6 max-lg:py-5 max-md:py-4">
+                          <div className="max-lg:col-span-4 max-md:col-span-1">
+                            <NumberCard
+                              title={"Unique Viewers"}
+                              description={
+                                "Tổng số khán giả thực tế đã xem VOD trong kỳ (đã loại bỏ trùng lặp)."
+                              }
+                              value={useMemo(
+                                () =>
+                                  !dashboard.isLoading.chart1052Data
+                                    ? dashboard.chart1052Data?.data
+                                      ? formatNumber(
+                                          dashboard.chart1052Data?.data[0]?.[
+                                            "Unique users"
+                                          ],
+                                          { isPercent: false },
+                                        )
+                                      : "-"
+                                    : "isLoading",
+                                [dashboard.isLoading.chart1052Data],
+                              )}
+                              icon={METRIC_VIETNAMTODAYS.ave_reach.icon}
+                              background={
+                                METRIC_VIETNAMTODAYS.ave_reach.background
+                              }
+                              widthIcon={
+                                METRIC_VIETNAMTODAYS.ave_reach.widthIcon
+                              }
+                              refetch={useCallback(
+                                () => dashboard.refetch("chart1052Data"),
+                                [dashboard.isLoading.chart1052Data],
+                              )}
+                              showIcon={false}
+                            />
+                          </div>
+                          <div className="max-lg:col-span-4 max-md:col-span-1">
+                            <NumberCard
+                              title={"Total Views"}
+                              description={
+                                "Tổng số lượt xem VOD hợp lệ trong kỳ (Chỉ áp dụng VOD).\n(Quy định lượt xem hợp lệ: VOD >= 15 giây)"
+                              }
+                              value={useMemo(
+                                () =>
+                                  !dashboard.isLoading.chart1051Data
+                                    ? dashboard.chart1051Data?.data
+                                      ? formatNumber(
+                                          dashboard.chart1051Data?.data[0]
+                                            .Views,
+                                          { isPercent: false },
+                                        )
+                                      : "-"
+                                    : "isLoading",
+                                [dashboard.isLoading.chart1051Data],
+                              )}
+                              icon={METRIC_VIETNAMTODAYS.rating.icon}
+                              background={
+                                METRIC_VIETNAMTODAYS.rating.background
+                              }
+                              widthIcon={METRIC_VIETNAMTODAYS.rating.widthIcon}
+                              refetch={useCallback(
+                                () => dashboard.refetch("chart1051Data"),
+                                [dashboard.isLoading.chart1051Data],
+                              )}
+                              showIcon={false}
+                            />
+                          </div>
+                          <div className="max-lg:col-span-4 max-md:col-span-1">
+                            <NumberCard
+                              title={"Avg View/VOD"}
+                              description={
+                                "Số lượt xem trung bình đạt được trên mỗi video VOD."
+                              }
+                              value={useMemo(
+                                () =>
+                                  !dashboard.isLoading.chart1050Data
+                                    ? dashboard.chart1050Data?.data
+                                      ? dashboard.chart1050Data?.data[0]?.[
+                                          "Avg Views/VOD"
+                                        ]?.toLocaleString(undefined, {
+                                          maximumFractionDigits: 2,
+                                        })
+                                      : "-"
+                                    : "isLoading",
+                                [dashboard.isLoading.chart1050Data],
+                              )}
+                              icon={METRIC_VIETNAMTODAYS.rating.icon}
+                              background={
+                                METRIC_VIETNAMTODAYS.rating.background
+                              }
+                              widthIcon={METRIC_VIETNAMTODAYS.rating.widthIcon}
+                              refetch={useCallback(
+                                () => dashboard.refetch("chart1050Data"),
+                                [dashboard.isLoading.chart1050Data],
+                              )}
+                              showIcon={false}
+                            />
+                          </div>
+                          <div className="max-lg:col-span-6 max-md:col-span-1">
+                            <NumberCard
+                              title={"Avg Watch Time/View"}
+                              description={
+                                "Thời lượng xem trung bình trên mỗi lượt xem VOD."
+                              }
+                              value={useMemo(
+                                () =>
+                                  !dashboard.isLoading.chart1054Data
+                                    ? dashboard.chart1054Data?.data
+                                      ? dashboard.chart1054Data?.data[0]?.[
+                                          "Avg Watch (Viewers)"
+                                        ]?.toLocaleString(undefined, {
+                                          maximumFractionDigits: 2,
+                                        })
+                                      : "-"
+                                    : "isLoading",
+                                [dashboard.isLoading.chart1054Data],
+                              )}
+                              icon={METRIC_VIETNAMTODAYS.rating.icon}
+                              background={
+                                METRIC_VIETNAMTODAYS.rating.background
+                              }
+                              widthIcon={METRIC_VIETNAMTODAYS.rating.widthIcon}
+                              refetch={useCallback(
+                                () => dashboard.refetch("chart1054Data"),
+                                [dashboard.isLoading.chart1054Data],
+                              )}
+                              showIcon={false}
+                            />
+                          </div>
+                          <div className="max-lg:col-span-6 max-md:col-span-2">
+                            <NumberCard
+                              title={"Avg View Duration (%)"}
+                              description={
+                                "Tỷ lệ phần trăm thời lượng xem trung bình so với tổng độ dài của video VOD."
+                              }
+                              value={useMemo(
+                                () =>
+                                  !dashboard.isLoading.chart1053Data
+                                    ? dashboard.chart1053Data?.data
+                                      ? formatNumber(
+                                          dashboard.chart1053Data?.data[0]?.[
+                                            "Avg View Duration (%)"
+                                          ],
+                                          { isPercent: true },
+                                        )
+                                      : "-"
+                                    : "isLoading",
+                                [dashboard.isLoading.chart1053Data],
+                              )}
+                              icon={METRIC_VIETNAMTODAYS.rating.icon}
+                              background={
+                                METRIC_VIETNAMTODAYS.rating.background
+                              }
+                              widthIcon={METRIC_VIETNAMTODAYS.rating.widthIcon}
+                              refetch={useCallback(
+                                () => dashboard.refetch("chart1053Data"),
+                                [dashboard.isLoading.chart1053Data],
+                              )}
+                              showIcon={false}
+                            />
+                          </div>
                         </div>
                         <div></div>
                         <div></div>
@@ -2567,7 +2592,7 @@ const DashboardContent = () => {
                               CUSTOM_CHART.lineChart
                                 .lineChartPercentTimebandChannel.showTopNSeries
                             }
-                            xAxisTitle={CUSTOM_CHART.lineChart.xAxisTitle}
+                            xAxisTitle={"Time Slot"}
                             refetch={useCallback(
                               () => dashboard.refetch("chart1067Data"),
                               [dashboard.isLoading.chart1067Data],
@@ -2666,6 +2691,7 @@ const DashboardContent = () => {
                               () => dashboard.refetch("chart1091Data"),
                               [dashboard.isLoading.chart1091Data],
                             )}
+                            showIcon={false}
                           />
                           <NumberCard
                             title={"Engagement"}
@@ -2693,6 +2719,7 @@ const DashboardContent = () => {
                               () => dashboard.refetch("chart1092Data"),
                               [dashboard.isLoading.chart1092Data],
                             )}
+                            showIcon={false}
                           />
                           <NumberCard
                             title={"Views"}
@@ -2720,6 +2747,7 @@ const DashboardContent = () => {
                               () => dashboard.refetch("chart1093Data"),
                               [dashboard.isLoading.chart1093Data],
                             )}
+                            showIcon={false}
                           />
                           <NumberCard
                             title={"Total Shares"}
@@ -2747,6 +2775,7 @@ const DashboardContent = () => {
                               () => dashboard.refetch("chart1097Data"),
                               [dashboard.isLoading.chart1097Data],
                             )}
+                            showIcon={false}
                           />
                         </div>
                         <div className="w-full grid grid-cols-2 max-md:flex-wrap max-md:grid-cols-1 gap-6 max-lg:gap-5 max-md:gap-4 pb-6 max-lg:pb-5 max-md:pb-4">
@@ -3252,7 +3281,7 @@ const DashboardContent = () => {
                                 [dashboard.isLoading.chart1088Data],
                               )}
                               height={"400px"}
-                              showHeader={false}
+                              showHeader={true}
                               fontSize={CUSTOM_CHART.tableChart.fontSize}
                               fontFamily={CUSTOM_CHART.allChart.fontFamily}
                               fontWeight={CUSTOM_CHART.tableChart.fontWeight}
@@ -3289,7 +3318,7 @@ const DashboardContent = () => {
                                 [dashboard.isLoading.chart1079Data],
                               )}
                               height={"400px"}
-                              showHeader={false}
+                              showHeader={true}
                               fontSize={CUSTOM_CHART.tableChart.fontSize}
                               fontFamily={CUSTOM_CHART.allChart.fontFamily}
                               fontWeight={CUSTOM_CHART.tableChart.fontWeight}
@@ -3328,7 +3357,7 @@ const DashboardContent = () => {
                                 [dashboard.isLoading.chart1086Data],
                               )}
                               height={"400px"}
-                              showHeader={false}
+                              showHeader={true}
                               fontSize={CUSTOM_CHART.tableChart.fontSize}
                               fontFamily={CUSTOM_CHART.allChart.fontFamily}
                               fontWeight={CUSTOM_CHART.tableChart.fontWeight}
@@ -3365,7 +3394,7 @@ const DashboardContent = () => {
                                 [dashboard.isLoading.chart1087Data],
                               )}
                               height={"400px"}
-                              showHeader={false}
+                              showHeader={true}
                               fontSize={CUSTOM_CHART.tableChart.fontSize}
                               fontFamily={CUSTOM_CHART.allChart.fontFamily}
                               fontWeight={CUSTOM_CHART.tableChart.fontWeight}

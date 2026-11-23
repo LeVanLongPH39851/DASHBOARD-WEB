@@ -36,6 +36,7 @@ const NameChart = ({
   table = false,
   fullScreen = false,
   refetch = undefined,
+  showIcon = true,
 }) => {
   // console.log("NameChart " + nameChart);
 
@@ -787,7 +788,7 @@ const NameChart = ({
             />
           </figure>
         )}
-        {!userLoading && user?.username !== "vtvguest" && (
+        {showIcon && !userLoading && user?.username !== "vtvguest" && (
           <figure
             ref={!screenMd ? buttonRef : undefined}
             className="p-2 cursor-pointer relative group"
@@ -840,19 +841,21 @@ const NameChart = ({
             </div>
           </figure>
         )}
-        <figure
-          className="p-2 cursor-pointer transition-all duration-300 hover:scale-110"
-          title="Làm mới"
-          onClick={refetch}
-        >
-          <FontAwesomeIcon
-            icon={faClockRotateLeft}
-            fontSize={!screenLg ? 15 : 14}
-            color={
-              !darkMode ? "rgba(31, 31, 31, 1)" : "rgba(255, 255, 255, 0.8)"
-            }
-          />
-        </figure>
+        {showIcon && (
+          <figure
+            className="p-2 cursor-pointer transition-all duration-300 hover:scale-110"
+            title="Làm mới"
+            onClick={refetch}
+          >
+            <FontAwesomeIcon
+              icon={faClockRotateLeft}
+              fontSize={!screenLg ? 15 : 14}
+              color={
+                !darkMode ? "rgba(31, 31, 31, 1)" : "rgba(255, 255, 255, 0.8)"
+              }
+            />
+          </figure>
+        )}
         {/* <figure className='p-2 cursor-pointer'><img src={!darkMode ? iconEyeHidden : iconEyeHiddenDark} alt="Icon Eye Hidden" className='w-4.5 max-lg:w-4' onClick={handleHideChart} /></figure> */}
       </div>
       <div className="hidden div-hideen max-md:block">

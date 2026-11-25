@@ -74,7 +74,6 @@ const FilterVietNamToDay = ({ filters, horizontalFixed = false }) => {
       { value: "Asia", label: "Asia" },
       { value: "Europe", label: "Europe" },
       { value: "Oceania", label: "Oceania" },
-      { value: "Unknown", label: "Unknown" },
     ],
     [],
   );

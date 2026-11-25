@@ -812,7 +812,7 @@ const DashboardContent = () => {
                               () => dashboard.refetch("chart1065Data"),
                               [dashboard.isLoading.chart1065Data],
                             )}
-                            // showIcon={false}
+                            showIcon={false}
                           />
                           <NumberCard
                             title={"Total Watch Time (m)"}

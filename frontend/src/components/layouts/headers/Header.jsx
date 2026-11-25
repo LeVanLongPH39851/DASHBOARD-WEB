@@ -335,7 +335,7 @@ const Header = ({ username, isEnglish = false }) => {
         </Link>
         <nav
           ref={navRef}
-          className="relative flex items-center gap-1 p-1 rounded-2xl bg-background-dashboard/80 dark:bg-background-white-8 border border-border-black-10 dark:border-background-white-15 shadow-inner"
+          className="relative flex items-center gap-1 max-md:gap-3 p-1 rounded-2xl bg-background-dashboard/80 dark:bg-background-white-8 border border-border-black-10 dark:border-background-white-15 shadow-inner"
         >
           {/* Pill nền trượt theo nút đang active */}
           <span
@@ -359,7 +359,7 @@ const Header = ({ username, isEnglish = false }) => {
                   navItemRefs.current[item.key] = el;
                 }}
                 title={item.label}
-                className={`shine group relative z-10 overflow-hidden px-4 max-lg:px-3 max-md:px-2.5 py-1.75 max-lg:py-1 max-md:py-0.5 rounded-xl text-sm max-lg:text-xs font-semibold transition-colors duration-300 flex items-center gap-2 active:scale-95 ${
+                className={`shine group relative z-10 overflow-hidden px-4 max-lg:px-3 max-md:px-0.5 py-1.75 max-lg:py-1 max-md:py-0.5 rounded-xl text-sm max-lg:text-xs font-semibold transition-colors duration-300 flex items-center gap-2 active:scale-95 ${
                   isActive
                     ? "text-white"
                     : `text-color-black-70 dark:text-color-white-80 ${item.hoverText} hover:bg-background-light dark:hover:bg-background-white-8`
@@ -406,7 +406,7 @@ const Header = ({ username, isEnglish = false }) => {
           </figure>
         </div>
         <div className="w-px h-6 max-md:h-5 rounded-full bg-background-line-gray mx-2"></div>
-        <div className="relative z-40">
+        <div className="relative z-500">
           <div
             ref={buttonRef}
             className="flex items-center gap-2 cursor-pointer"

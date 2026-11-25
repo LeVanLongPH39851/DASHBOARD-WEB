@@ -715,7 +715,7 @@ const GroupDetailWorkspace = ({
               onClick={() => onOpenEditModal(group)}
               title="Chỉ định Dashboard"
               aria-label="Chỉ định Dashboard"
-              className={`p-1.5 max-lg:p-1 max-md:p-0.5 rounded-lg inline-flex items-center justify-center border ${accent.badge} bg-background-search dark:bg-background-white-8 hover:bg-gradient-to-r ${accent.bar} hover:text-white hover:border-transparent transition cursor-pointer shadow-xs`}
+              className={`p-1.5 max-lg:p-1.5 max-md:p-1 rounded-lg inline-flex items-center justify-center border ${accent.badge} bg-background-search dark:bg-background-white-8 hover:bg-gradient-to-r ${accent.bar} hover:text-white hover:border-transparent transition cursor-pointer shadow-xs`}
             >
               <svg
                 className="w-4 h-4 max-lg:w-3.5 max-lg:h-3.5 max-md:w-3 max-md:h-3"
@@ -1007,12 +1007,12 @@ const GroupCardNode = ({
                   <button
                     type="button"
                     onClick={() => setIsExpanded(!isExpanded)}
-                    className="inline-flex items-center gap-1 px-2.5 max-lg:px-2 max-md:px-1.5 py-0.5 rounded-full text-[11px] max-lg:text-[10px] max-md:text-[9px] font-semibold bg-background-search dark:bg-background-white-8 text-color-black-70 dark:text-color-white-80 border border-border-black-10 dark:border-background-white-15 cursor-pointer"
+                    className="inline-flex items-center gap-1.5 max-lg:gap-1 px-2.5 max-lg:px-2 max-md:px-1.5 py-0.5 rounded-full text-[11px] max-lg:text-[10px] max-md:text-[9px] font-semibold bg-background-search dark:bg-background-white-8 hover:bg-black/5 dark:hover:bg-white/12 text-color-black-70 dark:text-color-white-80 border border-border-black-10 dark:border-background-white-15 cursor-pointer transition-all duration-200 active:scale-95 shadow-2xs select-none"
                   >
                     <span>{children.length} nhóm con</span>
                     <svg
-                      className={`w-3 h-3 max-lg:w-2.5 max-lg:h-2.5 transition-transform duration-200 ${
-                        isExpanded ? "rotate-180" : ""
+                      className={`w-3 h-3 max-lg:w-2.5 max-lg:h-2.5 transition-transform duration-300 ease-in-out ${
+                        isExpanded ? "rotate-180" : "rotate-0"
                       }`}
                       fill="none"
                       stroke="currentColor"
@@ -1212,23 +1212,31 @@ const GroupCardNode = ({
         </div>
       </div>
 
-      {children.length > 0 && isExpanded && (
-        <div className="space-y-3.5 max-lg:space-y-2.5 max-md:space-y-2">
-          {children.map((child, childIdx) => (
-            <GroupCardNode
-              key={child.id}
-              group={child}
-              index={childIdx}
-              branchIndex={branchIndex}
-              level={level + 1}
-              isSystemManager={isSystemManager}
-              currentUserId={currentUserId}
-              onOpenEditModal={onOpenEditModal}
-              onOpenCreateChildModal={onOpenCreateChildModal}
-              onOpenMembersModal={onOpenMembersModal}
-              onRequestDeleteGroup={onRequestDeleteGroup}
-            />
-          ))}
+      {children.length > 0 && (
+        <div
+          className={`grid transition-all duration-300 ease-in-out ${
+            isExpanded ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0 pointer-events-none"
+          }`}
+        >
+          <div className="overflow-hidden">
+            <div className="space-y-3.5 max-lg:space-y-2.5 max-md:space-y-2">
+              {children.map((child, childIdx) => (
+                <GroupCardNode
+                  key={child.id}
+                  group={child}
+                  index={childIdx}
+                  branchIndex={branchIndex}
+                  level={level + 1}
+                  isSystemManager={isSystemManager}
+                  currentUserId={currentUserId}
+                  onOpenEditModal={onOpenEditModal}
+                  onOpenCreateChildModal={onOpenCreateChildModal}
+                  onOpenMembersModal={onOpenMembersModal}
+                  onRequestDeleteGroup={onRequestDeleteGroup}
+                />
+              ))}
+            </div>
+          </div>
         </div>
       )}
     </div>
@@ -1842,7 +1850,7 @@ const RolePermissionContent = () => {
                   onClick={() => setLayoutMode("split")}
                   title="Chế độ Cây đơn vị"
                   aria-label="Chế độ Cây đơn vị"
-                  className={`p-1.5 max-lg:p-1 max-md:p-0.5 rounded-lg transition cursor-pointer ${
+                  className={`p-1.5 max-lg:p-1.5 max-md:p-1 rounded-lg transition cursor-pointer ${
                     layoutMode === "split"
                       ? "bg-gradient-to-r from-[#20A7C9] to-[#2fc4c6] text-white shadow-xs"
                       : "text-color-black-50 dark:text-color-white-50 hover:text-color-black-100 dark:hover:text-color-white-90"
@@ -1865,7 +1873,7 @@ const RolePermissionContent = () => {
                   onClick={() => setLayoutMode("grid")}
                   title="Chế độ Lưới thẻ"
                   aria-label="Chế độ Lưới thẻ"
-                  className={`p-1.5 max-lg:p-1 max-md:p-0.5 rounded-lg transition cursor-pointer ${
+                  className={`p-1.5 max-lg:p-1.5 max-md:p-1 rounded-lg transition cursor-pointer ${
                     layoutMode === "grid"
                       ? "bg-gradient-to-r from-[#20A7C9] to-[#2fc4c6] text-white shadow-xs"
                       : "text-color-black-50 dark:text-color-white-50 hover:text-color-black-100 dark:hover:text-color-white-90"
@@ -2002,48 +2010,51 @@ const RolePermissionContent = () => {
             getGroupBranchIndex(groups, editingGroup.id),
           );
           return (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4">
-              <div className="animate-scale-in relative overflow-hidden w-full max-w-lg rounded-2xl bg-background-light dark:bg-background-dark border border-border-black-10 dark:border-background-white-15 shadow-2xl">
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 max-lg:p-3 max-md:p-2 overflow-y-auto">
+              <div className="animate-scale-in relative overflow-hidden w-full max-w-lg rounded-2xl max-lg:rounded-xl max-md:rounded-lg bg-background-light dark:bg-background-dark border border-border-black-10 dark:border-background-white-15 shadow-2xl max-h-[90vh] flex flex-col">
                 <div className={`h-1 bg-gradient-to-r ${editAccent.bar}`} />
 
-                <div className="flex items-center justify-between px-6 py-4 border-b border-border-black-10 dark:border-background-white-15">
+                <div className="flex items-center justify-between px-6 max-lg:px-5 max-md:px-4 py-4 max-lg:py-3 max-md:py-2.5 border-b border-border-black-10 dark:border-background-white-15">
                   <div>
-                    <h3 className="text-base font-bold text-color-black-100 dark:text-color-white-90">
+                    <h3 className="text-base max-lg:text-sm max-md:text-xs font-bold text-color-black-100 dark:text-color-white-90">
                       Phân quyền Dashboard
                     </h3>
-                    <p className="text-xs text-color-black-50 dark:text-color-white-50 mt-0.5">
+                    <p className="text-xs max-lg:text-[11px] max-md:text-[10px] text-color-black-50 dark:text-color-white-50 mt-0.5">
                       {editingGroup.group_name}
                     </p>
                   </div>
                   <button
                     type="button"
                     onClick={() => setEditingGroup(null)}
-                    className="w-7 h-7 rounded-lg flex items-center justify-center text-color-black-50 hover:text-color-black-100 dark:text-color-white-50 dark:hover:text-color-white-90 hover:bg-background-black-4 dark:hover:bg-background-white-8 transition cursor-pointer"
+                    className="w-7 h-7 max-lg:w-6 max-lg:h-6 max-md:w-5.5 max-md:h-5.5 rounded-lg flex items-center justify-center text-color-black-50 hover:text-color-black-100 dark:text-color-white-50 dark:hover:text-color-white-90 hover:bg-background-black-4 dark:hover:bg-background-white-8 transition cursor-pointer text-sm max-lg:text-xs max-md:text-[11px]"
                   >
                     ✕
                   </button>
                 </div>
 
-                <form onSubmit={handleSaveDashboards} className="p-6">
+                <form
+                  onSubmit={handleSaveDashboards}
+                  className="p-6 max-lg:p-4 max-md:p-3 overflow-y-auto flex-1 flex flex-col justify-between"
+                >
                   {selectableDashboardsForEdit.length === 0 ? (
-                    <div className="p-5 mb-4 rounded-xl bg-background-dashboard dark:bg-background-white-8 border border-dashed border-border-black-10 dark:border-background-white-15 text-xs text-color-black-50 dark:text-color-white-50 text-center">
+                    <div className="p-5 max-lg:p-4 max-md:p-3 mb-4 max-lg:mb-3 max-md:mb-2 rounded-xl max-lg:rounded-lg bg-background-dashboard dark:bg-background-white-8 border border-dashed border-border-black-10 dark:border-background-white-15 text-xs max-lg:text-[11px] max-md:text-[10px] text-color-black-50 dark:text-color-white-50 text-center">
                       {editingGroup.parent_group_id
                         ? "Nhóm cha hiện chưa được chỉ định Dashboard nào."
                         : "Không có Dashboard khả dụng."}
                     </div>
                   ) : (
                     <>
-                      <div className="space-y-2 mb-3">
+                      <div className="space-y-2 max-lg:space-y-1.5 max-md:space-y-1 mb-3 max-lg:mb-2.5 max-md:mb-2">
                         <div className="relative">
                           <input
                             type="text"
                             value={dashSearch}
                             onChange={(e) => setDashSearch(e.target.value)}
                             placeholder="Tìm kiếm Dashboard..."
-                            className={`w-full pl-9 pr-8 py-2 rounded-xl border border-border-black-10 dark:border-background-white-15 bg-background-search dark:bg-background-white-8 text-xs text-color-black-100 dark:text-color-white-90 outline-none ${editAccent.focusRing} transition`}
+                            className={`w-full pl-9 max-lg:pl-8 max-md:pl-7 pr-8 max-lg:pr-7 max-md:pr-6 py-2 max-lg:py-1.5 max-md:py-1 rounded-xl max-lg:rounded-lg border border-border-black-10 dark:border-background-white-15 bg-background-search dark:bg-background-white-8 text-xs max-lg:text-[11px] max-md:text-[10px] text-color-black-100 dark:text-color-white-90 outline-none ${editAccent.focusRing} transition`}
                           />
                           <svg
-                            className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-color-black-50 dark:text-color-white-50 pointer-events-none"
+                            className="w-3.5 h-3.5 max-lg:w-3 max-lg:h-3 max-md:w-2.5 max-md:h-2.5 absolute left-3 max-lg:left-2.5 max-md:left-2 top-1/2 -translate-y-1/2 text-color-black-50 dark:text-color-white-50 pointer-events-none"
                             fill="none"
                             stroke="currentColor"
                             strokeWidth="2"
@@ -2054,7 +2065,7 @@ const RolePermissionContent = () => {
                           </svg>
                         </div>
 
-                        <div className="flex items-center justify-between text-xs px-1">
+                        <div className="flex items-center justify-between text-xs max-lg:text-[11px] max-md:text-[10px] px-1">
                           <span className="text-color-black-50 dark:text-color-white-50">
                             Đã chọn{" "}
                             <strong className={editAccent.folderText}>
@@ -2062,7 +2073,7 @@ const RolePermissionContent = () => {
                             </strong>{" "}
                             / {selectableDashboardsForEdit.length}
                           </span>
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-2 max-lg:gap-1.5 max-md:gap-1">
                             <button
                               type="button"
                               onClick={() =>
@@ -2088,7 +2099,7 @@ const RolePermissionContent = () => {
                         </div>
                       </div>
 
-                      <div className="max-h-64 overflow-y-auto space-y-2 mb-4 pr-1">
+                      <div className="max-h-64 max-lg:max-h-56 max-md:max-h-48 overflow-y-auto space-y-2 max-lg:space-y-1.5 max-md:space-y-1 mb-4 max-lg:mb-3 max-md:mb-2 pr-1 divTable">
                         {filteredSelectableDashboards.map((dash) => {
                           const checked = selectedDashIds.includes(
                             Number(dash.id),
@@ -2096,13 +2107,13 @@ const RolePermissionContent = () => {
                           return (
                             <label
                               key={dash.id}
-                              className={`flex items-center justify-between p-3 rounded-xl border cursor-pointer transition ${
+                              className={`flex items-center justify-between p-3 max-lg:p-2.5 max-md:p-2 rounded-xl max-lg:rounded-lg border cursor-pointer transition ${
                                 checked
                                   ? editAccent.checkedItem
                                   : "border-border-black-10 dark:border-background-white-15 bg-background-dashboard/40 dark:bg-background-white-8/30"
                               }`}
                             >
-                              <div className="flex items-center gap-3">
+                              <div className="flex items-center gap-3 max-lg:gap-2.5 max-md:gap-2 min-w-0">
                                 <input
                                   type="checkbox"
                                   checked={checked}
@@ -2110,9 +2121,9 @@ const RolePermissionContent = () => {
                                   style={{
                                     accentColor: editAccent.accentColor,
                                   }}
-                                  className="w-4 h-4 max-lg:w-3.5 max-lg:h-3.5 max-md:w-3 max-md:h-3 cursor-pointer"
+                                  className="w-4 h-4 max-lg:w-3.5 max-lg:h-3.5 max-md:w-3 max-md:h-3 cursor-pointer shrink-0"
                                 />
-                                <span className="text-sm max-lg:text-xs max-md:text-[11px] font-medium text-color-black-100 dark:text-color-white-90">
+                                <span className="text-sm max-lg:text-xs max-md:text-[11px] font-medium text-color-black-100 dark:text-color-white-90 truncate">
                                   {dash.dashboard_title}
                                 </span>
                               </div>
@@ -2124,12 +2135,12 @@ const RolePermissionContent = () => {
                   )}
 
                   {modalError && (
-                    <p className="text-xs max-lg:text-[11px] max-md:text-[10px] text-color-error mb-3">
+                    <p className="text-xs max-lg:text-[11px] max-md:text-[10px] text-color-error mb-3 max-lg:mb-2 max-md:mb-1.5">
                       {modalError}
                     </p>
                   )}
 
-                  <div className="flex items-center justify-end gap-2.5 max-lg:gap-2 max-md:gap-1.5 pt-3 border-t border-border-black-10 dark:border-background-white-15">
+                  <div className="flex items-center justify-end gap-2.5 max-lg:gap-2 max-md:gap-1.5 pt-3 max-lg:pt-2.5 max-md:pt-2 border-t border-border-black-10 dark:border-background-white-15">
                     <button
                       type="button"
                       onClick={() => setEditingGroup(null)}
@@ -2288,286 +2299,345 @@ const RolePermissionContent = () => {
                       ) ||
                       (memberModalGroup.my_group_roles || []).includes(
                         "group_admin",
-                      )) && (
-                      <form
-                        onSubmit={handleAssignMember}
-                        className="p-4 max-lg:p-3 max-md:p-2.5 rounded-xl max-lg:rounded-lg bg-background-dashboard dark:bg-background-white-8 border border-border-black-10 dark:border-background-white-15 space-y-3.5 max-lg:space-y-2.5 max-md:space-y-2"
-                      >
-                        {(() => {
-                          const modalGroupRoles = Array.isArray(
-                            memberModalGroup.my_group_roles,
-                          )
-                            ? memberModalGroup.my_group_roles
-                            : [];
+                      )) &&
+                    (() => {
+                      const modalGroupRoles = Array.isArray(
+                        memberModalGroup.my_group_roles,
+                      )
+                        ? memberModalGroup.my_group_roles
+                        : [];
 
-                          const canAssignModalGroupAdmin =
-                            isSystemManager ||
-                            modalGroupRoles.includes("admin_ami") ||
-                            modalGroupRoles.includes("super_admin");
+                      const canAssignModalGroupAdmin =
+                        isSystemManager ||
+                        modalGroupRoles.includes("admin_ami") ||
+                        modalGroupRoles.includes("super_admin");
 
-                          const actorGroupRank = isSystemManager
-                            ? 4
-                            : modalGroupRoles.length > 0
-                              ? Math.max(
-                                  ...modalGroupRoles.map((r) => getRoleRank(r)),
-                                )
-                              : 1;
+                      const actorGroupRank = isSystemManager
+                        ? 4
+                        : modalGroupRoles.length > 0
+                          ? Math.max(
+                              ...modalGroupRoles.map((r) => getRoleRank(r)),
+                            )
+                          : 1;
 
-                          const editingMemberObj = groupMembers.find(
-                            (m) =>
-                              String(m.id ?? m.user_id) ===
-                              String(targetUserId),
+                      const editingMemberObj = groupMembers.find(
+                        (m) =>
+                          String(m.id ?? m.user_id) === String(targetUserId),
+                      );
+
+                      const lineageSet = getSameLineageGroupIds(
+                        groups,
+                        memberModalGroup.id,
+                      );
+
+                      const eligibleAssignableUsers = assignableUsers.filter(
+                        (u) => {
+                          const uid = Number(u.id ?? u.user_id);
+                          if (uid === currentUserId) return false;
+                          const alreadyInGroup = groupMembers.some(
+                            (m) => Number(m.id ?? m.user_id) === uid,
                           );
+                          if (alreadyInGroup) return false;
+                          const userGroupIds = Array.isArray(u.member_group_ids)
+                            ? u.member_group_ids
+                            : [];
+                          if (
+                            userGroupIds.some((gId) =>
+                              lineageSet.has(Number(gId)),
+                            )
+                          ) {
+                            return false;
+                          }
+                          if (!isSystemManager) {
+                            const isCreatedByMe =
+                              Number(u.assigned_by) === currentUserId ||
+                              Number(u.created_by_fk) === currentUserId;
+                            if (!isCreatedByMe) return false;
+                          }
+                          return true;
+                        },
+                      );
 
-                          const selectedTargetUser =
-                            editingMemberObj ||
-                            assignableUsers.find(
-                              (u) =>
-                                String(u.id ?? u.user_id) ===
-                                String(targetUserId),
-                            );
+                      const selectedTargetUser =
+                        editingMemberObj ||
+                        assignableUsers.find(
+                          (u) =>
+                            String(u.id ?? u.user_id) === String(targetUserId),
+                        );
 
-                          const targetMaxGlobalRank = selectedTargetUser
-                            ? getUserMaxGlobalRank(selectedTargetUser)
-                            : 1;
+                      const targetMaxGlobalRank = selectedTargetUser
+                        ? getUserMaxGlobalRank(selectedTargetUser)
+                        : 1;
 
-                          return (
-                            <div className="grid grid-cols-2 max-md:grid-cols-1 gap-3.5 max-lg:gap-2.5 max-md:gap-2">
-                              <div>
-                                <label className="block text-xs max-lg:text-[11px] max-md:text-[10px] font-semibold text-color-black-70 dark:text-color-white-80 mb-1">
-                                  {editingMemberObj
-                                    ? "Thành viên đang chỉnh sửa"
-                                    : "Tài khoản cần thêm"}
-                                </label>
-                                <select
-                                  value={targetUserId}
-                                  onChange={(e) => {
-                                    const newId = e.target.value;
-                                    setTargetUserId(newId);
-                                    const foundUser =
-                                      groupMembers.find(
-                                        (m) =>
-                                          String(m.id ?? m.user_id) ===
-                                          String(newId),
-                                      ) ||
-                                      assignableUsers.find(
-                                        (u) =>
-                                          String(u.id ?? u.user_id) ===
-                                          String(newId),
-                                      );
-                                    if (foundUser) {
-                                      const maxRank =
-                                        getUserMaxGlobalRank(foundUser);
-                                      if (getRoleRank(roleInGroup) > maxRank) {
-                                        setRoleInGroup("group_member");
-                                      }
-                                    }
-                                  }}
-                                  className={`w-full px-3 max-lg:px-2.5 max-md:px-2 py-2 max-lg:py-1.5 max-md:py-1 rounded-xl max-lg:rounded-lg border border-border-black-10 dark:border-background-white-15 bg-background-light dark:bg-background-dark text-xs max-lg:text-[11px] max-md:text-[10px] text-color-black-100 dark:text-color-white-90 outline-none ${memberGroupAccent.focusRing}`}
-                                  required
+                      if (
+                        !editingMemberObj &&
+                        eligibleAssignableUsers.length === 0
+                      ) {
+                        return (
+                          <div className="p-4 max-lg:p-3 max-md:p-2.5 rounded-xl max-lg:rounded-lg bg-background-dashboard dark:bg-background-white-8 border border-dashed border-border-black-10 dark:border-background-white-15 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 max-lg:gap-2.5">
+                            <div className="flex items-center gap-3 max-lg:gap-2.5 min-w-0">
+                              <div
+                                className={`w-10 h-10 max-lg:w-9 max-lg:h-9 max-md:w-8 max-md:h-8 rounded-xl max-lg:rounded-lg ${memberGroupAccent.folderBg} ${memberGroupAccent.folderText} flex items-center justify-center shrink-0`}
+                              >
+                                <svg
+                                  className="w-5 h-5 max-lg:w-4.5 max-lg:h-4.5 max-md:w-4 max-md:h-4"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  strokeWidth="2"
+                                  viewBox="0 0 24 24"
                                 >
-                                  <option value="">-- Chọn tài khoản --</option>
-                                  {editingMemberObj && (
-                                    <option
-                                      value={
-                                        editingMemberObj.id ??
-                                        editingMemberObj.user_id
-                                      }
-                                    >
-                                      @{editingMemberObj.username} (
-                                      {editingMemberObj.email || "—"}) —{" "}
-                                      {editingMemberObj.highest_global_role_name ||
-                                        "Thành viên"}
-                                    </option>
-                                  )}
-                                  {assignableUsers
-                                    .filter((u) => {
-                                      const uid = Number(u.id ?? u.user_id);
-                                      const currentId = Number(
-                                        user?.user_id ||
-                                          user?.id ||
-                                          user?.profile?.id ||
-                                          sessionStorage.getItem("user_id"),
-                                      );
-                                      if (uid === currentId) return false;
-                                      const alreadyInGroup = groupMembers.some(
-                                        (m) =>
-                                          Number(m.id ?? m.user_id) === uid,
-                                      );
-                                      if (alreadyInGroup) return false;
-                                      const lineageSet = getSameLineageGroupIds(
-                                        groups,
-                                        memberModalGroup.id,
-                                      );
-                                      const userGroupIds = Array.isArray(
-                                        u.member_group_ids,
-                                      )
-                                        ? u.member_group_ids
-                                        : [];
-                                      if (
-                                        userGroupIds.some((gId) =>
-                                          lineageSet.has(Number(gId)),
-                                        )
-                                      ) {
-                                        return false;
-                                      }
-                                      if (!isSystemManager) {
-                                        const isCreatedByMe =
-                                          Number(u.assigned_by) === currentId ||
-                                          Number(u.created_by_fk) === currentId;
-                                        if (!isCreatedByMe) return false;
-                                      }
-                                      return true;
-                                    })
-                                    .map((u) => {
-                                      const uid = u.id ?? u.user_id;
-                                      const globalName =
-                                        u.highest_global_role_name ||
-                                        u.role_name ||
-                                        "Thành viên";
-                                      return (
-                                        <option key={uid} value={uid}>
-                                          @{u.username} ({u.email || "—"}) —{" "}
-                                          {globalName}
-                                        </option>
-                                      );
-                                    })}
-                                </select>
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                                  />
+                                </svg>
                               </div>
-
-                              <div>
-                                <label className="block text-xs max-lg:text-[11px] max-md:text-[10px] font-semibold text-color-black-70 dark:text-color-white-80 mb-1">
-                                  Vai trò trong nhóm
-                                </label>
-                                <select
-                                  value={roleInGroup}
-                                  onChange={(e) =>
-                                    setRoleInGroup(e.target.value)
-                                  }
-                                  className={`w-full px-3 max-lg:px-2.5 max-md:px-2 py-2 max-lg:py-1.5 max-md:py-1 rounded-xl max-lg:rounded-lg border border-border-black-10 dark:border-background-white-15 bg-background-light dark:bg-background-dark text-xs max-lg:text-[11px] max-md:text-[10px] text-color-black-100 dark:text-color-white-90 outline-none ${memberGroupAccent.focusRing}`}
-                                >
-                                  <option value="group_member">
-                                    Thành viên
-                                  </option>
-                                  {canAssignModalGroupAdmin &&
-                                    actorGroupRank >= 2 &&
-                                    targetMaxGlobalRank >= 2 && (
-                                      <option value="group_admin">
-                                        Group Admin
-                                      </option>
-                                    )}
-                                  {canAssignModalGroupAdmin &&
-                                    actorGroupRank >= 3 &&
-                                    targetMaxGlobalRank >= 3 && (
-                                      <option value="super_admin">
-                                        Super Admin
-                                      </option>
-                                    )}
-                                </select>
+                              <div className="min-w-0">
+                                <h5 className="text-xs max-lg:text-[11px] max-md:text-[10px] font-bold text-color-black-100 dark:text-color-white-90">
+                                  Đã phân bổ hết tài khoản khả dụng
+                                </h5>
+                                <p className="text-[11px] max-lg:text-[10px] max-md:text-[9px] text-color-black-50 dark:text-color-white-50 mt-0.5">
+                                  Hiện không còn tài khoản hợp lệ nào để gán vào
+                                  nhóm này. Bạn có thể tạo thêm tài khoản mới
+                                  hoặc quản lý danh sách người dùng.
+                                </p>
                               </div>
                             </div>
-                          );
-                        })()}
-
-                        {roleInGroup === "group_member" && (
-                          <div>
-                            <label className="block text-xs max-lg:text-[11px] max-md:text-[10px] font-semibold text-color-black-70 dark:text-color-white-80 mb-1.5">
-                              Dashboard được xem ({memberDashIds.length}/
-                              {(memberModalGroup.dashboards || []).length})
-                            </label>
-                            {(memberModalGroup.dashboards || []).length ===
-                            0 ? (
-                              <p className="text-xs max-lg:text-[11px] max-md:text-[10px] text-color-black-50 dark:text-color-white-50">
-                                Nhóm chưa có Dashboard nào.
-                              </p>
-                            ) : (
-                              <div className="grid grid-cols-2 max-md:grid-cols-1 gap-2 max-lg:gap-1.5 max-md:gap-1 max-h-36 overflow-y-auto pr-1">
-                                {(memberModalGroup.dashboards || []).map(
-                                  (dash) => {
-                                    const checked = memberDashIds.includes(
-                                      Number(dash.id),
-                                    );
-                                    return (
-                                      <label
-                                        key={dash.id}
-                                        className={`flex items-center justify-between px-3 max-lg:px-2.5 max-md:px-2 py-2 max-lg:py-1.5 max-md:py-1 rounded-xl max-lg:rounded-lg border text-xs max-lg:text-[11px] max-md:text-[10px] cursor-pointer transition ${
-                                          checked
-                                            ? memberGroupAccent.checkedItem
-                                            : "border-border-black-10 dark:border-background-white-15"
-                                        }`}
-                                      >
-                                        <span className="flex items-center gap-2 max-lg:gap-1.5 max-md:gap-1 font-medium text-color-black-100 dark:text-color-white-90">
-                                          <input
-                                            type="checkbox"
-                                            checked={checked}
-                                            onChange={() =>
-                                              toggleMemberDashId(
-                                                Number(dash.id),
-                                              )
-                                            }
-                                            style={{
-                                              accentColor:
-                                                memberGroupAccent.accentColor,
-                                            }}
-                                            className="w-3.5 h-3.5 max-lg:w-3 max-lg:h-3"
-                                          />
-                                          <span>{dash.dashboard_title}</span>
-                                        </span>
-                                      </label>
-                                    );
-                                  },
-                                )}
-                              </div>
-                            )}
-                          </div>
-                        )}
-
-                        {memberModalError && (
-                          <p className="text-xs max-lg:text-[11px] max-md:text-[10px] text-color-error">
-                            {memberModalError}
-                          </p>
-                        )}
-
-                        <div className="flex justify-end gap-2 max-lg:gap-1.5 max-md:gap-1">
-                          {groupMembers.some(
-                            (m) =>
-                              String(m.id ?? m.user_id) ===
-                              String(targetUserId),
-                          ) && (
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setTargetUserId("");
-                                setRoleInGroup("group_member");
-                                setMemberDashIds(
-                                  (memberModalGroup.dashboards || []).map((d) =>
-                                    Number(d.id),
-                                  ),
-                                );
-                              }}
-                              className="px-3.5 max-lg:px-3 max-md:px-2.5 py-2 max-lg:py-1.5 max-md:py-1 rounded-xl max-lg:rounded-lg text-xs max-lg:text-[11px] max-md:text-[10px] font-medium border border-border-black-10 dark:border-background-white-15 text-color-black-70 dark:text-color-white-80 cursor-pointer"
+                            <Link
+                              to="/users"
+                              onClick={() => setMemberModalGroup(null)}
+                              className={`inline-flex items-center gap-1.5 px-3.5 max-lg:px-3 max-md:px-2.5 py-2 max-lg:py-1.5 max-md:py-1 rounded-xl max-lg:rounded-lg text-xs max-lg:text-[11px] max-md:text-[10px] font-semibold text-white ${memberGroupAccent.btnSolid} transition cursor-pointer shrink-0 shadow-xs hover:opacity-95`}
                             >
-                              Hủy sửa
-                            </button>
+                              <svg
+                                className="w-3.5 h-3.5 max-lg:w-3 max-lg:h-3 max-md:w-2.5 max-md:h-2.5"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+                                />
+                              </svg>
+                              <span>Quản trị thành viên</span>
+                              <svg
+                                className="w-3 h-3 max-lg:w-2.5 max-lg:h-2.5"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2.5"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="M9 5l7 7-7 7"
+                                />
+                              </svg>
+                            </Link>
+                          </div>
+                        );
+                      }
+
+                      return (
+                        <form
+                          onSubmit={handleAssignMember}
+                          className="p-4 max-lg:p-3 max-md:p-2.5 rounded-xl max-lg:rounded-lg bg-background-dashboard dark:bg-background-white-8 border border-border-black-10 dark:border-background-white-15 space-y-3.5 max-lg:space-y-2.5 max-md:space-y-2"
+                        >
+                          <div className="grid grid-cols-2 max-md:grid-cols-1 gap-3.5 max-lg:gap-2.5 max-md:gap-2">
+                            <div>
+                              <label className="block text-xs max-lg:text-[11px] max-md:text-[10px] font-semibold text-color-black-70 dark:text-color-white-80 mb-1">
+                                {editingMemberObj
+                                  ? "Thành viên đang chỉnh sửa"
+                                  : "Tài khoản cần thêm"}
+                              </label>
+                              <select
+                                value={targetUserId}
+                                onChange={(e) => {
+                                  const newId = e.target.value;
+                                  setTargetUserId(newId);
+                                  const foundUser =
+                                    groupMembers.find(
+                                      (m) =>
+                                        String(m.id ?? m.user_id) ===
+                                        String(newId),
+                                    ) ||
+                                    assignableUsers.find(
+                                      (u) =>
+                                        String(u.id ?? u.user_id) ===
+                                        String(newId),
+                                    );
+                                  if (foundUser) {
+                                    const maxRank =
+                                      getUserMaxGlobalRank(foundUser);
+                                    if (getRoleRank(roleInGroup) > maxRank) {
+                                      setRoleInGroup("group_member");
+                                    }
+                                  }
+                                }}
+                                className={`w-full px-3 max-lg:px-2.5 max-md:px-2 py-2 max-lg:py-1.5 max-md:py-1 rounded-xl max-lg:rounded-lg border border-border-black-10 dark:border-background-white-15 bg-background-light dark:bg-background-dark text-xs max-lg:text-[11px] max-md:text-[10px] text-color-black-100 dark:text-color-white-90 outline-none ${memberGroupAccent.focusRing}`}
+                                required
+                              >
+                                <option value="">-- Chọn tài khoản --</option>
+                                {editingMemberObj && (
+                                  <option
+                                    value={
+                                      editingMemberObj.id ??
+                                      editingMemberObj.user_id
+                                    }
+                                  >
+                                    @{editingMemberObj.username} (
+                                    {editingMemberObj.email || "—"}) —{" "}
+                                    {editingMemberObj.highest_global_role_name ||
+                                      "Thành viên"}
+                                  </option>
+                                )}
+                                {eligibleAssignableUsers.map((u) => {
+                                  const uid = u.id ?? u.user_id;
+                                  const globalName =
+                                    u.highest_global_role_name ||
+                                    u.role_name ||
+                                    "Thành viên";
+                                  return (
+                                    <option key={uid} value={uid}>
+                                      @{u.username} ({u.email || "—"}) —{" "}
+                                      {globalName}
+                                    </option>
+                                  );
+                                })}
+                              </select>
+                            </div>
+
+                            <div>
+                              <label className="block text-xs max-lg:text-[11px] max-md:text-[10px] font-semibold text-color-black-70 dark:text-color-white-80 mb-1">
+                                Vai trò trong nhóm
+                              </label>
+                              <select
+                                value={roleInGroup}
+                                onChange={(e) => setRoleInGroup(e.target.value)}
+                                className={`w-full px-3 max-lg:px-2.5 max-md:px-2 py-2 max-lg:py-1.5 max-md:py-1 rounded-xl max-lg:rounded-lg border border-border-black-10 dark:border-background-white-15 bg-background-light dark:bg-background-dark text-xs max-lg:text-[11px] max-md:text-[10px] text-color-black-100 dark:text-color-white-90 outline-none ${memberGroupAccent.focusRing}`}
+                              >
+                                <option value="group_member">Thành viên</option>
+                                {canAssignModalGroupAdmin &&
+                                  actorGroupRank >= 2 &&
+                                  targetMaxGlobalRank >= 2 && (
+                                    <option value="group_admin">
+                                      Group Admin
+                                    </option>
+                                  )}
+                                {canAssignModalGroupAdmin &&
+                                  actorGroupRank >= 3 &&
+                                  targetMaxGlobalRank >= 3 && (
+                                    <option value="super_admin">
+                                      Super Admin
+                                    </option>
+                                  )}
+                              </select>
+                            </div>
+                          </div>
+
+                          {roleInGroup === "group_member" && (
+                            <div>
+                              <label className="block text-xs max-lg:text-[11px] max-md:text-[10px] font-semibold text-color-black-70 dark:text-color-white-80 mb-1.5">
+                                Dashboard được xem ({memberDashIds.length}/
+                                {(memberModalGroup.dashboards || []).length})
+                              </label>
+                              {(memberModalGroup.dashboards || []).length ===
+                              0 ? (
+                                <p className="text-xs max-lg:text-[11px] max-md:text-[10px] text-color-black-50 dark:text-color-white-50">
+                                  Nhóm chưa có Dashboard nào.
+                                </p>
+                              ) : (
+                                <div className="grid grid-cols-2 max-md:grid-cols-1 gap-2 max-lg:gap-1.5 max-md:gap-1 max-h-36 overflow-y-auto divTable pr-1">
+                                  {(memberModalGroup.dashboards || []).map(
+                                    (dash) => {
+                                      const checked = memberDashIds.includes(
+                                        Number(dash.id),
+                                      );
+                                      return (
+                                        <label
+                                          key={dash.id}
+                                          className={`flex items-center justify-between px-3 max-lg:px-2.5 max-md:px-2 py-2 max-lg:py-1.5 max-md:py-1 rounded-xl max-lg:rounded-lg border text-xs max-lg:text-[11px] max-md:text-[10px] cursor-pointer transition ${
+                                            checked
+                                              ? memberGroupAccent.checkedItem
+                                              : "border-border-black-10 dark:border-background-white-15"
+                                          }`}
+                                        >
+                                          <span className="flex items-center gap-2 max-lg:gap-1.5 max-md:gap-1 font-medium text-color-black-100 dark:text-color-white-90">
+                                            <input
+                                              type="checkbox"
+                                              checked={checked}
+                                              onChange={() =>
+                                                toggleMemberDashId(
+                                                  Number(dash.id),
+                                                )
+                                              }
+                                              style={{
+                                                accentColor:
+                                                  memberGroupAccent.accentColor,
+                                              }}
+                                              className="w-3.5 h-3.5 max-lg:w-3 max-lg:h-3"
+                                            />
+                                            <span>{dash.dashboard_title}</span>
+                                          </span>
+                                        </label>
+                                      );
+                                    },
+                                  )}
+                                </div>
+                              )}
+                            </div>
                           )}
-                          <button
-                            type="submit"
-                            disabled={savingMember}
-                            className={`px-4 max-lg:px-3.5 max-md:px-2.5 py-2 max-lg:py-1.5 max-md:py-1 rounded-xl max-lg:rounded-lg text-xs max-lg:text-[11px] max-md:text-[10px] font-semibold ${memberGroupAccent.btnSolid} cursor-pointer disabled:opacity-60`}
-                          >
-                            {savingMember
-                              ? "Đang lưu..."
-                              : groupMembers.some(
-                                    (m) =>
-                                      String(m.id ?? m.user_id) ===
-                                      String(targetUserId),
-                                  )
-                                ? "Cập nhật"
-                                : "Thêm vào nhóm"}
-                          </button>
-                        </div>
-                      </form>
-                    )}
+
+                          {memberModalError && (
+                            <p className="text-xs max-lg:text-[11px] max-md:text-[10px] text-color-error">
+                              {memberModalError}
+                            </p>
+                          )}
+
+                          <div className="flex justify-end gap-2 max-lg:gap-1.5 max-md:gap-1">
+                            {groupMembers.some(
+                              (m) =>
+                                String(m.id ?? m.user_id) ===
+                                String(targetUserId),
+                            ) && (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setTargetUserId("");
+                                  setRoleInGroup("group_member");
+                                  setMemberDashIds(
+                                    (memberModalGroup.dashboards || []).map(
+                                      (d) => Number(d.id),
+                                    ),
+                                  );
+                                }}
+                                className="px-3.5 max-lg:px-3 max-md:px-2.5 py-2 max-lg:py-1.5 max-md:py-1 rounded-xl max-lg:rounded-lg text-xs max-lg:text-[11px] max-md:text-[10px] font-medium border border-border-black-10 dark:border-background-white-15 text-color-black-70 dark:text-color-white-80 cursor-pointer"
+                              >
+                                Hủy sửa
+                              </button>
+                            )}
+                            <button
+                              type="submit"
+                              disabled={savingMember}
+                              className={`px-4 max-lg:px-3.5 max-md:px-2.5 py-2 max-lg:py-1.5 max-md:py-1 rounded-xl max-lg:rounded-lg text-xs max-lg:text-[11px] max-md:text-[10px] font-semibold ${memberGroupAccent.btnSolid} cursor-pointer disabled:opacity-60`}
+                            >
+                              {savingMember
+                                ? "Đang lưu..."
+                                : groupMembers.some(
+                                      (m) =>
+                                        String(m.id ?? m.user_id) ===
+                                        String(targetUserId),
+                                    )
+                                  ? "Cập nhật"
+                                  : "Thêm vào nhóm"}
+                            </button>
+                          </div>
+                        </form>
+                      );
+                    })()}
 
                   {/* Members Table */}
                   <div>
@@ -2590,8 +2660,8 @@ const RolePermissionContent = () => {
                         Nhóm chưa có thành viên nào.
                       </div>
                     ) : (
-                      <div className="overflow-x-auto">
-                        <table className="w-full text-left border-collapse text-xs max-lg:text-[11px] max-md:text-[10px]">
+                      <div className="overflow-x-auto divTable">
+                        <table className="w-full text-left border-collapse text-xs max-lg:text-[11px] max-md:text-[10px] text-nowrap">
                           <thead>
                             <tr className="border-b border-border-black-10 dark:border-background-white-15 text-color-black-50 dark:text-color-white-50 uppercase">
                               <th className="py-2.5 max-lg:py-2 max-md:py-1.5 pr-3">

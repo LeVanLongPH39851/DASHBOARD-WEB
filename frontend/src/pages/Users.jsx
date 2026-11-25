@@ -623,22 +623,22 @@ const UsersManagementContent = () => {
         </div>
 
         {/* 3 KPI Stat Cards */}
-        <div className="grid grid-cols-3 max-md:grid-cols-1 gap-3.5 max-lg:gap-2.5 max-md:gap-2">
+        <div className="grid grid-cols-3 max-md:grid-cols-1 gap-3.5 max-lg:gap-2.5 max-md:gap-1.5">
           <div
             style={{ animationDelay: "80ms" }}
-            className="animate-fade-up flex items-center justify-between p-3.5 max-lg:p-2.5 max-md:p-2 rounded-xl max-lg:rounded-lg max-md:rounded-md bg-background-dashboard dark:bg-background-white-8 border border-border-black-10 dark:border-background-white-15 hover:border-[#20A7C9]/40 hover:-translate-y-1 hover:shadow-md transition-all duration-300"
+            className="animate-fade-up flex items-center justify-between p-3.5 max-lg:p-2.5 max-md:p-1.5 rounded-xl max-lg:rounded-lg max-md:rounded-md bg-background-dashboard dark:bg-background-white-8 border border-border-black-10 dark:border-background-white-15 hover:border-[#20A7C9]/40 hover:-translate-y-1 hover:shadow-md transition-all duration-300"
           >
             <div>
-              <p className="text-[11px] max-lg:text-[10px] max-md:text-[9px] font-semibold text-color-black-50 dark:text-color-white-50 uppercase tracking-wider">
+              <p className="text-[11px] max-lg:text-[10px] max-md:text-[8.5px] font-semibold text-color-black-50 dark:text-color-white-50 uppercase tracking-wider">
                 Tổng tài khoản
               </p>
-              <p className="text-xl max-lg:text-lg max-md:text-base font-extrabold text-color-black-100 dark:text-color-white-90 mt-0.5">
+              <p className="text-xl max-lg:text-lg max-md:text-sm font-extrabold text-color-black-100 dark:text-color-white-90 mt-0.5">
                 {stats.total}
               </p>
             </div>
-            <div className="w-9 h-9 max-lg:w-8 max-lg:h-8 max-md:w-7 max-md:h-7 rounded-xl max-lg:rounded-lg max-md:rounded bg-background-ave-reach dark:bg-[#21b8b8]/20 text-color-ave-reach dark:text-[#5bd6d8] flex items-center justify-center">
+            <div className="w-9 h-9 max-lg:w-8 max-lg:h-8 max-md:w-6 max-md:h-6 rounded-xl max-lg:rounded-lg max-md:rounded bg-background-ave-reach dark:bg-[#21b8b8]/20 text-color-ave-reach dark:text-[#5bd6d8] flex items-center justify-center">
               <svg
-                className="w-4.5 h-4.5 max-lg:w-4 max-lg:h-4 max-md:w-3.5 max-md:h-3.5"
+                className="w-4.5 h-4.5 max-lg:w-4 max-lg:h-4 max-md:w-3 max-md:h-3"
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="2"
@@ -647,7 +647,7 @@ const UsersManagementContent = () => {
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"
+                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
                 />
               </svg>
             </div>
@@ -655,19 +655,19 @@ const UsersManagementContent = () => {
 
           <div
             style={{ animationDelay: "140ms" }}
-            className="animate-fade-up flex items-center justify-between p-3.5 max-lg:p-2.5 max-md:p-2 rounded-xl max-lg:rounded-lg max-md:rounded-md bg-background-dashboard dark:bg-background-white-8 border border-border-black-10 dark:border-background-white-15 hover:border-[#0cb7a9]/40 hover:-translate-y-1 hover:shadow-md transition-all duration-300"
+            className="animate-fade-up flex items-center justify-between p-3.5 max-lg:p-2.5 max-md:p-1.5 rounded-xl max-lg:rounded-lg max-md:rounded-md bg-background-dashboard dark:bg-background-white-8 border border-border-black-10 dark:border-background-white-15 hover:border-[#0cb7a9]/40 hover:-translate-y-1 hover:shadow-md transition-all duration-300"
           >
             <div>
-              <p className="text-[11px] max-lg:text-[10px] max-md:text-[9px] font-semibold text-color-black-50 dark:text-color-white-50 uppercase tracking-wider">
+              <p className="text-[11px] max-lg:text-[10px] max-md:text-[8.5px] font-semibold text-color-black-50 dark:text-color-white-50 uppercase tracking-wider">
                 Đang hoạt động
               </p>
-              <p className="text-xl max-lg:text-lg max-md:text-base font-extrabold text-color-neotam dark:text-[#5bd6d8] mt-0.5">
+              <p className="text-xl max-lg:text-lg max-md:text-sm font-extrabold text-color-neotam dark:text-[#5bd6d8] mt-0.5">
                 {stats.active}
               </p>
             </div>
-            <div className="w-9 h-9 max-lg:w-8 max-lg:h-8 max-md:w-7 max-md:h-7 rounded-xl max-lg:rounded-lg max-md:rounded bg-background-succes-type-1 dark:bg-background-succes-type-1-dark text-color-succes-type-1 dark:text-color-succes-type-1-dark flex items-center justify-center">
+            <div className="w-9 h-9 max-lg:w-8 max-lg:h-8 max-md:w-6 max-md:h-6 rounded-xl max-lg:rounded-lg max-md:rounded bg-background-succes-type-1 dark:bg-background-succes-type-1-dark text-color-succes-type-1 dark:text-color-succes-type-1-dark flex items-center justify-center">
               <svg
-                className="w-4.5 h-4.5 max-lg:w-4 max-lg:h-4 max-md:w-3.5 max-md:h-3.5"
+                className="w-4.5 h-4.5 max-lg:w-4 max-lg:h-4 max-md:w-3 max-md:h-3"
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="2"
@@ -684,19 +684,19 @@ const UsersManagementContent = () => {
 
           <div
             style={{ animationDelay: "200ms" }}
-            className="animate-fade-up flex items-center justify-between p-3.5 max-lg:p-2.5 max-md:p-2 rounded-xl max-lg:rounded-lg max-md:rounded-md bg-background-dashboard dark:bg-background-white-8 border border-border-black-10 dark:border-background-white-15 hover:border-[#eb5757]/40 hover:-translate-y-1 hover:shadow-md transition-all duration-300"
+            className="animate-fade-up flex items-center justify-between p-3.5 max-lg:p-2.5 max-md:p-1.5 rounded-xl max-lg:rounded-lg max-md:rounded-md bg-background-dashboard dark:bg-background-white-8 border border-border-black-10 dark:border-background-white-15 hover:border-[#eb5757]/40 hover:-translate-y-1 hover:shadow-md transition-all duration-300"
           >
             <div>
-              <p className="text-[11px] max-lg:text-[10px] max-md:text-[9px] font-semibold text-color-black-50 dark:text-color-white-50 uppercase tracking-wider">
+              <p className="text-[11px] max-lg:text-[10px] max-md:text-[8.5px] font-semibold text-color-black-50 dark:text-color-white-50 uppercase tracking-wider">
                 Tạm khóa
               </p>
-              <p className="text-xl max-lg:text-lg max-md:text-base font-extrabold text-color-rating dark:text-[#f87171] mt-0.5">
+              <p className="text-xl max-lg:text-lg max-md:text-sm font-extrabold text-color-rating dark:text-[#f87171] mt-0.5">
                 {stats.inactive}
               </p>
             </div>
-            <div className="w-9 h-9 max-lg:w-8 max-lg:h-8 max-md:w-7 max-md:h-7 rounded-xl max-lg:rounded-lg max-md:rounded bg-background-rating dark:bg-[#eb5757]/20 text-color-rating dark:text-[#f87171] flex items-center justify-center">
+            <div className="w-9 h-9 max-lg:w-8 max-lg:h-8 max-md:w-6 max-md:h-6 rounded-xl max-lg:rounded-lg max-md:rounded bg-background-rating dark:bg-[#eb5757]/20 text-color-rating dark:text-[#f87171] flex items-center justify-center">
               <svg
-                className="w-4.5 h-4.5 max-lg:w-4 max-lg:h-4 max-md:w-3.5 max-md:h-3.5"
+                className="w-4.5 h-4.5 max-lg:w-4 max-lg:h-4 max-md:w-3 max-md:h-3"
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="2"
@@ -895,7 +895,7 @@ const UsersManagementContent = () => {
             )}
           </div>
         ) : (
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto divTable">
             <table className="w-full text-left text-xs max-lg:text-[11px] max-md:text-[10px] text-nowrap">
               <thead className="bg-background-dashboard dark:bg-background-white-8/50 text-color-black-50 dark:text-color-white-50 uppercase tracking-wider border-b border-border-black-10 dark:border-background-white-15">
                 <tr>
@@ -1329,8 +1329,8 @@ const UsersManagementContent = () => {
       {/* MODAL 2 & 3: THÊM HOẶC SỬA TÀI KHOẢN                         */}
       {/* ============================================================ */}
       {(showAddModal || (showEditModal && targetUser)) && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4">
-          <div className="animate-scale-in relative overflow-hidden w-full max-w-lg rounded-2xl bg-background-light dark:bg-background-dark border border-border-black-10 dark:border-background-white-15 shadow-2xl max-h-[92vh] flex flex-col">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 max-lg:p-3 max-md:p-2 overflow-y-auto">
+          <div className="animate-scale-in relative overflow-hidden w-full max-w-lg rounded-2xl max-lg:rounded-xl max-md:rounded-lg bg-background-light dark:bg-background-dark border border-border-black-10 dark:border-background-white-15 shadow-2xl max-h-[92vh] flex flex-col">
             <div
               className={`h-1 bg-gradient-to-r ${
                 showAddModal
@@ -1351,7 +1351,7 @@ const UsersManagementContent = () => {
                   setShowAddModal(false);
                   setShowEditModal(false);
                 }}
-                className="w-7 h-7 max-lg:w-6 max-lg:h-6 rounded-lg flex items-center justify-center text-color-black-50 hover:text-color-black-100 dark:text-color-white-50 dark:hover:text-color-white-90 hover:bg-background-black-4 dark:hover:bg-background-white-8 transition cursor-pointer"
+                className="w-7 h-7 max-lg:w-6 max-lg:h-6 max-md:w-5.5 max-md:h-5.5 rounded-lg flex items-center justify-center text-color-black-50 hover:text-color-black-100 dark:text-color-white-50 dark:hover:text-color-white-90 hover:bg-background-black-4 dark:hover:bg-background-white-8 transition cursor-pointer text-sm max-lg:text-xs max-md:text-[11px]"
               >
                 ✕
               </button>
@@ -1375,14 +1375,14 @@ const UsersManagementContent = () => {
                         setFormErrors({ ...formErrors, first_name: null });
                     }}
                     placeholder="Nguyễn Văn"
-                    className={`w-full px-3.5 py-2 rounded-xl bg-background-search dark:bg-background-white-8 border text-color-black-100 dark:text-color-white-90 focus:outline-none transition ${
+                    className={`w-full px-3.5 max-lg:px-3 max-md:px-2.5 py-2 max-lg:py-1.5 max-md:py-1 rounded-xl max-lg:rounded-lg text-xs max-lg:text-[11px] max-md:text-[10px] bg-background-search dark:bg-background-white-8 border text-color-black-100 dark:text-color-white-90 focus:outline-none transition ${
                       formErrors.first_name
                         ? "border-color-rating"
                         : "border-border-black-10 dark:border-background-white-15 focus:border-color-neotam"
                     }`}
                   />
                   {formErrors.first_name && (
-                    <p className="text-[11px] text-color-rating mt-1">
+                    <p className="text-[11px] max-lg:text-[10px] max-md:text-[9px] text-color-rating mt-1">
                       {formErrors.first_name}
                     </p>
                   )}
@@ -1401,14 +1401,14 @@ const UsersManagementContent = () => {
                         setFormErrors({ ...formErrors, last_name: null });
                     }}
                     placeholder="An"
-                    className={`w-full px-3.5 py-2 rounded-xl bg-background-search dark:bg-background-white-8 border text-color-black-100 dark:text-color-white-90 focus:outline-none transition ${
+                    className={`w-full px-3.5 max-lg:px-3 max-md:px-2.5 py-2 max-lg:py-1.5 max-md:py-1 rounded-xl max-lg:rounded-lg text-xs max-lg:text-[11px] max-md:text-[10px] bg-background-search dark:bg-background-white-8 border text-color-black-100 dark:text-color-white-90 focus:outline-none transition ${
                       formErrors.last_name
                         ? "border-color-rating"
                         : "border-border-black-10 dark:border-background-white-15 focus:border-color-neotam"
                     }`}
                   />
                   {formErrors.last_name && (
-                    <p className="text-[11px] text-color-rating mt-1">
+                    <p className="text-[11px] max-lg:text-[10px] max-md:text-[9px] text-color-rating mt-1">
                       {formErrors.last_name}
                     </p>
                   )}
@@ -1421,7 +1421,7 @@ const UsersManagementContent = () => {
                     Username <span className="text-color-rating">*</span>
                   </label>
                   <div className="relative">
-                    <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-color-black-50 dark:text-color-white-50 font-mono">
+                    <span className="absolute inset-y-0 left-0 pl-3 max-lg:pl-2.5 max-md:pl-2 flex items-center text-color-black-50 dark:text-color-white-50 font-mono text-xs max-lg:text-[11px] max-md:text-[10px]">
                       @
                     </span>
                     <input
@@ -1433,7 +1433,7 @@ const UsersManagementContent = () => {
                           setFormErrors({ ...formErrors, username: null });
                       }}
                       placeholder="username"
-                      className={`w-full pl-7 pr-3 py-2 rounded-xl font-mono bg-background-search dark:bg-background-white-8 border text-color-black-100 dark:text-color-white-90 focus:outline-none transition ${
+                      className={`w-full pl-7 max-lg:pl-6 max-md:pl-5.5 pr-3 max-lg:pr-2.5 max-md:pr-2 py-2 max-lg:py-1.5 max-md:py-1 rounded-xl max-lg:rounded-lg text-xs max-lg:text-[11px] max-md:text-[10px] font-mono bg-background-search dark:bg-background-white-8 border text-color-black-100 dark:text-color-white-90 focus:outline-none transition ${
                         formErrors.username
                           ? "border-color-rating"
                           : "border-border-black-10 dark:border-background-white-15 focus:border-color-neotam"
@@ -1441,7 +1441,7 @@ const UsersManagementContent = () => {
                     />
                   </div>
                   {formErrors.username && (
-                    <p className="text-[11px] text-color-rating mt-1">
+                    <p className="text-[11px] max-lg:text-[10px] max-md:text-[9px] text-color-rating mt-1">
                       {formErrors.username}
                     </p>
                   )}
@@ -1460,14 +1460,14 @@ const UsersManagementContent = () => {
                         setFormErrors({ ...formErrors, email: null });
                     }}
                     placeholder="user@vtv.vn"
-                    className={`w-full px-3.5 py-2 rounded-xl bg-background-search dark:bg-background-white-8 border text-color-black-100 dark:text-color-white-90 focus:outline-none transition ${
+                    className={`w-full px-3.5 max-lg:px-3 max-md:px-2.5 py-2 max-lg:py-1.5 max-md:py-1 rounded-xl max-lg:rounded-lg text-xs max-lg:text-[11px] max-md:text-[10px] bg-background-search dark:bg-background-white-8 border text-color-black-100 dark:text-color-white-90 focus:outline-none transition ${
                       formErrors.email
                         ? "border-color-rating"
                         : "border-border-black-10 dark:border-background-white-15 focus:border-color-neotam"
                     }`}
                   />
                   {formErrors.email && (
-                    <p className="text-[11px] text-color-rating mt-1">
+                    <p className="text-[11px] max-lg:text-[10px] max-md:text-[9px] text-color-rating mt-1">
                       {formErrors.email}
                     </p>
                   )}
@@ -1486,7 +1486,7 @@ const UsersManagementContent = () => {
                       if (formErrors.role_id)
                         setFormErrors({ ...formErrors, role_id: null });
                     }}
-                    className={`w-full px-3.5 py-2 rounded-xl bg-background-search dark:bg-background-white-8 border text-color-black-100 dark:text-color-white-90 focus:outline-none transition cursor-pointer ${
+                    className={`w-full px-3.5 max-lg:px-3 max-md:px-2.5 py-2 max-lg:py-1.5 max-md:py-1 rounded-xl max-lg:rounded-lg text-xs max-lg:text-[11px] max-md:text-[10px] bg-background-search dark:bg-background-white-8 border text-color-black-100 dark:text-color-white-90 focus:outline-none transition cursor-pointer ${
                       formErrors.role_id
                         ? "border-color-rating"
                         : "border-border-black-10 dark:border-background-white-15 focus:border-color-neotam"
@@ -1509,7 +1509,7 @@ const UsersManagementContent = () => {
                     ))}
                   </select>
                   {formErrors.role_id && (
-                    <p className="text-[11px] text-color-rating mt-1">
+                    <p className="text-[11px] max-lg:text-[10px] max-md:text-[9px] text-color-rating mt-1">
                       {formErrors.role_id}
                     </p>
                   )}
@@ -1519,7 +1519,7 @@ const UsersManagementContent = () => {
                   <label className="block font-semibold text-color-black-70 dark:text-color-white-80 mb-1">
                     Trạng thái
                   </label>
-                  <div className="flex items-center h-[38px]">
+                  <div className="flex items-center h-[38px] max-lg:h-[34px] max-md:h-[30px]">
                     <label className="relative inline-flex items-center cursor-pointer">
                       <input
                         type="checkbox"
@@ -1529,8 +1529,8 @@ const UsersManagementContent = () => {
                         }
                         className="sr-only peer"
                       />
-                      <div className="w-10 h-5.5 bg-gray-300 dark:bg-white/20 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4.5 after:w-4.5 after:transition-all peer-checked:bg-color-neotam" />
-                      <span className="ml-2.5 text-xs font-semibold text-color-black-70 dark:text-color-white-80">
+                      <div className="w-10 h-5.5 max-lg:w-9 max-lg:h-5 max-md:w-8 max-md:h-4.5 bg-gray-300 dark:bg-white/20 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4.5 max-lg:after:h-4 max-md:after:h-3.5 after:w-4.5 max-lg:after:w-4 max-md:after:w-3.5 after:transition-all peer-checked:bg-color-neotam" />
+                      <span className="ml-2.5 max-lg:ml-2 max-md:ml-1.5 text-xs max-lg:text-[11px] max-md:text-[10px] font-semibold text-color-black-70 dark:text-color-white-80 select-none">
                         {formData.active ? "Đang hoạt động" : "Tạm khóa"}
                       </span>
                     </label>
@@ -1557,7 +1557,7 @@ const UsersManagementContent = () => {
                             setFormErrors({ ...formErrors, password: null });
                         }}
                         placeholder="Tối thiểu 8 ký tự"
-                        className={`w-full px-3.5 pr-9 py-2 rounded-xl bg-background-search dark:bg-background-white-8 border text-color-black-100 dark:text-color-white-90 focus:outline-none transition ${
+                        className={`w-full px-3.5 max-lg:px-3 max-md:px-2.5 pr-9 max-lg:pr-8 max-md:pr-7 py-2 max-lg:py-1.5 max-md:py-1 rounded-xl max-lg:rounded-lg text-xs max-lg:text-[11px] max-md:text-[10px] bg-background-search dark:bg-background-white-8 border text-color-black-100 dark:text-color-white-90 focus:outline-none transition ${
                           formErrors.password
                             ? "border-color-rating"
                             : "border-border-black-10 dark:border-background-white-15 focus:border-color-neotam"
@@ -1566,10 +1566,10 @@ const UsersManagementContent = () => {
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute inset-y-0 right-0 pr-2.5 flex items-center text-color-black-50 dark:text-color-white-50 hover:text-color-black-100 dark:hover:text-white cursor-pointer"
+                        className="absolute inset-y-0 right-0 pr-2.5 max-lg:pr-2 max-md:pr-1.5 flex items-center text-color-black-50 dark:text-color-white-50 hover:text-color-black-100 dark:hover:text-white cursor-pointer"
                       >
                         <svg
-                          className="w-4 h-4"
+                          className="w-4 h-4 max-lg:w-3.5 max-lg:h-3.5 max-md:w-3 max-md:h-3"
                           fill="none"
                           stroke="currentColor"
                           strokeWidth="2"
@@ -1599,7 +1599,7 @@ const UsersManagementContent = () => {
                       </button>
                     </div>
                     {formErrors.password && (
-                      <p className="text-[11px] text-color-rating mt-1">
+                      <p className="text-[11px] max-lg:text-[10px] max-md:text-[9px] text-color-rating mt-1">
                         {formErrors.password}
                       </p>
                     )}
@@ -1626,7 +1626,7 @@ const UsersManagementContent = () => {
                             });
                         }}
                         placeholder="Nhập lại mật khẩu"
-                        className={`w-full px-3.5 pr-9 py-2 rounded-xl bg-background-search dark:bg-background-white-8 border text-color-black-100 dark:text-color-white-90 focus:outline-none transition ${
+                        className={`w-full px-3.5 max-lg:px-3 max-md:px-2.5 pr-9 max-lg:pr-8 max-md:pr-7 py-2 max-lg:py-1.5 max-md:py-1 rounded-xl max-lg:rounded-lg text-xs max-lg:text-[11px] max-md:text-[10px] bg-background-search dark:bg-background-white-8 border text-color-black-100 dark:text-color-white-90 focus:outline-none transition ${
                           formErrors.confirm_password
                             ? "border-color-rating"
                             : "border-border-black-10 dark:border-background-white-15 focus:border-color-neotam"
@@ -1637,10 +1637,10 @@ const UsersManagementContent = () => {
                         onClick={() =>
                           setShowConfirmPassword(!showConfirmPassword)
                         }
-                        className="absolute inset-y-0 right-0 pr-2.5 flex items-center text-color-black-50 dark:text-color-white-50 hover:text-color-black-100 dark:hover:text-white cursor-pointer"
+                        className="absolute inset-y-0 right-0 pr-2.5 max-lg:pr-2 max-md:pr-1.5 flex items-center text-color-black-50 dark:text-color-white-50 hover:text-color-black-100 dark:hover:text-white cursor-pointer"
                       >
                         <svg
-                          className="w-4 h-4"
+                          className="w-4 h-4 max-lg:w-3.5 max-lg:h-3.5 max-md:w-3 max-md:h-3"
                           fill="none"
                           stroke="currentColor"
                           strokeWidth="2"
@@ -1670,7 +1670,7 @@ const UsersManagementContent = () => {
                       </button>
                     </div>
                     {formErrors.confirm_password && (
-                      <p className="text-[11px] text-color-rating mt-1">
+                      <p className="text-[11px] max-lg:text-[10px] max-md:text-[9px] text-color-rating mt-1">
                         {formErrors.confirm_password}
                       </p>
                     )}
@@ -1687,17 +1687,17 @@ const UsersManagementContent = () => {
                       require_otp: !formData.require_otp,
                     })
                   }
-                  className={`p-3 rounded-xl border transition cursor-pointer flex items-center justify-between gap-3 ${
+                  className={`p-3 max-lg:p-2.5 max-md:p-2 rounded-xl max-lg:rounded-lg border transition cursor-pointer flex items-center justify-between gap-3 max-lg:gap-2 ${
                     formData.require_otp
                       ? "bg-[#20A7C9]/10 border-[#20A7C9]/40"
                       : "bg-background-search dark:bg-background-white-8 border-border-black-10 dark:border-background-white-15"
                   }`}
                 >
                   <div className="select-none">
-                    <p className="text-xs font-semibold text-color-black-100 dark:text-color-white-90">
+                    <p className="text-xs max-lg:text-[11px] max-md:text-[10px] font-semibold text-color-black-100 dark:text-color-white-90">
                       Xác thực OTP
                     </p>
-                    <p className="text-[11px] text-color-black-50 dark:text-color-white-50">
+                    <p className="text-[11px] max-lg:text-[10px] max-md:text-[9px] text-color-black-50 dark:text-color-white-50">
                       {formData.require_otp
                         ? "Bắt buộc khi đăng nhập"
                         : "Bỏ qua OTP"}
@@ -1716,7 +1716,7 @@ const UsersManagementContent = () => {
                       onClick={(e) => e.stopPropagation()}
                       className="sr-only peer"
                     />
-                    <div className="w-10 h-5.5 bg-gray-300 dark:bg-white/20 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4.5 after:w-4.5 after:transition-all peer-checked:bg-[#20A7C9]" />
+                    <div className="w-10 h-5.5 max-lg:w-9 max-lg:h-5 max-md:w-8 max-md:h-4.5 bg-gray-300 dark:bg-white/20 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4.5 max-lg:after:h-4 max-md:after:h-3.5 after:w-4.5 max-lg:after:w-4 max-md:after:w-3.5 after:transition-all peer-checked:bg-[#20A7C9]" />
                   </div>
                 </div>
 
@@ -1727,17 +1727,17 @@ const UsersManagementContent = () => {
                       can_change_password: !formData.can_change_password,
                     })
                   }
-                  className={`p-3 rounded-xl border transition cursor-pointer flex items-center justify-between gap-3 ${
+                  className={`p-3 max-lg:p-2.5 max-md:p-2 rounded-xl max-lg:rounded-lg border transition cursor-pointer flex items-center justify-between gap-3 max-lg:gap-2 ${
                     formData.can_change_password
                       ? "bg-[#7367f0]/10 border-[#7367f0]/40"
                       : "bg-background-search dark:bg-background-white-8 border-border-black-10 dark:border-background-white-15"
                   }`}
                 >
                   <div className="select-none">
-                    <p className="text-xs font-semibold text-color-black-100 dark:text-color-white-90">
+                    <p className="text-xs max-lg:text-[11px] max-md:text-[10px] font-semibold text-color-black-100 dark:text-color-white-90">
                       Đổi mật khẩu
                     </p>
-                    <p className="text-[11px] text-color-black-50 dark:text-color-white-50">
+                    <p className="text-[11px] max-lg:text-[10px] max-md:text-[9px] text-color-black-50 dark:text-color-white-50">
                       {formData.can_change_password
                         ? "Cho phép tự đổi"
                         : "Khóa đổi mật khẩu"}
@@ -1756,26 +1756,26 @@ const UsersManagementContent = () => {
                       onClick={(e) => e.stopPropagation()}
                       className="sr-only peer"
                     />
-                    <div className="w-10 h-5.5 bg-gray-300 dark:bg-white/20 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4.5 after:w-4.5 after:transition-all peer-checked:bg-[#7367f0]" />
+                    <div className="w-10 h-5.5 max-lg:w-9 max-lg:h-5 max-md:w-8 max-md:h-4.5 bg-gray-300 dark:bg-white/20 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4.5 max-lg:after:h-4 max-md:after:h-3.5 after:w-4.5 max-lg:after:w-4 max-md:after:w-3.5 after:transition-all peer-checked:bg-[#7367f0]" />
                   </div>
                 </div>
               </div>
 
-              <div className="pt-3 border-t border-border-black-10 dark:border-background-white-15 flex items-center justify-end gap-2.5">
+              <div className="pt-3 max-lg:pt-2.5 max-md:pt-2 border-t border-border-black-10 dark:border-background-white-15 flex items-center justify-end gap-2.5 max-lg:gap-2 max-md:gap-1.5">
                 <button
                   type="button"
                   onClick={() => {
                     setShowAddModal(false);
                     setShowEditModal(false);
                   }}
-                  className="px-4 py-2 rounded-xl border border-border-black-10 dark:border-background-white-15 text-color-black-70 dark:text-color-white-80 hover:bg-background-black-4 dark:hover:bg-background-white-8 text-xs font-semibold transition cursor-pointer"
+                  className="px-4 max-lg:px-3 max-md:px-2.5 py-2 max-lg:py-1.5 max-md:py-1 rounded-xl max-lg:rounded-lg border border-border-black-10 dark:border-background-white-15 text-color-black-70 dark:text-color-white-80 hover:bg-background-black-4 dark:hover:bg-background-white-8 text-xs max-lg:text-[11px] max-md:text-[10px] font-semibold transition cursor-pointer"
                 >
                   Hủy
                 </button>
                 <button
                   type="submit"
                   disabled={formSubmitting}
-                  className={`px-5 py-2 rounded-xl text-white text-xs font-bold shadow-xs hover:opacity-95 disabled:opacity-50 transition cursor-pointer bg-gradient-to-r ${
+                  className={`px-5 max-lg:px-4 max-md:px-3 py-2 max-lg:py-1.5 max-md:py-1 rounded-xl max-lg:rounded-lg text-white text-xs max-lg:text-[11px] max-md:text-[10px] font-bold shadow-xs hover:opacity-95 disabled:opacity-50 transition cursor-pointer bg-gradient-to-r ${
                     showAddModal
                       ? "from-[#20A7C9] to-[#2fc4c6]"
                       : "from-[#7367f0] to-[#887ef2]"

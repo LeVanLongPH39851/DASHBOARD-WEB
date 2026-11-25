@@ -79,6 +79,22 @@ const CARD_THEMES = [
   },
 ];
 
+const DEFAULT_CARD_THEME = {
+  name: "gold",
+  bar: "from-[#f59e0b] via-[#ffd04c] to-[#fbbf24]",
+  glow: "from-[#ffd04c]/50 via-[#f59e0b]/35 to-transparent",
+  iconBg:
+    "bg-[#ffd04c]/20 dark:bg-[#ffd04c]/25 border border-[#ffd04c]/70 shadow-[0_0_18px_rgba(255,208,76,0.55)] dark:shadow-[0_0_22px_rgba(255,208,76,0.65)]",
+  iconText: "text-[#d97706] dark:text-[#ffd04c]",
+  badge:
+    "bg-[#ffd04c]/20 text-[#b45309] border-[#ffd04c]/60 shadow-[0_0_10px_rgba(255,208,76,0.35)] dark:bg-[#ffd04c]/20 dark:text-[#ffd04c] dark:border-[#ffd04c]/50 dark:shadow-[0_0_12px_rgba(255,208,76,0.45)]",
+  cardBorder: "default-dashboard-gold-glow",
+  hoverBorder: "hover:border-[#fff08a] dark:hover:border-[#fff08a]",
+  hoverShadow: "",
+  btnHover:
+    "group-hover:bg-gradient-to-r group-hover:from-[#f59e0b] group-hover:to-[#ffd04c] group-hover:text-black group-hover:border-transparent group-hover:shadow-[0_0_20px_rgba(255,208,76,0.7)]",
+};
+
 const CHART_ICONS = [
   (props) => (
     <svg
@@ -187,6 +203,31 @@ const DashboardListContent = () => {
 
   const [searchName, setSearchName] = useState("");
   const [sortOrder, setSortOrder] = useState("default"); // "default" | "asc" | "desc"
+  const [defaultDashboardId, setDefaultDashboardId] = useState(() => {
+    try {
+      return localStorage.getItem("default_dashboard_id") || "";
+    } catch {
+      return "";
+    }
+  });
+
+  const handleToggleDefaultDashboard = (e, dashboardId) => {
+    e.preventDefault();
+    e.stopPropagation();
+    try {
+      const idStr = String(dashboardId);
+      if (defaultDashboardId === idStr) {
+        localStorage.removeItem("default_dashboard_id");
+        setDefaultDashboardId("");
+      } else {
+        localStorage.setItem("default_dashboard_id", idStr);
+        setDefaultDashboardId(idStr);
+      }
+    } catch {
+      // ignore
+    }
+  };
+
   const [viewMode, setViewModeState] = useState(() => {
     try {
       const saved =
@@ -405,7 +446,7 @@ const DashboardListContent = () => {
                 type="button"
                 onClick={() => setViewMode("grid")}
                 title="Dạng lưới"
-                className={`p-1.5 max-lg:p-1 max-md:p-0.5 rounded-lg transition cursor-pointer ${
+                className={`p-1.5 max-lg:p-1.5 max-md:p-1 rounded-lg transition cursor-pointer ${
                   viewMode === "grid"
                     ? "bg-gradient-to-r from-[#20A7C9] to-[#2fc4c6] text-white shadow-xs"
                     : "text-color-black-50 dark:text-color-white-50 hover:text-color-black-100 dark:hover:text-color-white-90"
@@ -428,7 +469,7 @@ const DashboardListContent = () => {
                 type="button"
                 onClick={() => setViewMode("list")}
                 title="Dạng danh sách"
-                className={`p-1.5 max-lg:p-1 max-md:p-0.5 rounded-lg transition cursor-pointer ${
+                className={`p-1.5 max-lg:p-1.5 max-md:p-1 rounded-lg transition cursor-pointer ${
                   viewMode === "list"
                     ? "bg-gradient-to-r from-[#20A7C9] to-[#2fc4c6] text-white shadow-xs"
                     : "text-color-black-50 dark:text-color-white-50 hover:text-color-black-100 dark:hover:text-color-white-90"
@@ -496,7 +537,10 @@ const DashboardListContent = () => {
         ) : viewMode === "grid" ? (
           <div className="grid grid-cols-3 max-md:grid-cols-1 gap-5 max-lg:gap-3.5 max-md:gap-2.5">
             {displayedDashboards.map((item, index) => {
-              const theme = CARD_THEMES[index % CARD_THEMES.length];
+              const isDefault = String(defaultDashboardId) === String(item.id);
+              const theme = isDefault
+                ? DEFAULT_CARD_THEME
+                : CARD_THEMES[index % CARD_THEMES.length];
               const IconComponent = CHART_ICONS[index % CHART_ICONS.length];
               const categoryLabel = getSlugLabel(item);
 
@@ -508,10 +552,14 @@ const DashboardListContent = () => {
                   style={{
                     animationDelay: `${Math.min(index * 60, 360)}ms`,
                   }}
-                  className={`shine animate-fade-up group relative overflow-hidden rounded-2xl max-lg:rounded-xl max-md:rounded-lg bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 p-5 max-lg:p-3.5 max-md:p-3 flex flex-col justify-between gap-5 max-lg:gap-3.5 max-md:gap-2.5 shadow-component transition-all duration-300 hover:-translate-y-1.5 ${theme.hoverBorder} ${theme.hoverShadow}`}
+                  className={`shine animate-fade-up group relative overflow-hidden rounded-2xl max-lg:rounded-xl max-md:rounded-lg bg-background-light dark:bg-background-chart-dark border ${
+                    isDefault
+                      ? theme.cardBorder
+                      : "border-border-black-10 dark:border-background-white-15"
+                  } p-5 max-lg:p-3.5 max-md:p-3 flex flex-col justify-between gap-5 max-lg:gap-3.5 max-md:gap-2.5 shadow-component transition-all duration-300 hover:-translate-y-1.5 ${theme.hoverBorder} ${theme.hoverShadow}`}
                 >
                   <div
-                    className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${theme.bar}`}
+                    className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${isDefault ? "from-[#f59e0b] via-[#ffd04c] to-[#fbbf24]" : theme.bar}`}
                   />
                   <div
                     className={`pointer-events-none absolute -top-12 -right-12 w-32 h-32 rounded-full bg-gradient-to-bl ${theme.glow} blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
@@ -531,11 +579,20 @@ const DashboardListContent = () => {
                         >
                           {categoryLabel}
                         </span>
+                        {isDefault && (
+                          <span className="inline-flex items-center gap-1 px-2 max-lg:px-1.5 py-0.5 rounded-full text-[10px] max-lg:text-[9px] max-md:text-[8px] font-bold tracking-wider uppercase bg-[#ffd04c]/15 text-[#b45309] dark:text-[#ffd04c] border border-[#ffd04c]/40">
+                            ★ Mặc định
+                          </span>
+                        )}
                       </div>
 
                       <h2
                         title={item.dashboard_title || `Dashboard #${item.id}`}
-                        className="text-base max-lg:text-sm max-md:text-xs font-bold text-color-black-100 dark:text-color-white-90 group-hover:text-color-neotam dark:group-hover:text-[#5bd6d8] transition-colors truncate"
+                        className={`text-base max-lg:text-sm max-md:text-xs font-bold transition-colors truncate ${
+                          isDefault
+                            ? "text-[#b45309] dark:text-[#ffd04c] group-hover:text-[#d97706] dark:group-hover:text-[#ffe07d]"
+                            : "text-color-black-100 dark:text-color-white-90 group-hover:text-color-neotam dark:group-hover:text-[#5bd6d8]"
+                        }`}
                       >
                         {item.dashboard_title || `Dashboard #${item.id}`}
                       </h2>
@@ -547,18 +604,54 @@ const DashboardListContent = () => {
                       Dashboard trực tuyến
                     </span>
 
-                    <span
-                      title="Mở Dashboard"
-                      aria-label="Mở Dashboard"
-                      className={`w-7 h-7 max-lg:w-6 max-lg:h-6 max-md:w-5.5 max-md:h-5.5 rounded-lg max-lg:rounded-md max-md:rounded inline-flex items-center justify-center border border-border-black-10 dark:border-background-white-15 text-color-black-100 dark:text-color-white-90 transition-all duration-300 ${theme.btnHover}`}
-                    >
-                      <svg
-                        className="w-3.5 h-3.5 max-lg:w-3 max-lg:h-3 max-md:w-2.5 max-md:h-2.5 fill-current"
-                        viewBox="0 0 20 20"
+                    <div className="flex items-center gap-1.5 max-lg:gap-1">
+                      <button
+                        type="button"
+                        onClick={(e) =>
+                          handleToggleDefaultDashboard(e, item.id)
+                        }
+                        title={
+                          isDefault
+                            ? "Hủy chọn Dashboard mặc định"
+                            : "Đặt làm Dashboard mặc định khi đăng nhập"
+                        }
+                        aria-label={
+                          isDefault
+                            ? "Hủy chọn Dashboard mặc định"
+                            : "Đặt làm Dashboard mặc định khi đăng nhập"
+                        }
+                        className={`w-7 h-7 max-lg:w-6 max-lg:h-6 max-md:w-5.5 max-md:h-5.5 rounded-lg max-lg:rounded-md max-md:rounded inline-flex items-center justify-center border transition-all duration-300 cursor-pointer ${
+                          isDefault
+                            ? "bg-[#ffd04c]/25 dark:bg-[#ffd04c]/30 border-[#ffd04c] text-[#d97706] dark:text-[#ffd04c] hover:bg-[#ffd04c]/35 shadow-[0_0_12px_rgba(255,208,76,0.6)]"
+                            : "border-border-black-10 dark:border-white/20 dark:bg-white/5 text-color-black-40 dark:text-white/40 hover:text-[#d97706] dark:hover:text-[#ffd04c] hover:border-[#ffd04c]/60 hover:bg-[#ffd04c]/10 dark:hover:bg-[#ffd04c]/20"
+                        }`}
                       >
-                        <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
-                      </svg>
-                    </span>
+                        <svg
+                          className="w-3.5 h-3.5 max-lg:w-3 max-lg:h-3 max-md:w-2.5 max-md:h-2.5"
+                          viewBox="0 0 24 24"
+                          fill={isDefault ? "currentColor" : "none"}
+                          stroke="currentColor"
+                          strokeWidth={isDefault ? "1.5" : "2"}
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                        </svg>
+                      </button>
+
+                      <span
+                        title="Mở Dashboard"
+                        aria-label="Mở Dashboard"
+                        className={`w-7 h-7 max-lg:w-6 max-lg:h-6 max-md:w-5.5 max-md:h-5.5 rounded-lg max-lg:rounded-md max-md:rounded inline-flex items-center justify-center border border-border-black-10 dark:border-background-white-15 text-color-black-100 dark:text-color-white-90 transition-all duration-300 ${theme.btnHover}`}
+                      >
+                        <svg
+                          className="w-3.5 h-3.5 max-lg:w-3 max-lg:h-3 max-md:w-2.5 max-md:h-2.5 fill-current"
+                          viewBox="0 0 20 20"
+                        >
+                          <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
+                        </svg>
+                      </span>
+                    </div>
                   </div>
                 </Link>
               );
@@ -567,7 +660,10 @@ const DashboardListContent = () => {
         ) : (
           <div className="space-y-2.5 max-lg:space-y-2 animate-fade-up">
             {displayedDashboards.map((item, index) => {
-              const theme = CARD_THEMES[index % CARD_THEMES.length];
+              const isDefault = String(defaultDashboardId) === String(item.id);
+              const theme = isDefault
+                ? DEFAULT_CARD_THEME
+                : CARD_THEMES[index % CARD_THEMES.length];
               const IconComponent = CHART_ICONS[index % CHART_ICONS.length];
               const categoryLabel = getSlugLabel(item);
 
@@ -579,10 +675,14 @@ const DashboardListContent = () => {
                   style={{
                     animationDelay: `${Math.min(index * 45, 300)}ms`,
                   }}
-                  className={`shine animate-fade-up group relative overflow-hidden rounded-2xl max-lg:rounded-xl max-md:rounded-lg bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 p-4 max-lg:p-3 max-md:p-2.5 flex items-center justify-between gap-4 max-lg:gap-3 max-md:gap-2 shadow-component transition-all duration-200 hover:-translate-y-0.5 ${theme.hoverBorder} ${theme.hoverShadow}`}
+                  className={`shine animate-fade-up group relative overflow-hidden rounded-2xl max-lg:rounded-xl max-md:rounded-lg bg-background-light dark:bg-background-chart-dark border ${
+                    isDefault
+                      ? theme.cardBorder
+                      : "border-border-black-10 dark:border-background-white-15"
+                  } p-4 max-lg:p-3 max-md:p-2.5 flex items-center justify-between gap-4 max-lg:gap-3 max-md:gap-2 shadow-component transition-all duration-200 hover:-translate-y-0.5 ${theme.hoverBorder} ${theme.hoverShadow}`}
                 >
                   <div
-                    className={`absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b ${theme.bar}`}
+                    className={`absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b ${isDefault ? "from-[#f59e0b] via-[#ffd04c] to-[#fbbf24]" : theme.bar}`}
                   />
 
                   <div className="flex items-center gap-3.5 max-lg:gap-2.5 max-md:gap-2 pl-2 min-w-0">
@@ -593,12 +693,25 @@ const DashboardListContent = () => {
                     </div>
 
                     <div className="min-w-0">
-                      <h2
-                        title={item.dashboard_title || `Dashboard #${item.id}`}
-                        className="text-base max-lg:text-sm max-md:text-xs font-bold text-color-black-100 dark:text-color-white-90 group-hover:text-color-neotam dark:group-hover:text-[#5bd6d8] transition-colors truncate"
-                      >
-                        {item.dashboard_title || `Dashboard #${item.id}`}
-                      </h2>
+                      <div className="flex items-center gap-2">
+                        <h2
+                          title={
+                            item.dashboard_title || `Dashboard #${item.id}`
+                          }
+                          className={`text-base max-lg:text-sm max-md:text-xs font-bold transition-colors truncate ${
+                            isDefault
+                              ? "text-[#b45309] dark:text-[#ffd04c] group-hover:text-[#d97706] dark:group-hover:text-[#ffe07d]"
+                              : "text-color-black-100 dark:text-color-white-90 group-hover:text-color-neotam dark:group-hover:text-[#5bd6d8]"
+                          }`}
+                        >
+                          {item.dashboard_title || `Dashboard #${item.id}`}
+                        </h2>
+                        {isDefault && (
+                          <span className="inline-flex items-center gap-1 px-2 max-lg:px-1.5 py-0.5 rounded-full text-[10px] max-lg:text-[9px] max-md:text-[8px] font-bold tracking-wider uppercase bg-[#ffd04c]/15 text-[#b45309] dark:text-[#ffd04c] border border-[#ffd04c]/40 shrink-0">
+                            ★ Mặc định
+                          </span>
+                        )}
+                      </div>
                       <span
                         className={`inline-flex items-center px-2 max-lg:px-1.5 max-md:px-1 py-0.5 mt-1 rounded-full text-[10px] max-lg:text-[9px] max-md:text-[8px] font-bold tracking-wider uppercase border ${theme.badge}`}
                       >
@@ -607,18 +720,52 @@ const DashboardListContent = () => {
                     </div>
                   </div>
 
-                  <span
-                    title="Mở Dashboard"
-                    aria-label="Mở Dashboard"
-                    className={`w-7 h-7 max-lg:w-6 max-lg:h-6 max-md:w-5.5 max-md:h-5.5 rounded-lg max-lg:rounded-md max-md:rounded inline-flex items-center justify-center border border-border-black-10 dark:border-background-white-15 text-color-black-100 dark:text-color-white-90 transition-all duration-200 shrink-0 ${theme.btnHover}`}
-                  >
-                    <svg
-                      className="w-3.5 h-3.5 max-lg:w-3 max-lg:h-3 max-md:w-2.5 max-md:h-2.5 fill-current"
-                      viewBox="0 0 20 20"
+                  <div className="flex items-center gap-1.5 max-lg:gap-1 shrink-0">
+                    <button
+                      type="button"
+                      onClick={(e) => handleToggleDefaultDashboard(e, item.id)}
+                      title={
+                        isDefault
+                          ? "Hủy chọn Dashboard mặc định"
+                          : "Đặt làm Dashboard mặc định khi đăng nhập"
+                      }
+                      aria-label={
+                        isDefault
+                          ? "Hủy chọn Dashboard mặc định"
+                          : "Đặt làm Dashboard mặc định khi đăng nhập"
+                      }
+                      className={`w-7 h-7 max-lg:w-6 max-lg:h-6 max-md:w-5.5 max-md:h-5.5 rounded-lg max-lg:rounded-md max-md:rounded inline-flex items-center justify-center border transition-all duration-200 cursor-pointer ${
+                        isDefault
+                          ? "bg-[#ffd04c]/25 dark:bg-[#ffd04c]/30 border-[#ffd04c] text-[#d97706] dark:text-[#ffd04c] hover:bg-[#ffd04c]/35 shadow-[0_0_12px_rgba(255,208,76,0.6)]"
+                          : "border-border-black-10 dark:border-white/20 dark:bg-white/5 text-color-black-40 dark:text-white/40 hover:text-[#d97706] dark:hover:text-[#ffd04c] hover:border-[#ffd04c]/60 hover:bg-[#ffd04c]/10 dark:hover:bg-[#ffd04c]/20"
+                      }`}
                     >
-                      <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
-                    </svg>
-                  </span>
+                      <svg
+                        className="w-3.5 h-3.5 max-lg:w-3 max-lg:h-3 max-md:w-2.5 max-md:h-2.5"
+                        viewBox="0 0 24 24"
+                        fill={isDefault ? "currentColor" : "none"}
+                        stroke="currentColor"
+                        strokeWidth={isDefault ? "1.5" : "2"}
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                      </svg>
+                    </button>
+
+                    <span
+                      title="Mở Dashboard"
+                      aria-label="Mở Dashboard"
+                      className={`w-7 h-7 max-lg:w-6 max-lg:h-6 max-md:w-5.5 max-md:h-5.5 rounded-lg max-lg:rounded-md max-md:rounded inline-flex items-center justify-center border border-border-black-10 dark:border-background-white-15 text-color-black-100 dark:text-color-white-90 transition-all duration-200 ${theme.btnHover}`}
+                    >
+                      <svg
+                        className="w-3.5 h-3.5 max-lg:w-3 max-lg:h-3 max-md:w-2.5 max-md:h-2.5 fill-current"
+                        viewBox="0 0 20 20"
+                      >
+                        <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
+                      </svg>
+                    </span>
+                  </div>
                 </Link>
               );
             })}

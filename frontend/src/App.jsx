@@ -220,10 +220,15 @@ const PublicRoute = ({ children }) => {
         if (res?.status === "success" && res?.user) {
           let targetPath = "/dashboards";
           try {
-            const dashRes = await getDashboards();
-            const mapped = dashRes?.dashboards || [];
-            if (mapped.length === 1) {
-              targetPath = mapped[0].path;
+            const defaultDashId = localStorage.getItem("default_dashboard_id");
+            if (defaultDashId) {
+              targetPath = `/dashboard/${defaultDashId}`;
+            } else {
+              const dashRes = await getDashboards();
+              const mapped = dashRes?.dashboards || [];
+              if (mapped.length === 1) {
+                targetPath = mapped[0].path;
+              }
             }
           } catch {
             // fallback về /dashboards

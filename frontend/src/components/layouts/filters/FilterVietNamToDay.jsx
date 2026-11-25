@@ -74,7 +74,6 @@ const FilterVietNamToDay = ({ filters, horizontalFixed = false }) => {
       { value: "Asia", label: "Asia" },
       { value: "Europe", label: "Europe" },
       { value: "Oceania", label: "Oceania" },
-      { value: "Unknown", label: "Unknown" },
     ],
     [],
   );
@@ -140,7 +139,7 @@ const FilterVietNamToDay = ({ filters, horizontalFixed = false }) => {
   const ALL_DEVICES = useMemo(
     () => [
       { value: "SMART_TV", label: "SMART_TV" },
-      { value: "PC/LAP", label: "PC/LAP" },
+      { value: "PC/Lap", label: "PC/Lap" },
       { value: "MOBILE", label: "MOBILE" },
       { value: "TABLET", label: "TABLET" },
     ],

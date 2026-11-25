@@ -58,6 +58,12 @@ const Login = () => {
 
   const redirectAfterLogin = async () => {
     try {
+      const defaultDashId = localStorage.getItem("default_dashboard_id");
+      if (defaultDashId) {
+        navigate(`/dashboard/${defaultDashId}`, { replace: true });
+        return;
+      }
+
       const dashRes = await getDashboards();
       const mapped = dashRes?.dashboards || [];
       if (mapped.length === 1) {

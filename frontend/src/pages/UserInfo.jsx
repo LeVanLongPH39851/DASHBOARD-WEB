@@ -652,8 +652,8 @@ const UserInfoContent = () => {
 
         {/* Modal Chỉnh sửa thông tin cá nhân */}
         {isEditProfileOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-            <div className="relative w-full max-w-md rounded-2xl bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 shadow-2xl overflow-hidden animate-pop-in">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 max-lg:p-3 max-md:p-2 bg-black/60 backdrop-blur-xs overflow-y-auto">
+            <div className="relative w-full max-w-md rounded-2xl max-lg:rounded-xl max-md:rounded-lg bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 shadow-2xl overflow-hidden animate-pop-in max-h-[92vh] flex flex-col">
               <div className="h-1 bg-gradient-to-r from-[#20A7C9] via-[#2fc4c6] to-[#5bd6d8] animate-gradient-shift" />
 
               <div className="flex items-center justify-between px-6 max-lg:px-4.5 max-md:px-3.5 py-4 max-lg:py-3 max-md:py-2.5 border-b border-border-black-10 dark:border-background-white-15">
@@ -665,7 +665,7 @@ const UserInfoContent = () => {
                   onClick={() => {
                     if (!profileSubmitting) setIsEditProfileOpen(false);
                   }}
-                  className="w-7 h-7 max-lg:w-6 max-lg:h-6 rounded-lg flex items-center justify-center text-color-black-50 dark:text-color-white-50 hover:bg-black/5 dark:hover:bg-white/10 transition cursor-pointer"
+                  className="w-7 h-7 max-lg:w-6 max-lg:h-6 max-md:w-5.5 max-md:h-5.5 rounded-lg flex items-center justify-center text-color-black-50 dark:text-color-white-50 hover:bg-black/5 dark:hover:bg-white/10 transition cursor-pointer text-sm max-lg:text-xs max-md:text-[11px]"
                 >
                   ✕
                 </button>
@@ -673,10 +673,10 @@ const UserInfoContent = () => {
 
               <form
                 onSubmit={handleUpdateProfile}
-                className="p-6 max-lg:p-4.5 max-md:p-3.5 space-y-4 max-lg:space-y-3 max-md:space-y-2.5"
+                className="overflow-y-auto p-6 max-lg:p-4.5 max-md:p-3.5 space-y-4 max-lg:space-y-3 max-md:space-y-2.5 flex-1"
               >
                 {profileErrors.form && (
-                  <div className="p-3 max-lg:p-2.5 max-md:p-2 rounded-xl bg-color-error/10 border border-color-error/25 text-color-error text-xs max-lg:text-[11px] max-md:text-[10px]">
+                  <div className="p-3 max-lg:p-2.5 max-md:p-2 rounded-xl max-lg:rounded-lg bg-color-error/10 border border-color-error/25 text-color-error text-xs max-lg:text-[11px] max-md:text-[10px]">
                     {profileErrors.form}
                   </div>
                 )}
@@ -696,7 +696,7 @@ const UserInfoContent = () => {
                         })
                       }
                       placeholder="Nguyễn Văn"
-                      className="w-full px-3.5 max-lg:px-3 max-md:px-2.5 py-2 max-lg:py-1.5 max-md:py-1 rounded-xl bg-background-search dark:bg-background-white-8 border border-border-black-10 dark:border-background-white-15 text-color-black-100 dark:text-color-white-90 text-sm max-lg:text-xs max-md:text-[11px] focus:outline-none focus:border-[#20A7C9] transition"
+                      className="w-full px-3.5 max-lg:px-3 max-md:px-2.5 py-2 max-lg:py-1.5 max-md:py-1 rounded-xl max-lg:rounded-lg bg-background-search dark:bg-background-white-8 border border-border-black-10 dark:border-background-white-15 text-color-black-100 dark:text-color-white-90 text-sm max-lg:text-xs max-md:text-[11px] focus:outline-none focus:border-[#20A7C9] transition"
                     />
                   </div>
 
@@ -714,7 +714,7 @@ const UserInfoContent = () => {
                         })
                       }
                       placeholder="An"
-                      className="w-full px-3.5 max-lg:px-3 max-md:px-2.5 py-2 max-lg:py-1.5 max-md:py-1 rounded-xl bg-background-search dark:bg-background-white-8 border border-border-black-10 dark:border-background-white-15 text-color-black-100 dark:text-color-white-90 text-sm max-lg:text-xs max-md:text-[11px] focus:outline-none focus:border-[#20A7C9] transition"
+                      className="w-full px-3.5 max-lg:px-3 max-md:px-2.5 py-2 max-lg:py-1.5 max-md:py-1 rounded-xl max-lg:rounded-lg bg-background-search dark:bg-background-white-8 border border-border-black-10 dark:border-background-white-15 text-color-black-100 dark:text-color-white-90 text-sm max-lg:text-xs max-md:text-[11px] focus:outline-none focus:border-[#20A7C9] transition"
                     />
                   </div>
                 </div>
@@ -736,32 +736,32 @@ const UserInfoContent = () => {
                       }
                     }}
                     placeholder="name@vtv.vn"
-                    className={`w-full px-3.5 max-lg:px-3 max-md:px-2.5 py-2 max-lg:py-1.5 max-md:py-1 rounded-xl bg-background-search dark:bg-background-white-8 border text-color-black-100 dark:text-color-white-90 text-sm max-lg:text-xs max-md:text-[11px] focus:outline-none transition ${
+                    className={`w-full px-3.5 max-lg:px-3 max-md:px-2.5 py-2 max-lg:py-1.5 max-md:py-1 rounded-xl max-lg:rounded-lg bg-background-search dark:bg-background-white-8 border text-color-black-100 dark:text-color-white-90 text-sm max-lg:text-xs max-md:text-[11px] focus:outline-none transition ${
                       profileErrors.email
                         ? "border-color-rating"
                         : "border-border-black-10 dark:border-background-white-15 focus:border-[#20A7C9]"
                     }`}
                   />
                   {profileErrors.email && (
-                    <p className="text-[11px] text-color-rating mt-1">
+                    <p className="text-[11px] max-lg:text-[10px] max-md:text-[9px] text-color-rating mt-1">
                       {profileErrors.email}
                     </p>
                   )}
                 </div>
 
-                <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-border-black-10 dark:border-background-white-15">
+                <div className="flex items-center justify-end gap-2.5 max-lg:gap-2 max-md:gap-1.5 pt-3 max-lg:pt-2.5 max-md:pt-2 border-t border-border-black-10 dark:border-background-white-15">
                   <button
                     type="button"
                     disabled={profileSubmitting}
                     onClick={() => setIsEditProfileOpen(false)}
-                    className="px-4 py-2 rounded-xl text-xs font-semibold border border-border-black-10 dark:border-background-white-15 text-color-black-70 dark:text-color-white-80 hover:bg-black/5 dark:hover:bg-white/10 transition cursor-pointer"
+                    className="px-4 max-lg:px-3 max-md:px-2.5 py-2 max-lg:py-1.5 max-md:py-1 rounded-xl max-lg:rounded-lg text-xs max-lg:text-[11px] max-md:text-[10px] font-semibold border border-border-black-10 dark:border-background-white-15 text-color-black-70 dark:text-color-white-80 hover:bg-black/5 dark:hover:bg-white/10 transition cursor-pointer"
                   >
                     Hủy
                   </button>
                   <button
                     type="submit"
                     disabled={profileSubmitting}
-                    className="px-5 py-2 rounded-xl text-xs font-semibold bg-gradient-to-r from-[#20A7C9] to-[#2fc4c6] text-white shadow-xs hover:opacity-95 transition disabled:opacity-50 cursor-pointer"
+                    className="px-5 max-lg:px-4 max-md:px-3 py-2 max-lg:py-1.5 max-md:py-1 rounded-xl max-lg:rounded-lg text-xs max-lg:text-[11px] max-md:text-[10px] font-semibold bg-gradient-to-r from-[#20A7C9] to-[#2fc4c6] text-white shadow-xs hover:opacity-95 transition disabled:opacity-50 cursor-pointer"
                   >
                     {profileSubmitting ? "Đang lưu..." : "Lưu thay đổi"}
                   </button>
@@ -773,8 +773,8 @@ const UserInfoContent = () => {
 
         {/* Modal Đổi mật khẩu */}
         {isChangePasswordOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-            <div className="relative w-full max-w-md rounded-2xl bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 shadow-2xl overflow-hidden animate-pop-in">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 max-lg:p-3 max-md:p-2 bg-black/60 backdrop-blur-xs overflow-y-auto">
+            <div className="relative w-full max-w-md rounded-2xl max-lg:rounded-xl max-md:rounded-lg bg-background-light dark:bg-background-chart-dark border border-border-black-10 dark:border-background-white-15 shadow-2xl overflow-hidden animate-pop-in max-h-[92vh] flex flex-col">
               <div className="h-1 bg-gradient-to-r from-[#7367f0] via-[#887ef2] to-[#9e95f5] animate-gradient-shift" />
 
               <div className="flex items-center justify-between px-6 max-lg:px-4.5 max-md:px-3.5 py-4 max-lg:py-3 max-md:py-2.5 border-b border-border-black-10 dark:border-background-white-15">
@@ -786,7 +786,7 @@ const UserInfoContent = () => {
                   onClick={() => {
                     if (!passwordSubmitting) setIsChangePasswordOpen(false);
                   }}
-                  className="w-7 h-7 max-lg:w-6 max-lg:h-6 rounded-lg flex items-center justify-center text-color-black-50 dark:text-color-white-50 hover:bg-black/5 dark:hover:bg-white/10 transition cursor-pointer"
+                  className="w-7 h-7 max-lg:w-6 max-lg:h-6 max-md:w-5.5 max-md:h-5.5 rounded-lg flex items-center justify-center text-color-black-50 dark:text-color-white-50 hover:bg-black/5 dark:hover:bg-white/10 transition cursor-pointer text-sm max-lg:text-xs max-md:text-[11px]"
                 >
                   ✕
                 </button>
@@ -794,10 +794,10 @@ const UserInfoContent = () => {
 
               <form
                 onSubmit={handleChangePassword}
-                className="p-6 max-lg:p-4.5 max-md:p-3.5 space-y-4 max-lg:space-y-3 max-md:space-y-2.5"
+                className="overflow-y-auto p-6 max-lg:p-4.5 max-md:p-3.5 space-y-4 max-lg:space-y-3 max-md:space-y-2.5 flex-1"
               >
                 {passwordErrors.form && (
-                  <div className="p-3 max-lg:p-2.5 max-md:p-2 rounded-xl bg-color-error/10 border border-color-error/25 text-color-error text-xs max-lg:text-[11px] max-md:text-[10px]">
+                  <div className="p-3 max-lg:p-2.5 max-md:p-2 rounded-xl max-lg:rounded-lg bg-color-error/10 border border-color-error/25 text-color-error text-xs max-lg:text-[11px] max-md:text-[10px]">
                     {passwordErrors.form}
                   </div>
                 )}
@@ -846,7 +846,7 @@ const UserInfoContent = () => {
                           }
                         }}
                         placeholder={field.placeholder}
-                        className={`w-full pl-3.5 max-lg:pl-3 max-md:pl-2.5 pr-10 max-lg:pr-9 max-md:pr-8 py-2 max-lg:py-1.5 max-md:py-1 rounded-xl bg-background-search dark:bg-background-white-8 border text-color-black-100 dark:text-color-white-90 text-sm max-lg:text-xs max-md:text-[11px] focus:outline-none transition ${
+                        className={`w-full pl-3.5 max-lg:pl-3 max-md:pl-2.5 pr-10 max-lg:pr-9 max-md:pr-8 py-2 max-lg:py-1.5 max-md:py-1 rounded-xl max-lg:rounded-lg bg-background-search dark:bg-background-white-8 border text-color-black-100 dark:text-color-white-90 text-sm max-lg:text-xs max-md:text-[11px] focus:outline-none transition ${
                           passwordErrors[field.key]
                             ? "border-color-rating"
                             : "border-border-black-10 dark:border-background-white-15 focus:border-[#7367f0]"
@@ -858,7 +858,7 @@ const UserInfoContent = () => {
                         className="absolute inset-y-0 right-0 pr-3 max-lg:pr-2.5 max-md:pr-2 flex items-center text-color-black-50 dark:text-color-white-50 hover:text-color-black-100 dark:hover:text-white cursor-pointer"
                       >
                         <svg
-                          className="w-4 h-4"
+                          className="w-4 h-4 max-lg:w-3.5 max-lg:h-3.5 max-md:w-3 max-md:h-3"
                           fill="none"
                           stroke="currentColor"
                           strokeWidth="2"
@@ -888,26 +888,26 @@ const UserInfoContent = () => {
                       </button>
                     </div>
                     {passwordErrors[field.key] && (
-                      <p className="text-[11px] text-color-rating mt-1">
+                      <p className="text-[11px] max-lg:text-[10px] max-md:text-[9px] text-color-rating mt-1">
                         {passwordErrors[field.key]}
                       </p>
                     )}
                   </div>
                 ))}
 
-                <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-border-black-10 dark:border-background-white-15">
+                <div className="flex items-center justify-end gap-2.5 max-lg:gap-2 max-md:gap-1.5 pt-3 max-lg:pt-2.5 max-md:pt-2 border-t border-border-black-10 dark:border-background-white-15">
                   <button
                     type="button"
                     disabled={passwordSubmitting}
                     onClick={() => setIsChangePasswordOpen(false)}
-                    className="px-4 py-2 rounded-xl text-xs font-semibold border border-border-black-10 dark:border-background-white-15 text-color-black-70 dark:text-color-white-80 hover:bg-black/5 dark:hover:bg-white/10 transition cursor-pointer"
+                    className="px-4 max-lg:px-3 max-md:px-2.5 py-2 max-lg:py-1.5 max-md:py-1 rounded-xl max-lg:rounded-lg text-xs max-lg:text-[11px] max-md:text-[10px] font-semibold border border-border-black-10 dark:border-background-white-15 text-color-black-70 dark:text-color-white-80 hover:bg-black/5 dark:hover:bg-white/10 transition cursor-pointer"
                   >
                     Hủy
                   </button>
                   <button
                     type="submit"
                     disabled={passwordSubmitting}
-                    className="px-5 py-2 rounded-xl text-xs font-semibold bg-gradient-to-r from-[#7367f0] to-[#9e95f5] text-white shadow-xs hover:opacity-95 transition disabled:opacity-50 cursor-pointer"
+                    className="px-5 max-lg:px-4 max-md:px-3 py-2 max-lg:py-1.5 max-md:py-1 rounded-xl max-lg:rounded-lg text-xs max-lg:text-[11px] max-md:text-[10px] font-semibold bg-gradient-to-r from-[#7367f0] to-[#9e95f5] text-white shadow-xs hover:opacity-95 transition disabled:opacity-50 cursor-pointer"
                   >
                     {passwordSubmitting ? "Đang lưu..." : "Cập nhật"}
                   </button>

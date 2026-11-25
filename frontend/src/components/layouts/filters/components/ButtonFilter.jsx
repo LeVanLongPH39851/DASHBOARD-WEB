@@ -15,6 +15,7 @@ const ButtonFilter = ({
   const { value: horizontal, setValue: setHorizontal } = useHorizontal();
   return (
     <button
+      title={text}
       className={`${background} px-4 max-lg:px-3 max-md:px-3 h-9.5 ${!horizontal ? "max-lg:h-9" : "max-lg:h-8"} max-md:h-8 flex justify-center items-center gap-1 rounded-xl ${color} text-sm max-lg:text-[13px] max-md:text-xs text-nowrap font-medium cursor-pointer transition-all duration-300`}
       type={`${type}`}
     >
@@ -23,7 +24,7 @@ const ButtonFilter = ({
           <img src={src} alt={alt} className={`${width} ${height}`} />
         </figure>
       )}
-      {text}
+      <span className="truncate">{text}</span>
     </button>
   );
 };

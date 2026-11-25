@@ -2,14 +2,28 @@ export const filterCountryPayload = {
   url: `${import.meta.env.VITE_API_DOMAIN}/api/v1/chart/data`,
   payload: {
     datasource: {
-      id: 317,
+      id: 333,
       type: "table",
     },
     force: false,
     form_data: {
-      adhoc_filters: [],
+      adhoc_filters: [
+        {
+          clause: "WHERE",
+          comparator: ["(not set)"],
+          datasourceWarning: false,
+          expressionType: "SIMPLE",
+          filterOptionName: "filter_n8tepby7rl_pftydyoqy6j",
+          isExtra: false,
+          isNew: false,
+          operator: "NOT IN",
+          operatorId: "NOT_IN",
+          sqlExpression: null,
+          subject: "country",
+        },
+      ],
       dashboardId: 73,
-      datasource: "317__table",
+      datasource: "333__table",
       defaultToFirstItem: false,
       enableEmptyFilter: false,
       extra_filters: [],
@@ -26,10 +40,11 @@ export const filterCountryPayload = {
       row_limit: 1000,
       searchAllOptions: false,
       showSearch: true,
+      time_range: "No filter",
       type: "NATIVE_FILTER",
       url_params: {
         native_filters_key:
-          "MgCV6-72oLuZ-SwWwrEI4ChE-grHnHGJ_gSmIckR9ONcxrlj18IdZCzn_ax6LSWN",
+          "qFFJcRYEhpjuyzkO6ntesBkfsAmk-HTo96bOBt_2rHYwr9c0DZLojFbGTjAjbAMH",
       },
       viz_type: "filter_select",
     },
@@ -44,15 +59,22 @@ export const filterCountryPayload = {
           having: "",
           where: "",
         },
-        filters: [],
+        filters: [
+          {
+            col: "country",
+            op: "NOT IN",
+            val: ["(not set)"],
+          },
+        ],
         metrics: [],
         order_desc: true,
         orderby: [["country", true]],
         row_limit: 1000,
         series_limit: 0,
+        time_range: "No filter",
         url_params: {
           native_filters_key:
-            "MgCV6-72oLuZ-SwWwrEI4ChE-grHnHGJ_gSmIckR9ONcxrlj18IdZCzn_ax6LSWN",
+            "qFFJcRYEhpjuyzkO6ntesBkfsAmk-HTo96bOBt_2rHYwr9c0DZLojFbGTjAjbAMH",
         },
       },
     ],

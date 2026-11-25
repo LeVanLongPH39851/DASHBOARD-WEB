@@ -160,6 +160,7 @@ export const LABEL_VIETNAMTODAY = {
   "Total Share": "Shares",
   Views: "Views",
   name_en: "Description",
+  description: "Episode Name",
 };
 
 export const LABEL_METRIC = {
@@ -176,7 +177,7 @@ export const LABEL_METRIC = {
   count: "Số lượng",
   Duration_View: "Duration view",
   daily_active_user: "DAU",
-  time_user_per_day: "Time on site/user/day",
+  "total on site/user/day": "Time on site/user/day",
 };
 
 export const FILTER_LABEL = {

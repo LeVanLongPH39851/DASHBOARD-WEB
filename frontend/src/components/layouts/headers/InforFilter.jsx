@@ -247,7 +247,7 @@ const InforFilter = ({
                 }
                 className="text-sm max-lg:text-[13px] max-md:text-xs font-normal text-color-black-50 dark:text-color-white-50 transition-all duration-300 underline cursor-pointer"
               >
-                Xóa toàn bộ
+                {isEnglish ? "Remove Filter" : "Xóa toàn bộ"}
               </span>
             )}
           </div>

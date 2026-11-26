@@ -305,11 +305,11 @@ const DashboardContent = () => {
                             }
                             description={false}
                             barSeriesKeys={"daily_active_user"}
-                            lineSeriesKeys={"time_user_per_day"}
+                            lineSeriesKeys={"total on site/user/day"}
                             colors={useMemo(() => {
                               return {
                                 daily_active_user: "#2f4553",
-                                time_user_per_day:
+                                "total on site/user/day":
                                   CUSTOM_CHART.mixedChart.mixedChartDate.colors
                                     .rating,
                               };

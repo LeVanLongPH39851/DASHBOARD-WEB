@@ -141,6 +141,42 @@ async function createManagedGroup(req, res, next) {
   }
 }
 
+async function updateManagedGroup(req, res, next) {
+  const { groupName, description } = req.body || {};
+  const userId = parsePositiveInt(req.body?.userId);
+  const groupId = parsePositiveInt(req.body?.groupId ?? req.params?.groupId);
+
+  if (!userId || !groupId) {
+    return res.status(400).json({
+      status: "error",
+      message: "userId và groupId không hợp lệ",
+    });
+  }
+
+  if (!groupName || !String(groupName).trim()) {
+    return res.status(400).json({
+      status: "error",
+      message: "Tên Group là bắt buộc",
+    });
+  }
+
+  try {
+    const group = await roleService.updateManagedGroup({
+      userId,
+      groupId,
+      groupName: String(groupName),
+      description,
+    });
+
+    return res.status(200).json({
+      status: "success",
+      group,
+    });
+  } catch (error) {
+    return handleControllerError(error, res, next);
+  }
+}
+
 async function updateGroupDashboards(req, res, next) {
   const userId = parsePositiveInt(req.body?.userId);
   const groupId = parsePositiveInt(req.body?.groupId);
@@ -412,6 +448,7 @@ module.exports = {
   getAccessibleDashboards,
   getManagedGroups,
   createManagedGroup,
+  updateManagedGroup,
   updateGroupDashboards,
   deleteManagedGroup,
   getAssignableUsers,

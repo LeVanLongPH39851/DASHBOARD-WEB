@@ -572,6 +572,31 @@ async function updateGroupDashboardsController(req, res) {
   }
 }
 
+async function updateManagedGroupController(req, res) {
+  try {
+    const userId = req.user.profile.id;
+    const groupId = Number(req.params.groupId);
+    const { groupName, description } = req.body || {};
+
+    const result = await backendService.updateManagedGroup({
+      userId,
+      groupId,
+      groupName,
+      description,
+    });
+
+    await cacheService.invalidateActions([
+      "groups",
+      "user_info",
+    ]);
+
+    return res.status(200).json(result);
+  } catch (error) {
+    console.error("[Update Group Error]", error.message);
+    return sendGatewayError(res, error, "Không thể cập nhật thông tin Group");
+  }
+}
+
 async function deleteManagedGroupController(req, res) {
   try {
     const userId = req.user.profile.id;
@@ -969,6 +994,7 @@ module.exports = {
   checkDashboardAccessController,
   getManagedGroupsController,
   createManagedGroupController,
+  updateManagedGroupController,
   updateGroupDashboardsController,
   deleteManagedGroupController,
   getAssignableUsersController,

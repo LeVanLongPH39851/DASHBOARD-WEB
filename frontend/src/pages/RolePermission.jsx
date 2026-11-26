@@ -14,6 +14,7 @@ import {
   getMe,
   removeGroupMember,
   updateGroupDashboards,
+  updateManagedGroup,
 } from "../services/authService";
 
 const GROUP_ACCENTS = [
@@ -472,6 +473,7 @@ const GroupDetailWorkspace = ({
   groups,
   isSystemManager,
   currentUserId,
+  onOpenEditGroupInfoModal,
   onOpenEditModal,
   onOpenCreateChildModal,
   onOpenMembersModal,
@@ -511,6 +513,7 @@ const GroupDetailWorkspace = ({
     !isMaxChildrenReached;
 
   const isCreator = Number(group.created_by) === Number(currentUserId);
+  const canEditGroupInfo = isSystemManager || isCreator;
   const canDeleteGroup =
     isSystemManager ||
     (isCreator &&
@@ -594,6 +597,34 @@ const GroupDetailWorkspace = ({
                 <h2 className="text-xl max-lg:text-lg max-md:text-base font-bold text-color-black-100 dark:text-color-white-90">
                   {group.group_name}
                 </h2>
+                {canEditGroupInfo && (
+                  <button
+                    type="button"
+                    onClick={() => onOpenEditGroupInfoModal(group)}
+                    title="Chỉnh sửa thông tin nhóm"
+                    aria-label="Chỉnh sửa thông tin nhóm"
+                    className={`p-1 max-lg:p-1 max-md:p-0.5 rounded-md border ${accent.badge} bg-background-search dark:bg-background-white-8 hover:bg-gradient-to-r ${accent.bar} hover:text-white hover:border-transparent transition-all duration-200 cursor-pointer shadow-xs active:scale-95`}
+                  >
+                    <svg
+                      className="w-3.5 h-3.5 max-lg:w-3.5 max-lg:h-3.5 max-md:w-3 max-md:h-3"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+                      />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
+                      />
+                    </svg>
+                  </button>
+                )}
                 <button
                   type="button"
                   onClick={() => onOpenMembersModal(group, "view")}
@@ -634,10 +665,12 @@ const GroupDetailWorkspace = ({
               <button
                 type="button"
                 onClick={() => onOpenMembersModal(group, "manage")}
+                title="Quản lý thành viên"
+                aria-label="Quản lý thành viên"
                 className={`px-3.5 max-lg:px-2.5 max-md:px-2 py-2 max-lg:py-1.5 max-md:py-1 rounded-xl max-lg:rounded-lg text-xs max-lg:text-[11px] max-md:text-[10px] font-semibold ${accent.btnOutline} transition cursor-pointer flex items-center gap-1.5 max-lg:gap-1`}
               >
                 <svg
-                  className="w-3.5 h-3.5 max-lg:w-3 max-lg:h-3 max-md:w-2.5 max-md:h-2.5"
+                  className="w-3.5 h-3.5 max-lg:w-3 max-lg:h-3 max-md:w-3 max-md:h-3 shrink-0"
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="2"
@@ -652,30 +685,56 @@ const GroupDetailWorkspace = ({
                   <line x1="20" x2="20" y1="8" y2="14" />
                   <line x1="23" x2="17" y1="11" y2="11" />
                 </svg>
-                <span>Thành viên</span>
+                <span className="max-md:hidden">Thành viên</span>
               </button>
             )}
             {canCreateChildGroup ? (
               <button
                 type="button"
                 onClick={() => onOpenCreateChildModal(group)}
+                title="Thêm nhóm con"
+                aria-label="Thêm nhóm con"
                 className={`px-3.5 max-lg:px-2.5 max-md:px-2 py-2 max-lg:py-1.5 max-md:py-1 rounded-xl max-lg:rounded-lg text-xs max-lg:text-[11px] max-md:text-[10px] font-semibold border border-border-black-10 dark:border-background-white-15 bg-background-search dark:bg-background-white-8 text-color-black-70 dark:text-color-white-80 ${accent.btnGhostHover} transition cursor-pointer flex items-center gap-1.5 max-lg:gap-1`}
               >
-                <span>+ Nhóm con</span>
+                <svg
+                  className="w-3.5 h-3.5 max-lg:w-3 max-lg:h-3 max-md:w-3 max-md:h-3 shrink-0"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                </svg>
+                <span className="max-md:hidden">Nhóm con</span>
               </button>
             ) : isSystemManager || groupRoles.includes("super_admin") ? (
-              <span className="px-3 max-lg:px-2 max-md:px-1.5 py-2 max-lg:py-1.5 max-md:py-1 rounded-xl max-lg:rounded-lg text-xs max-lg:text-[11px] max-md:text-[10px] font-medium border border-border-black-10 dark:border-background-white-15 bg-background-search dark:bg-background-white-8 text-color-black-40 dark:text-color-white-40 select-none">
-                {isMaxDepthReached ? "Tối đa 5 cấp" : "Đủ 10 nhóm con"}
+              <span
+                title={isMaxDepthReached ? "Tối đa 5 cấp" : "Đủ 10 nhóm con"}
+                className="px-3 max-lg:px-2 max-md:px-2 py-2 max-lg:py-1.5 max-md:py-1 rounded-xl max-lg:rounded-lg text-xs max-lg:text-[11px] max-md:text-[10px] font-medium border border-border-black-10 dark:border-background-white-15 bg-background-search dark:bg-background-white-8 text-color-black-40 dark:text-color-white-40 select-none inline-flex items-center gap-1"
+              >
+                <svg
+                  className="w-3.5 h-3.5 max-lg:w-3 max-lg:h-3 max-md:w-3 max-md:h-3 shrink-0 md:hidden text-color-black-40 dark:text-color-white-40"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" />
+                </svg>
+                <span className="max-md:hidden">{isMaxDepthReached ? "Tối đa 5 cấp" : "Đủ 10 nhóm con"}</span>
               </span>
             ) : null}
             {canDeleteGroup && (
               <button
                 type="button"
                 onClick={() => onRequestDeleteGroup(group)}
+                title="Xóa nhóm"
+                aria-label="Xóa nhóm"
                 className="px-3 max-lg:px-2.5 max-md:px-2 py-2 max-lg:py-1.5 max-md:py-1 rounded-xl max-lg:rounded-lg text-xs max-lg:text-[11px] max-md:text-[10px] font-semibold border border-color-error/40 bg-color-error/10 text-color-error hover:bg-color-error hover:text-white transition cursor-pointer flex items-center gap-1.5 max-lg:gap-1"
               >
                 <svg
-                  className="w-3.5 h-3.5 max-lg:w-3 max-lg:h-3 max-md:w-2.5 max-md:h-2.5"
+                  className="w-3.5 h-3.5 max-lg:w-3 max-lg:h-3 max-md:w-3 max-md:h-3 shrink-0"
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="2"
@@ -688,7 +747,7 @@ const GroupDetailWorkspace = ({
                     d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
                   />
                 </svg>
-                <span>Xóa</span>
+                <span className="max-md:hidden">Xóa</span>
               </button>
             )}
           </div>
@@ -881,6 +940,7 @@ const GroupCardNode = ({
   level = 0,
   isSystemManager,
   currentUserId,
+  onOpenEditGroupInfoModal,
   onOpenEditModal,
   onOpenCreateChildModal,
   onOpenMembersModal,
@@ -911,6 +971,7 @@ const GroupCardNode = ({
     !isMaxChildrenReached;
 
   const isCreator = Number(group.created_by) === Number(currentUserId);
+  const canEditGroupInfo = isSystemManager || isCreator;
   const canDeleteGroup =
     isSystemManager ||
     (isCreator &&
@@ -975,6 +1036,35 @@ const GroupCardNode = ({
                   {group.group_name}
                 </h2>
 
+                {canEditGroupInfo && (
+                  <button
+                    type="button"
+                    onClick={() => onOpenEditGroupInfoModal(group)}
+                    title="Chỉnh sửa thông tin nhóm"
+                    aria-label="Chỉnh sửa thông tin nhóm"
+                    className={`p-1 max-lg:p-1 max-md:p-0.5 rounded-md border ${accent.badge} bg-background-search dark:bg-background-white-8 hover:bg-gradient-to-r ${accent.bar} hover:text-white hover:border-transparent transition-all duration-200 cursor-pointer shadow-xs active:scale-95`}
+                  >
+                    <svg
+                      className="w-3 h-3 max-lg:w-3 max-lg:h-3 max-md:w-2.5 max-md:h-2.5"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+                      />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
+                      />
+                    </svg>
+                  </button>
+                )}
+
                 <button
                   type="button"
                   onClick={() => onOpenMembersModal(group, "view")}
@@ -1007,11 +1097,12 @@ const GroupCardNode = ({
                   <button
                     type="button"
                     onClick={() => setIsExpanded(!isExpanded)}
-                    className="inline-flex items-center gap-1.5 max-lg:gap-1 px-2.5 max-lg:px-2 max-md:px-1.5 py-0.5 rounded-full text-[11px] max-lg:text-[10px] max-md:text-[9px] font-semibold bg-background-search dark:bg-background-white-8 hover:bg-black/5 dark:hover:bg-white/12 text-color-black-70 dark:text-color-white-80 border border-border-black-10 dark:border-background-white-15 cursor-pointer transition-all duration-200 active:scale-95 shadow-2xs select-none"
+                    title={isExpanded ? "Thu gọn nhóm con" : `Mở rộng ${children.length} nhóm con`}
+                    aria-label={isExpanded ? "Thu gọn nhóm con" : `Mở rộng ${children.length} nhóm con`}
+                    className="inline-flex items-center justify-center px-2.5 max-lg:px-2 max-md:px-1.5 py-0.5 rounded-full bg-background-search dark:bg-background-white-8 hover:bg-black/5 dark:hover:bg-white/12 text-color-black-70 dark:text-color-white-80 border border-border-black-10 dark:border-background-white-15 cursor-pointer transition-all duration-200 active:scale-95 shadow-2xs select-none"
                   >
-                    <span>{children.length} nhóm con</span>
                     <svg
-                      className={`w-3 h-3 max-lg:w-2.5 max-lg:h-2.5 transition-transform duration-300 ease-in-out ${
+                      className={`w-3.5 h-3.5 max-lg:w-3 max-lg:h-3 max-md:w-2.5 max-md:h-2.5 transition-transform duration-300 ease-in-out ${
                         isExpanded ? "rotate-180" : "rotate-0"
                       }`}
                       fill="none"
@@ -1042,10 +1133,12 @@ const GroupCardNode = ({
               <button
                 type="button"
                 onClick={() => onOpenMembersModal(group, "manage")}
-                className={`px-3.5 max-lg:px-2.5 max-md:px-2 py-1.5 max-lg:py-1 max-md:py-0.5 rounded-xl max-lg:rounded-lg text-xs max-lg:text-[11px] max-md:text-[10px] font-semibold ${accent.btnOutline} transition cursor-pointer flex items-center gap-1.5 max-lg:gap-1`}
+                title="Quản lý thành viên"
+                aria-label="Quản lý thành viên"
+                className={`px-3.5 max-lg:px-2.5 max-md:px-2 py-1.5 max-lg:py-1 max-md:py-1 rounded-xl max-lg:rounded-lg text-xs max-lg:text-[11px] max-md:text-[10px] font-semibold ${accent.btnOutline} transition cursor-pointer flex items-center gap-1.5 max-lg:gap-1`}
               >
                 <svg
-                  className="w-3.5 h-3.5 max-lg:w-3 max-lg:h-3 max-md:w-2.5 max-md:h-2.5"
+                  className="w-3.5 h-3.5 max-lg:w-3 max-lg:h-3 max-md:w-3 max-md:h-3 shrink-0"
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="2"
@@ -1060,7 +1153,7 @@ const GroupCardNode = ({
                   <line x1="20" x2="20" y1="8" y2="14" />
                   <line x1="23" x2="17" y1="11" y2="11" />
                 </svg>
-                <span>Thành viên</span>
+                <span className="max-md:hidden">Thành viên</span>
               </button>
             )}
 
@@ -1068,13 +1161,37 @@ const GroupCardNode = ({
               <button
                 type="button"
                 onClick={() => onOpenCreateChildModal(group)}
-                className={`px-3.5 max-lg:px-2.5 max-md:px-2 py-1.5 max-lg:py-1 max-md:py-0.5 rounded-xl max-lg:rounded-lg text-xs max-lg:text-[11px] max-md:text-[10px] font-semibold border border-border-black-10 dark:border-background-white-15 bg-background-search dark:bg-background-white-8 text-color-black-70 dark:text-color-white-80 ${accent.btnGhostHover} transition cursor-pointer flex items-center gap-1.5 max-lg:gap-1`}
+                title="Thêm nhóm con"
+                aria-label="Thêm nhóm con"
+                className={`px-3.5 max-lg:px-2.5 max-md:px-2 py-1.5 max-lg:py-1 max-md:py-1 rounded-xl max-lg:rounded-lg text-xs max-lg:text-[11px] max-md:text-[10px] font-semibold border border-border-black-10 dark:border-background-white-15 bg-background-search dark:bg-background-white-8 text-color-black-70 dark:text-color-white-80 ${accent.btnGhostHover} transition cursor-pointer flex items-center gap-1.5 max-lg:gap-1`}
               >
-                <span>+ Nhóm con</span>
+                <svg
+                  className="w-3.5 h-3.5 max-lg:w-3 max-lg:h-3 max-md:w-3 max-md:h-3 shrink-0"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                </svg>
+                <span className="max-md:hidden">Nhóm con</span>
               </button>
             ) : isSystemManager || groupRoles.includes("super_admin") ? (
-              <span className="px-3 max-lg:px-2 max-md:px-1.5 py-1.5 max-lg:py-1 max-md:py-0.5 rounded-xl max-lg:rounded-lg text-xs max-lg:text-[11px] max-md:text-[10px] font-medium border border-border-black-10 dark:border-background-white-15 bg-background-search dark:bg-background-white-8 text-color-black-40 dark:text-color-white-40 select-none">
-                {isMaxDepthReached ? "Tối đa 5 cấp" : "Đủ 10 nhóm con"}
+              <span
+                title={isMaxDepthReached ? "Tối đa 5 cấp" : "Đủ 10 nhóm con"}
+                className="px-3 max-lg:px-2 max-md:px-2 py-1.5 max-lg:py-1 max-md:py-1 rounded-xl max-lg:rounded-lg text-xs max-lg:text-[11px] max-md:text-[10px] font-medium border border-border-black-10 dark:border-background-white-15 bg-background-search dark:bg-background-white-8 text-color-black-40 dark:text-color-white-40 select-none inline-flex items-center gap-1"
+              >
+                <svg
+                  className="w-3.5 h-3.5 max-lg:w-3 max-lg:h-3 max-md:w-3 max-md:h-3 shrink-0 md:hidden text-color-black-40 dark:text-color-white-40"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" />
+                </svg>
+                <span className="max-md:hidden">{isMaxDepthReached ? "Tối đa 5 cấp" : "Đủ 10 nhóm con"}</span>
               </span>
             ) : null}
 
@@ -1082,10 +1199,12 @@ const GroupCardNode = ({
               <button
                 type="button"
                 onClick={() => onRequestDeleteGroup(group)}
-                className="px-3.5 max-lg:px-2.5 max-md:px-2 py-1.5 max-lg:py-1 max-md:py-0.5 rounded-xl max-lg:rounded-lg text-xs max-lg:text-[11px] max-md:text-[10px] font-semibold border border-color-error/40 bg-color-error/10 text-color-error hover:bg-color-error hover:text-white transition cursor-pointer flex items-center gap-1.5 max-lg:gap-1"
+                title="Xóa nhóm"
+                aria-label="Xóa nhóm"
+                className="px-3.5 max-lg:px-2.5 max-md:px-2 py-1.5 max-lg:py-1 max-md:py-1 rounded-xl max-lg:rounded-lg text-xs max-lg:text-[11px] max-md:text-[10px] font-semibold border border-color-error/40 bg-color-error/10 text-color-error hover:bg-color-error hover:text-white transition cursor-pointer flex items-center gap-1.5 max-lg:gap-1"
               >
                 <svg
-                  className="w-3.5 h-3.5 max-lg:w-3 max-lg:h-3 max-md:w-2.5 max-md:h-2.5"
+                  className="w-3.5 h-3.5 max-lg:w-3 max-lg:h-3 max-md:w-3 max-md:h-3 shrink-0"
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="2"
@@ -1098,7 +1217,7 @@ const GroupCardNode = ({
                     d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
                   />
                 </svg>
-                <span>Xóa</span>
+                <span className="max-md:hidden">Xóa</span>
               </button>
             )}
           </div>
@@ -1215,7 +1334,9 @@ const GroupCardNode = ({
       {children.length > 0 && (
         <div
           className={`grid transition-all duration-300 ease-in-out ${
-            isExpanded ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0 pointer-events-none"
+            isExpanded
+              ? "grid-rows-[1fr] opacity-100"
+              : "grid-rows-[0fr] opacity-0 pointer-events-none"
           }`}
         >
           <div className="overflow-hidden">
@@ -1229,6 +1350,7 @@ const GroupCardNode = ({
                   level={level + 1}
                   isSystemManager={isSystemManager}
                   currentUserId={currentUserId}
+                  onOpenEditGroupInfoModal={onOpenEditGroupInfoModal}
                   onOpenEditModal={onOpenEditModal}
                   onOpenCreateChildModal={onOpenCreateChildModal}
                   onOpenMembersModal={onOpenMembersModal}
@@ -1289,6 +1411,13 @@ const RolePermissionContent = () => {
   const [newParentGroupId, setNewParentGroupId] = useState("");
   const [creatingGroup, setCreatingGroup] = useState(false);
   const [modalError, setModalError] = useState("");
+
+  // Modal Sửa thông tin group (tên, mô tả)
+  const [editingGroupInfo, setEditingGroupInfo] = useState(null);
+  const [editGroupName, setEditGroupName] = useState("");
+  const [editGroupDesc, setEditGroupDesc] = useState("");
+  const [savingGroupInfo, setSavingGroupInfo] = useState(false);
+  const [editGroupInfoError, setEditGroupInfoError] = useState("");
 
   // Modal Xem / Quản lý thành viên của Group
   const [memberModalGroup, setMemberModalGroup] = useState(null);
@@ -1435,6 +1564,41 @@ const RolePermissionContent = () => {
     setDashSearch("");
     setEditingGroup(group);
     setSelectedDashIds((group.dashboards || []).map((d) => Number(d.id)));
+  };
+
+  const handleOpenEditGroupInfoModal = (group) => {
+    setEditingGroupInfo(group);
+    setEditGroupName(group.group_name || "");
+    setEditGroupDesc(group.description || "");
+    setEditGroupInfoError("");
+  };
+
+  const handleSaveGroupInfo = async (e) => {
+    e.preventDefault();
+    if (!editingGroupInfo) return;
+    if (!editGroupName.trim()) {
+      setEditGroupInfoError("Tên nhóm không được để trống");
+      return;
+    }
+
+    try {
+      setSavingGroupInfo(true);
+      setEditGroupInfoError("");
+      await updateManagedGroup(editingGroupInfo.id, {
+        groupName: editGroupName.trim(),
+        description: editGroupDesc.trim(),
+      });
+      setEditingGroupInfo(null);
+      await fetchGroupData();
+    } catch (err) {
+      setEditGroupInfoError(
+        err.response?.data?.message ||
+          err.message ||
+          "Cập nhật thông tin nhóm thất bại",
+      );
+    } finally {
+      setSavingGroupInfo(false);
+    }
   };
 
   const toggleDashId = (id) => {
@@ -1969,6 +2133,7 @@ const RolePermissionContent = () => {
                   groups={groups}
                   isSystemManager={isSystemManager}
                   currentUserId={currentUserId}
+                  onOpenEditGroupInfoModal={handleOpenEditGroupInfoModal}
                   onOpenEditModal={handleOpenEditModal}
                   onOpenCreateChildModal={handleOpenCreateModal}
                   onOpenMembersModal={handleOpenMembersModal}
@@ -1993,6 +2158,7 @@ const RolePermissionContent = () => {
                 level={0}
                 isSystemManager={isSystemManager}
                 currentUserId={currentUserId}
+                onOpenEditGroupInfoModal={handleOpenEditGroupInfoModal}
                 onOpenEditModal={handleOpenEditModal}
                 onOpenCreateChildModal={handleOpenCreateModal}
                 onOpenMembersModal={handleOpenMembersModal}
@@ -2246,6 +2412,94 @@ const RolePermissionContent = () => {
                       className={`px-5 max-lg:px-4 max-md:px-3 py-2 max-lg:py-1.5 max-md:py-1 rounded-xl max-lg:rounded-lg text-xs max-lg:text-[11px] max-md:text-[10px] font-semibold ${createAccent.btnSolid} transition cursor-pointer disabled:opacity-60`}
                     >
                       {creatingGroup ? "Đang tạo..." : "Tạo nhóm"}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          );
+        })()}
+
+      {/* Modal: Chỉnh sửa thông tin Nhóm (Tên, Mô tả) */}
+      {editingGroupInfo &&
+        (() => {
+          const editInfoAccent = getGroupAccent(
+            getGroupBranchIndex(groups, editingGroupInfo.id),
+          );
+          return (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 max-lg:p-3 max-md:p-2">
+              <div className="animate-scale-in relative overflow-hidden w-full max-w-md rounded-2xl max-lg:rounded-xl max-md:rounded-lg bg-background-light dark:bg-background-dark border border-border-black-10 dark:border-background-white-15 shadow-2xl">
+                <div className={`h-1 bg-gradient-to-r ${editInfoAccent.bar}`} />
+
+                <div className="flex items-center justify-between px-6 max-lg:px-5 max-md:px-4 py-4 max-lg:py-3 max-md:py-2.5 border-b border-border-black-10 dark:border-background-white-15">
+                  <div>
+                    <h3 className="text-base max-lg:text-sm max-md:text-xs font-bold text-color-black-100 dark:text-color-white-90">
+                      Chỉnh sửa thông tin nhóm
+                    </h3>
+                    <p className="text-xs max-lg:text-[11px] max-md:text-[10px] text-color-black-50 dark:text-color-white-50 mt-0.5">
+                      {editingGroupInfo.group_name}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setEditingGroupInfo(null)}
+                    className="w-7 h-7 max-lg:w-6 max-lg:h-6 rounded-lg flex items-center justify-center text-color-black-50 hover:text-color-black-100 dark:text-color-white-50 dark:hover:text-color-white-90 hover:bg-background-black-4 dark:hover:bg-background-white-8 transition cursor-pointer"
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                <form
+                  onSubmit={handleSaveGroupInfo}
+                  className="p-6 max-lg:p-4 max-md:p-3 space-y-4 max-lg:space-y-3 max-md:space-y-2"
+                >
+                  <div>
+                    <label className="block text-xs max-lg:text-[11px] max-md:text-[10px] font-semibold text-color-black-70 dark:text-color-white-80 mb-1.5">
+                      Tên nhóm <span className="text-color-rating">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={editGroupName}
+                      onChange={(e) => setEditGroupName(e.target.value)}
+                      placeholder="Nhập tên nhóm..."
+                      className={`w-full px-3.5 max-lg:px-3 max-md:px-2.5 py-2 max-lg:py-1.5 max-md:py-1 rounded-xl max-lg:rounded-lg border border-border-black-10 dark:border-background-white-15 bg-background-search dark:bg-background-white-8 text-sm max-lg:text-xs max-md:text-[11px] text-color-black-100 dark:text-color-white-90 outline-none ${editInfoAccent.focusRing}`}
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs max-lg:text-[11px] max-md:text-[10px] font-semibold text-color-black-70 dark:text-color-white-80 mb-1.5">
+                      Mô tả
+                    </label>
+                    <textarea
+                      rows={2}
+                      value={editGroupDesc}
+                      onChange={(e) => setEditGroupDesc(e.target.value)}
+                      placeholder="Mô tả ngắn gọn..."
+                      className={`w-full px-3.5 max-lg:px-3 max-md:px-2.5 py-2 max-lg:py-1.5 max-md:py-1 rounded-xl max-lg:rounded-lg border border-border-black-10 dark:border-background-white-15 bg-background-search dark:bg-background-white-8 text-sm max-lg:text-xs max-md:text-[11px] text-color-black-100 dark:text-color-white-90 outline-none ${editInfoAccent.focusRing}`}
+                    />
+                  </div>
+
+                  {editGroupInfoError && (
+                    <p className="text-xs max-lg:text-[11px] max-md:text-[10px] text-color-error">
+                      {editGroupInfoError}
+                    </p>
+                  )}
+
+                  <div className="flex items-center justify-end gap-2.5 max-lg:gap-2 max-md:gap-1.5 pt-2 border-t border-border-black-10 dark:border-background-white-15">
+                    <button
+                      type="button"
+                      onClick={() => setEditingGroupInfo(null)}
+                      className="px-4 max-lg:px-3 max-md:px-2.5 py-2 max-lg:py-1.5 max-md:py-1 rounded-xl max-lg:rounded-lg text-xs max-lg:text-[11px] max-md:text-[10px] font-semibold border border-border-black-10 dark:border-background-white-15 text-color-black-70 dark:text-color-white-80 hover:bg-background-black-4 dark:hover:bg-background-white-8 transition cursor-pointer"
+                    >
+                      Hủy
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={savingGroupInfo}
+                      className={`px-5 max-lg:px-4 max-md:px-3 py-2 max-lg:py-1.5 max-md:py-1 rounded-xl max-lg:rounded-lg text-xs max-lg:text-[11px] max-md:text-[10px] font-semibold ${editInfoAccent.btnSolid} transition cursor-pointer disabled:opacity-60`}
+                    >
+                      {savingGroupInfo ? "Đang lưu..." : "Lưu thay đổi"}
                     </button>
                   </div>
                 </form>

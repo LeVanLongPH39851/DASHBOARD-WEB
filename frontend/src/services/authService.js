@@ -82,6 +82,13 @@ export const createManagedGroup = async (payload) => {
   return response.data;
 };
 
+// Cập nhật thông tin Group (tên và mô tả)
+export const updateManagedGroup = async (groupId, payload) => {
+  const response = await api.put(`/api/groups/${groupId}`, payload);
+
+  return response.data;
+};
+
 // Cập nhật danh sách Dashboard cấp phát cho Group
 export const updateGroupDashboards = async (groupId, dashboardIds) => {
   const response = await api.put(`/api/groups/${groupId}/dashboards`, {

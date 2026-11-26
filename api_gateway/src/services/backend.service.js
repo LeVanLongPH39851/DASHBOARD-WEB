@@ -220,6 +220,14 @@ async function createManagedGroup(payload) {
   });
 }
 
+async function updateManagedGroup(payload) {
+  return requestRoleApi({
+    method: "PUT",
+    path: "/groups",
+    data: payload,
+  });
+}
+
 async function updateGroupDashboards(payload) {
   return requestRoleApi({
     method: "PUT",
@@ -377,6 +385,7 @@ module.exports = {
   getUserDashboards,
   getManagedGroups,
   createManagedGroup,
+  updateManagedGroup,
   updateGroupDashboards,
   deleteManagedGroup,
   getAssignableUsers,

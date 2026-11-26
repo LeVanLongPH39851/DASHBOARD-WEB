@@ -95,6 +95,12 @@ router.put(
   authorize(HIGH_ADMIN_ROLES, { checkGroup: true }),
   authController.updateGroupDashboardsController,
 );
+router.put(
+  "/groups/:groupId",
+  authenticate,
+  authorize(HIGH_ADMIN_ROLES, { checkGroup: true }),
+  authController.updateManagedGroupController,
+);
 router.delete(
   "/groups/:groupId",
   authenticate,

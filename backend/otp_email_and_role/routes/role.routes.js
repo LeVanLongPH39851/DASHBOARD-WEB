@@ -18,6 +18,7 @@ router
   .route("/groups")
   .get(roleController.getManagedGroups)
   .post(roleController.createManagedGroup)
+  .put(roleController.updateManagedGroup)
   .delete(roleController.deleteManagedGroup);
 
 router

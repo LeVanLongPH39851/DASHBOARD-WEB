@@ -553,6 +553,100 @@ async function createManagedGroup({
 }
 
 /**
+ * Cập nhật thông tin Group (tên group & description):
+ * - Chỉ admin_ami hoặc người tạo ra group (created_by === userId) mới có quyền sửa.
+ */
+async function updateManagedGroup({ userId, groupId, groupName, description }) {
+  const isSystem = await isGlobalSystemUser(userId);
+
+  const groupCheck = await rolePool.query(
+    `SELECT id, group_name, description, created_by, parent_group_id FROM groups WHERE id = $1 AND is_active = TRUE LIMIT 1`,
+    [groupId],
+  );
+  if (!groupCheck.rows[0]) {
+    throw createHttpError(404, "Group không tồn tại");
+  }
+
+  const targetGroup = groupCheck.rows[0];
+  const isCreator = Number(targetGroup.created_by) === Number(userId);
+
+  if (!isSystem && !isCreator) {
+    throw createHttpError(
+      403,
+      "Chỉ admin_ami hoặc người tạo ra Group mới có quyền sửa tên và mô tả",
+    );
+  }
+
+  const cleanGroupName = String(groupName || "").trim();
+  if (!cleanGroupName) {
+    throw createHttpError(400, "Tên Group không được để trống");
+  }
+
+  // Kiểm tra trùng tên với các group khác
+  const dupRes = await rolePool.query(
+    `SELECT id FROM groups WHERE LOWER(group_name) = LOWER($1) AND id <> $2 LIMIT 1`,
+    [cleanGroupName, groupId],
+  );
+  if (dupRes.rows[0]) {
+    throw createHttpError(
+      409,
+      `Tên nhóm "${cleanGroupName}" đã tồn tại trong hệ thống. Vui lòng chọn tên khác.`,
+    );
+  }
+
+  const client = await rolePool.connect();
+  try {
+    await client.query("BEGIN");
+
+    const cleanDescription =
+      description !== undefined ? (description ? String(description).trim() : null) : targetGroup.description;
+
+    const { rows } = await client.query(
+      `
+        UPDATE groups
+        SET group_name = $1,
+            description = $2,
+            updated_at = NOW()
+        WHERE id = $3
+        RETURNING id, group_name, description, parent_group_id, created_by, created_at, updated_at
+      `,
+      [cleanGroupName, cleanDescription, groupId],
+    );
+
+    const updatedGroup = rows[0];
+    await client.query("COMMIT");
+
+    await logAudit({
+      userId,
+      action: AUDIT_ACTIONS.GROUP_UPDATE,
+      targetType: "GROUP",
+      targetId: updatedGroup.id,
+      description: `Cập nhật Group "${updatedGroup.group_name}"`,
+      metadata: {
+        group_id: Number(updatedGroup.id),
+        old_name: targetGroup.group_name,
+        new_name: updatedGroup.group_name,
+        old_description: targetGroup.description,
+        new_description: updatedGroup.description,
+      },
+    });
+
+    return updatedGroup;
+  } catch (error) {
+    await client.query("ROLLBACK").catch(() => {});
+    if (error.code === "23505") {
+      throw createHttpError(
+        409,
+        `Tên nhóm "${cleanGroupName}" đã tồn tại trong hệ thống. Vui lòng chọn tên khác.`,
+      );
+    }
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+/**
  * Cập nhật danh sách Dashboard cấp cho Group:
  * - admin_ami: được sửa mọi Group.
  * - super_admin: chỉ được sửa ở các Group con bên dưới (distance > 0), không được sửa ở Group gốc mình quản lý (distance === 0).
@@ -818,6 +912,7 @@ module.exports = {
   getUserAccessibleDashboards,
   getManagedGroups,
   createManagedGroup,
+  updateManagedGroup,
   updateGroupDashboards,
   deleteManagedGroup,
 };

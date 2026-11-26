@@ -210,8 +210,16 @@ class SupersetClient {
       if (!res.ok) {
         const text = await res.text();
 
-        if ((text.includes('CSRF') || text.includes('401') || res.status === 401) && retryCount < 2) {
-          console.log('⚠ Token hết hạn, làm mới...');
+        const isAuthOrCsrfError =
+          res.status === 401 ||
+          res.status === 403 ||
+          text.toLowerCase().includes('csrf') ||
+          text.includes('401') ||
+          text.includes('403') ||
+          res.headers.get('content-type')?.includes('text/html');
+
+        if (isAuthOrCsrfError && retryCount < 2) {
+          console.log('⚠ Token hết hạn hoặc lỗi xác thực (401/403/CSRF), làm mới...');
           this.cachedCredentials = {
             csrfToken: null,
             sessionCookie: null,
@@ -260,8 +268,16 @@ class SupersetClient {
       if (!res.ok) {
         const text = await res.text();
 
-        if ((text.includes('CSRF') || text.includes('401') || res.status === 401) && retryCount < 2) {
-          console.log('⚠ Token GET hết hạn, làm mới...');
+        const isAuthOrCsrfError =
+          res.status === 401 ||
+          res.status === 403 ||
+          text.toLowerCase().includes('csrf') ||
+          text.includes('401') ||
+          text.includes('403') ||
+          res.headers.get('content-type')?.includes('text/html');
+
+        if (isAuthOrCsrfError && retryCount < 2) {
+          console.log('⚠ Token GET hết hạn hoặc lỗi xác thực (401/403/CSRF), làm mới...');
           this.cachedCredentials = {
             csrfToken: null,
             sessionCookie: null,

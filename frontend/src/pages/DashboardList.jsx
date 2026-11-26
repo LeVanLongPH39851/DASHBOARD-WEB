@@ -18,6 +18,7 @@ const CARD_THEMES = [
     glow: "from-[#20A7C9]/15 to-transparent",
     iconBg: "bg-background-ave-reach dark:bg-[#21b8b8]/20",
     iconText: "text-color-ave-reach dark:text-[#5bd6d8]",
+    titleHover: "group-hover:text-[#20A7C9] dark:group-hover:text-[#5bd6d8]",
     badge:
       "bg-background-ave-reach text-color-ave-reach border-[#21b8b8]/25 dark:bg-[#21b8b8]/15 dark:text-[#5bd6d8]",
     hoverBorder: "hover:border-[#20A7C9]/70 dark:hover:border-[#5bd6d8]/60",
@@ -31,6 +32,7 @@ const CARD_THEMES = [
     glow: "from-[#7367f0]/15 to-transparent",
     iconBg: "bg-background-rating-percent dark:bg-[#7367f0]/20",
     iconText: "text-color-rating-percent dark:text-[#a59ff8]",
+    titleHover: "group-hover:text-[#7367f0] dark:group-hover:text-[#a59ff8]",
     badge:
       "bg-background-rating-percent text-color-rating-percent border-[#7367f0]/25 dark:bg-[#7367f0]/15 dark:text-[#a59ff8]",
     hoverBorder: "hover:border-[#7367f0]/70 dark:hover:border-[#a59ff8]/60",
@@ -44,6 +46,7 @@ const CARD_THEMES = [
     glow: "from-[#f2994a]/15 to-transparent",
     iconBg: "bg-background-ave-reach-percent dark:bg-[#f2994a]/20",
     iconText: "text-color-ave-reach-percent dark:text-[#f6b26b]",
+    titleHover: "group-hover:text-[#f2994a] dark:group-hover:text-[#f6b26b]",
     badge:
       "bg-background-ave-reach-percent text-color-ave-reach-percent border-[#f2994a]/25 dark:bg-[#f2994a]/15 dark:text-[#f6b26b]",
     hoverBorder: "hover:border-[#f2994a]/70 dark:hover:border-[#f6b26b]/60",
@@ -57,6 +60,7 @@ const CARD_THEMES = [
     glow: "from-[#eb5757]/15 to-transparent",
     iconBg: "bg-background-rating dark:bg-[#eb5757]/20",
     iconText: "text-color-rating dark:text-[#ff8585]",
+    titleHover: "group-hover:text-[#eb5757] dark:group-hover:text-[#ff8585]",
     badge:
       "bg-background-rating text-color-rating border-[#eb5757]/25 dark:bg-[#eb5757]/15 dark:text-[#ff8585]",
     hoverBorder: "hover:border-[#eb5757]/70 dark:hover:border-[#ff8585]/60",
@@ -70,6 +74,7 @@ const CARD_THEMES = [
     glow: "from-[#0cb7a9]/15 to-transparent",
     iconBg: "bg-background-succes-type-1 dark:bg-[#0cb7a9]/20",
     iconText: "text-color-succes-type-1 dark:text-color-succes-type-1-dark",
+    titleHover: "group-hover:text-[#0cb7a9] dark:group-hover:text-[#2ed8b6]",
     badge:
       "bg-background-succes-type-1 text-color-succes-type-1 border-[#0cb7a9]/25 dark:bg-[#0cb7a9]/15 dark:text-color-succes-type-1-dark",
     hoverBorder: "hover:border-[#0cb7a9]/70 dark:hover:border-[#86e1e3]/60",
@@ -86,6 +91,7 @@ const DEFAULT_CARD_THEME = {
   iconBg:
     "bg-[#ffd04c]/20 dark:bg-[#ffd04c]/25 border border-[#ffd04c]/70 shadow-[0_0_18px_rgba(255,208,76,0.55)] dark:shadow-[0_0_22px_rgba(255,208,76,0.65)]",
   iconText: "text-[#d97706] dark:text-[#ffd04c]",
+  titleHover: "group-hover:text-[#d97706] dark:group-hover:text-[#ffe07d]",
   badge:
     "bg-[#ffd04c]/20 text-[#b45309] border-[#ffd04c]/60 shadow-[0_0_10px_rgba(255,208,76,0.35)] dark:bg-[#ffd04c]/20 dark:text-[#ffd04c] dark:border-[#ffd04c]/50 dark:shadow-[0_0_12px_rgba(255,208,76,0.45)]",
   cardBorder: "default-dashboard-gold-glow",
@@ -591,7 +597,7 @@ const DashboardListContent = () => {
                         className={`text-base max-lg:text-sm max-md:text-xs font-bold transition-colors truncate ${
                           isDefault
                             ? "text-[#b45309] dark:text-[#ffd04c] group-hover:text-[#d97706] dark:group-hover:text-[#ffe07d]"
-                            : "text-color-black-100 dark:text-color-white-90 group-hover:text-color-neotam dark:group-hover:text-[#5bd6d8]"
+                            : `text-color-black-100 dark:text-color-white-90 ${theme.titleHover}`
                         }`}
                       >
                         {item.dashboard_title || `Dashboard #${item.id}`}
@@ -600,7 +606,13 @@ const DashboardListContent = () => {
                   </div>
 
                   <div className="flex items-center justify-between pt-3.5 max-lg:pt-2.5 max-md:pt-2 border-t border-border-black-10 dark:border-background-white-15">
-                    <span className="text-xs max-lg:text-[11px] max-md:text-[10px] font-medium text-color-black-50 dark:text-color-white-50">
+                    <span
+                      className={`text-xs max-lg:text-[11px] max-md:text-[10px] font-medium transition-colors ${
+                        isDefault
+                          ? "text-[#d97706] dark:text-[#ffd04c]"
+                          : "text-color-black-50 dark:text-color-white-50"
+                      }`}
+                    >
                       Dashboard trực tuyến
                     </span>
 
@@ -642,7 +654,11 @@ const DashboardListContent = () => {
                       <span
                         title="Mở Dashboard"
                         aria-label="Mở Dashboard"
-                        className={`w-7 h-7 max-lg:w-6 max-lg:h-6 max-md:w-5.5 max-md:h-5.5 rounded-lg max-lg:rounded-md max-md:rounded inline-flex items-center justify-center border border-border-black-10 dark:border-background-white-15 text-color-black-100 dark:text-color-white-90 transition-all duration-300 ${theme.btnHover}`}
+                        className={`w-7 h-7 max-lg:w-6 max-lg:h-6 max-md:w-5.5 max-md:h-5.5 rounded-lg max-lg:rounded-md max-md:rounded inline-flex items-center justify-center border transition-all duration-300 ${
+                          isDefault
+                            ? "bg-[#ffd04c]/25 dark:bg-[#ffd04c]/30 border-[#ffd04c] text-[#d97706] dark:text-[#ffd04c] shadow-[0_0_12px_rgba(255,208,76,0.6)] group-hover:bg-gradient-to-r group-hover:from-[#f59e0b] group-hover:to-[#ffd04c] group-hover:text-black group-hover:border-transparent group-hover:shadow-[0_0_18px_rgba(255,208,76,0.8)]"
+                            : `border-border-black-10 dark:border-background-white-15 text-color-black-100 dark:text-color-white-90 ${theme.btnHover}`
+                        }`}
                       >
                         <svg
                           className="w-3.5 h-3.5 max-lg:w-3 max-lg:h-3 max-md:w-2.5 max-md:h-2.5 fill-current"
@@ -701,7 +717,7 @@ const DashboardListContent = () => {
                           className={`text-base max-lg:text-sm max-md:text-xs font-bold transition-colors truncate ${
                             isDefault
                               ? "text-[#b45309] dark:text-[#ffd04c] group-hover:text-[#d97706] dark:group-hover:text-[#ffe07d]"
-                              : "text-color-black-100 dark:text-color-white-90 group-hover:text-color-neotam dark:group-hover:text-[#5bd6d8]"
+                              : `text-color-black-100 dark:text-color-white-90 ${theme.titleHover}`
                           }`}
                         >
                           {item.dashboard_title || `Dashboard #${item.id}`}
@@ -756,7 +772,11 @@ const DashboardListContent = () => {
                     <span
                       title="Mở Dashboard"
                       aria-label="Mở Dashboard"
-                      className={`w-7 h-7 max-lg:w-6 max-lg:h-6 max-md:w-5.5 max-md:h-5.5 rounded-lg max-lg:rounded-md max-md:rounded inline-flex items-center justify-center border border-border-black-10 dark:border-background-white-15 text-color-black-100 dark:text-color-white-90 transition-all duration-200 ${theme.btnHover}`}
+                      className={`w-7 h-7 max-lg:w-6 max-lg:h-6 max-md:w-5.5 max-md:h-5.5 rounded-lg max-lg:rounded-md max-md:rounded inline-flex items-center justify-center border transition-all duration-200 ${
+                        isDefault
+                          ? "bg-[#ffd04c]/25 dark:bg-[#ffd04c]/30 border-[#ffd04c] text-[#d97706] dark:text-[#ffd04c] shadow-[0_0_12px_rgba(255,208,76,0.6)] group-hover:bg-gradient-to-r group-hover:from-[#f59e0b] group-hover:to-[#ffd04c] group-hover:text-black group-hover:border-transparent group-hover:shadow-[0_0_18px_rgba(255,208,76,0.8)]"
+                          : `border-border-black-10 dark:border-background-white-15 text-color-black-100 dark:text-color-white-90 ${theme.btnHover}`
+                      }`}
                     >
                       <svg
                         className="w-3.5 h-3.5 max-lg:w-3 max-lg:h-3 max-md:w-2.5 max-md:h-2.5 fill-current"

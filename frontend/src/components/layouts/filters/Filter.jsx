@@ -141,6 +141,7 @@ const Filter = ({ filters, horizontalFixed = false }) => {
       { value: "Thời sự - Chính luận", label: "Thời sự - Chính luận" },
       { value: "Tài liệu - Phóng sự", label: "Tài liệu - Phóng sự" },
       { value: "Đời sống", label: "Đời sống" },
+      { value: "Phim điện ảnh", label: "Phim điện ảnh" },
     ],
     [],
   );

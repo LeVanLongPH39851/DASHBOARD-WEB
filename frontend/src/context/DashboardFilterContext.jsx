@@ -50,9 +50,24 @@ const isWorldCupPage = () => {
   }
 };
 
+const isVietnamTodayPage = () => {
+  try {
+    const isVietnamToday = window.location.pathname.includes("/vietnam-today");
+    return isVietnamToday;
+  } catch {
+    return false;
+  }
+};
+
 const getSessionValue = (key, fallback = null) => {
   try {
-    if (!isRatingPage() && !isSpotPage() && !isWorldCupPage()) return fallback;
+    if (
+      !isRatingPage() &&
+      !isSpotPage() &&
+      !isWorldCupPage() &&
+      !isVietnamTodayPage()
+    )
+      return fallback;
     const raw = sessionStorage.getItem(key);
     return raw ? JSON.parse(raw) : fallback;
   } catch (error) {
@@ -65,7 +80,7 @@ export const DashboardFilterProvider = ({ children }) => {
   const [appliedFilters, setAppliedFilters] = useState(() =>
     getSessionValue(
       SESSION_KEYS.appliedFilters +
-        `${isRatingPage() ? "_ratings" : isSpotPage() ? "_spots" : isWorldCupPage() ? "_worldcups" : ""}`,
+        `${isRatingPage() ? "_ratings" : isSpotPage() ? "_spots" : isWorldCupPage() ? "_worldcups" : isVietnamTodayPage() ? "_vietnamtodays" : ""}`,
       null,
     ),
   );

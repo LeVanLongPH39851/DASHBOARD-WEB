@@ -854,7 +854,7 @@ const DashboardContent = () => {
                                         "minute/user/date"
                                       ]?.toLocaleString(undefined, {
                                         maximumFractionDigits: 2,
-                                      })
+                                      }) || "-"
                                     : "-"
                                   : "isLoading",
                               [dashboard.isLoading.chart1042Data],
@@ -1932,7 +1932,7 @@ const DashboardContent = () => {
                                           "Avg Views/VOD"
                                         ]?.toLocaleString(undefined, {
                                           maximumFractionDigits: 2,
-                                        })
+                                        }) || "-"
                                       : "-"
                                     : "isLoading",
                                 [dashboard.isLoading.chart1050Data],
@@ -1963,7 +1963,7 @@ const DashboardContent = () => {
                                           "Avg Watch (Viewers)"
                                         ]?.toLocaleString(undefined, {
                                           maximumFractionDigits: 2,
-                                        })
+                                        }) || "-"
                                       : "-"
                                     : "isLoading",
                                 [dashboard.isLoading.chart1054Data],

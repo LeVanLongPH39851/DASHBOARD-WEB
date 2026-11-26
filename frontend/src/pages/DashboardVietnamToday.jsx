@@ -2694,7 +2694,7 @@ const DashboardContent = () => {
                             showIcon={false}
                           />
                           <NumberCard
-                            title={"Engagement"}
+                            title={"Engagements"}
                             description={
                               "Tổng số lượt tương tác phát sinh trên các bài viết được đăng trong khoảng thời gian được chọn."
                             }

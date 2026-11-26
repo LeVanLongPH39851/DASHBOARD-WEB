@@ -2186,7 +2186,7 @@ const DashboardContent = () => {
                               CUSTOM_CHART.barChart.barChartArea.aveReach.color
                             }
                             fontWeight={CUSTOM_CHART.barChart.fontWeight}
-                            nameChart={"Category Breakdown by WatchTime"}
+                            nameChart={"Category Breakdown by Watch Time"}
                             description={false}
                             orientation={
                               CUSTOM_CHART.barChart.barChartArea.orientation
@@ -2268,7 +2268,7 @@ const DashboardContent = () => {
                               CUSTOM_CHART.barChart.barChartArea.aveReach.color
                             }
                             fontWeight={CUSTOM_CHART.barChart.fontWeight}
-                            nameChart={"Geographic Distribution of WatchTime"}
+                            nameChart={"Geographic Distribution of Watch Time"}
                             description={false}
                             orientation={
                               CUSTOM_CHART.barChart.barChartArea.orientation

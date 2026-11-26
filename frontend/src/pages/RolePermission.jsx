@@ -573,7 +573,7 @@ const GroupDetailWorkspace = ({
           </div>
         )}
 
-        <div className="flex flex-row max-md:flex-col items-start justify-between gap-4 max-lg:gap-3 max-md:gap-2.5">
+        <div className="flex flex-row items-start justify-between gap-4 max-lg:gap-3 max-md:gap-2.5">
           <div className="flex items-start gap-3.5 max-lg:gap-2.5 max-md:gap-2">
             <div
               className={`w-11 h-11 max-lg:w-9 max-lg:h-9 max-md:w-8 max-md:h-8 rounded-2xl max-lg:rounded-xl max-md:rounded-lg ${accent.folderBg} ${accent.folderText} flex items-center justify-center shrink-0`}
@@ -628,7 +628,7 @@ const GroupDetailWorkspace = ({
                 <button
                   type="button"
                   onClick={() => onOpenMembersModal(group, "view")}
-                  className={`inline-flex items-center gap-1.5 max-lg:gap-1 px-2.5 max-lg:px-2 max-md:px-1.5 py-0.5 rounded-full text-xs max-lg:text-[11px] max-md:text-[10px] font-semibold border cursor-pointer hover:opacity-90 transition ${accent.badge}`}
+                  className={`inline-flex items-center gap-0.5 px-2.5 max-lg:px-2 max-md:px-1.5 py-0.5 rounded-full text-xs max-lg:text-[11px] max-md:text-[10px] font-semibold border cursor-pointer hover:opacity-90 transition ${accent.badge}`}
                 >
                   <svg
                     className="w-3.5 h-3.5 max-lg:w-3 max-lg:h-3 max-md:w-2.5 max-md:h-2.5 shrink-0"
@@ -703,7 +703,11 @@ const GroupDetailWorkspace = ({
                   strokeWidth="2.5"
                   viewBox="0 0 24 24"
                 >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 4v16m8-8H4"
+                  />
                 </svg>
                 <span className="max-md:hidden">Nhóm con</span>
               </button>
@@ -722,7 +726,9 @@ const GroupDetailWorkspace = ({
                   <circle cx="12" cy="12" r="10" />
                   <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" />
                 </svg>
-                <span className="max-md:hidden">{isMaxDepthReached ? "Tối đa 5 cấp" : "Đủ 10 nhóm con"}</span>
+                <span className="max-md:hidden">
+                  {isMaxDepthReached ? "Tối đa 5 cấp" : "Đủ 10 nhóm con"}
+                </span>
               </span>
             ) : null}
             {canDeleteGroup && (
@@ -1068,7 +1074,7 @@ const GroupCardNode = ({
                 <button
                   type="button"
                   onClick={() => onOpenMembersModal(group, "view")}
-                  className={`inline-flex items-center gap-1 px-2.5 max-lg:px-2 max-md:px-1.5 py-0.5 rounded-full text-xs max-lg:text-[11px] max-md:text-[10px] font-semibold border cursor-pointer ${accent.badge}`}
+                  className={`inline-flex items-center gap-0.5 px-2.5 max-lg:px-2 max-md:px-1.5 py-0.5 rounded-full text-xs max-lg:text-[11px] max-md:text-[10px] font-semibold border cursor-pointer ${accent.badge}`}
                 >
                   <svg
                     className="w-3 h-3 max-lg:w-2.5 max-lg:h-2.5 shrink-0"
@@ -1084,7 +1090,9 @@ const GroupCardNode = ({
                     />
                     <circle cx="8.5" cy="7" r="4" />
                   </svg>
-                  <span>{group.member_count || 0} thành viên</span>
+                  <span className="text-[11px] max-lg:text-[10px] max-md:text-[9px]">
+                    {group.member_count || 0}
+                  </span>
                 </button>
 
                 {!isSystemManager && level === 0 && myRoleLabelInGroup && (
@@ -1097,8 +1105,16 @@ const GroupCardNode = ({
                   <button
                     type="button"
                     onClick={() => setIsExpanded(!isExpanded)}
-                    title={isExpanded ? "Thu gọn nhóm con" : `Mở rộng ${children.length} nhóm con`}
-                    aria-label={isExpanded ? "Thu gọn nhóm con" : `Mở rộng ${children.length} nhóm con`}
+                    title={
+                      isExpanded
+                        ? "Thu gọn nhóm con"
+                        : `Mở rộng ${children.length} nhóm con`
+                    }
+                    aria-label={
+                      isExpanded
+                        ? "Thu gọn nhóm con"
+                        : `Mở rộng ${children.length} nhóm con`
+                    }
                     className="inline-flex items-center justify-center px-2.5 max-lg:px-2 max-md:px-1.5 py-0.5 rounded-full bg-background-search dark:bg-background-white-8 hover:bg-black/5 dark:hover:bg-white/12 text-color-black-70 dark:text-color-white-80 border border-border-black-10 dark:border-background-white-15 cursor-pointer transition-all duration-200 active:scale-95 shadow-2xs select-none"
                   >
                     <svg
@@ -1172,7 +1188,11 @@ const GroupCardNode = ({
                   strokeWidth="2.5"
                   viewBox="0 0 24 24"
                 >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 4v16m8-8H4"
+                  />
                 </svg>
                 <span className="max-md:hidden">Nhóm con</span>
               </button>
@@ -1191,7 +1211,9 @@ const GroupCardNode = ({
                   <circle cx="12" cy="12" r="10" />
                   <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" />
                 </svg>
-                <span className="max-md:hidden">{isMaxDepthReached ? "Tối đa 5 cấp" : "Đủ 10 nhóm con"}</span>
+                <span className="max-md:hidden">
+                  {isMaxDepthReached ? "Tối đa 5 cấp" : "Đủ 10 nhóm con"}
+                </span>
               </span>
             ) : null}
 
